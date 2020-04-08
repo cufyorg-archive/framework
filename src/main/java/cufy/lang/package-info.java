@@ -14,7 +14,7 @@
  *	limitations under the License.
  */
 /**
- * Extra features for the java language.
+ * Base concepts with powerful features.
  *
  * @author lsafer
  * @version 0.1.2
