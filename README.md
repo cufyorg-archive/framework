@@ -1,5 +1,15 @@
-Cufy Framework [![](https://jitpack.io/v/cufyorg/framework.svg)](https://jitpack.io/#cufyorg/framework)
-===
+<p align="center">
+  <a href="https://cufyorg.github.io/">
+    <img alt="cufy" src="https://github.com/cufyorg/framework/blob/master/cufy.png" width="546">
+  </a>
+</p>
+<p align="center">
+  <b>A Framework to be Inherited</b>
+</p>
+<p align="center">
+    <a href="https://jitpack.io/#cufyorg/framework"><img alt="jitpack" src="https://jitpack.io/v/cufyorg/framework.svg"></a>
+</p>
+
 The cufy framework is focused on to be more inheritable and more reflection friendly. Making it
 less efficient (minor) but more fun and reliable in big complex projects.
 
