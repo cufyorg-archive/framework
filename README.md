@@ -185,7 +185,8 @@ A bean is a map that it's fields is the properties of it.
 ---
 
 ## Concurrent package
-Utils to deal with concurrent actions and infinite loops. All utils depends on the logic rather than the timing
+Utils to deal with concurrent actions and infinite loops. All utils depends on the logic rather
+than the timing
 <details>
     <summary>more details</summary>
 </details>
