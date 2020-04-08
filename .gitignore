@@ -1,0 +1,6 @@
+/build
+/.gradle
+/.idea
+/build.bat
+/local.properties
+.idea/workspace.xml

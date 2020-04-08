@@ -1,0 +1,16 @@
+apply plugin: 'java-library'
+
+repositories {
+	jcenter()
+	mavenCentral()
+	maven {
+		url "https://jitpack.io"
+	}
+}
+
+dependencies {
+	testImplementation 'junit:junit:4.11'
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
