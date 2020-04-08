@@ -3,7 +3,7 @@ Cufy Framework
 The cufy framework is focused on to be more inheritable and more reflection friendly. Making it
 less efficient (minor) but more fun and reliable in big complex projects.
 
-## Util package
+## Util
 Utils and commons that supports reflection.
 <details>
 <summary>more details</summary>
@@ -52,7 +52,7 @@ Utils and commons that supports reflection.
 
 ---
 
-## Util: Function package
+## Util: Function
 Functional interfaces.
 <details>
     <summary>more details</summary>
@@ -75,7 +75,7 @@ Functional interfaces.
 
 ---
 
-## Lang package
+## Lang
 Base concepts with powerful features.
 <details>
     <summary>more details</summary>
@@ -83,7 +83,7 @@ Base concepts with powerful features.
 
 ---
 
-## Meta package
+## Meta
 Support for runtime annotations that the program is depending on for it's computations.
 <details>
     <summary>more details</summary>
@@ -91,7 +91,7 @@ Support for runtime annotations that the program is depending on for it's comput
 
 ---
 
-## Convert package
+## Convert
 Converting objects to different types.
 <details>
     <summary>more details</summary>
@@ -99,7 +99,7 @@ Converting objects to different types.
 
 ---
 
-## Text package
+## Text
 Abstracts for formatting, parsing and classifying text.
 <details>
     <summary>more details</summary>
@@ -150,7 +150,7 @@ So advanced JSON formatter, parser and classifier.
 
 ---
 
-## Beans package
+## Beans
 A bean is a map that it's fields is the properties of it. 
 - Compatible anywhere. Since it is a map.
 - Any object can be a bean. Just with annotations.
@@ -184,7 +184,7 @@ A bean is a map that it's fields is the properties of it.
 
 ---
 
-## Concurrent package
+## Concurrent
 Utils to deal with concurrent actions and infinite loops. All utils depends on the logic rather
 than the timing
 <details>
@@ -193,13 +193,13 @@ than the timing
 
 ---
 
-## IO package
+## IO
 Utils to deal with Input/Output ports. Like dealing with files or dealing with internet.
 <details>
     <summary>more details</summary>
 </details>
 
-## IO: Loadable package
+## IO: Loadable
 Objects that can be loaded and saved.
 <details>
     <summary>more details</summary>
