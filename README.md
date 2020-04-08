@@ -50,8 +50,6 @@ Utils and commons that supports reflection.
 
 </details>
 
----
-
 ## Util: Function
 Functional interfaces.
 <details>
@@ -73,15 +71,11 @@ Functional interfaces.
 
 </details>
 
----
-
 ## Lang
 Base concepts with powerful features.
 <details>
     <summary>more details</summary>
 </details> 
-
----
 
 ## Meta
 Support for runtime annotations that the program is depending on for it's computations.
@@ -89,23 +83,17 @@ Support for runtime annotations that the program is depending on for it's comput
     <summary>more details</summary>
 </details> 
 
----
-
 ## Convert
 Converting objects to different types.
 <details>
     <summary>more details</summary>
 </details>
 
----
-
 ## Text
 Abstracts for formatting, parsing and classifying text.
 <details>
     <summary>more details</summary>
 </details>
-
----
 
 ## Text: JSON
 So advanced JSON formatter, parser and classifier.
@@ -148,8 +136,6 @@ So advanced JSON formatter, parser and classifier.
     ```
 </details>
 
----
-
 ## Beans
 A bean is a map that it's fields is the properties of it. 
 - Compatible anywhere. Since it is a map.
@@ -182,16 +168,12 @@ A bean is a map that it's fields is the properties of it.
     ```
 </details>
 
----
-
 ## Concurrent
 Utils to deal with concurrent actions and infinite loops. All utils depends on the logic rather
 than the timing
 <details>
     <summary>more details</summary>
 </details>
-
----
 
 ## IO
 Utils to deal with Input/Output ports. Like dealing with files or dealing with internet.
