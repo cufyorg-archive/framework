@@ -1,4 +1,4 @@
-Cufy Framework
+Cufy Framework [![](https://jitpack.io/v/cufyorg/framework.svg)](https://jitpack.io/#cufyorg/framework)
 ===
 The cufy framework is focused on to be more inheritable and more reflection friendly. Making it
 less efficient (minor) but more fun and reliable in big complex projects.
