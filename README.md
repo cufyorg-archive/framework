@@ -31,7 +31,7 @@ less efficient (minor) but more fun and reliable in big complex projects.
 ## Util
 Utils and commons that supports reflection.
 <details>
-<summary>more details</summary>
+    <summary>more details</summary>
     
 -   ### Groups
     Collections are a base thing on programming. But it is hard to make a collection foreach
