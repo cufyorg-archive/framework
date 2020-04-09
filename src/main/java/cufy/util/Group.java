@@ -46,5 +46,5 @@ public interface Group<E> extends Collection<E> {
 	 * @param key the key of the group
 	 * @return the group with the given key. Or null if no group with that key have been stored.
 	 */
-	Group<E> subgroup(Object key);
+	Group<E> subGroup(Object key);
 }

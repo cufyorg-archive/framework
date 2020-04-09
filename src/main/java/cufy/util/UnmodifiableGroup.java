@@ -148,7 +148,7 @@ public class UnmodifiableGroup<E> extends AbstractSet<E> implements Group<E> {
 	}
 
 	@Override
-	public Group<E> subgroup(Object key) {
+	public Group<E> subGroup(Object key) {
 		return this.subgroups.get(key);
 	}
 }
