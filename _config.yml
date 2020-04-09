@@ -2,4 +2,5 @@ theme: jekyll-theme-cayman
 markdown: kramdown
 kramdown:
   parse_block_html: true
-title: null
+title: Cufy Framework
+description: A Framework to be Inherited
