@@ -1,3 +1,18 @@
+<html lang="en">
+    <head>
+        <title>Cufy</title>
+        <script>
+            window.onload = function() {
+              let link = top.document.createElement("link");
+              link.type = "image/*";
+              link.rel = "icon";
+              link.href = "cufy.png";
+              top.document.getElementsByTagName("head")[0].appendChild(link);
+            };
+        </script>
+    </head>
+</html>
+
 <p align="center">
   <a href="https://cufyorg.github.io/">
     <img alt="cufy" src="cufy.png" width="400" height="400">
