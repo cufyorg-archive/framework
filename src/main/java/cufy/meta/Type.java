@@ -29,7 +29,7 @@ import java.util.Objects;
  * @since 31-Mar-2020
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MetaClazz {
+public @interface Type {
 	/**
 	 * The component types of this clazz.
 	 *
@@ -74,7 +74,7 @@ public @interface MetaClazz {
 		 * @return a clazz represents the same class that the given meta-clazz is representing
 		 * @throws NullPointerException if the given 'klazz' is null
 		 */
-		public static <T> Clazz<T> get(MetaClazz klazz) {
+		public static <T> Clazz<T> get(Type klazz) {
 			Objects.requireNonNull(klazz, "klazz");
 
 			Class[] componentTypes = klazz.componentTypes();
