@@ -36,7 +36,7 @@ import java.util.Objects;
  * @since 21-Nov-2019
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MetaFamily {
+public @interface Filter {
 	/**
 	 * Classes in range (subclasses NOT included).
 	 *
@@ -97,7 +97,7 @@ public @interface MetaFamily {
 		 * @return whether the given class is in the given family or not
 		 * @throws NullPointerException if the given 'family' or 'klass' is null
 		 */
-		public static boolean test(MetaFamily family, Class klass) {
+		public static boolean test(Filter family, Class klass) {
 			Objects.requireNonNull(family, "family");
 			Objects.requireNonNull(klass, "klass");
 
