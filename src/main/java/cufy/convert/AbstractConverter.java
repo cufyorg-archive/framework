@@ -15,8 +15,7 @@
  */
 package cufy.convert;
 
-import cufy.lang.Static;
-import cufy.meta.MetaFamily;
+import cufy.meta.Filter;
 import cufy.util.Arrayu;
 import cufy.util.Group;
 import cufy.util.Reflectionu;
@@ -25,7 +24,6 @@ import cufy.util.UnmodifiableGroup;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -42,7 +40,7 @@ public abstract class AbstractConverter implements Converter {
 	/**
 	 * The converting methods of this class.
 	 */
-	final protected Group<Method> methods;
+	final protected Group<Method> methods = new UnmodifiableGroup<>(Reflectionu.getAllMethods(this.getClass()));
 	/**
 	 * If this class in a debugging mode or not.
 	 *
@@ -50,45 +48,37 @@ public abstract class AbstractConverter implements Converter {
 	 */
 	protected boolean DEBUGGING = false;
 
-	{
-		List<Method> methods = Reflectionu.getAllMethods(this.getClass());
-		methods.removeIf(m -> m.isAnnotationPresent(Static.class));
-		this.methods = new UnmodifiableGroup<>(methods);
-	}
-
 	@Override
-	@Static
-	public <O> O convert(ConvertArguments<?, O> arguments) {
-		Objects.requireNonNull(arguments, "arguments");
+	public <I, O> O convert(ConvertToken<I, O> token) {
+		Objects.requireNonNull(token, "token");
 
-		Method method = this.getConvertMethod(arguments.inputClazz.getFamily(), arguments.outputClazz.getFamily());
+		Method method = this.getConvertMethod(token.inputClazz.getFamily(), token.outputClazz.getFamily());
 
 		if (method == null)
-			this.convertElse(arguments);
-		else this.convert0(method, arguments);
+			this.convertElse(token);
+		else this.convert0(method, token);
 
-		return arguments.output;
+		return token.output;
 	}
 
 	/**
 	 * Invoke the given {@link ConvertMethod} with the given parameters.
 	 *
-	 * @param method    to be invoked
-	 * @param arguments the conversion instance that holds the variables of this conversion
+	 * @param method to be invoked
+	 * @param token  the conversion instance that holds the variables of this conversion
 	 * @throws ConvertException         if any converting error occurred
 	 * @throws NullPointerException     if any of the given parameters is null
 	 * @throws IllegalArgumentException if the given method have limited access. Or if the given method have illegal parameters count
 	 */
-	@Static
-	protected void convert0(Method method, ConvertArguments arguments) {
+	protected void convert0(Method method, ConvertToken token) {
 		if (DEBUGGING) {
 			Objects.requireNonNull(method, "method");
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
 		try {
 			method.setAccessible(true);
-			method.invoke(this, arguments);
+			method.invoke(this, token);
 		} catch (IllegalAccessException e) {
 			throw new IllegalArgumentException(method + " have limited access", e);
 		} catch (InvocationTargetException e) {
@@ -100,25 +90,25 @@ public abstract class AbstractConverter implements Converter {
 	}
 
 	/**
-	 * Get invoked if no conversion method is found for the given arguments.
+	 * Get invoked if no conversion method is found for the given token.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
+	 * @param token the conversion instance that holds the variables of this conversion
 	 * @throws ConvertException     if any converting error occurred
-	 * @throws NullPointerException if the given arguments is null
+	 * @throws NullPointerException if the given token is null
 	 * @apiNote called dynamically. No need for direct call
 	 */
-	@Static
-	protected void convertElse(ConvertArguments arguments) {
+	protected void convertElse(ConvertToken token) {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		if (arguments.input == null) {
-			arguments.output = null;
-		} else if (arguments.outputClazz.getKlass().isInstance(arguments.input)) {
-			arguments.output = arguments.input;
+		if (token.input == null) {
+			token.output = null;
+		} else if (token.outputClazz.isInstance(token.input) && token.inputClazz != token.outputClazz) {
+			//duplicate instead!
+			token.output = this.convert(new ConvertToken<>(token.input, null, token.inputClazz, token.inputClazz));
 		} else {
-			throw new ConvertException("Cannot convert " + arguments.inputClazz.getFamily() + " to " + arguments.outputClazz.getFamily());
+			throw new ConvertException("Cannot convert " + token.inputClazz.getFamily() + " to " + token.outputClazz.getFamily());
 		}
 	}
 
@@ -130,7 +120,6 @@ public abstract class AbstractConverter implements Converter {
 	 * @return a method that can convert the given inputClass to the given outputClass class
 	 * @throws NullPointerException if any of the given parameters is null
 	 */
-	@Static
 	protected Method getConvertMethod(Class inputClass, Class outputClass) {
 		if (DEBUGGING) {
 			Objects.requireNonNull(inputClass, "inputClass");
@@ -142,8 +131,8 @@ public abstract class AbstractConverter implements Converter {
 				.subGroup(ConvertMethod.class, m -> m.isAnnotationPresent(ConvertMethod.class))
 				.subGroup(Arrayu.asList(inputClass, outputClass), m -> {
 					ConvertMethod ann = m.getAnnotation(ConvertMethod.class);
-					return MetaFamily.util.test(ann.input(), inputClass) &&
-						   MetaFamily.util.test(ann.output(), outputClass);
+					return Filter.util.test(ann.input(), inputClass) &&
+						   Filter.util.test(ann.output(), outputClass);
 				});
 
 		Iterator<Method> i = valid.iterator();

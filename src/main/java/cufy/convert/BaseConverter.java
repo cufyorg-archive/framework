@@ -15,11 +15,11 @@
  */
 package cufy.convert;
 
-import com.sun.nio.sctp.IllegalReceiveException;
+import cufy.lang.Clazz;
 import cufy.lang.Recurse;
-import cufy.lang.Static;
-import cufy.meta.MetaFamily;
-import cufy.meta.MetaReference;
+import cufy.meta.Filter;
+import cufy.meta.Reference;
+import cufy.util.Arrayu;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -30,35 +30,20 @@ import java.util.*;
  * <ul>
  *     Methods:
  *     <li>
- *         <b>Arrays</b>
- *         <ul>
- *
- *             <li>{@link #array_array}</li>
- *             <li>{@link #array_collection}</li>
- *             <li>{@link #array_list}</li>
- *             <li>{@link #collection_array}</li>
- *         </ul>
- *     </li>
- *     <li>
  *         <b>Collections</b>
  *         <ul>
  *             <li>{@link #collection_array}</li>
  *             <li>{@link #collection_collection}</li>
  *             <li>{@link #collection_list}</li>
- *             <li>{@link #array_collection}</li>
  *         </ul>
  *     </li>
  *     <li>
- *         <ul>
- *             <b>Lists</b>
- *             <li>{@link #array_list}</li>
- *             <li>{@link #collection_list}</li>
- *         </ul>
  *         <ul>
  *             <b>Maps</b>
  *             <li>{@link #map_map}</li>
  *         </ul>
  *     </li>
+ *     <li>
  *         <ul>
  *             <b>Numbers</b>
  *             <li>{@link #number_byte}</li>
@@ -72,16 +57,9 @@ import java.util.*;
  *     <li>
  *         <ul>
  *             <b>Objects</b>
- *             <li>{@link #object_string}</li>=
- *             <li>{@link #recurse_object}</li>
- *             <li>{@link #string_object}</li>
- *         </ul>
- *     </li>
- *     <li>
- *         <ul>
- *             <b>Strings</b>
- *             <li>{@link #string_object}</li>
  *             <li>{@link #object_string}</li>
+ *             <li>{@link #string_object}</li>
+ *             <li>{@link #recurse_object}</li>
  *         </ul>
  *     </li>
  * </ul>
@@ -94,36 +72,50 @@ public class BaseConverter extends AbstractConverter {
 	/**
 	 * The global instance to avoid unnecessary instancing.
 	 */
-	@MetaReference
+	@Reference
 	final public static BaseConverter global = new BaseConverter();
-
-	{
-		DEBUGGING = false;
-	}
 
 	/**
 	 * Inherit only.
 	 */
-	@Static
 	protected BaseConverter() {
 	}
 
 	/**
-	 * Array => Array
-	 * <br/>
-	 * Replace the elements on the {@link ConvertArguments#output} from the given arguments. All from the given {@link ConvertArguments#input} after
-	 * converting them using this class. If the output is null, or have different length, or have a type different than the class at {@link
-	 * ConvertArguments#outputClazz}. Then it will be replaced with a new array with the class of {@link
-	 * ConvertArguments#outputClazz}.
+	 * Get a "easy-to-use" sub-token for the given parameters.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given 'input' isn't an array. Or if the given 'inputClass', or 'outputClass' are not a array
-	 *                                  classes
+	 * @param token         the converting token
+	 * @param inputElement  the element found in the input
+	 * @param outputElement the element found in the same position of the inputElement but in the output
+	 * @param index         the index of the componentType to work on
+	 * @return the results of converting
+	 */
+	protected ConvertToken _elementSubToken(ConvertToken token, Object inputElement, Object outputElement, int index) {
+		return token.subToken(
+				inputElement,
+				outputElement,
+				Clazz.ofi(inputElement),
+				outputElement == null ? null : Clazz.ofi(outputElement),
+				index
+		);
+	}
+
+	/**
+	 * Collection => Array
+	 * <br/>
+	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
+	 * the output is null, or have a type different than the class at {@link ConvertToken#outputClazz}. Or have length other than the length of
+	 * the {@link ConvertToken#input}. Then the output will be replaced with a new output with the class of {@link
+	 * ConvertToken#outputClazz}.
+	 *
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
-					subIn = Object[].class,
+			input = @Filter(
+					subIn = {Collection.class,
+							 Object[].class,
+					},
 					in = {boolean[].class,
 						  byte[].class,
 						  char[].class,
@@ -133,7 +125,7 @@ public class BaseConverter extends AbstractConverter {
 						  long[].class,
 						  short[].class
 					}),
-			output = @MetaFamily(
+			output = @Filter(
 					subIn = Object[].class,
 					in = {boolean[].class,
 						  byte[].class,
@@ -144,56 +136,52 @@ public class BaseConverter extends AbstractConverter {
 						  long[].class,
 						  short[].class
 					}))
-	protected void array_array(ConvertArguments<Object, Object> arguments) {
+	protected void collection_array(ConvertToken<Collection, Object> token) {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!arguments.input.getClass().isArray())
-				throw new IllegalArgumentException(arguments.input + " is not an array");
-			if (!arguments.inputClazz.getKlass().isArray())
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for arrays");
-			if (!arguments.outputClazz.getKlass().isArray())
-				throw new IllegalArgumentException(arguments.outputClazz.getKlass() + " is not a class for arrays");
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		int length = Array.getLength(arguments.input);
+		//declare the input
+		Collection input = token.input instanceof Collection ? token.input : Arrayu.asList0(token.input);
 
-		//Replace if the output is incompatible
-		if (!arguments.outputClazz.getKlass().isInstance(arguments.output) || Array.getLength(arguments.output) != length)
+		//declare the output
+		if (!token.outputClazz.isInstance(token.output) || Array.getLength(token.output) != input.size()) {
 			//output presented is not valid
-			arguments.output = Array.newInstance(arguments.outputClazz.getKlass().getComponentType(), length);
+			token.output = Array.newInstance(token.outputClazz.getComponentType(), input.size());
+		}
 
-		//converting foreach element
-		for (int i = 0; i < length; i++) {
+		//converting elements
+		Iterator it = input.iterator();
+		for (int i = 0; it.hasNext(); i++) {
 			//init
-			Object outputElement = Array.get(arguments.output, i);
-			Object inputElement = Array.get(arguments.input, i);
+			Object inputElement = it.next();
+			Object outputElement = Array.get(token.output, i);
 
 			//DyNaMiC cOnVeRsIoN _/-\_/-\_/- :0 ~ MA-GI-KKU
-			outputElement = this.convert(new ConvertArguments(arguments, inputElement, outputElement, 0));
+			outputElement = this.convert(this._elementSubToken(token, inputElement, outputElement, 0));
 
 			//Replace the element at the output with the converted element from the input
-			Array.set(arguments.output, i, outputElement);
+			Array.set(token.output, i, outputElement);
 		}
 	}
 
 	/**
-	 * Array => Collection
+	 * Collection => Collection
 	 * <br/>
-	 * Replace the elements on the {@link ConvertArguments#output} from the given arguments. All from the given {@link ConvertArguments#input}. If
-	 * the output is null, or have a type different than the class at {@link ConvertArguments#outputClazz}. Then the output will be replaced with a
-	 * new output with the class of {@link ConvertArguments#outputClazz}.
+	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
+	 * the output is null, or have a type different than the class at {@link ConvertToken#outputClazz}. Then the output will be replaced with a
+	 * new output with the class of {@link ConvertToken#outputClazz}.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException         if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException     if the given 'input' isn't an array. Or if the given 'inputClass' is not an array class. Or if the given
-	 *                                      'outputClass' is not a collection class
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException         if the given 'token' or 'token.input' is null
 	 * @throws ReflectiveOperationException if any exception occurred while trying to construct the output collection
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
-					subIn = Object[].class,
+			input = @Filter(
+					subIn = {Collection.class,
+							 Object[].class
+					},
 					in = {boolean[].class,
 						  byte[].class,
 						  char[].class,
@@ -203,61 +191,58 @@ public class BaseConverter extends AbstractConverter {
 						  long[].class,
 						  short[].class,
 					}),
-			output = @MetaFamily(
+			output = @Filter(
 					subIn = Collection.class,
 					subOut = List.class
 			))
-	protected void array_collection(ConvertArguments<Object, Collection> arguments) throws ReflectiveOperationException {
+	protected void collection_collection(ConvertToken<Collection, Collection> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!arguments.input.getClass().isArray())
-				throw new IllegalArgumentException(arguments.input + " is not an array");
-			if (!arguments.inputClazz.getKlass().isArray())
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for arrays");
-			if (!Collection.class.isAssignableFrom(arguments.outputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.outputClazz.getKlass() + " is not a class for collections");
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		int length = Array.getLength(arguments.input);
+		//declare the input
+		Collection input = token.input instanceof Collection ? token.input : Arrayu.asList0(token.input);
 
-		//Replace if the output is incompatible
-		if (!arguments.outputClazz.getKlass().isInstance(arguments.output))
+		//declare the output
+		if (!token.outputClazz.isInstance(token.output)) {
 			//output presented is not valid
-			arguments.output = arguments.outputClazz.getKlass().getConstructor().newInstance();
-		else //fresh start
-			arguments.output.clear();
+			token.output = token.outputClazz.getKlass().getConstructor().newInstance();
+		} else { //fresh start
+			token.output.clear();
+		}
 
-		for (int i = 0; i < length; i++) {
+		//converting elements
+		Iterator it = input.iterator();
+		while (it.hasNext()) {
 			//init
-			Object inputElement = Array.get(arguments.input, i);
-			Object outputElement;
+			Object inputElement = it.next();
+			Object outputElement = null;
 
 			//DyNaMiC cOnVeRsIoN _/-\_/-\_/- :0 ~ MA-GI-KKU
-			outputElement = this.convert(new ConvertArguments<>(arguments, inputElement, 0));
+			outputElement = this.convert(this._elementSubToken(token, inputElement, outputElement, 0));
 
-			//Set the elements from the input
-			arguments.output.add(outputElement);
+			//add the element to the output
+			token.output.add(outputElement);
 		}
 	}
 
 	/**
-	 * Array => List
+	 * Collection => Collection
 	 * <br/>
-	 * Replace the elements on the {@link ConvertArguments#output} from the given arguments. All from the given {@link ConvertArguments#input}. If
-	 * the output is null, or have a type different than the class at {@link ConvertArguments#outputClazz}. Then the output will be replaced with a
-	 * new output with the class of {@link ConvertArguments#outputClazz}.
+	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
+	 * the output is null, or have a type different than the class at {@link ConvertToken#outputClazz}. Then the output will be replaced with a
+	 * new output with the class of {@link ConvertToken#outputClazz}.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException         if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException     if the given 'input' isn't an array. Or if the given 'inputClass' is not an array class. Or if the given
-	 *                                      'outputClass' is not a list class
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException         if the given 'token' or 'token.input' is null
 	 * @throws ReflectiveOperationException if any exception occurred while trying to construct the output list
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
-					subIn = Object[].class,
+			input = @Filter(
+					subIn = {Collection.class,
+							 Object[].class
+					},
 					in = {boolean[].class,
 						  byte[].class,
 						  char[].class,
@@ -268,275 +253,107 @@ public class BaseConverter extends AbstractConverter {
 						  short[].class
 					}
 			),
-			output = @MetaFamily(
+			output = @Filter(
 					subIn = List.class
 			)
 	)
-	protected void array_list(ConvertArguments<Object, List> arguments) throws ReflectiveOperationException {
+	protected void collection_list(ConvertToken<Collection, List> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!arguments.input.getClass().isArray())
-				throw new IllegalArgumentException(arguments.input + " is not an array");
-			if (!arguments.inputClazz.getKlass().isArray())
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for arrays");
-			if (!List.class.isAssignableFrom(arguments.outputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.outputClazz.getKlass() + " is not a class for lists");
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		int length = Array.getLength(arguments.input);
+		//declare the input
+		Collection input = token.input instanceof Collection ? token.input : Arrayu.asList0(token.input);
 
-		//Replace if the output is incompatible
-		if (!arguments.outputClazz.getKlass().isInstance(arguments.output))
+		//declare the output
+		if (!token.outputClazz.isInstance(token.output)) {
 			//output presented is not valid
-			arguments.output = arguments.outputClazz.getKlass().getConstructor().newInstance();
+			token.output = token.outputClazz.getKlass().getConstructor().newInstance();
+		} else {
+			int inputSize = input.size();
+			int outputSize = token.output.size();
 
-		int size = arguments.output.size();
+			if (inputSize < outputSize) {
+				//if the output is small
+				token.output.subList(inputSize, outputSize).clear();
+			} else if (inputSize > outputSize) {
+				//if the output is large
+				token.output.addAll(Collections.nCopies(inputSize - outputSize, null));
+			}
+		}
 
-		for (int i = 0; i < length; i++) {
+		//converting elements
+		Iterator it = input.iterator();
+		for (int i = 0; it.hasNext(); i++) {
 			//init
-			Object inputElement = Array.get(arguments.input, i);
-			Object outputElement = i < size ? arguments.output.get(i) : null;
+			Object inputElement = it.next();
+			Object outputElement = token.output.get(i);
 
 			//DyNaMiC cOnVeRsIoN _/-\_/-\_/- :0 ~ MA-GI-KKU
-			outputElement = this.convert(new ConvertArguments<>(arguments, inputElement, outputElement, 0));
+			outputElement = this.convert(this._elementSubToken(token, inputElement, outputElement, 0));
 
 			//Set the elements from the input
-			if (i < size)
-				arguments.output.set(i, outputElement);
-			else arguments.output.add(outputElement);
-		}
-	}
-
-	/**
-	 * Collection => Array
-	 * <br/>
-	 * Replace the elements on the {@link ConvertArguments#output} from the given arguments. All from the given {@link ConvertArguments#input}. If
-	 * the output is null, or have a type different than the class at {@link ConvertArguments#outputClazz}. Or have length other than the length of
-	 * the {@link ConvertArguments#input}. Then the output will be replaced with a new output with the class of {@link
-	 * ConvertArguments#outputClazz}.
-	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given 'input' isn't a collection. Or if the given 'inputClass' is not a collection class. Or if the
-	 *                                  given 'outputClass' is not an array class
-	 */
-	@ConvertMethod(
-			input = @MetaFamily(
-					subIn = Collection.class
-			),
-			output = @MetaFamily(
-					subIn = Object[].class,
-					in = {boolean[].class,
-						  byte[].class,
-						  char[].class,
-						  double[].class,
-						  float[].class,
-						  int[].class,
-						  long[].class,
-						  short[].class
-					}))
-	protected void collection_array(ConvertArguments<Collection, Object> arguments) {
-		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Collection))
-				throw new IllegalReceiveException(arguments.input + " is not a collection");
-			if (!Collection.class.isAssignableFrom(arguments.inputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for collections");
-			if (!arguments.outputClazz.getKlass().isArray())
-				throw new IllegalArgumentException(arguments.outputClazz.getKlass() + " is not a class for arrays");
-		}
-
-		int length = arguments.input.size();
-
-		if (!arguments.outputClazz.getKlass().isInstance(arguments.output) || Array.getLength(arguments.output) != length)
-			arguments.output = Array.newInstance(arguments.outputClazz.getKlass().getComponentType(), length);
-
-		Iterator it = arguments.input.iterator();
-		for (int i = 0; i < length; i++) {
-			//init
-			Object inputElement = it.next();
-			Object outputElement = Array.get(arguments.input, i);
-
-			//DyNaMiC cOnVeRsIoN _/-\_/-\_/- :0 ~ MA-GI-KKU
-			outputElement = this.convert(new ConvertArguments<>(arguments, inputElement, outputElement, 0));
-
-			//Replace the element at the output with the converted element from the input
-			Array.set(arguments.input, i, outputElement);
-		}
-	}
-
-	/**
-	 * Collection => Collection
-	 * <br/>
-	 * Replace the elements on the {@link ConvertArguments#output} from the given arguments. All from the given {@link ConvertArguments#input}. If
-	 * the output is null, or have a type different than the class at {@link ConvertArguments#outputClazz}. Then the output will be replaced with a
-	 * new output with the class of {@link ConvertArguments#outputClazz}.
-	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException         if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException     if the given 'input' isn't a collection. Or if the given 'inputClass' or 'outputClass' are not classes
-	 *                                      for collections
-	 * @throws ReflectiveOperationException if any exception occurred while trying to construct the output collection
-	 */
-	@ConvertMethod(
-			input = @MetaFamily(
-					subIn = Collection.class
-			),
-			output = @MetaFamily(
-					subIn = Collection.class,
-					subOut = List.class
-			))
-	protected void collection_collection(ConvertArguments<Collection, Collection> arguments) throws ReflectiveOperationException {
-		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Collection))
-				throw new IllegalArgumentException(arguments.input + " is not a collection");
-			if (!Collection.class.isAssignableFrom(arguments.inputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for collections");
-			if (!Collection.class.isAssignableFrom(arguments.outputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.outputClazz.getKlass() + " is not a class for collections");
-		}
-
-		int length = arguments.input.size();
-
-		if (!arguments.outputClazz.getKlass().isInstance(arguments.output))
-			arguments.output = arguments.outputClazz.getKlass().getConstructor().newInstance();
-		else arguments.output.clear();
-
-		Iterator it = arguments.input.iterator();
-		for (int i = 0; i < length; i++) {
-			Object inputElement = it.next();
-			Object outputElement;
-
-			//DyNaMiC cOnVeRsIoN _/-\_/-\_/- :0 ~ MA-GI-KKU
-			outputElement = this.convert(new ConvertArguments<>(arguments, inputElement, 0));
-
-			arguments.output.add(outputElement);
-		}
-	}
-
-	/**
-	 * Collection => Collection
-	 * <br/>
-	 * Replace the elements on the {@link ConvertArguments#output} from the given arguments. All from the given {@link ConvertArguments#input}. If
-	 * the output is null, or have a type different than the class at {@link ConvertArguments#outputClazz}. Then the output will be replaced with a
-	 * new output with the class of {@link ConvertArguments#outputClazz}.
-	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException         if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException     if the given 'input' isn't a collection. Or if the given 'inputClass' is not a class for collections. Or
-	 *                                      if the given 'outputClass' is not a class for lists.
-	 * @throws ReflectiveOperationException if any exception occurred while trying to construct the output list
-	 */
-	@ConvertMethod(
-			input = @MetaFamily(
-					subIn = Collection.class
-			),
-			output = @MetaFamily(
-					subIn = List.class
-			))
-	protected void collection_list(ConvertArguments<Collection, List> arguments) throws ReflectiveOperationException {
-		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Collection))
-				throw new IllegalArgumentException(arguments.input + " is not a collection");
-			if (!Collection.class.isAssignableFrom(arguments.inputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for collections");
-			if (!List.class.isAssignableFrom(arguments.outputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.outputClazz.getKlass() + " is not a class for lists");
-		}
-
-		int length = arguments.input.size();
-
-		if (!arguments.outputClazz.getKlass().isInstance(arguments.output))
-			arguments.output = arguments.outputClazz.getKlass().getConstructor().newInstance();
-
-		int size = arguments.output.size();
-
-		Iterator it = arguments.input.iterator();
-		for (int i = 0; i < length; i++) {
-			Object inputElement = it.next();
-			Object outputElement = i < size ? arguments.output.get(i) : null;
-
-			//DyNaMiC cOnVeRsIoN _/-\_/-\_/- :0 ~ MA-GI-KKU
-			outputElement = this.convert(new ConvertArguments<>(arguments, inputElement, outputElement, 0));
-
-			if (i < size)
-				arguments.output.set(i, outputElement);
-			else arguments.output.add(outputElement);
+			token.output.set(i, outputElement);
 		}
 	}
 
 	/**
 	 * Map => Map
 	 * <br/>
-	 * Replace the elements on the {@link ConvertArguments#output} from the given arguments. All from the given {@link ConvertArguments#input}. If
-	 * the output is null, or have a type different than the class at {@link ConvertArguments#outputClazz}. Then the output will be replaced with a
-	 * new output with the class of {@link ConvertArguments#outputClazz}.
+	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
+	 * the output is null, or have a type different than the class at {@link ConvertToken#outputClazz}. Then the output will be replaced with a
+	 * new output with the class of {@link ConvertToken#outputClazz}.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException         if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException     if the given 'input' isn't a map. Or if the given 'inputClass' or 'outputClass' are not classes for
-	 *                                      maps
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException         if the given 'token' or 'token.input' is null
 	 * @throws ReflectiveOperationException if any exception occurred while trying to construct the output map
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
+			input = @Filter(
 					subIn = Map.class
 			),
-			output = @MetaFamily(
+			output = @Filter(
 					subIn = Map.class
 			))
-	protected void map_map(ConvertArguments<Map, Map> arguments) throws ReflectiveOperationException {
+	protected void map_map(ConvertToken<Map, Map> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Map))
-				throw new IllegalArgumentException(arguments.input + " is not a map");
-			if (!Map.class.isAssignableFrom(arguments.inputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for maps");
-			if (!Map.class.isAssignableFrom(arguments.outputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.outputClazz.getKlass() + " is not a class for maps");
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		if (!arguments.outputClazz.getKlass().isInstance(arguments.output))
-			arguments.output = arguments.outputClazz.getKlass().getConstructor().newInstance();
+		//declare output
+		if (!token.outputClazz.isInstance(token.output)) {
+			//output presented is not valid
+			token.output = token.outputClazz.getKlass().getConstructor().newInstance();
+		} else {
+			//remove unwanted keys
+			token.output.keySet().retainAll(token.input.keySet());
+		}
+		//converting elements
+		for (Map.Entry entry : (Set<Map.Entry>) token.input.entrySet()) {
+			//init
+			Object inputElement = entry.getValue();
+			Object outputElement = token.output.get(entry.getKey());
 
-		arguments.output.keySet().retainAll(arguments.input.keySet());
+			//DyNaMiC cOnVeRsIoN _/-\_/-\_/- :0 ~ MA-GI-KKU
+			outputElement = this.convert(this._elementSubToken(token, inputElement, outputElement, 1));
 
-		for (Map.Entry inputEntry : (Set<Map.Entry>) arguments.input.entrySet()) {
-			Object key = inputEntry.getKey();
-
-			Object inputElement = inputEntry.getValue();
-			Object outputElement = arguments.output.get(key);
-
-			outputElement = this.convert(new ConvertArguments<>(arguments, inputElement, outputElement, 1));
-
-			arguments.output.put(key, outputElement);
+			//Set the elements from the input
+			token.output.put(entry.getKey(), outputElement);
 		}
 	}
 
 	/**
 	 * Number => Byte
 	 * <br/>
-	 * Set the {@link ConvertArguments#output} with a new {@link Byte} that holds the value of the given {@link ConvertArguments#input}.
+	 * Set the {@link ConvertToken#output} with a new {@link Byte} that holds the value of the given {@link ConvertToken#input}.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given 'input' is not a number. Or if the given 'inputClass' is not a class for numbers. Or if the
-	 *                                  given 'outputClass' is not {@link Byte}
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
+			input = @Filter(
 					subIn = Number.class,
 					in = {byte.class,
 						  double.class,
@@ -545,38 +362,29 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}),
-			output = @MetaFamily(
+			output = @Filter(
 					in = {Byte.class,
 						  byte.class
 					}))
-	protected void number_byte(ConvertArguments<Number, Byte> arguments) {
+	protected void number_byte(ConvertToken<Number, Byte> token) {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Number))
-				throw new IllegalReceiveException(arguments.input + " is not a number");
-			if (!Number.class.isAssignableFrom(arguments.inputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for numbers");
-			if (arguments.outputClazz.getKlass() != Byte.class)
-				throw new IllegalArgumentException(arguments.outputClazz + " is not " + Byte.class);
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		arguments.output = arguments.input.byteValue();
+		token.output = token.input.byteValue();
 	}
 
 	/**
 	 * Number => Double
 	 * <br/>
-	 * Set the {@link ConvertArguments#output} with a new {@link Double} that holds the value of the given {@link ConvertArguments#input}.
+	 * Set the {@link ConvertToken#output} with a new {@link Double} that holds the value of the given {@link ConvertToken#input}.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given 'input' is not a number. Or if the given 'inputClass' is not a class for numbers. Or if the
-	 *                                  given 'outputClass' is not {@link Double}
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
+			input = @Filter(
 					subIn = Number.class,
 					in = {byte.class,
 						  double.class,
@@ -585,38 +393,29 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}),
-			output = @MetaFamily(
+			output = @Filter(
 					in = {Double.class,
 						  double.class
 					}))
-	protected void number_double(ConvertArguments<Number, Double> arguments) {
+	protected void number_double(ConvertToken<Number, Double> token) {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Number))
-				throw new IllegalReceiveException(arguments.input + " is not a number");
-			if (!Number.class.isAssignableFrom(arguments.inputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for numbers");
-			if (arguments.outputClazz.getKlass() != Double.class)
-				throw new IllegalArgumentException(arguments.outputClazz + " is not " + Double.class);
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		arguments.output = arguments.input.doubleValue();
+		token.output = token.input.doubleValue();
 	}
 
 	/**
 	 * Number => Float
 	 * <br/>
-	 * Set the {@link ConvertArguments#output} with a new {@link Float} that holds the value of the given {@link ConvertArguments#input}.
+	 * Set the {@link ConvertToken#output} with a new {@link Float} that holds the value of the given {@link ConvertToken#input}.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given 'input' is not a number. Or if the given 'inputClass' is not a class for numbers. Or if the
-	 *                                  given 'outputClass' is not {@link Float}
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
+			input = @Filter(
 					subIn = Number.class,
 					in = {byte.class,
 						  double.class,
@@ -625,38 +424,29 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}),
-			output = @MetaFamily(
+			output = @Filter(
 					in = {Float.class,
 						  float.class
 					}))
-	protected void number_float(ConvertArguments<Number, Float> arguments) {
+	protected void number_float(ConvertToken<Number, Float> token) {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Number))
-				throw new IllegalReceiveException(arguments.input + " is not a number");
-			if (!Number.class.isAssignableFrom(arguments.inputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for numbers");
-			if (arguments.outputClazz.getKlass() != Float.class)
-				throw new IllegalArgumentException(arguments.outputClazz + " is not " + Float.class);
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		arguments.output = arguments.input.floatValue();
+		token.output = token.input.floatValue();
 	}
 
 	/**
 	 * Number => Integer
 	 * <br/>
-	 * Set the {@link ConvertArguments#output} with a new {@link Integer} that holds the value of the given {@link ConvertArguments#input}.
+	 * Set the {@link ConvertToken#output} with a new {@link Integer} that holds the value of the given {@link ConvertToken#input}.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given 'input' is not a number. Or if the given 'inputClass' is not a class for numbers. Or if the
-	 *                                  given 'outputClass' is not {@link Integer}
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
+			input = @Filter(
 					subIn = Number.class,
 					in = {byte.class,
 						  double.class,
@@ -665,38 +455,29 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}),
-			output = @MetaFamily(
-					in = {int.class,
+			output = @Filter(
+					in = {Integer.class,
 						  int.class
 					}))
-	protected void number_integer(ConvertArguments<Number, Integer> arguments) {
+	protected void number_integer(ConvertToken<Number, Integer> token) {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Number))
-				throw new IllegalReceiveException(arguments.input + " is not a number");
-			if (!Number.class.isAssignableFrom(arguments.inputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for numbers");
-			if (arguments.outputClazz.getKlass() != Integer.class)
-				throw new IllegalArgumentException(arguments.outputClazz + " is not " + Integer.class);
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		arguments.output = arguments.input.intValue();
+		token.output = token.input.intValue();
 	}
 
 	/**
 	 * Number => Long
 	 * <br/>
-	 * Set the {@link ConvertArguments#output} with a new {@link Long} that holds the value of the given {@link ConvertArguments#input}.
+	 * Set the {@link ConvertToken#output} with a new {@link Long} that holds the value of the given {@link ConvertToken#input}.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given 'input' is not a number. Or if the given 'inputClass' is not a class for numbers. Or if the
-	 *                                  given 'outputClass' is not {@link Long}
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
+			input = @Filter(
 					subIn = Number.class,
 					in = {byte.class,
 						  double.class,
@@ -705,38 +486,29 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}),
-			output = @MetaFamily(
+			output = @Filter(
 					in = {Long.class,
 						  long.class
 					}))
-	protected void number_long(ConvertArguments<Number, Long> arguments) {
+	protected void number_long(ConvertToken<Number, Long> token) {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Number))
-				throw new IllegalReceiveException(arguments.input + " is not a number");
-			if (!Number.class.isAssignableFrom(arguments.inputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for numbers");
-			if (arguments.outputClazz.getKlass() != Long.class)
-				throw new IllegalArgumentException(arguments.outputClazz + " is not " + Long.class);
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		arguments.output = arguments.input.longValue();
+		token.output = token.input.longValue();
 	}
 
 	/**
 	 * Number => Short
 	 * <br/>
-	 * Set the {@link ConvertArguments#output} with a new {@link Short} that holds the value of the given {@link ConvertArguments#input}.
+	 * Set the {@link ConvertToken#output} with a new {@link Short} that holds the value of the given {@link ConvertToken#input}.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given 'input' is not a number. Or if the given 'inputClass' is not a class for numbers. Or if the
-	 *                                  given 'outputClass' is not {@link Short}
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
+			input = @Filter(
 					subIn = Number.class,
 					in = {byte.class,
 						  double.class,
@@ -745,38 +517,30 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}),
-			output = @MetaFamily(
+			output = @Filter(
 					in = {Short.class,
 						  short.class
 					}))
-	protected void number_short(ConvertArguments<Number, Short> arguments) {
+	protected void number_short(ConvertToken<Number, Short> token) {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Number))
-				throw new IllegalReceiveException(arguments.input + " is not a number");
-			if (!Number.class.isAssignableFrom(arguments.inputClazz.getKlass()))
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not a class for numbers");
-			if (arguments.outputClazz.getKlass() != Short.class)
-				throw new IllegalArgumentException(arguments.outputClazz + " is not " + Short.class);
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		arguments.output = arguments.input.shortValue();
+		token.output = token.input.shortValue();
 	}
 
 	/**
 	 * Object => String
 	 * <br/>
 	 *
-	 * Set the {@link ConvertArguments#output} with a new {@link String} that holds the value of the given {@link ConvertArguments#input}.
+	 * Set the {@link ConvertToken#output} with a new {@link String} that holds the value of the given {@link ConvertToken#input}.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException     if the given 'arguments' is null
-	 * @throws IllegalArgumentException if the given 'outputClass' is not {@link String}
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException if the given 'token' is null
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
+			input = @Filter(
 					subIn = Object.class,
 					in = {byte.class,
 						  boolean.class,
@@ -787,34 +551,32 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}),
-			output = @MetaFamily(
+			output = @Filter(
 					in = String.class
 			))
-	protected void object_string(ConvertArguments<Object, String> arguments) {
+	protected void object_string(ConvertToken<Object, String> token) {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			if (arguments.outputClazz.getKlass() != String.class)
-				throw new IllegalArgumentException(arguments.outputClazz.getKlass() + " is not " + String.class);
+			Objects.requireNonNull(token, "token");
 		}
 
-		arguments.output = String.valueOf(arguments.input);
+		token.output = String.valueOf(token.input);
 	}
 
 	/**
 	 * Recurse => Object
 	 * <br/>
-	 * Get invoked when a recursion converting occurred. Set the {@link ConvertArguments#output} to the mapped output for the recurred input.
+	 * Get invoked when a recursion converting occurred. Set the {@link ConvertToken#output} to the mapped output for the recurred input.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException     if the given 'arguments' is null
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException     if the given 'token' is null
 	 * @throws ClassCastException       if the output instance of the given recurse is not instance of the given 'outputClass'
 	 * @throws IllegalArgumentException if no recursion actually happened
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
+			input = @Filter(
 					subIn = Recurse.class
 			),
-			output = @MetaFamily(
+			output = @Filter(
 					subIn = Object.class,
 					in = {boolean.class,
 						  byte.class,
@@ -825,37 +587,36 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}))
-	protected void recurse_object(ConvertArguments<Recurse, Object> arguments) {
+	protected void recurse_object(ConvertToken<Recurse, Object> token) {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		for (ConvertArguments grand = arguments.parent; grand != null; grand = grand.parent)
-			if (grand.input == arguments.input) {
-				arguments.output = grand.output;
+		for (ConvertToken grand = token.parent; grand != null; grand = grand.parent)
+			if (grand.input == token.input) {
+				token.output = grand.output;
 				return;
 			}
 
-		throw new IllegalArgumentException(arguments.input + " haven't recurred");
+		throw new IllegalArgumentException(token.input + " haven't recurred");
 	}
 
 	/**
 	 * String => Object
 	 * <br/>
-	 * Try to construct a new object of the value of the given {@link ConvertArguments#input} with type of the {@link ConvertArguments#outputClazz}.
+	 * Try to construct a new object of the value of the given {@link ConvertToken#input} with type of the {@link ConvertToken#outputClazz}.
 	 * Using ether a method with a signature equals to 'valueOf(String)'. Or a constructor with a signature equals to '(String)'.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException         if the given 'arguments' or 'input' is null
-	 * @throws IllegalArgumentException     if the given 'input' is not a string. Or if the 'inputClass' is not String.class. Or if the
-	 *                                      'outputClass' don't have a 'valueOf(String)' method nor a (String) constructor
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException         if the given 'token' or 'input' is null
+	 * @throws IllegalArgumentException     if the 'outputClass' don't have a 'valueOf(String)' method nor a (String) constructor
 	 * @throws ReflectiveOperationException if any exception occurred while trying to construct the output object
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
+			input = @Filter(
 					subIn = String.class
 			),
-			output = @MetaFamily(
+			output = @Filter(
 					subIn = Object.class,
 					in = {boolean.class,
 						  byte.class,
@@ -866,26 +627,21 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}))
-	protected void string_object(ConvertArguments<String, Object> arguments) throws ReflectiveOperationException {
+	protected void string_object(ConvertToken<String, Object> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof String))
-				throw new IllegalArgumentException(arguments.input + " is not a string");
-			if (arguments.inputClazz.getKlass() != String.class)
-				throw new IllegalArgumentException(arguments.inputClazz.getKlass() + " is not " + String.class);
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		if (arguments.input.equals("null"))
-			arguments.output = null;
-		else try {
-			arguments.output = arguments.outputClazz.getKlass().getMethod("valueOf", String.class).invoke(null, arguments.input);
+		if (token.input.equals("null")) {
+			token.output = null;
+		} else try {
+			token.output = token.outputClazz.getKlass().getMethod("valueOf", String.class).invoke(null, token.input);
 		} catch (NoSuchMethodException ignored) {
 			try {
-				arguments.output = arguments.outputClazz.getKlass().getConstructor(String.class).newInstance(arguments.input);
+				token.output = token.outputClazz.getKlass().getConstructor(String.class).newInstance(token.input);
 			} catch (NoSuchMethodException ignored1) {
-				throw new IllegalArgumentException(arguments.outputClazz.getKlass() + " don't 'valueOf(String)' nor constructor(String) method");
+				throw new IllegalArgumentException(token.outputClazz.getKlass() + " don't 'valueOf(String)' nor constructor(String) method");
 			}
 		}
 	}

@@ -15,8 +15,6 @@
  */
 package cufy.convert;
 
-import cufy.lang.Clazz;
-
 /**
  * A class that can convert instances to different classes. With just a simple gate method (for the caller).
  *
@@ -25,107 +23,78 @@ import cufy.lang.Clazz;
  * @since 31-Aug-2019
  */
 public interface Converter {
+//	/**
+//	 * If the input is instance of the given clazz. The input will be returned. Otherwise the input will be converted. And foreach element in the
+//	 * input if it's instance of the components type of the given clazz the element will remain. Otherwise the element will be converted. And so on
+//	 * for the elements of the elements.
+//	 *
+//	 * @param input       the input to apply
+//	 * @param outputClazz the clazz to apply
+//	 * @param <I>         the type of the input
+//	 * @param <O>         the type of the output
+//	 * @return the input with the given clazz applied
+//	 * @throws NullPointerException if the given 'outputClazz' is null
+//	 * @throws ConvertException     if any converting exception occurred
+//	 */
+//	default <I, O> O apply(I input, Clazz<O> outputClazz) {
+//		return (O) this.convert(new ConvertToken<>(input, input, Clazz.ofi(input), outputClazz));
+//	}
+//
+//	/**
+//	 * Deep clone the given input.
+//	 *
+//	 * @param input to be cloned
+//	 * @param <I>   the type of the input
+//	 * @param <O>   the type of the output
+//	 * @return a clone of the given object
+//	 * @throws ConvertException if any converting error occurred
+//	 */
+//	default <I, O> O clone(I input) {
+//		Clazz klazz = Clazz.ofi(input);
+//		return this.convert(new ConvertToken<>(input, null, klazz, klazz));
+//	}
+//
+//	/**
+//	 * Convert the given input to the given output.
+//	 *
+//	 * @param input  the input instance
+//	 * @param output the output instance
+//	 * @param <I>    the type of the input
+//	 * @param <O>    the type of the output
+//	 * @return the output
+//	 * @throws ConvertException if any conversion exception occurred
+//	 */
+//	default <I, O> O convert(I input, O output) {
+//		return this.convert(new ConvertToken<>(input, output, Clazz.ofi(input), Clazz.ofi(output)));
+//	}
+//
+//	/**
+//	 * Convert the given input to the given clazz. Or override the given output if it's valid.
+//	 *
+//	 * @param input  the input instance
+//	 * @param output the initial output instance
+//	 * @param klazz  the clazz to convert the input to
+//	 * @param <I>    the type of the input
+//	 * @param <O>    the type of the output
+//	 * @return the output
+//	 * @throws NullPointerException if the given 'klazz' is null
+//	 * @throws ConvertException     if any convert exception occurs
+//	 */
+//	default <I, O> O convert(I input, O output, Clazz klazz) {
+//		Objects.requireNonNull(klazz, "klazz");
+//		return this.convert(new ConvertToken<>(input, output, klazz, klazz));
+//	}
+//
 	/**
-	 * Output the value of the 'input', but as the 'outputClazz'.
+	 * Set the {@link ConvertToken#output} on the given token to a value of the {@link ConvertToken#input}, but as the class specified
+	 * as in the {@link ConvertToken#outputClazz}.
 	 *
-	 * @param <I>         the type of the input
-	 * @param <O>         the type of the output
-	 * @param input       the input instance
-	 * @param output      the initial output instance
-	 * @param inputClazz  the clazz of the input
-	 * @param outputClazz the clazz to be for the output
-	 * @return the output
-	 * @throws NullPointerException if the given 'inputClass' or 'outputClass' is null
-	 * @throws ConvertException     if any converting error occurred
-	 */
-	default <I, O> O convert(I input, O output, Clazz inputClazz, Clazz outputClazz) {
-		return this.convert(new ConvertArguments<>(input, output, inputClazz, outputClazz));
-	}
-
-	/**
-	 * Output the value of the 'input', but as the 'outputClazz'.
-	 *
-	 * @param input       the input instance (source of inputClazz)
-	 * @param output      the initial output instance
-	 * @param outputClazz the clazz to be for the output
-	 * @param <I>         the type of the input
-	 * @param <O>         the type of the output
-	 * @return the output
-	 * @throws NullPointerException if the given 'outputClass' is null
-	 * @throws ConvertException     if any converting error occurred
-	 */
-	default <I, O> O convert(I input, O output, Clazz outputClazz) {
-		return this.convert(new ConvertArguments<>(input, output, outputClazz));
-	}
-
-	/**
-	 * Convert the given 'output' to the value of the 'input'. Then return the results.
-	 *
-	 * @param <I>    the type of the input
-	 * @param <O>    the type of the output
-	 * @param input  the input instance (source of inputClazz)
-	 * @param output the initial output instance (source of outputClazz)
-	 * @return the output
-	 * @throws ConvertException if any converting error occurred
-	 * @apiNote null output may produce confusion issues
-	 */
-	default <I, O> O convert(I input, O output) {
-		return this.convert(new ConvertArguments<>(input, output));
-	}
-
-	/**
-	 * Output the value of the 'input', but as the 'outputClazz'.
-	 *
-	 * @param input       the input instance
-	 * @param inputClazz  the clazz of the input
-	 * @param outputClazz the clazz to be for the output
-	 * @param <I>         the type of the input
-	 * @param <O>         the type of the output
-	 * @return the output
-	 * @throws NullPointerException if the given 'inputClass' or 'outputClass' is null
-	 * @throws ConvertException     if any converting error occurred
-	 */
-	default <I, O> O convert(I input, Clazz inputClazz, Clazz outputClazz) {
-		return this.convert(new ConvertArguments<>(input, inputClazz, outputClazz));
-	}
-
-	/**
-	 * Output the value of the 'input', but as the 'outputClazz'.
-	 *
-	 * @param input       the input instance (source of inputClazz)
-	 * @param outputClazz the clazz to be for the output
-	 * @param <O>         the type of the output
-	 * @param <I>         the type of the input
-	 * @return the output
-	 * @throws NullPointerException if the given 'outputClass' is null
-	 * @throws ConvertException     if any converting error occurred
-	 */
-	default <I, O> O convert(I input, Clazz outputClazz) {
-		return this.convert(new ConvertArguments<>(input, outputClazz));
-	}
-
-	/**
-	 * Clone the given input.
-	 *
-	 * @param input the input instance (source of inputClazz and outputClazz)
-	 * @param <I>   the type of the input
-	 * @param <O>   the type of the output
-	 * @return the output
-	 * @throws ConvertException if any converting error occurred
-	 */
-	default <I, O> O convert(I input) {
-		return this.convert(new ConvertArguments<>(input));
-	}
-
-	/**
-	 * Set the {@link ConvertArguments#output} on the given arguments to a value of the {@link ConvertArguments#input}, but as the class specified
-	 * as in the {@link ConvertArguments#outputClazz}.
-	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @param <O>       the {@link ConvertArguments#output} of the given arguments after the converting process
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @param <O>   the {@link ConvertToken#output} of the given token after the converting process
+	 * @param <I>   the {@link ConvertToken#input} of the given token
 	 * @return the output
 	 * @throws ConvertException     if any converting error occurred
-	 * @throws NullPointerException if the given 'arguments' is null.
+	 * @throws NullPointerException if the given 'token' is null.
 	 */
-	<O> O convert(ConvertArguments<?, O> arguments);
+	<I, O> O convert(ConvertToken<I, O> token);
 }
