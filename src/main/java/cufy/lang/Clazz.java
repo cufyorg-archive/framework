@@ -15,7 +15,6 @@
  */
 package cufy.lang;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -459,7 +458,6 @@ final public class Clazz<C> {
 	 * @apiNote null is instance of {@link Void}
 	 */
 	public boolean isInstance(Object instance) {
-		new ArrayList<>().clone();
 		return instance == null ? this.klass == Void.class : this.klass.isInstance(instance);
 	}
 }
