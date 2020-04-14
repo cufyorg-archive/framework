@@ -18,16 +18,18 @@ package cufy.text.json;
 import cufy.lang.Clazz;
 import cufy.lang.Empty;
 import cufy.lang.Recurse;
-import cufy.lang.Static;
-import cufy.meta.MetaFamily;
-import cufy.meta.MetaReference;
+import cufy.meta.Filter;
+import cufy.meta.Reference;
 import cufy.text.*;
 import cufy.util.Arrayu;
 import cufy.util.Inputu;
 import cufy.util.Reflectionu;
 import cufy.util.Stringu;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -116,8 +118,9 @@ public class JSON extends AbstractFormat {
 	/**
 	 * The global instance to avoid unnecessary instancing.
 	 */
-	@MetaReference
-	final public static JSON global;
+	@Reference
+	final public static JSON global = new JSON()._setDefaults();
+
 	/**
 	 * The expected number of members on objects or arrays.
 	 */
@@ -163,45 +166,41 @@ public class JSON extends AbstractFormat {
 	 */
 	protected Map<String, String> SYNTAX_NESTABLE;
 
-	static {
-		global = new JSON();
-		global.setDefaults();
-	}
-
 	/**
-	 * Get a json text representing the value of the given object.
+	 * Set the default values of JSON for this json format.
 	 *
-	 * @param object to be formatted into text
-	 * @return a json text from the given object
-	 * @throws FormatException when any formatting errors occurs
+	 * @return this
 	 */
-	@Static
-	public static String format(Object object) {
-		try {
-			return global.format(object, new StringWriter()).toString();
-		} catch (IOException e) {
-			//It should not happen
-			throw new IOError(e);
-		}
-	}
+	protected JSON _setDefaults() {
+		this.DEBUGGING = false;
+		this.DEFAULT_MEMBERS_COUNT = 10;
+		this.DEFAULT_NESTING_DEPTH = 5;
+		this.DEFAULT_VALUE_LENGTH = 20;
+		this.DEFAULT_WHITE_SPACE_LENGTH = 20;
 
-	/**
-	 * Parse the given JSON text to a java object.
-	 *
-	 * @param text to be parsed
-	 * @return a java object from the given text
-	 * @throws NullPointerException if the given 'text' is null
-	 * @throws ClassifyException    when any classification exception occurs
-	 * @throws ParseException       when any parsing exception occurs
-	 */
-	@Static
-	public static Object parse(CharSequence text) {
-		try {
-			return global.cparse(new StringReader(text.toString()));
-		} catch (IOException e) {
-			//It should not happen
-			throw new IOError(e);
-		}
+		this.STRING_ESCAPABLES = new HashMap<>();
+		this.STRING_ESCAPABLES.put("\\", "\\\\");
+		this.STRING_ESCAPABLES.put("\"", "\\\"");
+		this.STRING_ESCAPABLES.put("\n", "\\\n");
+		this.STRING_ESCAPABLES.put("\r", "\\\r");
+		this.STRING_ESCAPABLES.put("\t", "\\\t");
+
+		this.SYNTAX = new Syntax();
+
+		this.SYNTAX_NESTABLE = new HashMap<>();
+		this.SYNTAX_NESTABLE.put(this.SYNTAX.OBJECT_START, this.SYNTAX.OBJECT_END);
+		this.SYNTAX_NESTABLE.put(this.SYNTAX.ARRAY_START, this.SYNTAX.ARRAY_END);
+
+		this.SYNTAX_LITERAL = new HashMap<>();
+		this.SYNTAX_LITERAL.put(this.SYNTAX.STRING_START, this.SYNTAX.STRING_END);
+		this.SYNTAX_LITERAL.put(this.SYNTAX.COMMENT_START, this.SYNTAX.COMMENT_END);
+		this.SYNTAX_LITERAL.put(this.SYNTAX.LINE_COMMENT_START, this.SYNTAX.LINE_COMMENT_END);
+
+		this.SYNTAX_COMMENT = new HashMap<>();
+		this.SYNTAX_COMMENT.put(this.SYNTAX.COMMENT_START, this.SYNTAX.COMMENT_END);
+		this.SYNTAX_COMMENT.put(this.SYNTAX.LINE_COMMENT_START, this.SYNTAX.LINE_COMMENT_END);
+
+		return this;
 	}
 
 	/**
@@ -209,62 +208,58 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Format the given {@link Collection Array}. To a {@link JSON} text. Then {@link Writer#append} it to the given {@link Writer}.
 	 *
-	 * @param arguments the formatting instance that holds the variables of this formatting
-	 * @throws FormatException          when any formatting errors occurs
-	 * @throws IOException              when any I/O exception occurs
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given 'input' is neither a collection nor an array
+	 * @param token the formatting instance that holds the variables of this formatting
+	 * @throws FormatException      when any formatting errors occurs
+	 * @throws IOException          when any I/O exception occurs
+	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
-	@FormatMethod(
-			@MetaFamily(
-					subIn = {Collection.class,
-							 Object[].class,
-					},
-					in = {boolean[].class,
-						  byte[].class,
-						  char[].class,
-						  double[].class,
-						  float[].class,
-						  int[].class,
-						  long[].class,
-						  short[].class
-					}))
-	protected void formatArray(FormatArguments<Object, Object> arguments) throws IOException {
+	@FormatMethod(@Filter(
+			subIn = {Collection.class,
+					 Object[].class,
+			},
+			in = {boolean[].class,
+				  byte[].class,
+				  char[].class,
+				  double[].class,
+				  float[].class,
+				  int[].class,
+				  long[].class,
+				  short[].class
+			}))
+	protected void formatArray(FormatToken<Collection> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "array");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Collection) && !arguments.input.getClass().isArray())
-				throw new IllegalArgumentException(arguments.input + " neither a collection nor an array");
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		Iterator iterator = arguments.input instanceof Collection ?
-							((Collection) arguments.input).iterator() : Arrayu.asList(arguments.input).iterator();
+		Iterator it = token.input instanceof Collection ? token.input.iterator() : Arrayu.asList(token.input).iterator();
 
-		String TAB = Stringu.repeat(SYNTAX.TAB, arguments.depth);
+		String TAB = Stringu.repeat(SYNTAX.TAB, token.depth);
 		String SHIFT = TAB + SYNTAX.TAB;
 
-		if (iterator.hasNext()) {
-			arguments.output.append(SYNTAX.ARRAY_START)
+		if (it.hasNext()) {
+			token.output.append(SYNTAX.ARRAY_START)
 					.append(SYNTAX.LINE)
 					.append(SHIFT);
 
 			while (true) {
-				this.format(new FormatArguments(arguments, iterator.next(), 0));
+				Object element = it.next();
 
-				if (!iterator.hasNext()) {
-					arguments.output.append(SYNTAX.LINE)
+				this.format(token.subToken(element, token.output, Clazz.ofi(element), 0));
+
+				if (it.hasNext()) {
+					token.output.append(SYNTAX.MEMBER_END)
+							.append(SYNTAX.LINE)
+							.append(SHIFT);
+				} else {
+					token.output.append(SYNTAX.LINE)
 							.append(TAB)
 							.append(SYNTAX.ARRAY_END);
-					return;
+					break;
 				}
-
-				arguments.output.append(SYNTAX.MEMBER_END)
-						.append(SYNTAX.LINE)
-						.append(SHIFT);
 			}
 		} else {
-			arguments.output.append(SYNTAX.ARRAY_START)
+			token.output.append(SYNTAX.ARRAY_START)
 					.append(SYNTAX.LINE)
 					.append(TAB)
 					.append(SYNTAX.ARRAY_END);
@@ -276,27 +271,19 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Format the given {@link Boolean}. To a {@link JSON} text. Then {@link Writer#append} it to the given {@link Writer}.
 	 *
-	 * @param arguments the formatting instance that holds the variables of this formatting
-	 * @throws FormatException          when any formatting errors occurs
-	 * @throws IOException              when any I/O exception occurs
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given input is not boolean
+	 * @param token the formatting instance that holds the variables of this formatting
+	 * @throws FormatException      when any formatting errors occurs
+	 * @throws IOException          when any I/O exception occurs
+	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
-	@FormatMethod(
-			@MetaFamily(
-					in = {Boolean.class,
-						  boolean.class
-					}))
-	protected void formatBoolean(FormatArguments<Boolean, Boolean> arguments) throws IOException {
+	@FormatMethod(@Filter({Boolean.class, boolean.class}))
+	protected void formatBoolean(FormatToken<Boolean> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Boolean))
-				throw new IllegalArgumentException(arguments.input + " is not boolean");
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		arguments.output.append(arguments.input ? SYNTAX.TRUE : SYNTAX.FALSE);
+		token.output.append(token.input ? SYNTAX.TRUE : SYNTAX.FALSE);
 	}
 
 	/**
@@ -304,21 +291,18 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Append null to the given writer.
 	 *
-	 * @param arguments the formatting instance that holds the variables of this formatting
+	 * @param token the formatting instance that holds the variables of this formatting
 	 * @throws FormatException      when any formatting errors occurs
 	 * @throws IOException          when any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 */
-	@FormatMethod(
-			@MetaFamily(
-					in = Void.class
-			))
-	protected void formatNull(FormatArguments<Void, Void> arguments) throws IOException {
+	@FormatMethod(@Filter(Void.class))
+	protected void formatNull(FormatToken<Void> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		arguments.output.append(SYNTAX.NULL);
+		token.output.append(SYNTAX.NULL);
 	}
 
 	/**
@@ -326,46 +310,40 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Format the given {@link Number}. To a {@link JSON} text. Then {@link Writer#append} it to the given {@link Writer}.
 	 *
-	 * @param arguments the formatting instance that holds the variables of this formatting
-	 * @throws FormatException          when any formatting errors occurs
-	 * @throws IOException              when any I/O exception occurs
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given 'input' is not a number
+	 * @param token the formatting instance that holds the variables of this formatting
+	 * @throws FormatException      when any formatting errors occurs
+	 * @throws IOException          when any I/O exception occurs
+	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
-	@FormatMethod(
-			@MetaFamily(
-					subIn = Number.class,
-					in = {
-							byte.class,
-							double.class,
-							float.class,
-							int.class,
-							long.class,
-							short.class
-					}))
-	protected void formatNumber(FormatArguments<Number, Number> arguments) throws IOException {
+	@FormatMethod(@Filter(
+			subIn = Number.class,
+			in = {
+					byte.class,
+					double.class,
+					float.class,
+					int.class,
+					long.class,
+					short.class
+			}))
+	protected void formatNumber(FormatToken<Number> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Number))
-				throw new IllegalArgumentException(arguments.input + " is not a number");
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		Class family = arguments.inputClazz.getFamily();
+		Class family = token.klazz.getFamily();
 
 		if (family == Byte.class || family == byte.class)
-			arguments.output.append(Byte.toString(arguments.input.byteValue())).append("B");
+			token.output.append(Byte.toString(token.input.byteValue())).append("B");
 		else if (family == Double.class || family == double.class)
-			arguments.output.append(Double.toString(arguments.input.doubleValue())).append("D");
+			token.output.append(Double.toString(token.input.doubleValue())).append("D");
 		else if (family == Float.class || family == float.class)
-			arguments.output.append(Float.toString(arguments.input.floatValue())).append("F");
+			token.output.append(Float.toString(token.input.floatValue())).append("F");
 		else if (family == Long.class || family == long.class)
-			arguments.output.append(Long.toString(arguments.input.longValue())).append("L");
+			token.output.append(Long.toString(token.input.longValue())).append("L");
 		else if (family == Short.class || family == short.class)
-			arguments.output.append(Short.toString(arguments.input.shortValue())).append("S");
-		else /*if (family == Integer.class || family == int.class)*/
-			arguments.output.append(Integer.toString(arguments.input.intValue()));
+			token.output.append(Short.toString(token.input.shortValue())).append("S");
+		else token.output.append(Integer.toString(token.input.intValue()));
 	}
 
 	/**
@@ -373,55 +351,53 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Format the given {@link Map Object}. To a {@link JSON} text. Then {@link Writer#append} it to the given {@link Writer}.
 	 *
-	 * @param arguments the formatting instance that holds the variables of this formatting
-	 * @throws FormatException          when any formatting errors occurs
-	 * @throws IOException              when any I/O exception occurs
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given 'input' is not a map
+	 * @param token the formatting instance that holds the variables of this formatting
+	 * @throws FormatException      when any formatting errors occurs
+	 * @throws IOException          when any I/O exception occurs
+	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
-	@FormatMethod(
-			@MetaFamily(
-					subIn = Map.class
-			))
-	protected void formatObject(FormatArguments<Map, Map> arguments) throws IOException {
+	@FormatMethod(@Filter(subIn = Map.class))
+	protected void formatObject(FormatToken<Map> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof Map))
-				throw new IllegalArgumentException(arguments.input + " is not a map");
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		Iterator<Map.Entry> iterator = arguments.input.entrySet().iterator();
+		Iterator<Map.Entry> it = token.input.entrySet().iterator();
 
-		String TAB = Stringu.repeat(SYNTAX.TAB, arguments.depth);
+		String TAB = Stringu.repeat(SYNTAX.TAB, token.depth);
 		String SHIFT = TAB + SYNTAX.TAB;
 
-		if (iterator.hasNext()) {
-			arguments.output.append(SYNTAX.OBJECT_START)
+		if (it.hasNext()) {
+			token.output.append(SYNTAX.OBJECT_START)
 					.append(SYNTAX.LINE)
 					.append(SHIFT);
 
 			while (true) {
-				Map.Entry<?, ?> entry = iterator.next();
+				Map.Entry<?, ?> entry = it.next();
 
-				this.format(new FormatArguments(arguments, entry.getKey(), 0));
-				arguments.output.append(SYNTAX.DECLARATION);
-				this.format(new FormatArguments(arguments, entry.getValue(), 0));
+				Object key = entry.getKey();
+				Object value = entry.getValue();
 
-				if (!iterator.hasNext()) {
-					arguments.output.append(SYNTAX.LINE)
+				this.format(token.subToken(key, token.output, Clazz.ofi(key), 0));
+
+				token.output.append(SYNTAX.DECLARATION);
+
+				this.format(token.subToken(value, token.output, Clazz.ofi(value), 1));
+
+				if (it.hasNext()) {
+					token.output.append(SYNTAX.MEMBER_END)
+							.append(SYNTAX.LINE)
+							.append(SHIFT);
+				} else {
+					token.output.append(SYNTAX.LINE)
 							.append(TAB)
 							.append(SYNTAX.OBJECT_END);
-					return;
+					break;
 				}
-
-				arguments.output.append(SYNTAX.MEMBER_END)
-						.append(SYNTAX.LINE)
-						.append(SHIFT);
 			}
 		} else {
-			arguments.output.append(SYNTAX.OBJECT_START)
+			token.output.append(SYNTAX.OBJECT_START)
 					.append(SYNTAX.LINE)
 					.append(TAB)
 					.append(SYNTAX.OBJECT_END);
@@ -433,31 +409,28 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Format the given {@link Recurse}. To a {@link JSON} text. Then {@link Writer#append} it to the given {@link Writer}.
 	 *
-	 * @param arguments the formatting instance that holds the variables of this formatting
+	 * @param token the formatting instance that holds the variables of this formatting
 	 * @throws FormatException          when any formatting errors occurs
 	 * @throws IOException              when any I/O exception occurs
-	 * @throws NullPointerException     if the given 'arguments' is null
+	 * @throws NullPointerException     if the given 'token' is null
 	 * @throws IllegalArgumentException if the given 'input' didn't recurred
 	 */
-	@FormatMethod(
-			@MetaFamily(
-					in = Recurse.class
-			))
-	protected void formatRecurse(FormatArguments<Recurse, Object> arguments) throws IOException {
+	@FormatMethod(@Filter(Recurse.class))
+	protected void formatRecurse(FormatToken<Recurse> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
 		int i = 1;
 		int index = -1;
-		for (FormatArguments grand = arguments.parent; grand != null; grand = grand.parent, i++)
-			if (grand.input == arguments.input)
+		for (FormatToken grand = token.parent; grand != null; grand = grand.parent, i++)
+			if (grand.input == token.input)
 				index = i;
 
 		if (index == -1) {
-			throw new IllegalArgumentException(arguments + " didn't recurred");
+			throw new IllegalArgumentException(token + " didn't recurred");
 		} else {
-			arguments.output.append(SYNTAX.RECURSE).append(String.valueOf(index));
+			token.output.append(SYNTAX.RECURSE).append(String.valueOf(index));
 		}
 	}
 
@@ -466,31 +439,24 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Format the given {@link CharSequence String}. To a {@link JSON} text. Then {@link Writer#append} it to the given {@link Writer}.
 	 *
-	 * @param arguments the formatting instance that holds the variables of this formatting
-	 * @throws FormatException          when any formatting errors occurs
-	 * @throws IOException              when any I/O exception occurs
-	 * @throws NullPointerException     if the given 'arguments' or 'arguments.input' is null
-	 * @throws IllegalArgumentException if the given 'input' is not a char-sequence
+	 * @param token the formatting instance that holds the variables of this formatting
+	 * @throws FormatException      when any formatting errors occurs
+	 * @throws IOException          when any I/O exception occurs
+	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
-	@FormatMethod(
-			@MetaFamily(
-					subIn = CharSequence.class
-			))
-	protected void formatString(FormatArguments<CharSequence, CharSequence> arguments) throws IOException {
+	@FormatMethod(@Filter(subIn = CharSequence.class))
+	protected void formatString(FormatToken<CharSequence> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
-			Objects.requireNonNull(arguments.input, "arguments.input");
-
-			if (!(arguments.input instanceof CharSequence))
-				throw new IllegalArgumentException(arguments.input + " is not char-sequence");
+			Objects.requireNonNull(token, "token");
+			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		String value = arguments.input.toString();
+		String value = token.input.toString();
 
 		for (Map.Entry<String, String> escapable : STRING_ESCAPABLES.entrySet())
 			value = value.replace(escapable.getKey(), escapable.getValue());
 
-		arguments.output.append(SYNTAX.STRING_START)
+		token.output.append(SYNTAX.STRING_START)
 				.append(value)
 				.append(SYNTAX.STRING_END);
 	}
@@ -500,28 +466,28 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Check if the given string should be parsed as {@link Collection Array} or not.
 	 *
-	 * @param arguments the classification instance that holds the variables of this classification
+	 * @param token the classification instance that holds the variables of this classification
 	 * @return whether the given string should be parsed as {@code array} or not.
 	 * @throws ClassifyException    when any classification exception occurs
 	 * @throws IOException          when any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 */
 	@ClassifyMethod
-	protected boolean isArray(ClassifyArguments<Object, Collection> arguments) throws IOException {
+	protected boolean isArray(ClassifyToken<Collection> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		arguments.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.ARRAY_START.length());
+		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.ARRAY_START.length());
 
-		int r = Inputu.isRemainingEquals(arguments.input, true, false, false, SYNTAX.ARRAY_START);
+		int r = Inputu.isRemainingEquals(token.input, true, false, false, SYNTAX.ARRAY_START);
 
-		arguments.input.reset();
+		token.input.reset();
 
 		if (r == -1) {
 			return false;
 		} else {
-			arguments.output = (Clazz) Clazz.of(Collection.class, ArrayList.class);
+			token.output = Clazz.of(Collection.class);
 			return true;
 		}
 	}
@@ -531,28 +497,28 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Check if the given string should be parsed as {@link Boolean} or not.
 	 *
-	 * @param arguments the classification instance that holds the variables of this classification
+	 * @param token the classification instance that holds the variables of this classification
 	 * @return whether the given string should be parsed as {@code boolean} or not.
 	 * @throws ClassifyException    when any classification exception occurs
 	 * @throws IOException          when any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 */
 	@ClassifyMethod
-	protected boolean isBoolean(ClassifyArguments<Object, Boolean> arguments) throws IOException {
+	protected boolean isBoolean(ClassifyToken<Boolean> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		arguments.input.mark(DEFAULT_WHITE_SPACE_LENGTH + Math.max(SYNTAX.TRUE.length(), SYNTAX.FALSE.length()));
+		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + Math.max(SYNTAX.TRUE.length(), SYNTAX.FALSE.length()));
 
-		int r = Inputu.isRemainingEquals(arguments.input, true, true, true, SYNTAX.TRUE, SYNTAX.FALSE);
+		int r = Inputu.isRemainingEquals(token.input, true, true, true, SYNTAX.TRUE, SYNTAX.FALSE);
 
-		arguments.input.reset();
+		token.input.reset();
 
 		if (r == -1) {
 			return false;
 		} else {
-			arguments.output = Clazz.of(Boolean.class);
+			token.output = Clazz.of(Boolean.class);
 			return true;
 		}
 	}
@@ -562,28 +528,28 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Check if no value the reader contains.
 	 *
-	 * @param arguments the classification instance that holds the variables of this classification
+	 * @param token the classification instance that holds the variables of this classification
 	 * @return whether the given string is no value
 	 * @throws ClassifyException    when any classification exception occurs
 	 * @throws IOException          when any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 */
 	@ClassifyMethod
-	protected boolean isEmpty(ClassifyArguments<Object, Empty> arguments) throws IOException {
+	protected boolean isEmpty(ClassifyToken<Empty> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		arguments.input.mark(DEFAULT_WHITE_SPACE_LENGTH);
+		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH);
 
 		int i;
 
-		while ((i = arguments.input.read()) != -1 && Character.isWhitespace(i)) ;
+		while ((i = token.input.read()) != -1 && Character.isWhitespace(i)) ;
 
-		arguments.input.reset();
+		token.input.reset();
 
 		if (i == -1) {
-			arguments.output = Clazz.of(Empty.class);
+			token.output = Clazz.of(Empty.class);
 			return true;
 		} else {
 			return false;
@@ -595,28 +561,28 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Check if the remaining character on the given reader should be parsed as null or not.
 	 *
-	 * @param arguments the classification instance that holds the variables of this classification
+	 * @param token the classification instance that holds the variables of this classification
 	 * @return if the remaining characters on the given reader should be parsed as null or not.
 	 * @throws ClassifyException    when any classification exception occurs
 	 * @throws IOException          when any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 */
 	@ClassifyMethod
-	protected boolean isNull(ClassifyArguments<Object, Void> arguments) throws IOException {
+	protected boolean isNull(ClassifyToken<Void> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		arguments.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.NULL.length());
+		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.NULL.length());
 
-		int r = Inputu.isRemainingEquals(arguments.input, true, true, true, SYNTAX.NULL);
+		int r = Inputu.isRemainingEquals(token.input, true, true, true, SYNTAX.NULL);
 
-		arguments.input.reset();
+		token.input.reset();
 
 		if (r == -1) {
 			return false;
 		} else {
-			arguments.output = Clazz.of(Void.class);
+			token.output = Clazz.of(Void.class);
 			return true;
 		}
 	}
@@ -626,28 +592,28 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Check if the given string should be parsed as {@link Number} or not.
 	 *
-	 * @param arguments the classification instance that holds the variables of this classification
+	 * @param token the classification instance that holds the variables of this classification
 	 * @return whether the given string should be parsed as {@code number} or not.
 	 * @throws ClassifyException    when any classification exception occurs
 	 * @throws IOException          when any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 */
 	@ClassifyMethod
-	protected boolean isNumber(ClassifyArguments<Object, Number> arguments) throws IOException {
+	protected boolean isNumber(ClassifyToken<Number> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		arguments.input.mark(DEFAULT_WHITE_SPACE_LENGTH + 1);
+		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + 1);
 
-		int r = Inputu.isRemainingEquals(arguments.input, true, false, false, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+		int r = Inputu.isRemainingEquals(token.input, true, false, false, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
 
-		arguments.input.reset();
+		token.input.reset();
 
 		if (r == -1) {
 			return false;
 		} else {
-			arguments.output = Clazz.of(Number.class);
+			token.output = Clazz.of(Number.class);
 			return true;
 		}
 	}
@@ -657,28 +623,28 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Check if the given string should be parsed as {@link Map Object} or not.
 	 *
-	 * @param arguments the classification instance that holds the variables of this classification
+	 * @param token the classification instance that holds the variables of this classification
 	 * @return whether the given string should be parsed as {@code object} or not.
 	 * @throws ClassifyException    when any classification exception occurs
 	 * @throws IOException          when any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 */
 	@ClassifyMethod
-	protected boolean isObject(ClassifyArguments<Object, Map> arguments) throws IOException {
+	protected boolean isObject(ClassifyToken<Map> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		arguments.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.OBJECT_START.length());
+		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.OBJECT_START.length());
 
-		int r = Inputu.isRemainingEquals(arguments.input, true, false, false, SYNTAX.OBJECT_START);
+		int r = Inputu.isRemainingEquals(token.input, true, false, false, SYNTAX.OBJECT_START);
 
-		arguments.input.reset();
+		token.input.reset();
 
 		if (r == -1) {
 			return false;
 		} else {
-			arguments.output = (Clazz) Clazz.of(Map.class, HashMap.class);
+			token.output = Clazz.of(Map.class);
 			return true;
 		}
 	}
@@ -688,28 +654,28 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Check if the given string should be parsed as {@link Recurse} or not.
 	 *
-	 * @param arguments the classification instance that holds the variables of this classification
+	 * @param token the classification instance that holds the variables of this classification
 	 * @return whether the given string should be parsed as {@code recurse} or not.
 	 * @throws ClassifyException    when any classification exception occurs
 	 * @throws IOException          when any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 */
 	@ClassifyMethod
-	protected boolean isRecurse(ClassifyArguments<Object, Recurse> arguments) throws IOException {
+	protected boolean isRecurse(ClassifyToken<Recurse> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		arguments.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.RECURSE.length());
+		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.RECURSE.length());
 
-		int r = Inputu.isRemainingEquals(arguments.input, true, true, true, SYNTAX.RECURSE);
+		int r = Inputu.isRemainingEquals(token.input, true, true, true, SYNTAX.RECURSE);
 
-		arguments.input.reset();
+		token.input.reset();
 
 		if (r == -1) {
 			return false;
 		} else {
-			arguments.output = Clazz.of(Recurse.class);
+			token.output = (Clazz) Clazz.of(Recurse.class, Object.class);
 			return true;
 		}
 	}
@@ -719,28 +685,28 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Check if the given string should be parsed as {@link CharSequence String} or not.
 	 *
-	 * @param arguments the classification instance that holds the variables of this classification
+	 * @param token the classification instance that holds the variables of this classification
 	 * @return whether the given string should be parsed as {@code string} or not.
 	 * @throws ClassifyException    when any classification exception occurs
 	 * @throws IOException          when any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 */
 	@ClassifyMethod
-	protected boolean isString(ClassifyArguments<Object, String> arguments) throws IOException {
+	protected boolean isString(ClassifyToken<String> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		arguments.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.STRING_START.length());
+		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.STRING_START.length());
 
-		int r = Inputu.isRemainingEquals(arguments.input, true, false, false, SYNTAX.STRING_START);
+		int r = Inputu.isRemainingEquals(token.input, true, false, false, SYNTAX.STRING_START);
 
-		arguments.input.reset();
+		token.input.reset();
 
 		if (r == -1) {
 			return false;
 		} else {
-			arguments.output = Clazz.of(CharSequence.class, String.class);
+			token.output = Clazz.of(CharSequence.class, String.class);
 			return true;
 		}
 	}
@@ -750,70 +716,46 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Parse the string from the given reader to an {@link Collection Array}. Then set it to the given {@link AtomicReference buffer}.
 	 *
-	 * @param arguments the parsing instance that holds the variables of this parsing
+	 * @param token the parsing instance that holds the variables of this parsing
 	 * @throws ParseException               when any parsing exception occurs
 	 * @throws IOException                  when any I/O exception occurs
-	 * @throws NullPointerException         if the given 'arguments' is null
+	 * @throws NullPointerException         if the given 'token' is null
 	 * @throws ReflectiveOperationException if any exception occurred while trying to construct from the clazz given
 	 */
-	@ParseMethod(
-			@MetaFamily(
-					subIn = {
-							Collection.class,
-							Object[].class
-					},
-					in = {boolean[].class,
-						  byte[].class,
-						  char[].class,
-						  double[].class,
-						  float[].class,
-						  int[].class,
-						  long[].class,
-						  short[].class
-					}))
-	protected void parseArray(ParseArguments<Collection, Collection> arguments) throws IOException, ReflectiveOperationException {
+	@ParseMethod(@Filter(
+			subIn = {
+					Collection.class,
+					Object[].class
+			},
+			in = {boolean[].class,
+				  byte[].class,
+				  char[].class,
+				  double[].class,
+				  float[].class,
+				  int[].class,
+				  long[].class,
+				  short[].class
+			}))
+	protected void parseArray(ParseToken<Collection> token) throws IOException, ReflectiveOperationException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
 		//If the requested type is array
-		Object array = null;
-
-		//pre operations
-		if (Inputu.isRemainingEquals(arguments.input, true, false, false, SYNTAX.ARRAY_START) != 0)
-			throw new ParseException("array not started");
+		Object array = token.output;
 
 		//setup the output
-		if (arguments.outputClazz.getKlass().isArray()) {
-			//keep it dynamic
-			if (arguments.outputClazz.getKlass().isInstance(arguments.output)) {
-				array = arguments.output;
-				arguments.output = new ArrayList(Arrayu.asList(array));
-			} else {
-				arguments.output = new ArrayList();
-			}
-		} else if (!arguments.outputClazz.getKlass().isInstance(arguments.output)) {
-			//construct new
-			if (Collection.class.isAssignableFrom(arguments.outputClazz.getKlass()))
-				//if we can construct a new of that clazz
-				arguments.output = arguments.outputClazz.getKlass().getConstructor().newInstance();
-			else if (arguments.outputClazz.getKlass().isAssignableFrom(Collection.class))
-				//if the results can satisfied the clazz
-				arguments.output = new ArrayList();
-			else throw new IllegalArgumentException(arguments.outputClazz + " can't be satisfied with an array");
-		} else if (!(arguments.output instanceof List)) {
-			//clear collections, since there is no positioning system on them
-			arguments.output.clear();
-		}
+		if (token.klazz.isArray())
+			token.output = token.klazz.isInstance(token.output) ? new ArrayList(Arrayu.asList(array)) : new ArrayList();
+		else if (!token.klazz.isInstance(token.output))
+			token.output = token.klazz.isAssignableFrom(List.class) ? new ArrayList() : token.klazz.getKlass().getConstructor().newInstance();
+		else if (!(token.output instanceof List))
+			token.output.clear();
 
 		//reject more elements
 		boolean closed = false;
 		//comment mode
 		boolean comment = false;
-		//last overwritten index
-		int index = 0;
-		//overwrite an existing element at the current index
-		boolean overwrite = arguments.output.size() > index;
 		//syntax manager
 		SyntaxTracker tracker = new SyntaxTracker(SYNTAX_NESTABLE, SYNTAX_LITERAL);
 		//content reading buffer (for members)
@@ -821,8 +763,16 @@ public class JSON extends AbstractFormat {
 		//short backtrace
 		StringBuilder backtrace = new StringBuilder(DEFAULT_VALUE_LENGTH);
 
-		int i;
-		while ((i = arguments.input.read()) != -1) {
+		//last overwritten index
+		int index = 0;
+		//overwrite an existing element at the current index
+		boolean overwrite = token.output.size() > index;
+
+		//first run
+		if (Inputu.isRemainingEquals(token.input, true, false, false, SYNTAX.ARRAY_START) != 0)
+			throw new ParseException("array not started");
+
+		for (int i; (i = token.input.read()) != -1; ) {
 			char point = (char) i;
 
 			if (closed)
@@ -836,33 +786,33 @@ public class JSON extends AbstractFormat {
 
 				if ((closed = past.endsWith(SYNTAX.ARRAY_END)) || past.endsWith(SYNTAX.MEMBER_END)) {
 					//element chunk reader
-					Reader elementReader = new StringReader(builder.toString().trim());
+					Reader elementReader = new StringReader(builder.toString());
 
 					//classifying
-					Clazz elementClazz = this.classify(new ClassifyArguments(elementReader));
+					Clazz elementClazz = this.classify(new ClassifyToken(elementReader, null));
 
 					//if the last element spot is empty. Then don't parse.
 					if (closed && elementClazz.getFamily() == Empty.class)
 						continue;
 
 					//existing member
-					Object element = overwrite ? ((List) arguments.output).get(index) : null;
+					Object element = overwrite ? ((List) token.output).get(index) : null;
 
 					//parsing the member
-					element = this.parse(new ParseArguments(arguments, elementReader, element, elementClazz, elementClazz, 0));
+					element = this.parse(token.subToken(elementReader, element, elementClazz, 0));
 
 					//register results
 					if (overwrite) {
 						//replace the existing member with the new value
-						((List) arguments.output).set(index, element);
+						((List) token.output).set(index, element);
 						//update the overwrite position
-						overwrite = arguments.output.size() > (++index);
+						overwrite = token.output.size() > (++index);
 					} else {
 						//direct add
-						arguments.output.add(element);
+						token.output.add(element);
 					}
 
-					//switch reading destination addresses
+					//new builders
 					builder = new StringBuilder(DEFAULT_VALUE_LENGTH);
 					backtrace = new StringBuilder(DEFAULT_VALUE_LENGTH);
 					continue;
@@ -896,24 +846,24 @@ public class JSON extends AbstractFormat {
 
 		//delete unreached indexes, if it's a list and didn't reach it's limit
 		if (overwrite)
-			((List) arguments.output).subList(index, arguments.output.size()).clear();
+			((List) token.output).subList(index, token.output.size()).clear();
 
 		//convert to array
-		if (arguments.outputClazz.getKlass().isArray()) {
-			if (array == null || arguments.output.size() != Array.getLength(array))
+		if (token.klazz.isArray()) {
+			if (array == null || token.output.size() != Array.getLength(array))
 				//construct new
-				array = Array.newInstance(arguments.outputClazz.getKlass().getComponentType(), arguments.output.size());
+				array = Array.newInstance(token.klazz.getComponentType(), token.output.size());
 
 			//primitive arrays have to be treated in another way
 			if (array instanceof Object[]) {
-				arguments.output.toArray((Object[]) array);
+				token.output.toArray((Object[]) array);
 			} else {
-				Object[] read = arguments.output.toArray();
-				Arrayu.hardcopy(read, 0, array, 0, read.length);
+				Object[] output = token.output.toArray();
+				Arrayu.hardcopy(output, 0, array, 0, output.length);
 			}
 
 			//noinspection RedundantCast
-			((ParseArguments) arguments).output = array;
+			((ParseToken) token).output = array;
 		}
 	}
 
@@ -922,29 +872,24 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Parse the string from the given reader to an {@link Boolean}. Then set it to the given {@link AtomicReference buffer}.
 	 *
-	 * @param arguments the parsing instance that holds the variables of this parsing
+	 * @param token the parsing instance that holds the variables of this parsing
 	 * @throws ParseException       when any parsing exception occurs
 	 * @throws IOException          when any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 */
-	@ParseMethod(
-			@MetaFamily(
-					in = {
-							Boolean.class,
-							boolean.class
-					}))
-	protected void parseBoolean(ParseArguments<Boolean, Boolean> arguments) throws IOException {
+	@ParseMethod(@Filter({Boolean.class, boolean.class}))
+	protected void parseBoolean(ParseToken<Boolean> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
 		int l = Math.max(SYNTAX.TRUE.length(), SYNTAX.FALSE.length());
-		String string = Inputu.getRemaining(arguments.input, l, l).trim();
+		String string = Inputu.getRemaining(token.input, l, l).trim();
 
 		if (SYNTAX.TRUE.equals(string)) {
-			arguments.output = true;
+			token.output = true;
 		} else if (SYNTAX.FALSE.equals(string)) {
-			arguments.output = false;
+			token.output = false;
 		} else {
 			throw new ParseException("Can't parse \"" + string + "\" as boolean");
 		}
@@ -955,25 +900,22 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Set null to the given buffer.
 	 *
-	 * @param arguments the parsing instance that holds the variables of this parsing
+	 * @param token the parsing instance that holds the variables of this parsing
 	 * @throws ParseException       when any parsing exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 * @throws IOException          if any I/O exception occurred
 	 */
-	@ParseMethod(
-			@MetaFamily(
-					in = Void.class
-			))
-	protected void parseNull(ParseArguments<Void, Void> arguments) throws IOException {
+	@ParseMethod(@Filter(Void.class))
+	protected void parseNull(ParseToken<Void> token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
 		int l = SYNTAX.NULL.length();
-		String string = Inputu.getRemaining(arguments.input, l, l).trim();
+		String string = Inputu.getRemaining(token.input, l, l).trim();
 
 		if (string.equals(SYNTAX.NULL)) {
-			arguments.output = null;
+			token.output = null;
 		} else {
 			throw new ParseException("can't parse " + string + " as null");
 		}
@@ -984,37 +926,36 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Parse the string from the given reader to an {@link Number}. Then set it to the given {@link AtomicReference buffer}.
 	 *
-	 * @param arguments the parsing instance that holds the variables of this parsing
+	 * @param token the parsing instance that holds the variables of this parsing
 	 * @throws ParseException               when any parsing exception occurs
-	 * @throws NullPointerException         if the given 'arguments' is null
+	 * @throws NullPointerException         if the given 'token' is null
 	 * @throws IOException                  when any I/O exception occurs
 	 * @throws ReflectiveOperationException if any exception occurred while trying to construct the number
 	 */
-	@ParseMethod(
-			@MetaFamily(
-					subIn = Number.class,
-					in = {
-							byte.class,
-							double.class,
-							float.class,
-							int.class,
-							long.class,
-							short.class
-					}))
-	protected void parseNumber(ParseArguments<Number, Number> arguments) throws IOException, ReflectiveOperationException {
+	@ParseMethod(@Filter(
+			subIn = Number.class,
+			in = {
+					byte.class,
+					double.class,
+					float.class,
+					int.class,
+					long.class,
+					short.class
+			}))
+	protected void parseNumber(ParseToken<Number> token) throws IOException, ReflectiveOperationException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		Class klass = arguments.inputClazz.getKlass();
+		Class klass = token.klazz.getKlass();
 
 		if (!Number.class.isAssignableFrom(klass))
 			if (klass.isAssignableFrom(Number.class))
 				klass = Number.class;
-			else throw new IllegalArgumentException(klass + " can't be satisfied with a number");
+			else throw new IllegalArgumentException(token.klazz + " can't be satisfied with a number");
 
 		int l = DEFAULT_VALUE_LENGTH;
-		String string = Inputu.getRemaining(arguments.input, l, l).trim().toUpperCase();
+		String string = Inputu.getRemaining(token.input, l, l).trim().toUpperCase();
 		char suffix = string.charAt(string.length() - 1);
 		String number = Character.isDigit(suffix) ? string : string.substring(0, string.length() - 1);
 
@@ -1022,31 +963,32 @@ public class JSON extends AbstractFormat {
 		if (klass == Number.class) {
 			switch (suffix) {
 				case 'B':
-					arguments.output = Byte.valueOf(number);
+					token.output = Byte.valueOf(number);
 					return;
 				case 'D':
-					arguments.output = Double.valueOf(number);
+					token.output = Double.valueOf(number);
 					return;
 				case 'F':
-					arguments.output = Float.valueOf(number);
+					token.output = Float.valueOf(number);
 					return;
 				case 'L':
-					arguments.output = Long.valueOf(number);
+					token.output = Long.valueOf(number);
 					return;
 				case 'S':
-					arguments.output = Short.valueOf(number);
+					token.output = Short.valueOf(number);
 					return;
 				default:
-					arguments.output = Integer.valueOf(number);
+					token.output = Integer.valueOf(number);
 			}
 		} else {
+			//int, float, etc... => Integer, Float, etc...
 			Class klassObjective = Reflectionu.asObjectClass(klass);
 			try {
 				//Using 'valueOf' method
-				arguments.output = (Number) klassObjective.getMethod("valueOf", String.class).invoke(null, number);
+				token.output = (Number) klassObjective.getMethod("valueOf", String.class).invoke(null, number);
 			} catch (ReflectiveOperationException e) {
 				//Using constructor
-				arguments.output = (Number) klassObjective.getConstructor(String.class).newInstance(number);
+				token.output = (Number) klassObjective.getConstructor(String.class).newInstance(number);
 			}
 		}
 	}
@@ -1056,53 +998,44 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Parse the string from the given reader to an {@link Map Object}. Then set it to the given {@link AtomicReference buffer}.
 	 *
-	 * @param arguments the parsing instance that holds the variables of this parsing
+	 * @param token the parsing instance that holds the variables of this parsing
 	 * @throws ParseException               when any parsing exception occurs
 	 * @throws IOException                  when any I/O exception occurs
-	 * @throws NullPointerException         if the given 'arguments' is null
+	 * @throws NullPointerException         if the given 'token' is null
 	 * @throws ReflectiveOperationException if any exception occurs while trying to construct the map
 	 */
-	@ParseMethod(
-			@MetaFamily(
-					subIn = Map.class
-			))
-	protected void parseObject(ParseArguments<Map, Map> arguments) throws IOException, ReflectiveOperationException {
+	@ParseMethod(@Filter(subIn = Map.class))
+	protected void parseObject(ParseToken<Map> token) throws IOException, ReflectiveOperationException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		//pre operations
-		if (Inputu.isRemainingEquals(arguments.input, true, false, false, SYNTAX.OBJECT_START) != 0)
-			throw new ParseException("Object not started");
-
 		//setup the output
-		if (!arguments.outputClazz.getKlass().isInstance(arguments.output))
-			//construct new
-			if (Map.class.isAssignableFrom(arguments.outputClazz.getKlass()))
-				//if we can construct a new of that clazz
-				arguments.output = arguments.outputClazz.getKlass().getConstructor().newInstance();
-			else if (arguments.outputClazz.getKlass().isAssignableFrom(Map.class))
-				//if the results can satisfied the clazz
-				arguments.output = new HashMap();
-			else throw new IllegalArgumentException(arguments.outputClazz + " can't be satisfied with a map");
+		if (!token.klazz.isInstance(token.output))
+			token.output = token.klazz.isAssignableFrom(Map.class) ?
+						   new HashMap() : token.klazz.getKlass().getConstructor().newInstance();
 
 		//reject more elements
 		boolean closed = false;
 		//comment mode
 		boolean comment = false;
-		//the keys in the input
-		Set keys = new HashSet();
 		//syntax manager
 		SyntaxTracker tracker = new SyntaxTracker(SYNTAX_NESTABLE, SYNTAX_LITERAL);
 		//content reading buffer (for key and value)
 		StringBuilder builder = new StringBuilder(DEFAULT_VALUE_LENGTH);
-		//key holder
-		StringBuilder keyBuilder = null;
 		//short backtrace
 		StringBuilder backtrace = new StringBuilder(DEFAULT_VALUE_LENGTH);
 
-		int i;
-		while ((i = arguments.input.read()) != -1) {
+		//the keys in the input
+		Set keys = new HashSet();
+		//key holder
+		StringBuilder keyBuilder = null;
+
+		//first read
+		if (Inputu.isRemainingEquals(token.input, true, false, false, SYNTAX.OBJECT_START) != 0)
+			throw new ParseException("Object not started");
+
+		for (int i; (i = token.input.read()) != -1; ) {
 			//reading character buffer
 			char point = (char) i;
 
@@ -1131,39 +1064,32 @@ public class JSON extends AbstractFormat {
 					if (closed && keyBuilder == null)
 						continue;
 
-					//key chunk readers
+					//readers
 					Reader keyReader = new StringReader(keyBuilder.toString().trim());
+					Reader valueReader = new StringReader(builder.toString().trim());
 
 					//classifying
-					Clazz keyClazz = this.classify(new ClassifyArguments(keyReader));
-
-					//existing key
-					Object key = null;
+					Clazz keyClazz = this.classify(new ClassifyToken<>(keyReader, null));
+					Clazz valueClazz = this.classify(new ClassifyToken(valueReader, null));
 
 					//parsing the key
-					key = this.parse(new ParseArguments(arguments, keyReader, key, keyClazz, keyClazz));
+					Object key = this.parse(token.subToken(keyReader, null, keyClazz, 0));
 
 					//duplicated key check
 					if (keys.contains(key))
 						throw new ParseException("duplicated key: " + key);
 
-					//value chunk reader
-					Reader valueReader = new StringReader(builder.toString().trim());
-
-					//classifying
-					Clazz valueClazz = this.classify(new ClassifyArguments(valueReader));
-
 					//existing value
-					Object value = arguments.output.get(key);
+					Object value = token.output.get(key);
 
 					//parsing the value
-					value = this.parse(new ParseArguments(arguments, valueReader, value, valueClazz, valueClazz));
+					value = this.parse(token.subToken(valueReader, value, valueClazz, 1));
 
 					//register results
 					keys.add(key);
-					arguments.output.put(key, value);
+					token.output.put(key, value);
 
-					//switch reading destination addresses
+					//new builders
 					keyBuilder = null;
 					builder = new StringBuilder(DEFAULT_VALUE_LENGTH);
 					backtrace = new StringBuilder(DEFAULT_VALUE_LENGTH);
@@ -1197,7 +1123,7 @@ public class JSON extends AbstractFormat {
 			throw new ParseException("Map not closed");
 
 		//remove missing keys!
-		arguments.output.keySet().retainAll(keys);
+		token.output.keySet().retainAll(keys);
 	}
 
 	/**
@@ -1205,34 +1131,31 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Parse the string from the given reader to an {@link Recurse}. Then set it to the given {@link AtomicReference buffer}.
 	 *
-	 * @param arguments the parsing instance that holds the variables of this parsing
+	 * @param token the parsing instance that holds the variables of this parsing
 	 * @throws ParseException           when any parsing exception occurs
 	 * @throws IOException              when any I/O exception occurs
-	 * @throws NullPointerException     if the given 'arguments' is null
+	 * @throws NullPointerException     if the given 'token' is null
 	 * @throws java.text.ParseException when any parsing exception occurs
 	 */
-	@ParseMethod(
-			@MetaFamily(
-					in = Recurse.class
-			))
-	protected void parseRecurse(ParseArguments<Recurse, Object> arguments) throws IOException, java.text.ParseException {
+	@ParseMethod(@Filter(Recurse.class))
+	protected void parseRecurse(ParseToken<Recurse> token) throws IOException, java.text.ParseException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
 		int l = DEFAULT_VALUE_LENGTH + SYNTAX.RECURSE.length();
-		String string = Inputu.getRemaining(arguments.input, l, l).trim().substring(SYNTAX.RECURSE.length());
+		String string = Inputu.getRemaining(token.input, l, l).trim().substring(SYNTAX.RECURSE.length());
 
 		int index = Integer.parseInt(string);
 		int i = 0;
 
-		for (ParseArguments grand = arguments.parent; grand != null; grand = grand.parent, i++)
+		for (ParseToken grand = token.parent; grand != null; grand = grand.parent, i++)
 			if (i == index) {
-				arguments.output = grand.output;
+				token.output = token.klazz.cast(grand.output);
 				return;
 			}
 
-		throw new ParseException(arguments + " didn't recurse");
+		throw new ParseException(token + " didn't recurse");
 	}
 
 	/**
@@ -1240,77 +1163,40 @@ public class JSON extends AbstractFormat {
 	 * <br/>
 	 * Parse the string from the given reader to an {@link String}. Then set it to the given {@link AtomicReference buffer}.
 	 *
-	 * @param arguments the parsing instance that holds the variables of this parsing
+	 * @param token the parsing instance that holds the variables of this parsing
 	 * @throws ParseException               when any parsing exception occurs
 	 * @throws IOException                  when any I/O exception occurs
-	 * @throws NullPointerException         if the given 'arguments' is null
+	 * @throws NullPointerException         if the given 'token' is null
 	 * @throws ReflectiveOperationException if any exception occurred while trying to construct the char-sequence
 	 */
-	@ParseMethod(
-			@MetaFamily(
-					subIn = CharSequence.class
-			))
-	protected void parseString(ParseArguments<CharSequence, CharSequence> arguments) throws IOException, ReflectiveOperationException {
+	@ParseMethod(@Filter(subIn = CharSequence.class))
+	protected void parseString(ParseToken<CharSequence> token) throws IOException, ReflectiveOperationException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		Class klass = arguments.outputClazz.getKlass();
+		Class klass = token.klazz.getKlass();
 
 		int l = DEFAULT_VALUE_LENGTH;
-		String string = Inputu.getRemaining(arguments.input, l, l).trim();
+		String string = Inputu.getRemaining(token.input, l, l).trim();
 		String value = string.substring(SYNTAX.STRING_START.length(), string.length() - SYNTAX.STRING_END.length());
 
 		for (Map.Entry<String, String> escapable : STRING_ESCAPABLES.entrySet())
 			value.replace(escapable.getValue(), escapable.getKey());
 
 		if (klass == String.class)
-			arguments.output = value;
+			token.output = value;
 		else if (CharSequence.class.isAssignableFrom(klass))
 			//if we can construct a new of that clazz
 			try {
-				arguments.output = (CharSequence) klass.getMethod("valueOf", String.class).invoke(null, value);
+				token.output = (CharSequence) klass.getMethod("valueOf", String.class).invoke(null, value);
 			} catch (ReflectiveOperationException e) {
-				arguments.output = (CharSequence) klass.getConstructor(String.class).newInstance(value);
+				token.output = (CharSequence) klass.getConstructor(String.class).newInstance(value);
 			}
 		else if (klass.isAssignableFrom(CharSequence.class))
 			//if the results can satisfied the clazz
-			arguments.output = value;
+			token.output = value;
 		else throw new IllegalArgumentException(klass + " can't be satisfied with a string");
-	}
-
-	/**
-	 * Set the default values of JSON for this json format.
-	 */
-	@Static
-	protected void setDefaults() {
-		this.DEBUGGING = false;
-		this.DEFAULT_MEMBERS_COUNT = 10;
-		this.DEFAULT_NESTING_DEPTH = 5;
-		this.DEFAULT_VALUE_LENGTH = 20;
-		this.DEFAULT_WHITE_SPACE_LENGTH = 20;
-
-		this.STRING_ESCAPABLES = new HashMap<>();
-		this.STRING_ESCAPABLES.put("\\", "\\\\");
-		this.STRING_ESCAPABLES.put("\"", "\\\"");
-		this.STRING_ESCAPABLES.put("\n", "\\\n");
-		this.STRING_ESCAPABLES.put("\r", "\\\r");
-		this.STRING_ESCAPABLES.put("\t", "\\\t");
-
-		this.SYNTAX = new Syntax();
-
-		this.SYNTAX_NESTABLE = new HashMap<>();
-		this.SYNTAX_NESTABLE.put(this.SYNTAX.OBJECT_START, this.SYNTAX.OBJECT_END);
-		this.SYNTAX_NESTABLE.put(this.SYNTAX.ARRAY_START, this.SYNTAX.ARRAY_END);
-
-		this.SYNTAX_LITERAL = new HashMap<>();
-		this.SYNTAX_LITERAL.put(this.SYNTAX.STRING_START, this.SYNTAX.STRING_END);
-		this.SYNTAX_LITERAL.put(this.SYNTAX.COMMENT_START, this.SYNTAX.COMMENT_END);
-		this.SYNTAX_LITERAL.put(this.SYNTAX.LINE_COMMENT_START, this.SYNTAX.LINE_COMMENT_END);
-
-		this.SYNTAX_COMMENT = new HashMap<>();
-		this.SYNTAX_COMMENT.put(this.SYNTAX.COMMENT_START, this.SYNTAX.COMMENT_END);
-		this.SYNTAX_COMMENT.put(this.SYNTAX.LINE_COMMENT_START, this.SYNTAX.LINE_COMMENT_END);
 	}
 
 	/**

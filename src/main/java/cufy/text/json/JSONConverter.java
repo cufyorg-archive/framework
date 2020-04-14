@@ -16,10 +16,14 @@
 package cufy.text.json;
 
 import cufy.convert.BaseConverter;
-import cufy.convert.ConvertArguments;
 import cufy.convert.ConvertMethod;
-import cufy.meta.MetaFamily;
-import cufy.meta.MetaReference;
+import cufy.convert.ConvertToken;
+import cufy.lang.Clazz;
+import cufy.meta.Filter;
+import cufy.meta.Reference;
+import cufy.text.ClassifyToken;
+import cufy.text.FormatToken;
+import cufy.text.ParseToken;
 
 import java.io.IOError;
 import java.io.IOException;
@@ -39,22 +43,22 @@ public class JSONConverter extends BaseConverter {
 	/**
 	 * The global instance to avoid unnecessary instancing.
 	 */
-	@MetaReference
+	@Reference
 	final public static JSONConverter global = new JSONConverter();
 
 	/**
 	 * Object => String
 	 * <br/>
 	 *
-	 * Set the {@link ConvertArguments#output} with a new {@link String} that holds the value of the given {@link ConvertArguments#input}. Using
+	 * Set the {@link ConvertToken#output} with a new {@link String} that holds the value of the given {@link ConvertToken#input}. Using
 	 * {@link JSON}.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException     if the given 'arguments' is null
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException     if the given 'token' is null
 	 * @throws IllegalArgumentException if the given 'outputClass' is not {@link String}
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
+			input = @Filter(
 					subIn = Object.class,
 					in = {byte.class,
 						  boolean.class,
@@ -65,16 +69,20 @@ public class JSONConverter extends BaseConverter {
 						  long.class,
 						  short.class
 					}),
-			output = @MetaFamily(
+			output = @Filter(
 					in = String.class
 			))
-	protected void object_string(ConvertArguments<Object, String> arguments) {
-		try {
-			if (DEBUGGING) {
-				Objects.requireNonNull(arguments, "arguments");
-			}
+	protected void object_string(ConvertToken<Object, String> token) {
+		if (DEBUGGING) {
+			Objects.requireNonNull(token, "token");
+		}
 
-			arguments.output = JSON.global.format(arguments.input, new StringWriter(), arguments.inputClazz, arguments.outputClazz).toString();
+		try {
+			token.output = JSON.global.format(new FormatToken<>(
+					token.input,
+					new StringWriter(),
+					token.inputClazz)
+			).toString();
 		} catch (IOException e) {
 			throw new IOError(e);
 		}
@@ -83,18 +91,18 @@ public class JSONConverter extends BaseConverter {
 	/**
 	 * String => Object
 	 * <br/>
-	 * Try to construct a new object of the value of the given {@link ConvertArguments#input} with type of the {@link ConvertArguments#outputClazz}.
+	 * Try to construct a new object of the value of the given {@link ConvertToken#input} with type of the {@link ConvertToken#outputClazz}.
 	 * Using {@link JSON}.
 	 *
-	 * @param arguments the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException     if the given 'arguments' or 'input' is null
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException     if the given 'token' or 'input' is null
 	 * @throws IllegalArgumentException if the given 'input' is not a string. Or if the 'inputClass' is not String.class.
 	 */
 	@ConvertMethod(
-			input = @MetaFamily(
+			input = @Filter(
 					subIn = String.class
 			),
-			output = @MetaFamily(
+			output = @Filter(
 					subIn = Object.class,
 					in = {boolean.class,
 						  byte.class,
@@ -105,13 +113,18 @@ public class JSONConverter extends BaseConverter {
 						  long.class,
 						  short.class
 					}))
-	protected void string_object(ConvertArguments<String, Object> arguments) {
-		try {
-			if (DEBUGGING) {
-				Objects.requireNonNull(arguments, "arguments");
-			}
+	protected void string_object(ConvertToken<String, Object> token) {
+		if (DEBUGGING) {
+			Objects.requireNonNull(token, "token");
+		}
 
-			arguments.output = JSON.global.cparse(new StringReader(arguments.input), arguments.outputClazz);
+		try {
+			StringReader reader = new StringReader(token.input);
+			token.output = JSON.global.parse(new ParseToken<>(
+					reader,
+					null,
+					Clazz.ofz(JSON.global.classify(new ClassifyToken<>(reader, null)).getFamily(), token.outputClazz)
+			));
 		} catch (IOException e) {
 			throw new IOError(e);
 		}
