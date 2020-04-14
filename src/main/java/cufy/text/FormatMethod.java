@@ -15,7 +15,7 @@
  */
 package cufy.text;
 
-import cufy.meta.MetaFamily;
+import cufy.meta.Filter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -38,5 +38,5 @@ public @interface FormatMethod {
 	 *
 	 * @return the supported classes
 	 */
-	MetaFamily value() default @MetaFamily;
+	Filter value() default @Filter;
 }

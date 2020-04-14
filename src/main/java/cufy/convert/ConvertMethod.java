@@ -15,7 +15,7 @@
  */
 package cufy.convert;
 
-import cufy.meta.MetaFamily;
+import cufy.meta.Filter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -37,11 +37,11 @@ public @interface ConvertMethod {
 	 *
 	 * @return the input type range
 	 */
-	MetaFamily input();
+	Filter input();
 	/**
 	 * The classes that the annotated method can return.
 	 *
 	 * @return the output type range
 	 */
-	MetaFamily output();
+	Filter output();
 }
