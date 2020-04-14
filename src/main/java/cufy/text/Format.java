@@ -15,10 +15,11 @@
  */
 package cufy.text;
 
-import cufy.lang.Clazz;
-
+import java.io.IOError;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
+import java.util.Objects;
 
 /**
  * A class that is a {@link Formatter} and {@link Parser} and {@link Classifier} at the same time.
@@ -29,62 +30,72 @@ import java.io.Reader;
  */
 public interface Format extends Formatter, Parser, Classifier {
 	/**
-	 * Classify then parse the text read from the 'reader' to an object with the type of the 'outputClazz' and then return it.
+	 * Parse the given text to an object.
 	 *
-	 * @param input       the input to read from
-	 * @param output      the initial output instance
-	 * @param outputClazz the clazz to be for the output
-	 * @param <O>         the type of the parsed object
-	 * @return the parsed object
-	 * @throws NullPointerException if the given 'outputClass' or 'input' is null
-	 * @throws IOException          if any I/O exception occurs
-	 * @throws ParseException       if any parsing exception occurs
+	 * @param text to be parsed
+	 * @param <T>  the type of the returned object
+	 * @return an object parsed from the given text
+	 * @throws NullPointerException if the given 'text' is null
+	 * @throws ClassifyException    when any classification exception occurs
+	 * @throws ParseException       when any parsing exception occurs
 	 */
-	default <O> O cparse(Reader input, O output, Clazz outputClazz) throws IOException {
-		return this.parse(input, output, this.classify(input), outputClazz);
+	default <T> T cparse(CharSequence text) {
+		try {
+			Objects.requireNonNull(text, "text");
+			Reader reader = new StringReader(text.toString());
+			return this.parse(new ParseToken<>(reader, null, this.classify(new ClassifyToken<>(reader, null))));
+		} catch (IOException e) {
+			throw new IOError(e);
+		}
+	}
+
+	/**
+	 * Parse the given text to the given object.
+	 *
+	 * @param text   to be parsed
+	 * @param object the object to parse to
+	 * @param <T>    the type of the parsed object
+	 * @return the parsed object
+	 * @throws NullPointerException if the given 'text' is null
+	 * @throws ClassifyException    when any classification exception occurs
+	 * @throws ParseException       when any parsing exception occurs
+	 */
+	default <T> T cparse(CharSequence text, T object) {
+		try {
+			Objects.requireNonNull(text, "text");
+			Reader reader = new StringReader(text.toString());
+			return this.parse(new ParseToken<>(reader, object, this.classify(new ClassifyToken<>(reader, null))));
+		} catch (IOException e) {
+			throw new IOError(e);
+		}
 	}
 
 	/**
 	 * Classify then parse the text read from the 'reader' to an object with the type of the 'outputClazz' and then return it.
 	 *
-	 * @param input  the input to read from
-	 * @param output the initial output instance
-	 * @param <O>    the type of the parsed object
+	 * @param reader the reader to read from
+	 * @param <T>    the type of the parsed object
 	 * @return the parsed object
-	 * @throws NullPointerException if the given 'outputClass' or 'input' is null
+	 * @throws NullPointerException if the given 'reader' is null
 	 * @throws IOException          if any I/O exception occurs
 	 * @throws ParseException       if any parsing exception occurs
 	 */
-	default <O> O cparse(Reader input, O output) throws IOException {
-		return this.parse(input, output, this.classify(input));
+	default <T> T cparse(Reader reader) throws IOException {
+		return this.parse(new ParseToken<>(reader, null, this.classify(new ClassifyToken<>(reader, null))));
 	}
 
 	/**
-	 * Classify then parse the text read from the 'reader' to an object with the type of the 'outputClazz' and then return it.
+	 * Classify then parse the text read from the 'reader' to the given object and then return it.
 	 *
-	 * @param input       the input to read from
-	 * @param outputClazz the clazz to be for the output
-	 * @param <O>         the type of the parsed object
+	 * @param reader the reader to read from
+	 * @param object the object to parse to
+	 * @param <T>    the type of the parsed object
 	 * @return the parsed object
-	 * @throws NullPointerException if the given 'outputClass' or 'input' is null
+	 * @throws NullPointerException if the given 'reader' is null
 	 * @throws IOException          if any I/O exception occurs
 	 * @throws ParseException       if any parsing exception occurs
 	 */
-	default <O> O cparse(Reader input, Clazz outputClazz) throws IOException {
-		return this.parse(input, this.classify(input), outputClazz);
-	}
-
-	/**
-	 * Classify then parse the text read from the 'reader' to an object with the type of the 'outputClazz' and then return it.
-	 *
-	 * @param input the input to read from
-	 * @param <O>   the type of the parsed object
-	 * @return the parsed object
-	 * @throws NullPointerException if the given 'outputClass' or 'input' is null
-	 * @throws IOException          if any I/O exception occurs
-	 * @throws ParseException       if any parsing exception occurs
-	 */
-	default <O> O cparse(Reader input) throws IOException {
-		return this.parse(input, this.classify(input));
+	default <T> T cparse(Reader reader, T object) throws IOException {
+		return this.parse(new ParseToken<>(reader, object, this.classify(new ClassifyToken<>(reader, null))));
 	}
 }

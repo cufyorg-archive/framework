@@ -16,8 +16,7 @@
 package cufy.text;
 
 import cufy.lang.Clazz;
-import cufy.lang.Static;
-import cufy.meta.MetaFamily;
+import cufy.meta.Filter;
 import cufy.util.Group;
 import cufy.util.Reflectionu;
 import cufy.util.UnmodifiableGroup;
@@ -27,7 +26,6 @@ import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -52,7 +50,7 @@ public abstract class AbstractFormat implements Format {
 	/**
 	 * The dynamic methods of this class.
 	 */
-	final protected Group<Method> methods;
+	final protected Group<Method> methods = new UnmodifiableGroup<>(Reflectionu.getAllMethods(this.getClass()));
 	/**
 	 * If this class in a debugging mode or not.
 	 *
@@ -60,76 +58,66 @@ public abstract class AbstractFormat implements Format {
 	 */
 	protected boolean DEBUGGING = false;
 
-	{
-		List<Method> methods = Reflectionu.getAllMethods(this.getClass());
-		methods.removeIf(m -> m.isAnnotationPresent(Static.class));
-		this.methods = new UnmodifiableGroup<>(methods);
-	}
-
 	@Override
-	@Static
-	public <O> Clazz<O> classify(ClassifyArguments<?, O> arguments) throws IOException {
-		Objects.requireNonNull(arguments, "arguments");
+	public <T> Clazz<T> classify(ClassifyToken<T> token) throws IOException {
+		Objects.requireNonNull(token, "token");
 
 		for (Method method : this.getClassifyMethods())
-			if (this.classify0(method, arguments))
-				return arguments.output;
+			if (this.classify0(method, token))
+				return token.output;
 
-		if (arguments.output == null)
-			this.classifyElse(arguments);
+		if (token.output == null)
+			this.classifyElse(token);
 
-		return arguments.output;
+		return token.output;
 	}
 
 	@Override
-	@Static
-	public Writer format(FormatArguments arguments) throws IOException {
-		Objects.requireNonNull(arguments, "arguments");
+	public <T> Writer format(FormatToken<T> token) throws IOException {
+		Objects.requireNonNull(token, "token");
 
-		Method method = this.getFormatMethod(arguments.inputClazz.getFamily());
+		Method method = this.getFormatMethod(token.klazz.getFamily());
 
 		if (method == null)
-			this.formatElse(arguments);
-		else this.format0(method, arguments);
+			this.formatElse(token);
+		else this.format0(method, token);
 
-		return arguments.output;
+		return token.output;
 	}
 
 	@Override
-	@Static
-	public <O> O parse(ParseArguments<?, O> arguments) throws IOException {
-		Objects.requireNonNull(arguments, "arguments");
+	public <T> T parse(ParseToken<T> token) throws IOException {
+		Objects.requireNonNull(token, "token");
 
-		Method method = this.getParseMethod(arguments.inputClazz.getFamily());
+		Method method = this.getParseMethod(token.klazz.getFamily());
 
 		if (method == null)
-			this.parseElse(arguments);
-		else this.parse0(method, arguments);
+			this.parseElse(token);
+		else this.parse0(method, token);
 
-		return arguments.output;
+		return token.output;
 	}
 
 	/**
 	 * Invoke the given {@link ClassifyMethod} with the given parameters.
 	 *
-	 * @param method    to be invoked
-	 * @param arguments the classification instance that holds the variables of this classification
+	 * @param method to be invoked
+	 * @param token  the classification instance that holds the variables of this classification
 	 * @return if the invoked method successfully classified the input and no need for further classifications
 	 * @throws IOException              if any I/O exception occurs
-	 * @throws NullPointerException     if the given 'arguments' or 'method' is null
+	 * @throws NullPointerException     if the given 'token' or 'method' is null
 	 * @throws ClassifyException        if any classifying exception occurs
 	 * @throws IllegalArgumentException if the given method have limited access. Or if the given method have illegal parameters count
 	 */
-	@Static
-	protected boolean classify0(Method method, ClassifyArguments arguments) throws IOException {
+	protected boolean classify0(Method method, ClassifyToken token) throws IOException {
 		if (DEBUGGING) {
 			Objects.requireNonNull(method, "method");
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
 		try {
 			method.setAccessible(true);
-			return (boolean) method.invoke(this, arguments);
+			return (boolean) method.invoke(this, token);
 		} catch (IllegalAccessException e) {
 			throw new IllegalArgumentException(method + " have limited access", e);
 		} catch (InvocationTargetException e) {
@@ -145,43 +133,41 @@ public abstract class AbstractFormat implements Format {
 	}
 
 	/**
-	 * Get invoked if no classifying method is found for the given arguments.
+	 * Get invoked if no classifying method is found for the given token.
 	 *
-	 * @param arguments the classification instance that holds the variables of this classification
+	 * @param token the classification instance that holds the variables of this classification
 	 * @throws IOException          if any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 * @throws ClassifyException    if any classifying exception occurs
 	 * @apiNote called dynamically. No need for direct call
 	 */
-	@Static
-	protected void classifyElse(ClassifyArguments arguments) throws IOException {
+	protected void classifyElse(ClassifyToken token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		throw new ClassifyException("Can't classify " + arguments.input);
+		throw new ClassifyException("Can't classify " + token.input);
 	}
 
 	/**
 	 * Invoke the given {@link FormatMethod} with the given parameters.
 	 *
-	 * @param method    to be invoked
-	 * @param arguments the formatting instance that holds the variables of this formatting
+	 * @param method to be invoked
+	 * @param token  the formatting instance that holds the variables of this formatting
 	 * @throws IOException              if any I/O exception occurs
-	 * @throws NullPointerException     if the given 'arguments' or 'method' is null
+	 * @throws NullPointerException     if the given 'token' or 'method' is null
 	 * @throws FormatException          if any formatting exception occurs
 	 * @throws IllegalArgumentException if the given method have limited access. Or if the given method have illegal parameters count
 	 */
-	@Static
-	protected void format0(Method method, FormatArguments arguments) throws IOException {
+	protected void format0(Method method, FormatToken token) throws IOException {
 		if (DEBUGGING) {
 			Objects.requireNonNull(method, "method");
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
 		try {
 			method.setAccessible(true);
-			method.invoke(this, arguments);
+			method.invoke(this, token);
 		} catch (IllegalAccessException e) {
 			throw new IllegalArgumentException(method + " have limited access", e);
 		} catch (InvocationTargetException e) {
@@ -197,21 +183,20 @@ public abstract class AbstractFormat implements Format {
 	}
 
 	/**
-	 * Get invoked if no formatting method is found for the given arguments.
+	 * Get invoked if no formatting method is found for the given token.
 	 *
-	 * @param arguments the formatting instance that holds the variables of this formatting
+	 * @param token the formatting instance that holds the variables of this formatting
 	 * @throws IOException          if any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 * @throws FormatException      if any formatting exception occurs
 	 * @apiNote called dynamically. No need for direct call
 	 */
-	@Static
-	protected void formatElse(FormatArguments arguments) throws IOException {
+	protected void formatElse(FormatToken token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		throw new FormatException("Can't format " + arguments.input.getClass());
+		throw new FormatException("Can't format " + token.input.getClass());
 	}
 
 	/**
@@ -219,7 +204,6 @@ public abstract class AbstractFormat implements Format {
 	 *
 	 * @return the {@link ClassifyMethod} group
 	 */
-	@Static
 	protected Group<Method> getClassifyMethods() {
 		return this.methods.subGroup(ClassifyMethod.class, m -> m.isAnnotationPresent(ClassifyMethod.class));
 	}
@@ -231,13 +215,12 @@ public abstract class AbstractFormat implements Format {
 	 * @return the first format method supports given class. Or null if this class don't have one
 	 * @throws NullPointerException if the given class is null
 	 */
-	@Static
 	protected Method getFormatMethod(Class klass) {
 		Objects.requireNonNull(klass, "klass");
 
 		Group<Method> valid = this.methods
 				.subGroup(FormatMethod.class, m -> m.isAnnotationPresent(FormatMethod.class))
-				.subGroup(klass, m -> MetaFamily.util.test(m.getAnnotation(FormatMethod.class).value(), klass));
+				.subGroup(klass, m -> Filter.util.test(m.getAnnotation(FormatMethod.class).value(), klass));
 
 		Iterator<Method> i = valid.iterator();
 		return i.hasNext() ? i.next() : null;
@@ -250,13 +233,12 @@ public abstract class AbstractFormat implements Format {
 	 * @return the first parse method supports given class. Or null if this class don't have one
 	 * @throws NullPointerException if the given class is null
 	 */
-	@Static
 	protected Method getParseMethod(Class klass) {
 		Objects.requireNonNull(klass, "klass");
 
 		Group<Method> valid = this.methods
 				.subGroup(ParseMethod.class, m -> m.isAnnotationPresent(ParseMethod.class))
-				.subGroup(klass, m -> MetaFamily.util.test(m.getAnnotation(ParseMethod.class).value(), klass));
+				.subGroup(klass, m -> Filter.util.test(m.getAnnotation(ParseMethod.class).value(), klass));
 
 		Iterator<Method> i = valid.iterator();
 		return i.hasNext() ? i.next() : null;
@@ -265,23 +247,22 @@ public abstract class AbstractFormat implements Format {
 	/**
 	 * Invoke the given {@link ParseMethod} with the given parameters.
 	 *
-	 * @param method    to be invoked
-	 * @param arguments the parsing instance that holds the variables of this parsing
+	 * @param method to be invoked
+	 * @param token  the parsing instance that holds the variables of this parsing
 	 * @throws IOException              if any I/O exception occurs
-	 * @throws NullPointerException     if the given 'arguments' or 'method' is null
+	 * @throws NullPointerException     if the given 'token' or 'method' is null
 	 * @throws ParseException           if any parsing exception occurs
 	 * @throws IllegalArgumentException if the given method have limited access. Or if the given method have illegal parameters count
 	 */
-	@Static
-	protected void parse0(Method method, ParseArguments arguments) throws IOException {
+	protected void parse0(Method method, ParseToken token) throws IOException {
 		if (DEBUGGING) {
 			Objects.requireNonNull(method, "method");
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
 		try {
 			method.setAccessible(true);
-			method.invoke(this, arguments);
+			method.invoke(this, token);
 		} catch (IllegalAccessException e) {
 			throw new IllegalArgumentException(method + " have a limited access", e);
 		} catch (InvocationTargetException e) {
@@ -297,20 +278,19 @@ public abstract class AbstractFormat implements Format {
 	}
 
 	/**
-	 * Get invoked if no parsing method is found for the given arguments.
+	 * Get invoked if no parsing method is found for the given token.
 	 *
-	 * @param arguments the parsing instance that holds the variables of this parsing
+	 * @param token the parsing instance that holds the variables of this parsing
 	 * @throws IOException          if any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 * @throws ParseException       if any parsing exception occurs
 	 * @apiNote called dynamically. No need for direct call
 	 */
-	@Static
-	protected void parseElse(ParseArguments arguments) throws IOException {
+	protected void parseElse(ParseToken token) throws IOException {
 		if (DEBUGGING) {
-			Objects.requireNonNull(arguments, "arguments");
+			Objects.requireNonNull(token, "token");
 		}
 
-		throw new ParseException("Can't parse " + arguments.outputClazz.getKlass());
+		throw new ParseException("Can't parse " + token.klazz);
 	}
 }
