@@ -13,4 +13,19 @@ public class ClazzTest {
 	public void ofa() {
 		//TODO
 	}
+
+	@Test
+	public void ofi() {
+		//TODO
+	}
+
+	@Test
+	public void ofn() {
+		//TODO
+	}
+
+	@Test
+	public void ofz() {
+		//TODO
+	}
 }
