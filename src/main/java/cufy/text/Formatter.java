@@ -17,7 +17,9 @@ package cufy.text;
 
 import cufy.lang.Clazz;
 
+import java.io.IOError;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 
 /**
@@ -29,59 +31,45 @@ import java.io.Writer;
  */
 public interface Formatter {
 	/**
-	 * Write the text outputted from formatting the given 'input' to the 'output'.
+	 * Format the given object.
 	 *
-	 * @param input       the input instance
-	 * @param output      the output to write to
-	 * @param inputClazz  the clazz of the input
-	 * @param outputClazz the clazz to be for the output
-	 * @return the writer in presented in the arguments
-	 * @throws NullPointerException if the given 'inputClass' or 'outputClass' or 'output' is null
-	 * @throws IOException          if any I/O exception occurs
-	 * @throws FormatException      if any formatting exception occurs
+	 * @param object to be formatted into text
+	 * @param <T>    the type of the given object
+	 * @return a text from the given object
+	 * @throws FormatException when any formatting errors occurs
 	 */
-	default Writer format(Object input, Writer output, Clazz inputClazz, Clazz outputClazz) throws IOException {
-		return this.format(new FormatArguments<>(input, output, inputClazz, outputClazz));
+	default <T> String format(T object) {
+		try {
+			return this.format(new FormatToken(object, new StringWriter(), Clazz.ofi(object))).toString();
+		} catch (IOException e) {
+			throw new IOError(e);
+		}
 	}
 
 	/**
-	 * Write the text outputted from formatting the given 'input' to the 'output'.
+	 * Format the given object and write the text to the given writer.
 	 *
-	 * @param input       the input instance (source of inputClazz)
-	 * @param output      the output to write to
-	 * @param outputClazz the clazz to be for the output
-	 * @return the writer in presented in the arguments
-	 * @throws NullPointerException if the given 'outputClass' or 'output' is null
-	 * @throws IOException          if any I/O exception occurs
-	 * @throws FormatException      if any formatting exception occurs
+	 * @param writer to write to
+	 * @param object to be formatted
+	 * @param <T>    the type of the given object
+	 * @return the given writer
+	 * @throws IOException          if any IO exception occurs
+	 * @throws FormatException      when any formatting errors occurs
+	 * @throws NullPointerException if the given 'writer' is null
 	 */
-	default Writer format(Object input, Writer output, Clazz outputClazz) throws IOException {
-		return this.format(new FormatArguments<>(input, output, outputClazz));
+	default <T> Writer format(T object, Writer writer) throws IOException {
+		return this.format(new FormatToken<>(object, writer, Clazz.ofi(object)));
 	}
 
 	/**
-	 * Write the text outputted from formatting the given 'input' to the 'output'.
+	 * Write the text outputted from formatting {@link FormatToken#input} to the {@link FormatToken#output}.
 	 *
-	 * @param input  the input instance (source of inputClazz and outputClazz)
-	 * @param output the output to write to
-	 * @return the writer in presented in the arguments
-	 * @throws NullPointerException if the given 'output' is null
+	 * @param token the formatting instance that holds the variables of this formatting
+	 * @param <T>   the type of the input
+	 * @return the writer presented in the token
 	 * @throws IOException          if any I/O exception occurs
 	 * @throws FormatException      if any formatting exception occurs
+	 * @throws NullPointerException if the given 'token' is null
 	 */
-	default Writer format(Object input, Writer output) throws IOException {
-		return this.format(new FormatArguments<>(input, output));
-	}
-
-	/**
-	 * Write the text outputted from formatting {@link FormatArguments#input} to the {@link FormatArguments#output}.
-	 *
-	 * @param arguments the formatting instance that holds the variables of this formatting
-	 * @return the writer in presented in the arguments
-	 * @throws IOException          if any I/O exception occurs
-	 * @throws FormatException      if any formatting exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
-	 */
-	Writer format(FormatArguments arguments) throws IOException;
-
+	<T> Writer format(FormatToken<T> token) throws IOException;
 }
