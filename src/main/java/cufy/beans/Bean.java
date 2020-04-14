@@ -16,11 +16,12 @@
 package cufy.beans;
 
 import cufy.convert.BaseConverter;
+import cufy.convert.ConvertToken;
 import cufy.convert.Converter;
 import cufy.lang.Clazz;
-import cufy.meta.MetaClazz;
-import cufy.meta.MetaObject;
-import cufy.meta.MetaReference;
+import cufy.meta.Recipe;
+import cufy.meta.Reference;
+import cufy.meta.Type;
 import cufy.util.Reflectionu;
 
 import java.lang.annotation.ElementType;
@@ -265,19 +266,19 @@ public interface Bean<K, V> extends Map<K, V> {
 		 *
 		 * @return the reference to the converter of the annotated field
 		 */
-		MetaReference converter() default @MetaReference(type = BaseConverter.class);
+		Reference converter() default @Reference(BaseConverter.class);
 		/**
 		 * The key of the annotated field. This will override the default key (the name of the field).
 		 *
 		 * @return the key of the annotated field
 		 */
-		MetaObject key() default @MetaObject(converter = @MetaReference(type = MetaReference.util.class));
+		Recipe key() default @Recipe(converter = @Reference);
 		/**
 		 * The type of the annotated field. This will override the default type (The type of the field)
 		 *
 		 * @return the type of the annotated field's property
 		 */
-		MetaClazz type() default @MetaClazz(Object.class);
+		Type type() default @Type(Object.class);
 	}
 
 	/**
@@ -316,7 +317,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		 *
 		 * @see Property#type
 		 */
-		final protected Clazz type;
+		final protected Clazz<V> type;
 
 		/**
 		 * Construct a new field entry.
@@ -337,7 +338,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			this.key = getKey(field);
 			this.type = getType(field);
 			this.meta = field.getAnnotation(Property.class);
-			this.converter = MetaReference.util.get(meta.converter());
+			this.converter = Reference.util.getValue(meta.converter());
 		}
 
 		/**
@@ -360,7 +361,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			this.key = key;
 			this.type = getType(field);
 			this.meta = field.getAnnotation(Property.class);
-			this.converter = MetaReference.util.get(meta.converter());
+			this.converter = Reference.util.getValue(meta.converter());
 		}
 
 		/**
@@ -399,8 +400,8 @@ public interface Bean<K, V> extends Map<K, V> {
 			if (!field.isAnnotationPresent(Bean.Property.class))
 				throw new IllegalArgumentException(field + " is not annotated with " + Bean.Property.class);
 
-			MetaObject key = field.getAnnotation(Property.class).key();
-			return key.converter().type() == MetaReference.util.class ? (K) field.getName() : MetaObject.util.get(key);
+			Recipe key = field.getAnnotation(Property.class).key();
+			return key.converter().value() == Reference.util.class ? (K) field.getName() : Recipe.util.get(key);
 		}
 
 		/**
@@ -417,9 +418,13 @@ public interface Bean<K, V> extends Map<K, V> {
 			if (!field.isAnnotationPresent(Property.class))
 				throw new IllegalArgumentException(field + " is not annotated with " + Property.class);
 
-			MetaClazz meta = field.getAnnotation(Property.class).type();
-			return meta.family() == MetaClazz.util.class && meta.value() == Object.class ?
-				   Clazz.of((Class) field.getType()) : MetaClazz.util.get(meta);
+			Type type = field.getAnnotation(Property.class).type();
+
+			if (type.family() == Type.util.class && type.value() == Object.class) {
+				return (Clazz<V>) Clazz.of(field.getType());
+			} else {
+				return Type.util.get(type);
+			}
 		}
 
 		/**
@@ -463,8 +468,8 @@ public interface Bean<K, V> extends Map<K, V> {
 			if (!field.isAnnotationPresent(Bean.Property.class))
 				throw new IllegalArgumentException(field + " is not annotated with " + Bean.Property.class);
 
-			Converter converter = MetaReference.util.get(field.getAnnotation(Property.class).converter());
-			Clazz type = getType(field);
+			Converter converter = Reference.util.getValue(field.getAnnotation(Property.class).converter());
+			Clazz<V> type = getType(field);
 
 			return setValue(field, instance, value, converter, type);
 		}
@@ -482,9 +487,9 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @throws NullPointerException     if the given 'field' or 'instance' is null
 		 * @throws IllegalArgumentException if the given 'field' is not annotated with {@link Bean.Property}
 		 */
-		private static <V> V setValue(Field field, Object instance, V value, Converter converter, Clazz type) {
+		private static <V> V setValue(Field field, Object instance, V value, Converter converter, Clazz<V> type) {
 			try {
-				value = converter.convert(value, value, type);
+				value = converter.convert(new ConvertToken<>(value, value, Clazz.ofi(value), type));
 
 				field.setAccessible(true);
 				V old = (V) field.get(instance);

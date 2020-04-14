@@ -1,7 +1,7 @@
 package cufy.beans;
 
-import cufy.meta.MetaClazz;
-import cufy.meta.MetaObject;
+import cufy.meta.Type;
+import cufy.meta.Recipe;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ public class BeanTest {
 		Object object = new Object() {
 			@Bean.Property
 			public int p;
-			@Bean.Property(key = @MetaObject(value = "false", type = @MetaClazz(Boolean.class)), type = @MetaClazz(Integer.class))
+			@Bean.Property(key = @Recipe(value = "false", type = @Type(Boolean.class)), type = @Type(Integer.class))
 			private int property0 = 90;
 		};
 
@@ -33,7 +33,7 @@ public class BeanTest {
 	@Test
 	public void _forInstance_struct_put_get_size() {
 		Object object = new Object() {
-			@Bean.Property(key = @MetaObject(value = "false", type = @MetaClazz(Boolean.class)))
+			@Bean.Property(key = @Recipe(value = "false", type = @Type(Boolean.class)))
 			private Integer integer = 45;
 		};
 
@@ -64,7 +64,7 @@ public class BeanTest {
 	@Test
 	public void _struct_put_get_size() {
 		Bean<Object, Object> bean = new Bean<Object, Object>() {
-			@Bean.Property(key = @MetaObject(value = "false", type = @MetaClazz(Boolean.class)), type = @MetaClazz(Integer.class))
+			@Bean.Property(key = @Recipe(value = "false", type = @Type(Boolean.class)), type = @Type(Integer.class))
 			private int property0 = 90;
 		};
 
