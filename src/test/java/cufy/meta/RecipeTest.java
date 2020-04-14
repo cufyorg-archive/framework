@@ -5,16 +5,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 @SuppressWarnings("JavaDoc")
-public class MetaObjectTest {
+public class RecipeTest {
 	@Test
-	@MetaObject(
+	@Recipe(
 			value = "3",
-			type = @MetaClazz(Integer.class),
-			converter = @MetaReference(type = BaseConverter.class)
+			type = @Type(Integer.class),
+			converter = @Reference(BaseConverter.class)
 	)
 	public void get() throws NoSuchMethodException {
-		MetaObject object = this.getClass().getMethod("get").getAnnotation(MetaObject.class);
-		int i = MetaObject.util.get(object);
+		Recipe object = this.getClass().getMethod("get").getAnnotation(Recipe.class);
+		int i = Recipe.util.get(object);
 
 		Assert.assertEquals("Wrong value", 3, i, 0);
 

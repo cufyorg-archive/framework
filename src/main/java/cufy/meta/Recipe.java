@@ -16,7 +16,7 @@
 package cufy.meta;
 
 import cufy.convert.BaseConverter;
-import cufy.convert.ConvertArguments;
+import cufy.convert.ConvertToken;
 import cufy.convert.Converter;
 import cufy.lang.Clazz;
 
@@ -33,20 +33,20 @@ import java.util.Objects;
  * @since 21-Nov-2019
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MetaObject {
+public @interface Recipe {
 	/**
 	 * The reference to the converter to be used to construct the value.
 	 *
 	 * @return the reference to the  converter to be used to construct the value
 	 */
-	MetaReference converter() default @MetaReference(type = BaseConverter.class);
+	Reference converter() default @Reference(BaseConverter.class);
 
 	/**
 	 * The clazz of the object.
 	 *
 	 * @return the clazz of the object
 	 */
-	MetaClazz type() default @MetaClazz(String.class);
+	Type type() default @Type(String.class);
 
 	/**
 	 * The source string of the value.
@@ -69,22 +69,26 @@ public @interface MetaObject {
 		}
 
 		/**
-		 * Construct a value from the given {@link MetaObject}.
+		 * Construct a value from the given {@link Recipe}.
 		 *
-		 * @param object the value constructing recipe
+		 * @param recipe the value constructing recipe
 		 * @param <O>    the type of the returned value
 		 * @return a value from the given value constructing recipe
-		 * @throws NullPointerException if the given 'object' is null
+		 * @throws NullPointerException if the given 'recipe' is null
 		 * @throws IllegalMetaException if ANY throwable get thrown while constructing it
 		 */
-		public static <O> O get(MetaObject object) {
-			Objects.requireNonNull(object, "object");
+		public static <O> O get(Recipe recipe) {
+			Objects.requireNonNull(recipe, "recipe");
 
-			Converter converter = MetaReference.util.get(object.converter());
-			Clazz<O> type = MetaClazz.util.get(object.type());
-			String value = object.value();
+			Converter converter = Reference.util.getValue(recipe.converter(), null);
+			Clazz<O> type = Type.util.get(recipe.type());
+			String value = recipe.value();
 
-			return converter.convert(new ConvertArguments<>(value, type));
+			try {
+				return converter.convert(new ConvertToken<>(value, null, Clazz.of(String.class), type));
+			} catch (Throwable e) {
+				throw new IllegalMetaException(e);
+			}
 		}
 	}
 }
