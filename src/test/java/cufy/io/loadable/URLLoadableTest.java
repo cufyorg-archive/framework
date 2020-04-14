@@ -1,7 +1,7 @@
 package cufy.io.loadable;
 
 import cufy.beans.AbstractBean;
-import cufy.meta.MetaObject;
+import cufy.meta.Recipe;
 import cufy.text.Format;
 import cufy.text.json.JSON;
 import org.junit.Assert;
@@ -20,7 +20,7 @@ public class URLLoadableTest {
 		temp.delete();
 
 		class TestBean extends AbstractBean implements FileLoadable, FormatLoadable {
-			@Property(key = @MetaObject("za list ta"))
+			@Property(key = @Recipe("za list ta"))
 			final public List<String> list = new ArrayList<>();
 
 			public File getFile() {

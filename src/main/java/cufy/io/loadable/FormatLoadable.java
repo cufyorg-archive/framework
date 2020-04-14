@@ -16,7 +16,10 @@
 package cufy.io.loadable;
 
 import cufy.concurrent.Instructor;
+import cufy.lang.Clazz;
 import cufy.text.Format;
+import cufy.text.FormatToken;
+import cufy.text.ParseToken;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -33,26 +36,26 @@ public interface FormatLoadable extends Loadable {
 	@Override
 	default void load() throws IOException {
 		try (Reader reader = this.getReader()) {
-			this.getFormat().parse(reader, this);
+			this.getFormat().parse(new ParseToken<>(reader, this, Clazz.ofi(this)));
 		}
 	}
 	@Override
 	default void load(Instructor instructor) throws IOException {
 		try (Reader reader = this.getReader(instructor)) {
-			this.getFormat().parse(reader, this);
+			this.getFormat().parse(new ParseToken<>(reader, this, Clazz.ofi(this)));
 		}
 	}
 
 	@Override
 	default void save() throws IOException {
 		try (Writer writer = this.getWriter()) {
-			this.getFormat().format(this, writer);
+			this.getFormat().format(new FormatToken<>(this, writer, Clazz.ofi(this)));
 		}
 	}
 	@Override
 	default void save(Instructor instructor) throws IOException {
 		try (Writer writer = this.getWriter(instructor)) {
-			this.getFormat().format(this, writer);
+			this.getFormat().format(new FormatToken<>(this, writer, Clazz.ofi(this)));
 		}
 	}
 
