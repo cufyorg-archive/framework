@@ -42,7 +42,7 @@ import java.util.Objects;
  * </ul>
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @implNote you have to navigate this class to where your dynamic methods is. By using annotations.
  * @since 28-Sep-2019
  */

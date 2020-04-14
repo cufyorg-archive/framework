@@ -17,7 +17,7 @@
  * All about json.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 09-July-2019
  */
 package cufy.text.json;

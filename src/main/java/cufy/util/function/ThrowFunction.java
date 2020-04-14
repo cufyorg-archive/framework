@@ -26,7 +26,7 @@ import java.util.function.Function;
  * @param <T> the type of the input to the function
  * @param <R> the type of the result of the function
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 13-Feb-2020
  */
 @FunctionalInterface

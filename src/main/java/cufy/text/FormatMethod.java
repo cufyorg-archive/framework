@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * Navigate the {@link AbstractFormat} class that the annotated method is a stringing method.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @apiNote the annotated method SHOULD match the {@link AbstractFormat#format0} rules
  * @since 30-Mar-2020
  */

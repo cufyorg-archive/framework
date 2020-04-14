@@ -25,7 +25,7 @@ import java.util.Objects;
  *
  * @param <C> the "klass" this clazz is holding
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @apiNote the class {@link Void} is representing null
  * @since 29-Mar-2020
  */

@@ -26,7 +26,7 @@ import java.util.function.BiConsumer;
  * @param <T> the type of the first argument to the operation
  * @param <U> the type of the second argument to the operation
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 13-Feb-2020
  */
 @FunctionalInterface

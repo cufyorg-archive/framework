@@ -19,7 +19,7 @@ package cufy.lang;
  * A representation for a recursion occurred.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 25-Nov-2019
  */
 final public class Recurse {

@@ -17,7 +17,7 @@
  * Meta environment (Runtime Annotations).
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 21-Nov-2019
  */
 package cufy.meta;

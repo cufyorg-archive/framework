@@ -29,7 +29,7 @@ import java.io.Writer;
  * An object that can be loaded from a container. And that container provides an unformatted data that requires that loadable to format it.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 13-Feb-2020
  */
 public interface FormatLoadable extends Loadable {

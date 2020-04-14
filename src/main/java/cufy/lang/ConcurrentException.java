@@ -19,7 +19,7 @@ package cufy.lang;
  * An exception thrown for concurrent errors.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 07-Dec-2019
  */
 public class ConcurrentException extends RuntimeException {

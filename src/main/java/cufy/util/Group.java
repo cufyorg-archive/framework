@@ -24,7 +24,7 @@ import java.util.function.Predicate;
  *
  * @param <E> the type of the elements this group holds
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 25-Jan-2020
  */
 public interface Group<E> extends Collection<E> {

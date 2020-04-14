@@ -26,7 +26,7 @@ import java.util.Objects;
  *
  * @param <T> the type of data this buffer is holding
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 9-Jan-2020
  */
 public class Buffer<T> {

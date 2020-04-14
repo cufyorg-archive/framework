@@ -19,7 +19,7 @@ package cufy.lang;
  * A class Represents emptiness.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 03-Mar-2020
  */
 final public class Empty {

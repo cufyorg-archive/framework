@@ -17,7 +17,7 @@
  * A package for converting objects to different {@link java.lang.Class classes} and {@link cufy.lang.Clazz clazzes}.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 31-Aug-2019
  */
 package cufy.convert;

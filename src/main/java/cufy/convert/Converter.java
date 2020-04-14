@@ -19,7 +19,7 @@ package cufy.convert;
  * A class that can convert instances to different classes. With just a simple gate method (for the caller).
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 31-Aug-2019
  */
 public interface Converter {

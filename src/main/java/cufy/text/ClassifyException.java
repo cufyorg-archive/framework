@@ -19,7 +19,7 @@ package cufy.text;
  * Thrown to indicate that the application has attempted to classify a string, but that string does not have the appropriate type.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 31-Mar-2020
  */
 public class ClassifyException extends RuntimeException {

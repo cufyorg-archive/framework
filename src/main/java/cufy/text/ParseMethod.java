@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * Navigate the {@link AbstractFormat} class that the annotated method is a parsing method.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @apiNote the annotated method SHOULD match the {@link AbstractFormat#parse0} rules
  * @since 30-Mar-2020
  */

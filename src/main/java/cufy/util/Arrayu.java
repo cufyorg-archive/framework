@@ -25,7 +25,7 @@ import java.util.function.BiFunction;
  * Useful methods for Arrays.
  *
  * @author LSafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 11 Jun 2019
  */
 final public class Arrayu {

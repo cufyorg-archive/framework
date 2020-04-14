@@ -31,7 +31,7 @@ import java.util.function.Function;
  * Used to be the communication method between 2 (or more) threads (loops). Used as a tasks list for unknown count unknown state loops.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 18 May 2019
  */
 public class Instructor {

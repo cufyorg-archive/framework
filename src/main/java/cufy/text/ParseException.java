@@ -19,7 +19,7 @@ package cufy.text;
  * Thrown to indicate that the application has attempted to convert a string to an object, but that string does not have the appropriate type.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 16-Nov-2019
  */
 public class ParseException extends RuntimeException {

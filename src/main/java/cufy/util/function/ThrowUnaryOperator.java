@@ -25,7 +25,7 @@ import java.util.function.UnaryOperator;
  * @param <T> the type of the operand and result of the operator
  * @param <E> the exception
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 13-Feb-2020
  */
 @FunctionalInterface

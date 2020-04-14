@@ -26,7 +26,7 @@ import java.io.Writer;
  * A class that can format objects and write it. With just a simple gate method (for the caller).
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 31-Mar-2020
  */
 public interface Formatter {

@@ -22,7 +22,7 @@ import cufy.util.Reflectionu;
  *
  * @param <E> the exception
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 13-Feb-2020
  */
 @FunctionalInterface

@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @param <T> the type of that lock
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 07-Dec-2019
  */
 public class Lock<T> extends Thread implements Closeable {

@@ -23,7 +23,7 @@ import java.util.*;
  * Useful utils for {@link Reader}s.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 12-Dec-2019
  */
 final public class Inputu {

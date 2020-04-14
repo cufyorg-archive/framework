@@ -36,7 +36,7 @@ import java.util.Objects;
  * Object}s. Using {@link JSON}.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 25-Jan-2020
  */
 public class JSONConverter extends BaseConverter {

@@ -25,7 +25,7 @@ import java.util.Objects;
  * A reference to a static field with a specific type. That field should have {@link Reference} annotated to it.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 31-Mar-2020
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -24,7 +24,7 @@ import java.util.function.Function;
  *
  * @param <I> The type of the first initialized variable
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 07-Dec-2019
  */
 public class For<I> extends Loop<BiConsumer<For<I>, I>, I> {

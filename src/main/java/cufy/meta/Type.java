@@ -25,7 +25,7 @@ import java.util.Objects;
  * A recipe to pass information about a clazz in the annotations environment.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 31-Mar-2020
  */
 @Retention(RetentionPolicy.RUNTIME)

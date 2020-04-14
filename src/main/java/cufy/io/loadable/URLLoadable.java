@@ -29,7 +29,7 @@ import java.util.Objects;
  * A loadable that uses {@link URL} as it's container.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 15-Feb-2020
  */
 public interface URLLoadable extends Loadable {

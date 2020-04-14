@@ -39,7 +39,7 @@ import java.util.function.Function;
  * @param <I> the functional interface for the looping code
  * @param <P> the parameter type for invoking {@link #next(Object)}
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 18 May 2019
  */
 public abstract class Loop<I, P> {

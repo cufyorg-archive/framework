@@ -22,7 +22,7 @@ import java.util.function.Consumer;
  * A loop to do code just one time.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 13-Feb-2020
  */
 public class Do extends Loop<Consumer<Do>, Object> {

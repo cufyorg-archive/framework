@@ -24,7 +24,7 @@ import java.util.function.BiConsumer;
  *
  * @param <I> items Type
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 07-Dec-2019
  */
 public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {

@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * Navigate the {@link AbstractFormat} class that the annotated method is a string-type-detecting method.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @apiNote the annotated method SHOULD match the {@link AbstractFormat#classify0} rules
  * @since 30-Mar-2020
  */

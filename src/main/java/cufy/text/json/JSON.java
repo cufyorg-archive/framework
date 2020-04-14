@@ -110,7 +110,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * </ul>
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @see <a href="http://www.json.org/">json.org</a> for more about JSON
  * @since 09-Jul-2019
  */

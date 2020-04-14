@@ -29,7 +29,7 @@ import java.util.Objects;
  * #type()} is the type of that value.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 21-Nov-2019
  */
 @Retention(RetentionPolicy.RUNTIME)

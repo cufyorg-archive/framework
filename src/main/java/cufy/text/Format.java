@@ -25,7 +25,7 @@ import java.util.Objects;
  * A class that is a {@link Formatter} and {@link Parser} and {@link Classifier} at the same time.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 15-Nov-2019
  */
 public interface Format extends Formatter, Parser, Classifier {

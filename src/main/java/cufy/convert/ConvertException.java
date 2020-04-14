@@ -20,7 +20,7 @@ package cufy.convert;
  * generates a ClassConvertException:
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 22-Jan-2020
  */
 public class ConvertException extends RuntimeException {

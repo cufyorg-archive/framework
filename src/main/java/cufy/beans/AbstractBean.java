@@ -30,7 +30,7 @@ import java.util.Set;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 11 Jun 2019
  **/
 public abstract class AbstractBean<K, V> implements FullBean<K, V>, Serializable {

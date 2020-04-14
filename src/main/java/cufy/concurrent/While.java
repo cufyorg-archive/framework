@@ -23,7 +23,7 @@ import java.util.function.Supplier;
  * A {@link Loop} version of the typical 'while' statement.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 07-Dec-2019
  */
 public class While extends Loop<Consumer<While>, Object> {

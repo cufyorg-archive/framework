@@ -23,7 +23,7 @@ import java.util.Objects;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 09-Dec-2019
  */
 public interface FullBean<K, V> extends Bean<K, V> {

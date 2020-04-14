@@ -17,7 +17,7 @@
  * All about concurrent.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 18-May-2019
  */
 package cufy.concurrent;

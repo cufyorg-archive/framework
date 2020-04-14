@@ -28,7 +28,7 @@ import java.util.Objects;
  * A way to control a reader using an {@link Instructor}.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 13-Feb-2020
  */
 public class RemoteReader extends Reader {

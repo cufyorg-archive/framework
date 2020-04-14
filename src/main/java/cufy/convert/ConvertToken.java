@@ -28,7 +28,7 @@ import java.util.Objects;
  * @param <I> the type of the input
  * @param <O> the type of the output
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 30-Mar-2020
  */
 public class ConvertToken<I, O> {

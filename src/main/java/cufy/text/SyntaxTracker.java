@@ -24,7 +24,7 @@ import java.util.Objects;
  * Helps to track syntax positioning on a stream.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 21-Nov-2019
  */
 public class SyntaxTracker implements Appendable {

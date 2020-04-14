@@ -19,7 +19,7 @@ package cufy.text;
  * Thrown to indicate that the application has attempted to convert an object to a string but that object does not have the appropriate type.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 18-Nov-2019
  */
 public class FormatException extends RuntimeException {

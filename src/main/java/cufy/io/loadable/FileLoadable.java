@@ -26,7 +26,7 @@ import java.util.Objects;
  * A loadable that uses {@link File} as it's container.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 14-Feb-2020
  */
 public interface FileLoadable extends Loadable {

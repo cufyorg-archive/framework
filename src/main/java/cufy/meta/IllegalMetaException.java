@@ -19,7 +19,7 @@ package cufy.meta;
  * Any error occurred from unappreciated annotation or annotation value.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 09-Dec-2019
  */
 public class IllegalMetaException extends RuntimeException {

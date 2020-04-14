@@ -25,7 +25,7 @@ import java.util.Objects;
  * A boxing for input-streams as a workaround to support the methods {@link #mark} and {@link #reset()}. Using a {@link Buffer}.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 14-Feb-2020
  */
 public class BufferedInputStream extends InputStream {

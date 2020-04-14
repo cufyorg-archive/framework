@@ -22,7 +22,7 @@ import java.util.function.Consumer;
  * Looping until get broken manually.
  *
  * @author lsafer
- * @version 0.1.2
+ * @version 0.1.3
  * @since 07-Dec-2019
  */
 public class Forever extends Loop<Consumer<Forever>, Object> {
