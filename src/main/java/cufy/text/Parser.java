@@ -17,8 +17,11 @@ package cufy.text;
 
 import cufy.lang.Clazz;
 
+import java.io.IOError;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
+import java.util.Objects;
 
 /**
  * A class that can parse a text from a reader to an object. With just a simple gate method (for the caller).
@@ -29,99 +32,50 @@ import java.io.Reader;
  */
 public interface Parser {
 	/**
-	 * Parse the text read from the {@link ParseArguments#input} to an object with the type of {@link ParseArguments#outputClazz} and store it at
-	 * {@link ParseArguments#output}.
+	 * Parse the given text to the given object.
 	 *
-	 * @param input       the input to read from
-	 * @param output      the initial output instance
-	 * @param inputClazz  the clazz of the input
-	 * @param outputClazz the clazz to be for the output
-	 * @param <O>         the type of the parsed object
+	 * @param <T>    the type of the returned object
+	 * @param text   to be parsed
+	 * @param object to parse to
 	 * @return the parsed object
-	 * @throws IOException          if any I/O exception occurs
-	 * @throws NullPointerException if the given 'inputClass' or 'outputClass' or 'input' is null
 	 * @throws ParseException       if any parsing exception occurs
+	 * @throws NullPointerException if the given text is null
 	 */
-	default <O> O parse(Reader input, O output, Clazz inputClazz, Clazz outputClazz) throws IOException {
-		return this.parse(new ParseArguments<>(input, output, inputClazz, outputClazz));
+	default <T> T parse(CharSequence text, T object) {
+		Objects.requireNonNull(text, "text");
+		try {
+			return this.parse(new ParseToken<>(new StringReader(text.toString()), object, Clazz.ofi(object)));
+		} catch (IOException e) {
+			throw new IOError(e);
+		}
 	}
 
 	/**
-	 * Parse the text read from the {@link ParseArguments#input} to an object with the type of {@link ParseArguments#outputClazz} and store it at
-	 * {@link ParseArguments#output}.
+	 * Parse the text on the given reader to the given object.
 	 *
-	 * @param input       the input to read from
-	 * @param output      the initial output instance
-	 * @param outputClazz the clazz to be for the output (also for inputClazz)
-	 * @param <O>         the type of the parsed object
+	 * @param <T>    the type of the returned object
+	 * @param reader to parse the text on it
+	 * @param object to parse to
 	 * @return the parsed object
-	 * @throws NullPointerException if the given 'outputClass' or 'input' is null
-	 * @throws IOException          if any I/O exception occurs
 	 * @throws ParseException       if any parsing exception occurs
+	 * @throws NullPointerException if the given reader is null
+	 * @throws IOException          if any IO exception occurs
 	 */
-	default <O> O parse(Reader input, O output, Clazz outputClazz) throws IOException {
-		return this.parse(new ParseArguments<>(input, output, outputClazz));
+	default <T> T parse(Reader reader, T object) throws IOException {
+		Objects.requireNonNull(reader, "reader");
+		return this.parse(new ParseToken<>(reader, object, Clazz.ofi(object)));
 	}
 
 	/**
-	 * Parse the text read from the {@link ParseArguments#input} to an object with the type of {@link ParseArguments#outputClazz} and store it at
-	 * {@link ParseArguments#output}.
+	 * Parse the text read from the {@link ParseToken#input} to an object with the type of {@link ParseToken#klazz} and store it at
+	 * {@link ParseToken#output}.
 	 *
-	 * @param input  the input to read from
-	 * @param output the initial output instance (source for inputClazz and outputClazz)
-	 * @param <O>    the type of the parsed object
-	 * @return the parsed object
-	 * @throws NullPointerException if the given 'input' is null
-	 * @throws IOException          if any I/O exception occurs
-	 * @throws ParseException       if any parsing exception occurs
-	 */
-	default <O> O parse(Reader input, O output) throws IOException {
-		return this.parse(new ParseArguments<>(input, output));
-	}
-
-	/**
-	 * Parse the text read from the {@link ParseArguments#input} to an object with the type of {@link ParseArguments#outputClazz} and store it at
-	 * {@link ParseArguments#output}.
-	 *
-	 * @param input       the input to read from
-	 * @param inputClazz  the clazz of the input
-	 * @param outputClazz the clazz to be for the output
-	 * @param <O>         the type of the parsed object
-	 * @return the parsed object
-	 * @throws NullPointerException if the given 'inputClass' or 'outputClass' or 'input' is null
-	 * @throws IOException          if any I/O exception occurs
-	 * @throws ParseException       if any parsing exception occurs
-	 */
-	default <O> O parse(Reader input, Clazz inputClazz, Clazz outputClazz) throws IOException {
-		return this.parse(new ParseArguments<>(input, inputClazz, outputClazz));
-	}
-
-	/**
-	 * Parse the text read from the {@link ParseArguments#input} to an object with the type of {@link ParseArguments#outputClazz} and store it at
-	 * {@link ParseArguments#output}.
-	 *
-	 * @param input       the input to read from
-	 * @param outputClazz the clazz to be for the output (also for inputClass)
-	 * @param <O>         the type of the parsed object
-	 * @return the parsed object
-	 * @throws NullPointerException if the given 'outputClass' or 'input' is null
-	 * @throws IOException          if any I/O exception occurs
-	 * @throws ParseException       if any parsing exception occurs
-	 */
-	default <O> O parse(Reader input, Clazz outputClazz) throws IOException {
-		return this.parse(new ParseArguments<>(input, outputClazz));
-	}
-
-	/**
-	 * Parse the text read from the {@link ParseArguments#input} to an object with the type of {@link ParseArguments#outputClazz} and store it at
-	 * {@link ParseArguments#output}.
-	 *
-	 * @param arguments the parsing instance that holds the variables of this parsing
-	 * @param <O>       the type of the parsed object
+	 * @param token the parsing instance that holds the variables of this parsing
+	 * @param <T>   the type of the parsed object
 	 * @return the parsed object
 	 * @throws IOException          if any I/O exception occurs
-	 * @throws NullPointerException if the given 'arguments' is null
+	 * @throws NullPointerException if the given 'token' is null
 	 * @throws ParseException       if any parsing exception occurs
 	 */
-	<O> O parse(ParseArguments<?, O> arguments) throws IOException;
+	<T> T parse(ParseToken<T> token) throws IOException;
 }
