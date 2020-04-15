@@ -15,6 +15,10 @@
  */
 package cufy.beans;
 
+import cufy.util.Reflectionu;
+
+import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -65,10 +69,21 @@ public interface FullBean<K, V> extends Bean<K, V> {
 
 	@Override
 	default V put(K key, V value) {
+		//looking for existing entry
 		for (Entry<K, V> entry : this.entrySet())
 			if (Objects.equals(entry.getKey(), key))
 				return entry.setValue(value);
 
+		//looking for a field with removed entry
+		for (Field field : Reflectionu.getAllFields(this.getClass()))
+			if (field.isAnnotationPresent(Property.class) && Objects.equals(key, FieldEntry.getKey(field))) {
+				FieldEntry<K, V> entry = new FieldEntry(this, field);
+				this.entrySet().add(entry);
+				entry.setValue(value);
+				return null;
+			}
+
+		//create a simple entry
 		this.entrySet().add(new SimpleEntry<>(key, value));
 		return null;
 	}
@@ -84,6 +99,12 @@ public interface FullBean<K, V> extends Bean<K, V> {
 			}
 
 		return old;
+	}
+
+	@Override
+	default void putAll(Map<? extends K, ? extends V> map) {
+		Objects.requireNonNull(map, "map");
+		map.forEach(this::put);
 	}
 
 	@Override

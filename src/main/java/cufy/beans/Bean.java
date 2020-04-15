@@ -72,6 +72,27 @@ public interface Bean<K, V> extends Map<K, V> {
 
 				return this.entrySet;
 			}
+
+			@Override
+			public V put(K key, V value) {
+				//looking for existing entry
+				for (Entry<K, V> entry : this.entrySet())
+					if (Objects.equals(entry.getKey(), key))
+						return entry.setValue(value);
+
+				//looking for a field with removed entry
+				for (Field field : Reflectionu.getAllFields(instance.getClass()))
+					if (field.isAnnotationPresent(Property.class) && Objects.equals(key, FieldEntry.getKey(field))) {
+						FieldEntry<K, V> entry = new FieldEntry(instance, field);
+						this.entrySet().add(entry);
+						entry.setValue(value);
+						return null;
+					}
+
+				//create a simple entry
+				this.entrySet().add(new SimpleEntry<>(key, value));
+				return null;
+			}
 		};
 	}
 
@@ -148,6 +169,9 @@ public interface Bean<K, V> extends Map<K, V> {
 		for (Field field : Reflectionu.getAllFields(this.getClass()))
 			if (field.isAnnotationPresent(Property.class) && keys.add(key = FieldEntry.getKey(field)) && map.containsKey(key))
 				FieldEntry.setValue(field, this, map.get(key));
+
+		if (!keys.containsAll(map.keySet()))
+			throw new UnsupportedOperationException("Can't store all the keys in: " + map);
 	}
 
 	@Override
