@@ -1,3 +1,5 @@
+# Beans
+
 A bean is a map that it's fields is the properties of it.
 
 ## Why?

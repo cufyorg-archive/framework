@@ -1,3 +1,5 @@
+# Function
+
 Functional interfaces.
 
 ### Throw Lambdas
