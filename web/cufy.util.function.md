@@ -9,6 +9,7 @@ exceptions. Since there is a try-catch covering the calling context. So Throw La
 the saver.
 
 Simple example:
+
 ```java 
     try {
     	Runnable runnable = (ThrowRunnable<Exception>) ()-> throwingMethod();

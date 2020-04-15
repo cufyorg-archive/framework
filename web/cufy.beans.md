@@ -19,6 +19,7 @@ No problem at all. You could still use the full functionality of an `AbstractBea
 on your object with the method `Bean.forInstance`.
 
 - An example of a typical `Bean`:
+
 ```java 
     class MyBean extends Bean {
         @Property
@@ -27,15 +28,14 @@ on your object with the method `Bean.forInstance`.
 ```
 
 - A bean for a non-bean instance (fields should be annotated):
+
 ```java 
     Bean.forInstance(theInstance);
 ```
 
-- You can override the key (default is a string of field's name) and the type of the property.
+- You can override the key (default is a string of field's name) and the type of the property:
 
 ```java 
     @Property(key = @MetaObject("newKey"), type = @MetaClazz(Integer.class))
     int ex_property;
 ```
-
-...

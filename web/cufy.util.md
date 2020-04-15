@@ -11,11 +11,11 @@ good util to hold constant values.
 Simple Example:
 
 ```java 
-Group food = new UnmodifibleGroup(Arrays.asList("pizza", "potato", "apple", "orange"));
-Group healthy = food.subgroup("healthy", f -> !f.equals("pizza"));
-Group h = food.subgroup("healthy");
-
-assert healthy == h;
+    Group food = new UnmodifibleGroup(Arrays.asList("pizza", "potato", "apple", "orange"));
+    Group healthy = food.subgroup("healthy", f -> !f.equals("pizza"));
+    Group h = food.subgroup("healthy");
+    
+    assert healthy == h;
 ```
 
 ### Array Util
