@@ -25,6 +25,28 @@ import java.util.Objects;
 /**
  * A conversion instance that holds the variables of a conversion.
  *
+ * <ul>
+ *     Combinations:
+ *     <li>
+ *         To clone an object:
+ *         <pre>
+ * new ConvertToken<>(input, null, inputClazz, inputClazz)
+ *         </pre>
+ *     </li>
+ *     <li>
+ *         To apply a type to an object:
+ *         <pre>
+ * new ConvertToken<>(input, input, inputClazz, newClazz)
+ *         </pre>
+ *     </li>
+ *     <li>
+ *         To convert a subElement:
+ *         <pre>
+ * token.subToken(inputElement, outputElement, inputElementClazz, outputElement == null ? null : outputElementClazz, componentIndex)
+ *         </pre>
+ *     </li>
+ * </ul>
+ *
  * @param <I> the type of the input
  * @param <O> the type of the output
  * @author lsafer

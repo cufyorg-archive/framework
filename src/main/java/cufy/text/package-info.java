@@ -19,5 +19,6 @@
  * @author lsafer
  * @version 0.1.3
  * @since 09-Jul-2019
+ * @see <a href="https://cufyorg.github.io/framework/web/cufy.text.html">Cufy Framework: Text</a>
  */
 package cufy.text;

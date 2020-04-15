@@ -49,8 +49,6 @@ public class BaseConverterTest {
 			BaseConverter.global.convert(new ConvertToken<>(input1, output, Clazz.ofi(input1), Clazz.ofi(output)));
 			BaseConverter.global.convert(new ConvertToken<>(output, null, Clazz.of(HashSet.class), Clazz.of(double[][].class)));
 			BaseConverter.global.convert(new ConvertToken<>(input2, output, Clazz.ofi(input2), Clazz.ofi(output)));
-
-			//TODO
 		}
 		//recurse test
 		{
@@ -105,45 +103,5 @@ public class BaseConverterTest {
 
 			Assert.assertSame("recursion not converted", output, output.get(0));
 		}
-	}
-
-	@Test
-	public void collection_array() {
-		//TODO
-	}
-
-	@Test
-	public void collection_collection() {
-		//TODO
-	}
-
-	@Test
-	public void collection_list() {
-		//TODO
-	}
-
-	@Test
-	public void map_map() {
-		//TODO
-	}
-
-	@Test
-	public void number__() {
-		//TODO
-	}
-
-	@Test
-	public void object_string() {
-		//TODO
-	}
-
-	@Test
-	public void recurse_object() {
-		//TODO
-	}
-
-	@Test
-	public void string_object() {
-		//TODO
 	}
 }

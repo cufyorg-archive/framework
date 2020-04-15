@@ -19,5 +19,6 @@
  * @author lsafer
  * @version 0.1.3
  * @since 09-July-2019
+ * @see <a href="https://cufyorg.github.io/framework/web/cufy.text.json.html">Cufy Framework: Text: JSON</a>
  */
 package cufy.text.json;

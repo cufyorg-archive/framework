@@ -82,25 +82,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Get a "easy-to-use" sub-token for the given parameters.
-	 *
-	 * @param token         the converting token
-	 * @param inputElement  the element found in the input
-	 * @param outputElement the element found in the same position of the inputElement but in the output
-	 * @param index         the index of the componentType to work on
-	 * @return the results of converting
-	 */
-	protected ConvertToken _elementSubToken(ConvertToken token, Object inputElement, Object outputElement, int index) {
-		return token.subToken(
-				inputElement,
-				outputElement,
-				Clazz.ofi(inputElement),
-				outputElement == null ? null : Clazz.ofi(outputElement),
-				index
-		);
-	}
-
-	/**
 	 * Collection => Array
 	 * <br/>
 	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
@@ -159,7 +140,13 @@ public class BaseConverter extends AbstractConverter {
 			Object outputElement = Array.get(token.output, i);
 
 			//DyNaMiC cOnVeRsIoN _/-\_/-\_/- :0 ~ MA-GI-KKU
-			outputElement = this.convert(this._elementSubToken(token, inputElement, outputElement, 0));
+			outputElement = this.convert(token.subToken(
+					inputElement,
+					outputElement,
+					Clazz.ofi(inputElement),
+					outputElement == null ? null : Clazz.ofi(outputElement),
+					0
+			));
 
 			//Replace the element at the output with the converted element from the input
 			Array.set(token.output, i, outputElement);
@@ -220,7 +207,13 @@ public class BaseConverter extends AbstractConverter {
 			Object outputElement = null;
 
 			//DyNaMiC cOnVeRsIoN _/-\_/-\_/- :0 ~ MA-GI-KKU
-			outputElement = this.convert(this._elementSubToken(token, inputElement, outputElement, 0));
+			outputElement = this.convert(token.subToken(
+					inputElement,
+					outputElement,
+					Clazz.ofi(inputElement),
+					outputElement == null ? null : Clazz.ofi(outputElement),
+					0
+			));
 
 			//add the element to the output
 			token.output.add(outputElement);
@@ -291,7 +284,13 @@ public class BaseConverter extends AbstractConverter {
 			Object outputElement = token.output.get(i);
 
 			//DyNaMiC cOnVeRsIoN _/-\_/-\_/- :0 ~ MA-GI-KKU
-			outputElement = this.convert(this._elementSubToken(token, inputElement, outputElement, 0));
+			outputElement = this.convert(token.subToken(
+					inputElement,
+					outputElement,
+					Clazz.ofi(inputElement),
+					outputElement == null ? null : Clazz.ofi(outputElement),
+					0
+			));
 
 			//Set the elements from the input
 			token.output.set(i, outputElement);
@@ -337,7 +336,13 @@ public class BaseConverter extends AbstractConverter {
 			Object outputElement = token.output.get(entry.getKey());
 
 			//DyNaMiC cOnVeRsIoN _/-\_/-\_/- :0 ~ MA-GI-KKU
-			outputElement = this.convert(this._elementSubToken(token, inputElement, outputElement, 1));
+			outputElement = this.convert(token.subToken(
+					inputElement,
+					outputElement,
+					Clazz.ofi(inputElement),
+					outputElement == null ? null : Clazz.ofi(outputElement),
+					1
+			));
 
 			//Set the elements from the input
 			token.output.put(entry.getKey(), outputElement);

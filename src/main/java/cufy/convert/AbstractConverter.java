@@ -103,9 +103,15 @@ public abstract class AbstractConverter implements Converter {
 		}
 
 		if (token.input == null) {
+			//null is a value for any type and it is a final value and no need to duplicate it
 			token.output = null;
-		} else if (token.outputClazz.isInstance(token.input) && token.inputClazz != token.outputClazz) {
-			//duplicate instead!
+		} else if (token.outputClazz.isInstance(token.input)) {
+			//if the value is the wanted. Then we should duplicated to remove the link between the input and the output.
+			if (token.inputClazz == token.outputClazz)
+				//if we have a method to duplicate it, this method wouldn't be called!
+				throw new ConvertException("Can't clone " + token.outputClazz);
+
+			//this is the cloning formula :)
 			token.output = this.convert(new ConvertToken<>(token.input, null, token.inputClazz, token.inputClazz));
 		} else {
 			throw new ConvertException("Cannot convert " + token.inputClazz.getFamily() + " to " + token.outputClazz.getFamily());

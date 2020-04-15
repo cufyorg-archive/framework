@@ -17,7 +17,5 @@ public class RecipeTest {
 		int i = Recipe.util.get(object);
 
 		Assert.assertEquals("Wrong value", 3, i, 0);
-
-		//TODO
 	}
 }

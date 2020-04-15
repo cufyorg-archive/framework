@@ -56,6 +56,7 @@ public class ArrayuTest {
 		Assert.assertEquals("not copied", 'B', array1[1]);
 	}
 
+	@SuppressWarnings("SpellCheckingInspection")
 	@Test
 	public void merge() {
 		char[] array = {'A', 'B', 'C'};

@@ -51,7 +51,6 @@ public class Forever extends Loop<Consumer<Forever>, Object> {
 
 	@Override
 	protected void loop() {
-		//noinspection StatementWithEmptyBody
 		while (this.next(null)) ;
 	}
 }

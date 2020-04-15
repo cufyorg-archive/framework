@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-@SuppressWarnings({"JavaDoc"})
+@SuppressWarnings({"JavaDoc", "SpellCheckingInspection"})
 public class InputuTest {
 	@Test
 	public void getRemaining() throws IOException {
@@ -18,6 +18,7 @@ public class InputuTest {
 		Assert.assertEquals("Not collected correctly", STRING, collected);
 	}
 
+	@SuppressWarnings("SpellCheckingInspection")
 	@Test
 	public void isRemainingEquals() throws IOException {
 		StringReader reader = new StringReader("AbCdEf");

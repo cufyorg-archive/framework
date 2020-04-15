@@ -80,7 +80,7 @@ public @interface Recipe {
 		public static <O> O get(Recipe recipe) {
 			Objects.requireNonNull(recipe, "recipe");
 
-			Converter converter = Reference.util.getValue(recipe.converter(), null);
+			Converter converter = Reference.util.getValue(recipe.converter());
 			Clazz<O> type = Type.util.get(recipe.type());
 			String value = recipe.value();
 

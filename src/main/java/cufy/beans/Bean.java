@@ -188,7 +188,7 @@ public interface Bean<K, V> extends Map<K, V> {
 					/**
 					 * The iterator of the entry set.
 					 */
-					private Iterator<Entry<K, V>> iterator = Bean.this.entrySet().iterator();
+					private final Iterator<Entry<K, V>> iterator = Bean.this.entrySet().iterator();
 
 					@Override
 					public boolean hasNext() {
@@ -237,7 +237,7 @@ public interface Bean<K, V> extends Map<K, V> {
 					/**
 					 * The iterator of the entry set.
 					 */
-					private Iterator<Entry<K, V>> iterator = Bean.this.entrySet().iterator();
+					private final Iterator<Entry<K, V>> iterator = Bean.this.entrySet().iterator();
 
 					@Override
 					public boolean hasNext() {

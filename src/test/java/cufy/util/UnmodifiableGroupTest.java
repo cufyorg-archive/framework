@@ -8,16 +8,6 @@ import java.util.Arrays;
 @SuppressWarnings("JavaDoc")
 public class UnmodifiableGroupTest {
 	@Test
-	public void iterator() {
-		//TODO
-	}
-
-	@Test
-	public void size() {
-		//TODO
-	}
-
-	@Test
 	public void subgroup() {
 		String[] strings = {"my abc", "my def", "my ghi", "abc", "def", "ghi"};
 		UnmodifiableGroup<String> constants = new UnmodifiableGroup<>(strings);
@@ -34,12 +24,5 @@ public class UnmodifiableGroupTest {
 
 		Assert.assertSame("Didn't returned the already resolved object", my, myAgain);
 		Assert.assertSame("Didn't returned the already resolved object", abc, abcAgain);
-
-		//TODO
-	}
-
-	@Test
-	public void toArray() {
-		//TODO
 	}
 }

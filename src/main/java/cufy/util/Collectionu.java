@@ -251,7 +251,7 @@ final public class Collectionu {
 								@Override
 								public Entry<Integer, T> next() {
 									this.checkModification();
-									int key = this.cursor;
+									int key = this.cursor++;
 									return new Entry<Integer, T>() {
 										@Override
 										public Integer getKey() {

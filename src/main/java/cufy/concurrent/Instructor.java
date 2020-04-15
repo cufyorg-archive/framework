@@ -338,7 +338,6 @@ public class Instructor {
 					}
 					return false;
 				});
-				//noinspection DuplicatedCode
 				new Thread(() -> {
 					synchronized (state) {
 						if (state.get()) {

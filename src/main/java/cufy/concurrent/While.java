@@ -65,7 +65,6 @@ public class While extends Loop<Consumer<While>, Object> {
 
 	@Override
 	protected void loop() {
-		//noinspection StatementWithEmptyBody
 		while (this.condition.get() && this.next(null)) ;
 	}
 }

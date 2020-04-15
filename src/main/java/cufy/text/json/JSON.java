@@ -119,7 +119,7 @@ public class JSON extends AbstractFormat {
 	 * The global instance to avoid unnecessary instancing.
 	 */
 	@Reference
-	final public static JSON global = new JSON()._setDefaults();
+	final public static JSON global = new JSON().setDefaults();
 
 	/**
 	 * The expected number of members on objects or arrays.
@@ -165,43 +165,6 @@ public class JSON extends AbstractFormat {
 	 * @apiNote final after initialization
 	 */
 	protected Map<String, String> SYNTAX_NESTABLE;
-
-	/**
-	 * Set the default values of JSON for this json format.
-	 *
-	 * @return this
-	 */
-	protected JSON _setDefaults() {
-		this.DEBUGGING = false;
-		this.DEFAULT_MEMBERS_COUNT = 10;
-		this.DEFAULT_NESTING_DEPTH = 5;
-		this.DEFAULT_VALUE_LENGTH = 20;
-		this.DEFAULT_WHITE_SPACE_LENGTH = 20;
-
-		this.STRING_ESCAPABLES = new HashMap<>();
-		this.STRING_ESCAPABLES.put("\\", "\\\\");
-		this.STRING_ESCAPABLES.put("\"", "\\\"");
-		this.STRING_ESCAPABLES.put("\n", "\\\n");
-		this.STRING_ESCAPABLES.put("\r", "\\\r");
-		this.STRING_ESCAPABLES.put("\t", "\\\t");
-
-		this.SYNTAX = new Syntax();
-
-		this.SYNTAX_NESTABLE = new HashMap<>();
-		this.SYNTAX_NESTABLE.put(this.SYNTAX.OBJECT_START, this.SYNTAX.OBJECT_END);
-		this.SYNTAX_NESTABLE.put(this.SYNTAX.ARRAY_START, this.SYNTAX.ARRAY_END);
-
-		this.SYNTAX_LITERAL = new HashMap<>();
-		this.SYNTAX_LITERAL.put(this.SYNTAX.STRING_START, this.SYNTAX.STRING_END);
-		this.SYNTAX_LITERAL.put(this.SYNTAX.COMMENT_START, this.SYNTAX.COMMENT_END);
-		this.SYNTAX_LITERAL.put(this.SYNTAX.LINE_COMMENT_START, this.SYNTAX.LINE_COMMENT_END);
-
-		this.SYNTAX_COMMENT = new HashMap<>();
-		this.SYNTAX_COMMENT.put(this.SYNTAX.COMMENT_START, this.SYNTAX.COMMENT_END);
-		this.SYNTAX_COMMENT.put(this.SYNTAX.LINE_COMMENT_START, this.SYNTAX.LINE_COMMENT_END);
-
-		return this;
-	}
 
 	/**
 	 * Format Array
@@ -1149,9 +1112,9 @@ public class JSON extends AbstractFormat {
 		int index = Integer.parseInt(string);
 		int i = 0;
 
-		for (ParseToken grand = token.parent; grand != null; grand = grand.parent, i++)
+		for (ParseToken<Recurse> grand = token.parent; grand != null; grand = grand.parent, i++)
 			if (i == index) {
-				token.output = token.klazz.cast(grand.output);
+				token.output = grand.output;
 				return;
 			}
 
@@ -1197,6 +1160,42 @@ public class JSON extends AbstractFormat {
 			//if the results can satisfied the clazz
 			token.output = value;
 		else throw new IllegalArgumentException(klass + " can't be satisfied with a string");
+	}
+
+	/**
+	 * Set the default values of JSON for this json format.
+	 *
+	 * @return this
+	 */
+	protected JSON setDefaults() {
+		this.DEFAULT_MEMBERS_COUNT = 10;
+		this.DEFAULT_NESTING_DEPTH = 5;
+		this.DEFAULT_VALUE_LENGTH = 20;
+		this.DEFAULT_WHITE_SPACE_LENGTH = 20;
+
+		this.STRING_ESCAPABLES = new HashMap<>();
+		this.STRING_ESCAPABLES.put("\\", "\\\\");
+		this.STRING_ESCAPABLES.put("\"", "\\\"");
+		this.STRING_ESCAPABLES.put("\n", "\\\n");
+		this.STRING_ESCAPABLES.put("\r", "\\\r");
+		this.STRING_ESCAPABLES.put("\t", "\\\t");
+
+		this.SYNTAX = new Syntax();
+
+		this.SYNTAX_NESTABLE = new HashMap<>();
+		this.SYNTAX_NESTABLE.put(this.SYNTAX.OBJECT_START, this.SYNTAX.OBJECT_END);
+		this.SYNTAX_NESTABLE.put(this.SYNTAX.ARRAY_START, this.SYNTAX.ARRAY_END);
+
+		this.SYNTAX_LITERAL = new HashMap<>();
+		this.SYNTAX_LITERAL.put(this.SYNTAX.STRING_START, this.SYNTAX.STRING_END);
+		this.SYNTAX_LITERAL.put(this.SYNTAX.COMMENT_START, this.SYNTAX.COMMENT_END);
+		this.SYNTAX_LITERAL.put(this.SYNTAX.LINE_COMMENT_START, this.SYNTAX.LINE_COMMENT_END);
+
+		this.SYNTAX_COMMENT = new HashMap<>();
+		this.SYNTAX_COMMENT.put(this.SYNTAX.COMMENT_START, this.SYNTAX.COMMENT_END);
+		this.SYNTAX_COMMENT.put(this.SYNTAX.LINE_COMMENT_START, this.SYNTAX.LINE_COMMENT_END);
+
+		return this;
 	}
 
 	/**

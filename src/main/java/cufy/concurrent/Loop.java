@@ -438,7 +438,6 @@ public abstract class Loop<I, P> {
 					return false;
 				});
 				//timer thread
-				//noinspection DuplicatedCode
 				new Thread(() -> {
 					synchronized (state) {
 						//if the post haven't been posted within that short time

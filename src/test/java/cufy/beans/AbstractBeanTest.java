@@ -1,11 +1,11 @@
 package cufy.beans;
 
-import cufy.meta.Type;
 import cufy.meta.Recipe;
+import cufy.meta.Type;
 import org.junit.Assert;
 import org.junit.Test;
 
-@SuppressWarnings({"JavaDoc"})
+@SuppressWarnings({"JavaDoc", "RedundantOperationOnEmptyContainer"})
 public class AbstractBeanTest {
 	@Test
 	public void _struct_put_get_size() {
@@ -38,67 +38,47 @@ public class AbstractBeanTest {
 	}
 
 	@Test
-	public void clear() {
-		//TODO
-	}
-
-	@Test
-	public void containsKey() {
-		//TODO
-	}
-
-	@Test
-	public void containsValue() {
-		//TODO
-	}
-
-	@Test
-	public void entrySet() {
-		//TODO
-	}
-
-	@Test
-	public void forInstance() {
-		//TODO
-	}
-
-	@Test
-	public void get() {
-		//TODO
-	}
-
-	@Test
-	public void isEmpty() {
-		//TODO
-	}
-
-	@Test
-	public void keySet() {
-		//TODO
-	}
-
-	@Test
-	public void put() {
-		//TODO
-	}
-
-	@Test
-	public void putAll() {
-		//TODO
-	}
-
-	@Test
 	public void remove() {
-		//TODO
-	}
+		Bean bean = new AbstractBean() {
+			@Property
+			int i = 0;
+		};
 
-	@Test
-	public void size() {
-		//TODO
-	}
+		Assert.assertEquals("get(): don't work on pre-existing properties", 0, bean.get("i"));
+		Assert.assertEquals("size(): don't work on pre-existing properties", 1, bean.size());
+		Assert.assertFalse("isEmpty(): don't work properly", bean.isEmpty());
 
-	@Test
-	public void values() {
-		//TODO
+		bean.remove("i");
+
+		Assert.assertNull("clear(): don't work on fields", bean.get("i"));
+		Assert.assertEquals("size(): don't work after removing fields", 0, bean.size());
+		Assert.assertTrue("isEmpty(): don't work properly", bean.isEmpty());
+
+		bean.put("i", 13);
+
+		bean.entrySet().forEach(entry -> Assert.assertTrue("Not field-entry!", entry instanceof Bean.FieldEntry));
+
+		Assert.assertEquals("put(): don't work on removed fields", 13, bean.get("i"));
+		Assert.assertEquals("size(): don't work after re-putting back the field", 1, bean.size());
+		Assert.assertFalse("isEmpty(): don't work properly", bean.isEmpty());
+
+		bean.put("ii", 14);
+
+		Assert.assertEquals("put(): don't work on non-field key", 14, bean.get("ii"));
+		Assert.assertEquals("size(): don't work when putting a non-field key", 2, bean.size());
+		Assert.assertFalse("isEmpty(): don't work properly", bean.isEmpty());
+
+		bean.remove("ii");
+
+		Assert.assertNull("remove(): don't work on non-field keys", bean.get("ii"));
+		Assert.assertEquals("size(): don't work when removing non-field keys", 1, bean.size());
+		Assert.assertFalse("isEmpty(): don't work properly", bean.isEmpty());
+
+		bean.clear();
+
+		Assert.assertNull("clear(): don't work", bean.get("i"));
+		Assert.assertNull("clear(): don't work", bean.get("ii"));
+		Assert.assertEquals("size(): don't work properly after clearing", 0, bean.size());
+		Assert.assertTrue("isEmpty(): don't work properly", bean.isEmpty());
 	}
 }
