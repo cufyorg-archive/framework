@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
 
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "SpellCheckingInspection"})
 public class JSONTest {
 	@Test
 	public void commentTest() {
@@ -18,7 +18,7 @@ public class JSONTest {
 				   "\t]\n" +
 				   "}";
 
-		Map obj = (Map) JSON.global.cparse(s);
+		Map obj = JSON.global.cparse(s);
 		List arr = (List) obj.get("list");
 
 		Assert.assertEquals("incorrect object size", 1, obj.size());
@@ -31,7 +31,7 @@ public class JSONTest {
 		String source = "[3, 5, {9/*{],23myComment*/=//myMultiLineComment\n\"abc\"}]";
 
 		//List<Object> list = JSONConverter.global.convert(source, ArrayList.class);
-		List<Object> list = (List<Object>) JSON.global.cparse(source);
+		List<Object> list = JSON.global.cparse(source);
 
 		Assert.assertEquals("Wrong size", 3, list.size());
 		Assert.assertEquals("Wrong 1st element", 3, list.get(0));
@@ -57,14 +57,14 @@ public class JSONTest {
 
 	@Test
 	public void empty() {
-		Collection collection = (Collection) JSON.global.cparse("[]");
-		Map map = (Map) JSON.global.cparse("{}");
+		Collection collection = JSON.global.cparse("[]");
+		Map map = JSON.global.cparse("{}");
 
 		Assert.assertTrue("expected empty collection!", collection.isEmpty());
 		Assert.assertTrue("expected empty map!", map.isEmpty());
 
-		collection = (Collection) JSON.global.cparse("[0,]");
-		map = (Map) JSON.global.cparse("{0:0,}");
+		collection = JSON.global.cparse("[0,]");
+		map = JSON.global.cparse("{0:0,}");
 
 		Assert.assertEquals("expected singleton collection!", 1, collection.size());
 		Assert.assertEquals("expected singleton map!", 1, map.size());
@@ -106,6 +106,22 @@ public class JSONTest {
 						  "}";
 		String actual = JSON.global.format(base);
 		Assert.assertEquals("Wrong format", expected, actual);
+	}
+
+	@Test
+	public void parse() {
+		String text = "{/*beast is a beast\nwhy? just becouse!*/\"beast\"=[//How ? just watch\n\"beast\", \"is a\", this0]}";
+
+		Map map = JSON.global.cparse(text);
+
+		Assert.assertTrue("missing key", map.containsKey("beast"));
+
+		List beast = (List) map.get("beast");
+
+		Assert.assertEquals("wrong size", 3, beast.size());
+		Assert.assertEquals("wrong element", "beast", beast.get(0));
+		Assert.assertEquals("wrong element", "is a", beast.get(1));
+		Assert.assertSame("recurson not parsed", beast, beast.get(2));
 	}
 
 	@Test
@@ -153,7 +169,7 @@ public class JSONTest {
 
 	@Test
 	public void parse_object_array_nested() {
-		Map<String, Map<String, List<Number>>> val = (Map<String, Map<String, List<Number>>>) JSON.global.cparse("{\"map\":{\"number\":[9, 3, 5]}}");
+		Map<String, Map<String, List<Number>>> val = JSON.global.cparse("{\"map\":{\"number\":[9, 3, 5]}}");
 		Map<String, List<Number>> map = val.get("map");
 		List<Number> number = map.get("number");
 		Assert.assertEquals("first number not detected", 9L, number.get(0).longValue());

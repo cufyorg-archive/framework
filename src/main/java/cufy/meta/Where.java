@@ -22,15 +22,15 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
- * A reference to a static field with a specific type. That field should have {@link Reference} annotated to it.
+ * A reference to a static field with a specific type. That field should have {@link Where} annotated to it.
  *
  * @author lsafer
  * @version 0.1.3
  * @since 31-Mar-2020
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(Reference.Array.class)
-public @interface Reference {
+@Repeatable(Where.Array.class)
+public @interface Where {
 	/**
 	 * The id of that field.
 	 *
@@ -54,7 +54,7 @@ public @interface Reference {
 		 *
 		 * @return the array of meta-references
 		 */
-		Reference[] value();
+		Where[] value();
 	}
 
 	/**
@@ -71,37 +71,37 @@ public @interface Reference {
 		}
 
 		/**
-		 * Get the field represented by the given fieldm.
+		 * Get the field represented by the given where.
 		 *
-		 * @param reference to get the field of
-		 * @return the field represented by the given fieldm
+		 * @param where to get the field of
+		 * @return the field represented by the given where
 		 */
-		public static Field get(Reference reference) {
-			Objects.requireNonNull(reference, "reference");
+		public static Field get(Where where) {
+			Objects.requireNonNull(where, "reference");
 
-			for (Field field : reference.value().getDeclaredFields())
+			for (Field field : where.value().getDeclaredFields())
 				if (field.isAnnotationPresent(Array.class))
-					for (Reference reference1 : field.getAnnotation(Array.class).value()) {
-						if (reference1.id().equals(reference.id()))
+					for (Where where1 : field.getAnnotation(Array.class).value()) {
+						if (where1.id().equals(where.id()))
 							return field;
 					}
-				else if (field.isAnnotationPresent(Reference.class))
-					if (field.getAnnotation(Reference.class).id().equals(reference.id()))
+				else if (field.isAnnotationPresent(Where.class))
+					if (field.getAnnotation(Where.class).id().equals(where.id()))
 						return field;
 
-			throw new IllegalMetaException("No such field at " + reference);
+			throw new IllegalMetaException("No such field at " + where);
 		}
 
 		/**
 		 * Get the static value stored at the reference given.
 		 *
-		 * @param reference where the value stored
+		 * @param where where the value stored
 		 * @param <O>       the type of the returned value
 		 * @return the value stored at the given reference
 		 */
-		public static <O> O getValue(Reference reference) {
+		public static <O> O getValue(Where where) {
 			try {
-				return (O) get(reference).get(null);
+				return (O) get(where).get(null);
 			} catch (IllegalAccessException e) {
 				throw new IllegalMetaException(e);
 			}
@@ -110,14 +110,14 @@ public @interface Reference {
 		/**
 		 * Get the value stored at the reference given in the given instance.
 		 *
-		 * @param reference where the value stored
+		 * @param where where the value stored
 		 * @param instance  to get the value from
 		 * @param <O>       the type of the returned value
 		 * @return the value stored at the given reference in the given instance
 		 */
-		public static <O> O getValue(Reference reference, Object instance) {
+		public static <O> O getValue(Where where, Object instance) {
 			try {
-				return (O) get(reference).get(instance);
+				return (O) get(where).get(instance);
 			} catch (IllegalAccessException e) {
 				throw new IllegalMetaException(e);
 			}

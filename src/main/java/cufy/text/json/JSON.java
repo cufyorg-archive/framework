@@ -19,7 +19,7 @@ import cufy.lang.Clazz;
 import cufy.lang.Empty;
 import cufy.lang.Recurse;
 import cufy.meta.Filter;
-import cufy.meta.Reference;
+import cufy.meta.Where;
 import cufy.text.*;
 import cufy.util.Arrayu;
 import cufy.util.Inputu;
@@ -118,7 +118,7 @@ public class JSON extends AbstractFormat {
 	/**
 	 * The global instance to avoid unnecessary instancing.
 	 */
-	@Reference
+	@Where
 	final public static JSON global = new JSON().setDefaults();
 
 	/**
@@ -631,7 +631,7 @@ public class JSON extends AbstractFormat {
 
 		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.RECURSE.length());
 
-		int r = Inputu.isRemainingEquals(token.input, true, true, true, SYNTAX.RECURSE);
+		int r = Inputu.isRemainingEquals(token.input, true, false, true, SYNTAX.RECURSE);
 
 		token.input.reset();
 

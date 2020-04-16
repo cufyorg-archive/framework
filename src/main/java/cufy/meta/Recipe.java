@@ -39,7 +39,7 @@ public @interface Recipe {
 	 *
 	 * @return the reference to the  converter to be used to construct the value
 	 */
-	Reference converter() default @Reference(BaseConverter.class);
+	Where converter() default @Where(BaseConverter.class);
 
 	/**
 	 * The clazz of the object.
@@ -80,7 +80,7 @@ public @interface Recipe {
 		public static <O> O get(Recipe recipe) {
 			Objects.requireNonNull(recipe, "recipe");
 
-			Converter converter = Reference.util.getValue(recipe.converter());
+			Converter converter = Where.util.getValue(recipe.converter());
 			Clazz<O> type = Type.util.get(recipe.type());
 			String value = recipe.value();
 

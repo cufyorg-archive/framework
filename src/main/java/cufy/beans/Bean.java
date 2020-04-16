@@ -20,7 +20,7 @@ import cufy.convert.ConvertToken;
 import cufy.convert.Converter;
 import cufy.lang.Clazz;
 import cufy.meta.Recipe;
-import cufy.meta.Reference;
+import cufy.meta.Where;
 import cufy.meta.Type;
 import cufy.util.Reflectionu;
 
@@ -290,13 +290,13 @@ public interface Bean<K, V> extends Map<K, V> {
 		 *
 		 * @return the reference to the converter of the annotated field
 		 */
-		Reference converter() default @Reference(BaseConverter.class);
+		Where converter() default @Where(BaseConverter.class);
 		/**
 		 * The key of the annotated field. This will override the default key (the name of the field).
 		 *
 		 * @return the key of the annotated field
 		 */
-		Recipe key() default @Recipe(converter = @Reference);
+		Recipe key() default @Recipe(converter = @Where);
 		/**
 		 * The type of the annotated field. This will override the default type (The type of the field)
 		 *
@@ -362,7 +362,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			this.key = getKey(field);
 			this.type = getType(field);
 			this.meta = field.getAnnotation(Property.class);
-			this.converter = Reference.util.getValue(meta.converter());
+			this.converter = Where.util.getValue(meta.converter());
 		}
 
 		/**
@@ -385,7 +385,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			this.key = key;
 			this.type = getType(field);
 			this.meta = field.getAnnotation(Property.class);
-			this.converter = Reference.util.getValue(meta.converter());
+			this.converter = Where.util.getValue(meta.converter());
 		}
 
 		/**
@@ -425,7 +425,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				throw new IllegalArgumentException(field + " is not annotated with " + Bean.Property.class);
 
 			Recipe key = field.getAnnotation(Property.class).key();
-			return key.converter().value() == Reference.util.class ? (K) field.getName() : Recipe.util.get(key);
+			return key.converter().value() == Where.util.class ? (K) field.getName() : Recipe.util.get(key);
 		}
 
 		/**
@@ -492,7 +492,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			if (!field.isAnnotationPresent(Bean.Property.class))
 				throw new IllegalArgumentException(field + " is not annotated with " + Bean.Property.class);
 
-			Converter converter = Reference.util.getValue(field.getAnnotation(Property.class).converter());
+			Converter converter = Where.util.getValue(field.getAnnotation(Property.class).converter());
 			Clazz<V> type = getType(field);
 
 			return setValue(field, instance, value, converter, type);

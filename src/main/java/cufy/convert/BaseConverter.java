@@ -18,7 +18,7 @@ package cufy.convert;
 import cufy.lang.Clazz;
 import cufy.lang.Recurse;
 import cufy.meta.Filter;
-import cufy.meta.Reference;
+import cufy.meta.Where;
 import cufy.util.Arrayu;
 
 import java.lang.reflect.Array;
@@ -72,7 +72,7 @@ public class BaseConverter extends AbstractConverter {
 	/**
 	 * The global instance to avoid unnecessary instancing.
 	 */
-	@Reference
+	@Where
 	final public static BaseConverter global = new BaseConverter();
 
 	/**

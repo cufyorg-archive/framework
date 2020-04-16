@@ -20,7 +20,7 @@ import cufy.convert.ConvertMethod;
 import cufy.convert.ConvertToken;
 import cufy.lang.Clazz;
 import cufy.meta.Filter;
-import cufy.meta.Reference;
+import cufy.meta.Where;
 import cufy.text.ClassifyToken;
 import cufy.text.FormatToken;
 import cufy.text.ParseToken;
@@ -43,7 +43,7 @@ public class JSONConverter extends BaseConverter {
 	/**
 	 * The global instance to avoid unnecessary instancing.
 	 */
-	@Reference
+	@Where
 	final public static JSONConverter global = new JSONConverter();
 
 	/**

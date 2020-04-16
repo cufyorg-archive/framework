@@ -10,7 +10,7 @@ public class RecipeTest {
 	@Recipe(
 			value = "3",
 			type = @Type(Integer.class),
-			converter = @Reference(BaseConverter.class)
+			converter = @Where(BaseConverter.class)
 	)
 	public void get() throws NoSuchMethodException {
 		Recipe object = this.getClass().getMethod("get").getAnnotation(Recipe.class);
