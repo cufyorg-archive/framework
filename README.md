@@ -7,7 +7,12 @@
   <b>A Framework to be Inherited</b>
 </p>
 <p align="center">
-    <a href="https://jitpack.io/#cufyorg/framework"><img alt="jitpack" src="https://jitpack.io/v/cufyorg/framework.svg"></a>
+    <a href="https://jitpack.io/#cufyorg/framework">
+        <img alt="jitpack" src="https://jitpack.io/v/cufyorg/framework.svg"/>
+    </a>
+    <a href="https://gitter.im/cufyorg/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
+        <img alt="gitter" src="https://badges.gitter.im/cufyorg/community.svg"/>
+    </a>
 </p>
 
 The cufy framework is focused on to be more inheritable and more reflection 
