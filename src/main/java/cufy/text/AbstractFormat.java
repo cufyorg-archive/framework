@@ -62,12 +62,14 @@ public abstract class AbstractFormat implements Format {
 	public <T> Clazz<T> classify(ClassifyToken<T> token) throws IOException {
 		Objects.requireNonNull(token, "token");
 
-		for (Method method : this.getClassifyMethods())
-			if (this.classify0(method, token))
-				return token.output;
+		if (this.classifyPre(token)) {
+			for (Method method : this.getClassifyMethods())
+				if (this.classify0(method, token))
+					return token.output;
 
-		if (token.output == null)
-			this.classifyElse(token);
+			if (token.output == null)
+				this.classifyElse(token);
+		}
 
 		return token.output;
 	}
@@ -76,11 +78,13 @@ public abstract class AbstractFormat implements Format {
 	public <T> Writer format(FormatToken<T> token) throws IOException {
 		Objects.requireNonNull(token, "token");
 
-		Method method = this.getFormatMethod(token.klazz.getFamily());
+		if (this.formatPre(token)) {
+			Method method = this.getFormatMethod(token.klazz.getFamily());
 
-		if (method == null)
-			this.formatElse(token);
-		else this.format0(method, token);
+			if (method == null)
+				this.formatElse(token);
+			else this.format0(method, token);
+		}
 
 		return token.output;
 	}
@@ -89,11 +93,13 @@ public abstract class AbstractFormat implements Format {
 	public <T> T parse(ParseToken<T> token) throws IOException {
 		Objects.requireNonNull(token, "token");
 
-		Method method = this.getParseMethod(token.klazz.getFamily());
+		if (this.parsePre(token)) {
+			Method method = this.getParseMethod(token.klazz.getFamily());
 
-		if (method == null)
-			this.parseElse(token);
-		else this.parse0(method, token);
+			if (method == null)
+				this.parseElse(token);
+			else this.parse0(method, token);
+		}
 
 		return token.output;
 	}
@@ -150,6 +156,19 @@ public abstract class AbstractFormat implements Format {
 	}
 
 	/**
+	 * Operations to be done before any classification action.
+	 *
+	 * @param token the token provided by the caller
+	 * @return whether the classification process should be continued or not
+	 * @throws IOException          if the any I/O exception occurs
+	 * @throws NullPointerException if the given 'token' is null
+	 * @throws ClassifyException    if any classification exception occurs
+	 */
+	protected boolean classifyPre(ClassifyToken token) throws IOException {
+		return true;
+	}
+
+	/**
 	 * Invoke the given {@link FormatMethod} with the given parameters.
 	 *
 	 * @param method to be invoked
@@ -197,6 +216,19 @@ public abstract class AbstractFormat implements Format {
 		}
 
 		throw new FormatException("Can't format " + token.input.getClass());
+	}
+
+	/**
+	 * Operations to be done before any formatting action.
+	 *
+	 * @param token the token provided by the caller
+	 * @return whether the formatting process should be continued or not
+	 * @throws IOException          if the any I/O exception occurs
+	 * @throws NullPointerException if the given 'token' is null
+	 * @throws FormatException      if any format exception occurs
+	 */
+	protected boolean formatPre(FormatToken token) throws IOException {
+		return true;
 	}
 
 	/**
@@ -292,5 +324,18 @@ public abstract class AbstractFormat implements Format {
 		}
 
 		throw new ParseException("Can't parse " + token.klazz);
+	}
+
+	/**
+	 * Operations to be done before any parsing action.
+	 *
+	 * @param token the token provided by the caller
+	 * @return whether the parsing process should be continued or not
+	 * @throws IOException          if the any I/O exception occurs
+	 * @throws NullPointerException if the given 'token' is null
+	 * @throws ParseException       if any parse exception occurs
+	 */
+	protected boolean parsePre(ParseToken token) throws IOException {
+		return true;
 	}
 }

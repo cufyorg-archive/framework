@@ -52,11 +52,13 @@ public abstract class AbstractConverter implements Converter {
 	public <I, O> O convert(ConvertToken<I, O> token) {
 		Objects.requireNonNull(token, "token");
 
-		Method method = this.getConvertMethod(token.inputClazz.getFamily(), token.outputClazz.getFamily());
+		if (this.convertPre(token)) {
+			Method method = this.getConvertMethod(token.inputClazz.getFamily(), token.outputClazz.getFamily());
 
-		if (method == null)
-			this.convertElse(token);
-		else this.convert0(method, token);
+			if (method == null)
+				this.convertElse(token);
+			else this.convert0(method, token);
+		}
 
 		return token.output;
 	}
@@ -116,6 +118,18 @@ public abstract class AbstractConverter implements Converter {
 		} else {
 			throw new ConvertException("Cannot convert " + token.inputClazz.getFamily() + " to " + token.outputClazz.getFamily());
 		}
+	}
+
+	/**
+	 * Operations to be done before any converting action.
+	 *
+	 * @param token the token provided by the caller
+	 * @return whether the converting process should be continued or not
+	 * @throws NullPointerException if the given 'token' is null
+	 * @throws ConvertException     if any converting exception occurs
+	 */
+	protected boolean convertPre(ConvertToken token) {
+		return true;
 	}
 
 	/**
