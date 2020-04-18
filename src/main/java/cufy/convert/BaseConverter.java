@@ -16,6 +16,7 @@
 package cufy.convert;
 
 import cufy.lang.Clazz;
+import cufy.lang.DejaVu;
 import cufy.lang.Recurse;
 import cufy.meta.Filter;
 import cufy.meta.Where;
@@ -59,7 +60,7 @@ import java.util.*;
  *             <b>Objects</b>
  *             <li>{@link #object_string}</li>
  *             <li>{@link #string_object}</li>
- *             <li>{@link #recurse_object}</li>
+ *             <li>{@link #dejaVu_object}</li>
  *         </ul>
  *     </li>
  * </ul>
@@ -79,6 +80,35 @@ public class BaseConverter extends AbstractConverter {
 	 * Inherit only.
 	 */
 	protected BaseConverter() {
+	}
+
+	@Override
+	protected boolean convertPre(ConvertToken token) {
+		Map<Object, ConvertToken> linearMap = (Map) token.linear.computeIfAbsent("refs", k -> new HashMap());
+		Map<Object, ConvertToken> treeMap = (Map) token.tree.compute("refs", (k, v) -> v instanceof Map ? new HashMap((Map) v) : new HashMap());
+
+		//RECURSE DETECTION
+		for (Map.Entry<Object, ConvertToken> entry : linearMap.entrySet())
+			if (entry.getKey() == token.input) {
+				token.inputClazz = Clazz.ofz(Recurse.class, token.inputClazz);
+				token.data.put("recurseToken", entry.getValue());
+				token.data.put("recurse", entry.getValue().output);
+				return true;
+			}
+
+		//DEJAVU DETECTION
+		for (Map.Entry<Object, ConvertToken> entry : treeMap.entrySet())
+			if (entry.getKey() == token.input) {
+				token.inputClazz = Clazz.ofz(DejaVu.class, token.inputClazz);
+				token.data.put("dejavuToken", entry.getValue());
+				token.data.put("dejavu", entry.getValue().output);
+				return true;
+			}
+
+		//REGISTER
+		linearMap.put(token.input, token);
+		treeMap.put(token.input, token);
+		return true;
 	}
 
 	/**
@@ -246,9 +276,7 @@ public class BaseConverter extends AbstractConverter {
 						  short[].class
 					}
 			),
-			output = @Filter(
-					subIn = List.class
-			)
+			output = @Filter(subIn = List.class)
 	)
 	protected void collection_list(ConvertToken<Collection, List> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {
@@ -295,6 +323,40 @@ public class BaseConverter extends AbstractConverter {
 			//Set the elements from the input
 			token.output.set(i, outputElement);
 		}
+	}
+
+	/**
+	 * DejaVu => Object
+	 * <br/>
+	 * Get invoked when a dejaVu converting occurred. Set the {@link ConvertToken#output} to the mapped output for the dejaVu input.
+	 *
+	 * @param token the conversion instance that holds the variables of this conversion
+	 * @throws NullPointerException     if the given 'token' is null
+	 * @throws ClassCastException       if the output instance of the given recurse is not instance of the given 'outputClass'
+	 * @throws IllegalArgumentException if no recursion actually happened
+	 */
+	@ConvertMethod(
+			input = @Filter(DejaVu.class),
+			output = @Filter(
+					subIn = Object.class,
+					in = {boolean.class,
+						  byte.class,
+						  char.class,
+						  double.class,
+						  float.class,
+						  int.class,
+						  long.class,
+						  short.class
+					}))
+	protected void dejaVu_object(ConvertToken<DejaVu, Object> token) {
+		if (DEBUGGING) {
+			Objects.requireNonNull(token, "token");
+		}
+
+		//IT SHOULD HAVE BEEN PASSED TO US :)
+		if (token.data.containsKey("dejavu"))
+			token.output = token.data.get("dejavu");
+		else throw new IllegalArgumentException("the key 'dejavu' haven't been passed!");
 	}
 
 	/**
@@ -578,9 +640,7 @@ public class BaseConverter extends AbstractConverter {
 	 * @throws IllegalArgumentException if no recursion actually happened
 	 */
 	@ConvertMethod(
-			input = @Filter(
-					subIn = Recurse.class
-			),
+			input = @Filter(Recurse.class),
 			output = @Filter(
 					subIn = Object.class,
 					in = {boolean.class,
@@ -592,18 +652,15 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}))
-	protected void recurse_object(ConvertToken<Recurse, Object> token) {
+	protected void recurs_object(ConvertToken<Recurse, Object> token) {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 		}
 
-		for (ConvertToken grand = token.parent; grand != null; grand = grand.parent)
-			if (grand.input == token.input) {
-				token.output = grand.output;
-				return;
-			}
-
-		throw new IllegalArgumentException(token.input + " haven't recurred");
+		//IT SHOULD HAVE BEEN PASSED TO US :)
+		if (token.data.containsKey("recurse"))
+			token.output = token.data.get("recurse");
+		else throw new IllegalArgumentException("the key 'recurse' haven't been passed!");
 	}
 
 	/**
