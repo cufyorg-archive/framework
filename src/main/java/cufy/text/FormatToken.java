@@ -16,7 +16,6 @@
 package cufy.text;
 
 import cufy.lang.Clazz;
-import cufy.lang.Recurse;
 
 import java.io.Writer;
 import java.util.HashMap;
@@ -33,14 +32,6 @@ import java.util.Objects;
  */
 public class FormatToken<T> {
 	/**
-	 * A table of data to be copied from this token to it's sub-tokens.
-	 */
-	final public Map data;
-	/**
-	 * A table of data globally shared across this token and it's sub-tokens.
-	 */
-	final public Map data_global;
-	/**
 	 * The depth of this token form the first parent.
 	 */
 	final public int depth;
@@ -49,9 +40,9 @@ public class FormatToken<T> {
 	 */
 	final public T input;
 	/**
-	 * The class that the input do have.
+	 * A table of data to be copied from this token to it's sub-tokens.
 	 */
-	final public Clazz<T> klazz;
+	final public Map linear;
 	/**
 	 * The writer to write the output to.
 	 */
@@ -60,6 +51,14 @@ public class FormatToken<T> {
 	 * The formatting token for the formatting that required initializing this token.
 	 */
 	final public FormatToken parent;
+	/**
+	 * A table of data globally shared across this token and it's sub-tokens.
+	 */
+	final public Map tree;
+	/**
+	 * The class that the input do have.
+	 */
+	public Clazz<T> klazz;
 
 	/**
 	 * Construct a new formatting token.
@@ -70,7 +69,15 @@ public class FormatToken<T> {
 	 * @throws NullPointerException if the given 'klazz' or 'output' is null
 	 */
 	public FormatToken(T input, Writer output, Clazz klazz) {
-		this(null, input, output, klazz);
+		Objects.requireNonNull(output, "output");
+
+		this.parent = null;
+		this.linear = new HashMap();
+		this.tree = new HashMap();
+		this.depth = 0;
+		this.input = input;
+		this.output = output;
+		this.klazz = klazz;
 	}
 
 	/**
@@ -80,33 +87,20 @@ public class FormatToken<T> {
 	 * @param input  the input instance
 	 * @param output the output to write to
 	 * @param klazz  the clazz of the input
-	 * @throws NullPointerException if the given 'klazz' or 'output' is null
+	 * @throws NullPointerException if the given 'parent' or 'output' or 'klazz' is null
 	 */
-	protected FormatToken(FormatToken parent, T input, Writer output, Clazz klazz) {
+	public FormatToken(FormatToken parent, T input, Writer output, Clazz klazz) {
+		Objects.requireNonNull(parent, "parent");
 		Objects.requireNonNull(output, "output");
 		Objects.requireNonNull(klazz, "klazz");
 
-		//recurse, depth detection
-		for (FormatToken grand = parent; grand != null; grand = grand.parent)
-			if (grand.input == input) {
-				klazz = Clazz.ofz(Recurse.class, klazz);
-				break;
-			}
-
 		this.parent = parent;
+		this.linear = new HashMap(parent.linear);
+		this.tree = parent.tree;
+		this.depth = parent.depth + 1;
 		this.input = input;
 		this.output = output;
 		this.klazz = klazz;
-
-		if (parent == null) {
-			this.depth = 0;
-			this.data = new HashMap();
-			this.data_global = new HashMap();
-		} else {
-			this.depth = parent.depth + 1;
-			this.data = new HashMap(parent.data);
-			this.data_global = parent.data_global;
-		}
 	}
 
 	/**

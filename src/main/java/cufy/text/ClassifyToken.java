@@ -32,14 +32,6 @@ import java.util.Objects;
  */
 public class ClassifyToken<T> {
 	/**
-	 * A table of data to be copied from this token to it's sub-tokens.
-	 */
-	final public Map data;
-	/**
-	 * A table of data globally shared across this token and it's sub-tokens.
-	 */
-	final public Map data_global;
-	/**
 	 * The depth of this token form the first parent.
 	 */
 	final public int depth;
@@ -50,9 +42,17 @@ public class ClassifyToken<T> {
 	 */
 	final public Reader input;
 	/**
+	 * A table of data to be copied from this token to it's sub-tokens.
+	 */
+	final public Map linear;
+	/**
 	 * The classifying token for the formatting that required initializing this token.
 	 */
 	final public ClassifyToken parent;
+	/**
+	 * A table of data globally shared across this token and it's sub-tokens.
+	 */
+	final public Map tree;
 	/**
 	 * The output of the classification. (could be changed several times!)
 	 */
@@ -66,7 +66,14 @@ public class ClassifyToken<T> {
 	 * @throws NullPointerException if the given 'input' is null
 	 */
 	public ClassifyToken(Reader input, Clazz<T> output) {
-		this(null, input, output);
+		Objects.requireNonNull(input, "input");
+
+		this.parent = null;
+		this.linear = new HashMap();
+		this.tree = new HashMap();
+		this.depth = 0;
+		this.input = input;
+		this.output = output;
 	}
 
 	/**
@@ -75,26 +82,18 @@ public class ClassifyToken<T> {
 	 * @param parent the parent token
 	 * @param input  the input to read from
 	 * @param output the initial output instance
-	 * @throws NullPointerException if the given 'input' is null
+	 * @throws NullPointerException if the given 'parent' or 'input' is null
 	 */
 	protected ClassifyToken(ClassifyToken parent, Reader input, Clazz<T> output) {
+		Objects.requireNonNull(parent, "parent");
 		Objects.requireNonNull(input, "input");
 
-		//NO RECURSION DETECTION
-
 		this.parent = parent;
+		this.linear = new HashMap(parent.linear);
+		this.tree = parent.tree;
+		this.depth = parent.depth + 1;
 		this.input = input;
 		this.output = output;
-
-		if (parent == null) {
-			this.depth = 0;
-			this.data = new HashMap();
-			this.data_global = new HashMap();
-		} else {
-			this.depth = parent.depth + 1;
-			this.data = new HashMap(parent.data);
-			this.data_global = parent.data_global;
-		}
 	}
 
 	/**

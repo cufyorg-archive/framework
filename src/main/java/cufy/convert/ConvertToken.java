@@ -16,7 +16,6 @@
 package cufy.convert;
 
 import cufy.lang.Clazz;
-import cufy.lang.Recurse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,37 +54,41 @@ import java.util.Objects;
  */
 public class ConvertToken<I, O> {
 	/**
-	 * A table of data to be copied from this token to it's sub-tokens.
+	 * The data of THIS token.
 	 */
-	final public Map data;
-	/**
-	 * A table of data globally shared across this token and it's sub-tokens.
-	 */
-	final public Map data_global;
+	final public Map data = new HashMap();
 	/**
 	 * The input object.
 	 */
 	final public I input;
 	/**
-	 * The class that the input do have.
+	 * A table of data to be copied from this token to it's sub-tokens.
 	 */
-	final public Clazz<I> inputClazz;
-	/**
-	 * The class that the output should have.
-	 */
-	final public Clazz<O> outputClazz;
+	final public Map linear;
 	/**
 	 * The convert-token for the conversion that required initializing this token.
 	 */
 	final public ConvertToken parent;
 	/**
+	 * A table of data globally shared across this token and it's sub-tokens.
+	 */
+	final public Map tree;
+	/**
 	 * The depth of this token form the first parent.
 	 */
 	final int depth;
 	/**
+	 * The class that the input do have.
+	 */
+	public Clazz<I> inputClazz;
+	/**
 	 * The output of the conversion. (could be changed several times!)
 	 */
 	public O output;
+	/**
+	 * The class that the output should have.
+	 */
+	public Clazz<O> outputClazz;
 
 	/**
 	 * Construct a new conversion token instance.
@@ -97,7 +100,17 @@ public class ConvertToken<I, O> {
 	 * @throws NullPointerException if the given 'inputClass' or 'outputClass' is null
 	 */
 	public ConvertToken(I input, O output, Clazz inputClazz, Clazz outputClazz) {
-		this(null, input, output, inputClazz, outputClazz);
+		Objects.requireNonNull(inputClazz, "inputClazz");
+		Objects.requireNonNull(outputClazz, "outputClazz");
+
+		this.parent = null;
+		this.linear = new HashMap();
+		this.tree = new HashMap();
+		this.depth = 0;
+		this.input = input;
+		this.output = output;
+		this.inputClazz = inputClazz;
+		this.outputClazz = outputClazz;
 	}
 
 	/**
@@ -108,34 +121,22 @@ public class ConvertToken<I, O> {
 	 * @param output      the initial output instance
 	 * @param inputClazz  the clazz of the input
 	 * @param outputClazz the clazz to be for the output
-	 * @throws NullPointerException if the given 'inputClass' or 'outputClass' is null
+	 * @throws NullPointerException if the given 'parent' or 'inputClass' or 'outputClass' is null
+	 * @implSpec dejaVu autodetect!
 	 */
 	protected ConvertToken(ConvertToken parent, I input, O output, Clazz inputClazz, Clazz outputClazz) {
+		Objects.requireNonNull(parent, "parent");
 		Objects.requireNonNull(inputClazz, "inputClazz");
 		Objects.requireNonNull(outputClazz, "outputClazz");
 
-		//recurse, depth detection
-		for (ConvertToken grand = parent; grand != null; grand = grand.parent)
-			if (grand.input == input) {
-				inputClazz = Clazz.ofz(Recurse.class, inputClazz);
-				break;
-			}
-
+		this.parent = parent;
+		this.linear = new HashMap(parent.linear);
+		this.tree = parent.tree;
+		this.depth = parent.depth + 1;
 		this.input = input;
 		this.output = output;
 		this.inputClazz = inputClazz;
 		this.outputClazz = outputClazz;
-		this.parent = parent;
-
-		if (parent == null) {
-			this.depth = 0;
-			this.data = new HashMap();
-			this.data_global = new HashMap();
-		} else {
-			this.depth = parent.depth + 1;
-			this.data = new HashMap(parent.data);
-			this.data_global = parent.data_global;
-		}
 	}
 
 	/**
@@ -231,6 +232,6 @@ public class ConvertToken<I, O> {
 						  Clazz.ofz(subOutputClazz.getFamily(), outputClazz);
 		//CLAZZ, CLAZZ, CLAZZ
 
-		return this.subToken(input, output, inputClazz, outputClazz);
+		return new ConvertToken<>(this, input, output, inputClazz, outputClazz);
 	}
 }

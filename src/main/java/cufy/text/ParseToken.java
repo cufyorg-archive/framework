@@ -32,29 +32,29 @@ import java.util.Objects;
  */
 public class ParseToken<T> {
 	/**
-	 * A table of data to be copied from this token to it's sub-tokens.
-	 */
-	final public Map data;
-	/**
-	 * A table of data globally shared across this token and it's sub-tokens.
-	 */
-	final public Map data_global;
-	/**
 	 * The reader to read the input from.
 	 */
 	final public Reader input;
 	/**
-	 * The class that the output should have.
+	 * A table of data to be copied from this token to it's sub-tokens.
 	 */
-	final public Clazz<T> klazz;
+	final public Map linear;
 	/**
 	 * The parsing-token for the parsing that required initializing this token.
 	 */
 	final public ParseToken parent;
 	/**
+	 * A table of data globally shared across this token and it's sub-tokens.
+	 */
+	final public Map tree;
+	/**
 	 * The depth of this token form the first parent.
 	 */
 	final int depth;
+	/**
+	 * The class that the output should have.
+	 */
+	public Clazz<T> klazz;
 	/**
 	 * The output of the parsing. (could be changed several times!)
 	 */
@@ -69,7 +69,16 @@ public class ParseToken<T> {
 	 * @throws NullPointerException if the given 'klazz' or 'input' is null
 	 */
 	public ParseToken(Reader input, T output, Clazz klazz) {
-		this(null, input, output, klazz);
+		Objects.requireNonNull(input, "input");
+		Objects.requireNonNull(klazz, "klazz");
+
+		this.parent = null;
+		this.linear = new HashMap();
+		this.tree = new HashMap();
+		this.depth = 0;
+		this.input = input;
+		this.output = output;
+		this.klazz = klazz;
 	}
 
 	/**
@@ -79,28 +88,20 @@ public class ParseToken<T> {
 	 * @param input  the input to read from
 	 * @param output the initial output instance
 	 * @param klazz  the clazz to be for the output
-	 * @throws NullPointerException if the given 'klazz' or 'input' is null
+	 * @throws NullPointerException if the given 'parent' or 'input' or 'klazz' is null
 	 */
 	protected ParseToken(ParseToken parent, Reader input, T output, Clazz klazz) {
+		Objects.requireNonNull(parent, "parent");
 		Objects.requireNonNull(input, "input");
 		Objects.requireNonNull(klazz, "klazz");
 
-		//NO RECURSION DETECTION
-
 		this.parent = parent;
+		this.linear = new HashMap(parent.linear);
+		this.tree = parent.tree;
+		this.depth = parent.depth + 1;
 		this.input = input;
 		this.output = output;
 		this.klazz = klazz;
-
-		if (parent == null) {
-			this.depth = 0;
-			this.data = new HashMap();
-			this.data_global = new HashMap();
-		} else {
-			this.depth = parent.depth + 1;
-			this.data = new HashMap(parent.data);
-			this.data_global = parent.data_global;
-		}
 	}
 
 	/**
