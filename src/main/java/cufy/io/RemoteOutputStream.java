@@ -15,7 +15,7 @@
  */
 package cufy.io;
 
-import cufy.concurrent.Do;
+import cufy.concurrent.Once;
 import cufy.concurrent.Instructor;
 import cufy.util.function.ThrowRunnable;
 
@@ -90,7 +90,7 @@ public class RemoteOutputStream extends OutputStream {
 		Objects.requireNonNull(runnable, "runnable");
 		boolean[] executed = {false};
 
-		this.instructor.start(new Do(d -> {
+		this.instructor.start(new Once(d -> {
 			executed[0] = true;
 			runnable.run();
 		}));
