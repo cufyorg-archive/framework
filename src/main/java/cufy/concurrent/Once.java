@@ -25,11 +25,11 @@ import java.util.function.Consumer;
  * @version 0.1.3
  * @since 13-Feb-2020
  */
-public class Do extends Loop<Consumer<Do>, Object> {
+public class Once extends Loop<Consumer<Once>, Object> {
 	/**
 	 * Construct a new 'do' loop.
 	 */
-	public Do() {
+	public Once() {
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class Do extends Loop<Consumer<Do>, Object> {
 	 * @param code the first looping code
 	 * @throws NullPointerException if the given code is null
 	 */
-	public Do(Consumer<Do> code) {
+	public Once(Consumer<Once> code) {
 		Objects.requireNonNull(code, "code");
 		this.append(code);
 	}
