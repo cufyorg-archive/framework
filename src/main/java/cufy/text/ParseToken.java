@@ -32,6 +32,10 @@ import java.util.Objects;
  */
 public class ParseToken<T> {
 	/**
+	 * The data of THIS token.
+	 */
+	final public Map data = new HashMap();
+	/**
 	 * The reader to read the input from.
 	 */
 	final public Reader input;

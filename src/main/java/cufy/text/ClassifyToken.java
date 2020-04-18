@@ -32,6 +32,10 @@ import java.util.Objects;
  */
 public class ClassifyToken<T> {
 	/**
+	 * The data of THIS token.
+	 */
+	final public Map data = new HashMap();
+	/**
 	 * The depth of this token form the first parent.
 	 */
 	final public int depth;
