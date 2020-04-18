@@ -110,7 +110,7 @@ public class JSONTest {
 
 	@Test
 	public void parse() {
-		String text = "{/*beast is a beast\nwhy? just becouse!*/\"beast\"=[//How ? just watch\n\"beast\", \"is a\", this0]}";
+		String text = "{/*beast is a beast\nwhy? just becouse!*/\"beast\"=[//How ? just watch\n\"beast\", \"is a\", \"beast\"]}";
 
 		Map map = JSON.global.cparse(text);
 
@@ -121,7 +121,7 @@ public class JSONTest {
 		Assert.assertEquals("wrong size", 3, beast.size());
 		Assert.assertEquals("wrong element", "beast", beast.get(0));
 		Assert.assertEquals("wrong element", "is a", beast.get(1));
-		Assert.assertSame("recurson not parsed", beast, beast.get(2));
+		Assert.assertEquals("wrong element", "beast", beast.get(2));
 	}
 
 	@Test

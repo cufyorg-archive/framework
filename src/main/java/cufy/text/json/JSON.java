@@ -17,7 +17,6 @@ package cufy.text.json;
 
 import cufy.lang.Clazz;
 import cufy.lang.Empty;
-import cufy.lang.Recurse;
 import cufy.meta.Filter;
 import cufy.meta.Where;
 import cufy.text.*;
@@ -99,14 +98,6 @@ import java.util.concurrent.atomic.AtomicReference;
  *             <li>{@link  #isEmpty classify}</li>
  *         </ul>
  *     </li>
- *     <li>
- *         <font color="yellow">{@link Recurse}</font>
- *         <ul>
- *             <li>{@link #formatRecurse format}</li>
- *             <li>{@link #isRecurse classify}</li>
- *             <li>{@link #parseRecurse parse}</li>
- *         </ul>
- *     </li>
  * </ul>
  *
  * @author lsafer
@@ -166,6 +157,16 @@ public class JSON extends AbstractFormat {
 	 */
 	protected Map<String, String> SYNTAX_NESTABLE;
 
+	@Override
+	protected boolean formatPre(FormatToken token) throws IOException {
+		//RECURSE DETECTION
+		for (FormatToken parent = token.parent; parent != null; parent = parent.parent)
+			if (parent.input == token.input)
+				throw new FormatException("Recurse detected!");
+
+		return true;
+	}
+
 	/**
 	 * Format Array
 	 * <br/>
@@ -202,7 +203,7 @@ public class JSON extends AbstractFormat {
 
 		if (it.hasNext()) {
 			token.output.append(SYNTAX.ARRAY_START)
-					.append(SYNTAX.LINE)
+					.append(SYNTAX.NEW_LINE)
 					.append(SHIFT);
 
 			while (true) {
@@ -212,10 +213,10 @@ public class JSON extends AbstractFormat {
 
 				if (it.hasNext()) {
 					token.output.append(SYNTAX.MEMBER_END)
-							.append(SYNTAX.LINE)
+							.append(SYNTAX.NEW_LINE)
 							.append(SHIFT);
 				} else {
-					token.output.append(SYNTAX.LINE)
+					token.output.append(SYNTAX.NEW_LINE)
 							.append(TAB)
 							.append(SYNTAX.ARRAY_END);
 					break;
@@ -223,7 +224,7 @@ public class JSON extends AbstractFormat {
 			}
 		} else {
 			token.output.append(SYNTAX.ARRAY_START)
-					.append(SYNTAX.LINE)
+					.append(SYNTAX.NEW_LINE)
 					.append(TAB)
 					.append(SYNTAX.ARRAY_END);
 		}
@@ -333,7 +334,7 @@ public class JSON extends AbstractFormat {
 
 		if (it.hasNext()) {
 			token.output.append(SYNTAX.OBJECT_START)
-					.append(SYNTAX.LINE)
+					.append(SYNTAX.NEW_LINE)
 					.append(SHIFT);
 
 			while (true) {
@@ -350,10 +351,10 @@ public class JSON extends AbstractFormat {
 
 				if (it.hasNext()) {
 					token.output.append(SYNTAX.MEMBER_END)
-							.append(SYNTAX.LINE)
+							.append(SYNTAX.NEW_LINE)
 							.append(SHIFT);
 				} else {
-					token.output.append(SYNTAX.LINE)
+					token.output.append(SYNTAX.NEW_LINE)
 							.append(TAB)
 							.append(SYNTAX.OBJECT_END);
 					break;
@@ -361,39 +362,9 @@ public class JSON extends AbstractFormat {
 			}
 		} else {
 			token.output.append(SYNTAX.OBJECT_START)
-					.append(SYNTAX.LINE)
+					.append(SYNTAX.NEW_LINE)
 					.append(TAB)
 					.append(SYNTAX.OBJECT_END);
-		}
-	}
-
-	/**
-	 * Format Recurse
-	 * <br/>
-	 * Format the given {@link Recurse}. To a {@link JSON} text. Then {@link Writer#append} it to the given {@link Writer}.
-	 *
-	 * @param token the formatting instance that holds the variables of this formatting
-	 * @throws FormatException          when any formatting errors occurs
-	 * @throws IOException              when any I/O exception occurs
-	 * @throws NullPointerException     if the given 'token' is null
-	 * @throws IllegalArgumentException if the given 'input' didn't recurred
-	 */
-	@FormatMethod(@Filter(Recurse.class))
-	protected void formatRecurse(FormatToken<Recurse> token) throws IOException {
-		if (DEBUGGING) {
-			Objects.requireNonNull(token, "token");
-		}
-
-		int i = 1;
-		int index = -1;
-		for (FormatToken grand = token.parent; grand != null; grand = grand.parent, i++)
-			if (grand.input == token.input)
-				index = i;
-
-		if (index == -1) {
-			throw new IllegalArgumentException(token + " didn't recurred");
-		} else {
-			token.output.append(SYNTAX.RECURSE).append(String.valueOf(index));
 		}
 	}
 
@@ -608,37 +579,6 @@ public class JSON extends AbstractFormat {
 			return false;
 		} else {
 			token.output = Clazz.of(Map.class);
-			return true;
-		}
-	}
-
-	/**
-	 * Classify Recurse
-	 * <br/>
-	 * Check if the given string should be parsed as {@link Recurse} or not.
-	 *
-	 * @param token the classification instance that holds the variables of this classification
-	 * @return whether the given string should be parsed as {@code recurse} or not.
-	 * @throws ClassifyException    when any classification exception occurs
-	 * @throws IOException          when any I/O exception occurs
-	 * @throws NullPointerException if the given 'token' is null
-	 */
-	@ClassifyMethod
-	protected boolean isRecurse(ClassifyToken<Recurse> token) throws IOException {
-		if (DEBUGGING) {
-			Objects.requireNonNull(token, "token");
-		}
-
-		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.RECURSE.length());
-
-		int r = Inputu.isRemainingEquals(token.input, true, false, true, SYNTAX.RECURSE);
-
-		token.input.reset();
-
-		if (r == -1) {
-			return false;
-		} else {
-			token.output = (Clazz) Clazz.of(Recurse.class, Object.class);
 			return true;
 		}
 	}
@@ -1090,38 +1030,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Parse Recurse
-	 * <br/>
-	 * Parse the string from the given reader to an {@link Recurse}. Then set it to the given {@link AtomicReference buffer}.
-	 *
-	 * @param token the parsing instance that holds the variables of this parsing
-	 * @throws ParseException           when any parsing exception occurs
-	 * @throws IOException              when any I/O exception occurs
-	 * @throws NullPointerException     if the given 'token' is null
-	 * @throws java.text.ParseException when any parsing exception occurs
-	 */
-	@ParseMethod(@Filter(Recurse.class))
-	protected void parseRecurse(ParseToken<Recurse> token) throws IOException, java.text.ParseException {
-		if (DEBUGGING) {
-			Objects.requireNonNull(token, "token");
-		}
-
-		int l = DEFAULT_VALUE_LENGTH + SYNTAX.RECURSE.length();
-		String string = Inputu.getRemaining(token.input, l, l).trim().substring(SYNTAX.RECURSE.length());
-
-		int index = Integer.parseInt(string);
-		int i = 0;
-
-		for (ParseToken<Recurse> grand = token.parent; grand != null; grand = grand.parent, i++)
-			if (i == index) {
-				token.output = grand.output;
-				return;
-			}
-
-		throw new ParseException(token + " didn't recurse");
-	}
-
-	/**
 	 * Parse String
 	 * <br/>
 	 * Parse the string from the given reader to an {@link String}. Then set it to the given {@link AtomicReference buffer}.
@@ -1189,11 +1097,11 @@ public class JSON extends AbstractFormat {
 		this.SYNTAX_LITERAL = new HashMap<>();
 		this.SYNTAX_LITERAL.put(this.SYNTAX.STRING_START, this.SYNTAX.STRING_END);
 		this.SYNTAX_LITERAL.put(this.SYNTAX.COMMENT_START, this.SYNTAX.COMMENT_END);
-		this.SYNTAX_LITERAL.put(this.SYNTAX.LINE_COMMENT_START, this.SYNTAX.LINE_COMMENT_END);
+		this.SYNTAX_LITERAL.put(this.SYNTAX.COMMENT_LINE_START, this.SYNTAX.COMMENT_LINE_END);
 
 		this.SYNTAX_COMMENT = new HashMap<>();
 		this.SYNTAX_COMMENT.put(this.SYNTAX.COMMENT_START, this.SYNTAX.COMMENT_END);
-		this.SYNTAX_COMMENT.put(this.SYNTAX.LINE_COMMENT_START, this.SYNTAX.LINE_COMMENT_END);
+		this.SYNTAX_COMMENT.put(this.SYNTAX.COMMENT_LINE_START, this.SYNTAX.COMMENT_LINE_END);
 
 		return this;
 	}
@@ -1235,15 +1143,15 @@ public class JSON extends AbstractFormat {
 		/**
 		 * A symbol used to shows a line. To make the code more readable.
 		 */
-		public String LINE = "\n";
+		public String NEW_LINE = "\n";
 		/**
 		 * Declare that the line comment ended.
 		 */
-		public String LINE_COMMENT_END = "\n";
+		public String COMMENT_LINE_END = "\n";
 		/**
-		 * Declare that the next characters are commented. Until the {@link #LINE_COMMENT_END} cancel it.
+		 * Declare that the next characters are commented. Until the {@link #COMMENT_LINE_END} cancel it.
 		 */
-		public String LINE_COMMENT_START = "//";
+		public String COMMENT_LINE_START = "//";
 		/**
 		 * Member end char on JSON.
 		 */
@@ -1260,10 +1168,6 @@ public class JSON extends AbstractFormat {
 		 * Object start char on JSON.
 		 */
 		public String OBJECT_START = "{";
-		/**
-		 * Recurse reference on JSON.
-		 */
-		public String RECURSE = "this";
 		/**
 		 * String start char on JSON.
 		 */

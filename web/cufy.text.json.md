@@ -7,7 +7,6 @@ So advanced JSON formatter, parser and classifier.
 - Accept `java.io.Writer` as output
 - Completely inheritable
 - Supports comments
-- Supports recursion
 - Can parse to an existing container (List or Map) and it deep override them
 - Can specify the type of the input or output using Clazzes
 
