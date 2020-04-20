@@ -19,6 +19,6 @@
  * @author lsafer
  * @version 0.1.3
  * @since 13-Feb-2020
- * @see <a href="https://cufyorg.github.io/framework/web/cufy.util.function.html">Cufy Framework: Util: Function</a>
+ * @see <a href="https://cufyorg.github.io/framework/web/cufy.util.function.html">cufy.util.function</a>
  */
 package cufy.util.function;

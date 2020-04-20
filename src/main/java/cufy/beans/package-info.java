@@ -18,7 +18,7 @@
  *
  * @author lsafer
  * @version 0.1.3
+ * @see <a href="https://cufyorg.github.io/framework/site/cufy.beans.html">cufy.beans</a>
  * @since 11-Jun-2019
- * @see <a href="https://cufyorg.github.io/framework/web/cufy.beans.html">Cufy Framework: Beans</a>
  */
 package cufy.beans;
