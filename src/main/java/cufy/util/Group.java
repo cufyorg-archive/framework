@@ -21,6 +21,7 @@ import java.util.function.Predicate;
 /**
  * A way to elements and get subgroups of them. This class holds the elements of it as a final elements. And give the user the ability to
  * iterate the elements back. Or get a subgroup of the elements it has got. The subgroup will be saved by it for the next requests for that group.
+ * {@link #equals} should return if this group contains all the of the elements of the other group. but the state of the subgroups will be ignored.
  *
  * @param <E> the type of the elements this group holds
  * @author lsafer
@@ -31,7 +32,8 @@ public interface Group<E> extends Collection<E> {
 	/**
 	 * Returns a subgroup of this group. The subgroup returned has the elements of this that satisfies the given predicate. The given predicate will
 	 * be invoked only if the given key has not been resolved previously. Otherwise the results of that previous call will be returned. The functions
-	 * of the returned group should be remotely effecting the content of this group.
+	 * of the returned group should be remotely effecting the content of this group. There is no guarantee that the previously resolved subgroup will
+	 * be the returned subgroup, but the returned subgroup SHOULD effect the previously solved subgroup.
 	 *
 	 * @param key       the key of that group (saves the group for later)
 	 * @param predicate the tester to be satisfied
@@ -39,9 +41,9 @@ public interface Group<E> extends Collection<E> {
 	 * @throws NullPointerException if the given 'predicate' is null
 	 */
 	Group<E> subGroup(Object key, Predicate<E> predicate);
-
 	/**
-	 * Returns the group with the given key.
+	 * Returns the group with the given key. There is no guarantee that the previously resolved subgroup will
+	 * be the returned subgroup, but the returned subgroup SHOULD effect the previously solved subgroup.
 	 *
 	 * @param key the key of the group
 	 * @return the group with the given key. Or null if no group with that key have been stored.
