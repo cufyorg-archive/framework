@@ -16,10 +16,7 @@
 package cufy.convert;
 
 import cufy.meta.Filter;
-import cufy.util.Arrays;
-import cufy.util.Group;
-import cufy.util.Reflection;
-import cufy.util.UnmodifiableGroup;
+import cufy.util.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,7 +37,7 @@ public abstract class AbstractConverter implements Converter {
 	/**
 	 * The converting methods of this class.
 	 */
-	final protected Group<Method> methods = new UnmodifiableGroup<>(Reflection.getAllMethods(this.getClass()));
+	final protected Group<Method> methods = Collections.unmodifiableGroup(new HashGroup<>(Reflection.getAllMethods(this.getClass())));
 	/**
 	 * If this class in a debugging mode or not.
 	 *

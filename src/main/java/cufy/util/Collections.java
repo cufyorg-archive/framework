@@ -436,7 +436,7 @@ final public class Collections {
 
 			@Override
 			public boolean containsAll(Collection<?> collection) {
-				return group.contains(collection);
+				return group.containsAll(collection);
 			}
 
 			@Override

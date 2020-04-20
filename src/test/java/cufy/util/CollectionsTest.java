@@ -134,4 +134,26 @@ public class CollectionsTest {
 		} catch (NoSuchElementException ignored) {
 		}
 	}
+
+	@Test
+	public void unmodifiableGroup() {
+		String[] strings = {"my abc", "my def", "my ghi", "abc", "def", "ghi"};
+		Group<String> constants = Collections.unmodifiableGroup(new HashGroup<>(Arrays.asList(strings)));
+		Group<String> my = constants.subGroup("my", s -> s.startsWith("my"));
+		Group<String> abc = constants.subGroup("abc", s -> s.contains("abc"));
+
+		Assert.assertEquals("Wrong size", 3, my.size());
+		Assert.assertEquals("Wrong size", 2, abc.size());
+		Assert.assertTrue("Should contains all", my.containsAll(java.util.Arrays.asList("my abc", "my def", "my ghi")));
+		Assert.assertTrue("Should contains all", abc.containsAll(java.util.Arrays.asList("my abc", "abc")));
+
+		Group<String> myAgain = constants.subGroup("my", s -> false);
+		Group<String> abcAgain = constants.subGroup("abc", s -> false);
+
+		boolean w = my.equals(myAgain);
+		boolean x = abc.equals(abcAgain);
+
+		Assert.assertEquals("Didn't returned the already resolved object", my, myAgain);
+		Assert.assertEquals("Didn't returned the already resolved object", abc, abcAgain);
+	}
 }
