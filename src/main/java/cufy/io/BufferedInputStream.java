@@ -15,7 +15,7 @@
  */
 package cufy.io;
 
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +53,7 @@ public class BufferedInputStream extends InputStream {
 	public int read() throws IOException {
 		this.ensureOpen();
 		if (this.buffer != null && this.buffer.hasNext()) {
-			return (int) Reflectionu.primitiveCast(int.class, this.buffer.read());
+			return (int) Reflection.primitiveCast(int.class, this.buffer.read());
 		} else {
 			int value = this.stream.read();
 

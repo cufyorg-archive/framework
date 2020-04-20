@@ -28,13 +28,13 @@ import java.util.function.BiFunction;
  * @version 0.1.3
  * @since 11 Jun 2019
  */
-final public class Arrayu {
+final public class Arrays {
 	/**
 	 * This is a util class. And shall not be instanced as an object.
 	 *
 	 * @throws AssertionError when called
 	 */
-	private Arrayu() {
+	private Arrays() {
 		throw new AssertionError("No instance for you!");
 	}
 
@@ -552,7 +552,7 @@ final public class Arrayu {
 
 			@Override
 			public T[] toArray() {
-				return Arrayu.copyOf(array, array.length);
+				return Arrays.copyOf(array, array.length);
 			}
 
 			@Override
@@ -561,7 +561,7 @@ final public class Arrayu {
 				final int length = a.length;
 
 				if (length < array.length) {
-					return (Object[]) Arrayu.copyOf0(array, array.length, a.getClass());
+					return (Object[]) Arrays.copyOf0(array, array.length, a.getClass());
 				} else {
 					if (a.getClass().isAssignableFrom(array.getClass()))
 						System.arraycopy(array, 0, a, 0, array.length);
@@ -608,7 +608,7 @@ final public class Arrayu {
 
 			@Override
 			public Boolean[] toArray() {
-				return (Boolean[]) Arrayu.copyOf0(array, array.length, Boolean.class);
+				return (Boolean[]) Arrays.copyOf0(array, array.length, Boolean.class);
 			}
 
 			@Override
@@ -617,7 +617,7 @@ final public class Arrayu {
 				final int length = a.length;
 
 				if (length < array.length) {
-					return (Object[]) Arrayu.copyOf0(array, array.length, a.getClass());
+					return (Object[]) Arrays.copyOf0(array, array.length, a.getClass());
 				} else {
 					if (a.getClass().isAssignableFrom(array.getClass()))
 						System.arraycopy(array, 0, a, 0, array.length);
@@ -664,7 +664,7 @@ final public class Arrayu {
 
 			@Override
 			public Byte[] toArray() {
-				return (Byte[]) Arrayu.copyOf0(array, array.length, Byte.class);
+				return (Byte[]) Arrays.copyOf0(array, array.length, Byte.class);
 			}
 
 			@Override
@@ -673,7 +673,7 @@ final public class Arrayu {
 				final int length = a.length;
 
 				if (length < array.length) {
-					return (Object[]) Arrayu.copyOf0(array, array.length, a.getClass());
+					return (Object[]) Arrays.copyOf0(array, array.length, a.getClass());
 				} else {
 					if (a.getClass().isAssignableFrom(array.getClass()))
 						System.arraycopy(array, 0, a, 0, array.length);
@@ -720,7 +720,7 @@ final public class Arrayu {
 
 			@Override
 			public Character[] toArray() {
-				return (Character[]) Arrayu.copyOf0(array, array.length, Character.class);
+				return (Character[]) Arrays.copyOf0(array, array.length, Character.class);
 			}
 
 			@Override
@@ -729,7 +729,7 @@ final public class Arrayu {
 				final int length = a.length;
 
 				if (length < array.length) {
-					return (Object[]) Arrayu.copyOf0(array, array.length, a.getClass());
+					return (Object[]) Arrays.copyOf0(array, array.length, a.getClass());
 				} else {
 					if (a.getClass().isAssignableFrom(array.getClass()))
 						System.arraycopy(array, 0, a, 0, array.length);
@@ -776,7 +776,7 @@ final public class Arrayu {
 
 			@Override
 			public Double[] toArray() {
-				return (Double[]) Arrayu.copyOf0(array, array.length, Double.class);
+				return (Double[]) Arrays.copyOf0(array, array.length, Double.class);
 			}
 
 			@Override
@@ -785,7 +785,7 @@ final public class Arrayu {
 				final int length = a.length;
 
 				if (length < array.length) {
-					return (Object[]) Arrayu.copyOf0(array, array.length, a.getClass());
+					return (Object[]) Arrays.copyOf0(array, array.length, a.getClass());
 				} else {
 					if (a.getClass().isAssignableFrom(array.getClass()))
 						System.arraycopy(array, 0, a, 0, array.length);
@@ -832,7 +832,7 @@ final public class Arrayu {
 
 			@Override
 			public Float[] toArray() {
-				return (Float[]) Arrayu.copyOf0(array, array.length, Float.class);
+				return (Float[]) Arrays.copyOf0(array, array.length, Float.class);
 			}
 
 			@Override
@@ -841,7 +841,7 @@ final public class Arrayu {
 				final int length = a.length;
 
 				if (length < array.length) {
-					return (Object[]) Arrayu.copyOf0(array, array.length, a.getClass());
+					return (Object[]) Arrays.copyOf0(array, array.length, a.getClass());
 				} else {
 					if (a.getClass().isAssignableFrom(array.getClass()))
 						System.arraycopy(array, 0, a, 0, array.length);
@@ -888,7 +888,7 @@ final public class Arrayu {
 
 			@Override
 			public Integer[] toArray() {
-				return (Integer[]) Arrayu.copyOf0(array, array.length, Integer.class);
+				return (Integer[]) Arrays.copyOf0(array, array.length, Integer.class);
 			}
 
 			@Override
@@ -897,7 +897,7 @@ final public class Arrayu {
 				final int length = a.length;
 
 				if (length < array.length) {
-					return (Object[]) Arrayu.copyOf0(array, array.length, a.getClass());
+					return (Object[]) Arrays.copyOf0(array, array.length, a.getClass());
 				} else {
 					if (a.getClass().isAssignableFrom(array.getClass()))
 						System.arraycopy(array, 0, a, 0, array.length);
@@ -944,7 +944,7 @@ final public class Arrayu {
 
 			@Override
 			public Long[] toArray() {
-				return (Long[]) Arrayu.copyOf0(array, array.length, Long.class);
+				return (Long[]) Arrays.copyOf0(array, array.length, Long.class);
 			}
 
 			@Override
@@ -953,7 +953,7 @@ final public class Arrayu {
 				final int length = a.length;
 
 				if (length < array.length) {
-					return (Object[]) Arrayu.copyOf0(array, array.length, a.getClass());
+					return (Object[]) Arrays.copyOf0(array, array.length, a.getClass());
 				} else {
 					if (a.getClass().isAssignableFrom(array.getClass()))
 						System.arraycopy(array, 0, a, 0, array.length);
@@ -1000,7 +1000,7 @@ final public class Arrayu {
 
 			@Override
 			public Short[] toArray() {
-				return (Short[]) Arrayu.copyOf0(array, array.length, Short.class);
+				return (Short[]) Arrays.copyOf0(array, array.length, Short.class);
 			}
 
 			@Override
@@ -1009,7 +1009,7 @@ final public class Arrayu {
 				final int length = a.length;
 
 				if (length < array.length) {
-					return (Object[]) Arrayu.copyOf0(array, array.length, a.getClass());
+					return (Object[]) Arrays.copyOf0(array, array.length, a.getClass());
 				} else {
 					if (a.getClass().isAssignableFrom(array.getClass()))
 						System.arraycopy(array, 0, a, 0, array.length);
@@ -1059,7 +1059,7 @@ final public class Arrayu {
 
 			@Override
 			public Object[] toArray() {
-				return (Object[]) Arrayu.copyOf0(array, size, Object[].class);
+				return (Object[]) Arrays.copyOf0(array, size, Object[].class);
 			}
 
 			@Override
@@ -1068,7 +1068,7 @@ final public class Arrayu {
 				final int length = a.length;
 
 				if (length < size) {
-					return (Object[]) Arrayu.copyOf0(array, size, a.getClass());
+					return (Object[]) Arrays.copyOf0(array, size, a.getClass());
 				} else {
 					if (a.getClass().isAssignableFrom(array.getClass()))
 						System.arraycopy(array, 0, a, 0, size);
@@ -1867,7 +1867,7 @@ final public class Arrayu {
 		Class<?> type = dest.getClass().getComponentType();
 		for (int i = 0; i < length; i++)
 			try {
-				Array.set(dest, destPos++, Reflectionu.primitiveCast(type, Array.get(src, srcPos++)));
+				Array.set(dest, destPos++, Reflection.primitiveCast(type, Array.get(src, srcPos++)));
 			} catch (IllegalArgumentException e) {
 				throw (ArrayStoreException) new ArrayStoreException(e.getMessage()).initCause(e);
 			}

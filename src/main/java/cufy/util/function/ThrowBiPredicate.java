@@ -15,7 +15,7 @@
  */
 package cufy.util.function;
 
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 
 import java.util.function.BiPredicate;
 
@@ -36,7 +36,7 @@ public interface ThrowBiPredicate<T, U, E extends Throwable> extends BiPredicate
 		try {
 			return this.test0(t, u);
 		} catch (Throwable e) {
-			throw Reflectionu.<Error>ignite(e);
+			throw Reflection.<Error>ignite(e);
 		}
 	}
 

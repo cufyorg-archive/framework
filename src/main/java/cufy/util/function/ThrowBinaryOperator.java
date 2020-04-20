@@ -15,7 +15,7 @@
  */
 package cufy.util.function;
 
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 
 import java.util.function.BinaryOperator;
 
@@ -35,7 +35,7 @@ public interface ThrowBinaryOperator<T, E extends Throwable> extends BinaryOpera
 		try {
 			return this.apply0(t, t2);
 		} catch (Throwable e) {
-			throw Reflectionu.<Error>ignite(e);
+			throw Reflection.<Error>ignite(e);
 		}
 	}
 

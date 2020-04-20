@@ -15,7 +15,7 @@
  */
 package cufy.util.function;
 
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 
 import java.util.function.Consumer;
 
@@ -35,7 +35,7 @@ public interface ThrowConsumer<T, E extends Throwable> extends Consumer<T> {
 		try {
 			this.accept0(t);
 		} catch (Throwable e) {
-			Reflectionu.<Error>ignite(e);
+			Reflection.<Error>ignite(e);
 		}
 	}
 

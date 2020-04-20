@@ -10,20 +10,20 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @SuppressWarnings("JavaDoc")
-public class ReflectionuTest {
+public class ReflectionTest {
 	@Test
 	public void asArrayClass() {
-		Assert.assertEquals("Wrong array class", int[][].class, Reflectionu.asArrayClass(int[].class));
+		Assert.assertEquals("Wrong array class", int[][].class, Reflection.asArrayClass(int[].class));
 	}
 
 	@Test
 	public void asObjectClass() {
-		Assert.assertEquals("Wrong object class", Integer[][][][][].class, Reflectionu.asObjectClass(int[][][][][].class));
+		Assert.assertEquals("Wrong object class", Integer[][][][][].class, Reflection.asObjectClass(int[][][][][].class));
 	}
 
 	@Test
 	public void asPrimitiveClass() {
-		Assert.assertEquals("Wrong object class", int[][][][][].class, Reflectionu.asPrimitiveClass(Integer[][][][][].class));
+		Assert.assertEquals("Wrong object class", int[][][][][].class, Reflection.asPrimitiveClass(Integer[][][][][].class));
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class ReflectionuTest {
 		final int fieldsCount = 4;
 		final int totalFieldsCount = standardFieldsCount + fieldsCount;
 
-		List<Field> fields = Reflectionu.getAllFields(A.class);
+		List<Field> fields = Reflection.getAllFields(A.class);
 
 		Assert.assertEquals("Wrong fields size", totalFieldsCount, fields.size());
 		Assert.assertTrue("public field not found", fields.removeIf(f -> f.getName().equals("a")));
@@ -67,7 +67,7 @@ public class ReflectionuTest {
 		final int methodsCount = 4;
 		final int totalMethodsCount = standardMethodsCount + methodsCount;
 
-		List<Method> methods = Reflectionu.getAllMethods(A.class);
+		List<Method> methods = Reflection.getAllMethods(A.class);
 
 		Assert.assertEquals("Wrong methods size", totalMethodsCount, methods.size());
 		Assert.assertTrue("public method not found", methods.removeIf(m -> m.getName().equals("a")));
@@ -81,10 +81,10 @@ public class ReflectionuTest {
 		try {
 			//noinspection TrivialFunctionalExpressionUsage
 			((Supplier<Object>) () -> {
-				throw Reflectionu.<Error>ignite(new IOException());
+				throw Reflection.<Error>ignite(new IOException());
 			}).get();
 		} catch (Exception e) {
-			throw Reflectionu.<Error>ignite(e);
+			throw Reflection.<Error>ignite(e);
 		}
 
 		Assert.fail("The exception haven't been caught");
@@ -105,14 +105,14 @@ public class ReflectionuTest {
 		Method doOverride = A.class.getMethod("equals", Object.class);
 		Method dontOverride = A.class.getMethod("equals", Object.class, Object.class);
 
-		Assert.assertTrue("Do override in reality", Reflectionu.overrides(base, doOverride));
-		Assert.assertFalse("Don't override in reality", Reflectionu.overrides(base, dontOverride));
+		Assert.assertTrue("Do override in reality", Reflection.overrides(base, doOverride));
+		Assert.assertFalse("Don't override in reality", Reflection.overrides(base, dontOverride));
 	}
 
 	@Test
 	public void primitiveCast() {
 		Integer i = 413;
-		Long l = (Long) Reflectionu.primitiveCast(Long.class, i);
+		Long l = (Long) Reflection.primitiveCast(Long.class, i);
 
 		Assert.assertEquals("Wrong casting value", (int) i, (int) (long) l);
 	}

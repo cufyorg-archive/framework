@@ -15,7 +15,7 @@
  */
 package cufy.util.function;
 
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 
 import java.util.function.BiFunction;
 
@@ -37,7 +37,7 @@ public interface ThrowBiFunction<T, U, R, E extends Throwable> extends BiFunctio
 		try {
 			return this.apply0(t, u);
 		} catch (Throwable e) {
-			throw Reflectionu.<Error>ignite(e);
+			throw Reflection.<Error>ignite(e);
 		}
 	}
 

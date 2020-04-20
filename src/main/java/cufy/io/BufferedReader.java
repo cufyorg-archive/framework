@@ -15,7 +15,7 @@
  */
 package cufy.io;
 
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -84,7 +84,7 @@ public class BufferedReader extends Reader {
 		synchronized (super.lock) {
 			this.ensureOpen();
 			if (this.buffer != null && this.buffer.hasNext()) {
-				return (int) Reflectionu.primitiveCast(int.class, this.buffer.read());
+				return (int) Reflection.primitiveCast(int.class, this.buffer.read());
 			} else {
 				int value = this.reader.read();
 

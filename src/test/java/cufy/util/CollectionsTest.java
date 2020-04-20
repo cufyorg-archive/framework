@@ -6,7 +6,7 @@ import org.junit.Test;
 import java.util.*;
 
 @SuppressWarnings("JavaDoc")
-public class CollectionuTest {
+public class CollectionsTest {
 	@Test
 	public void asList() {
 		Map map = new HashMap();
@@ -19,7 +19,7 @@ public class CollectionuTest {
 		map.put(3, "three");
 		map.put(7, "seven");
 
-		List list = Collectionu.asList(map);
+		List list = Collections.asList(map);
 
 		list.add("four"); //eight
 		list.add(9, "ten"); //nine
@@ -82,7 +82,7 @@ public class CollectionuTest {
 		}
 
 		TestObject instance = new TestObject();
-		Map<String, Object> remote = Collectionu.asMap(instance);
+		Map<String, Object> remote = Collections.asMap(instance);
 
 		Assert.assertEquals("Can't get final fields", 3, remote.get("pub"));
 		Assert.assertEquals("Can't get public fields", 3, remote.get("pub"));
@@ -115,11 +115,11 @@ public class CollectionuTest {
 
 	@Test
 	public void combine() {
-		Iterator<String> a = Arrayu.asList("a", "B", "c").iterator();
-		Iterator<String> b = Arrayu.asList("a", "B", "c").iterator();
-		Iterator<String> c = Arrayu.asList("a", "B", "c").iterator();
+		Iterator<String> a = Arrays.asList("a", "B", "c").iterator();
+		Iterator<String> b = Arrays.asList("a", "B", "c").iterator();
+		Iterator<String> c = Arrays.asList("a", "B", "c").iterator();
 
-		Iterator<String> x = Collectionu.combine(a, b, c);
+		Iterator<String> x = Collections.combine(a, b, c);
 
 		StringBuilder string = new StringBuilder();
 

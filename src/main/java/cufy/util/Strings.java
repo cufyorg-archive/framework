@@ -24,13 +24,13 @@ import java.util.Objects;
  * @version 0.1.3
  * @since 11 Jun 2019
  */
-final public class Stringu {
+final public class Strings {
 	/**
 	 * This is a util class. And shall not be instanced as an object.
 	 *
 	 * @throws AssertionError when called
 	 */
-	private Stringu() {
+	private Strings() {
 		throw new AssertionError("No instance for you!");
 	}
 

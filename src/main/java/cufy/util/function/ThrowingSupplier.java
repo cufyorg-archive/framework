@@ -15,7 +15,7 @@
  */
 package cufy.util.function;
 
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 
 import java.util.function.Supplier;
 
@@ -35,7 +35,7 @@ public interface ThrowingSupplier<T, E extends Throwable> extends Supplier<T> {
 		try {
 			return this.get0();
 		} catch (Throwable e) {
-			throw Reflectionu.<Error>ignite(e);
+			throw Reflection.<Error>ignite(e);
 		}
 	}
 

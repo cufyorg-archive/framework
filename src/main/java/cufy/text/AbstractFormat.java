@@ -18,7 +18,7 @@ package cufy.text;
 import cufy.lang.Clazz;
 import cufy.meta.Filter;
 import cufy.util.Group;
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 import cufy.util.UnmodifiableGroup;
 
 import java.io.IOException;
@@ -50,7 +50,7 @@ public abstract class AbstractFormat implements Format {
 	/**
 	 * The dynamic methods of this class.
 	 */
-	final protected Group<Method> methods = new UnmodifiableGroup<>(Reflectionu.getAllMethods(this.getClass()));
+	final protected Group<Method> methods = new UnmodifiableGroup<>(Reflection.getAllMethods(this.getClass()));
 	/**
 	 * If this class in a debugging mode or not.
 	 *

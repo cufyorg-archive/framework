@@ -15,7 +15,7 @@
  */
 package cufy.util.function;
 
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 
 import java.util.function.BiConsumer;
 
@@ -36,7 +36,7 @@ public interface ThrowBiConsumer<T, U, E extends Throwable> extends BiConsumer<T
 		try {
 			this.accept0(t, u);
 		} catch (Throwable e) {
-			Reflectionu.<Error>ignite(e);
+			Reflection.<Error>ignite(e);
 		}
 	}
 

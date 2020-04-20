@@ -16,9 +16,9 @@
 package cufy.convert;
 
 import cufy.meta.Filter;
-import cufy.util.Arrayu;
+import cufy.util.Arrays;
 import cufy.util.Group;
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 import cufy.util.UnmodifiableGroup;
 
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +40,7 @@ public abstract class AbstractConverter implements Converter {
 	/**
 	 * The converting methods of this class.
 	 */
-	final protected Group<Method> methods = new UnmodifiableGroup<>(Reflectionu.getAllMethods(this.getClass()));
+	final protected Group<Method> methods = new UnmodifiableGroup<>(Reflection.getAllMethods(this.getClass()));
 	/**
 	 * If this class in a debugging mode or not.
 	 *
@@ -149,7 +149,7 @@ public abstract class AbstractConverter implements Converter {
 		//QUERY the best method!
 		Group<Method> valid = this.methods
 				.subGroup(ConvertMethod.class, m -> m.isAnnotationPresent(ConvertMethod.class))
-				.subGroup(Arrayu.asList(inputClass, outputClass), m -> {
+				.subGroup(Arrays.asList(inputClass, outputClass), m -> {
 					ConvertMethod ann = m.getAnnotation(ConvertMethod.class);
 					return Filter.util.test(ann.input(), inputClass) &&
 						   Filter.util.test(ann.output(), outputClass);

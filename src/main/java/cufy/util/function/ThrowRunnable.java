@@ -15,7 +15,7 @@
  */
 package cufy.util.function;
 
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 
 /**
  * Functional Interface that can be specified to throw an exception.
@@ -32,7 +32,7 @@ public interface ThrowRunnable<E extends Throwable> extends Runnable {
 		try {
 			this.run0();
 		} catch (Throwable e) {
-			Reflectionu.<Error>ignite(e);
+			Reflection.<Error>ignite(e);
 		}
 	}
 

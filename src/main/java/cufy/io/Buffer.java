@@ -15,7 +15,7 @@
  */
 package cufy.io;
 
-import cufy.util.Arrayu;
+import cufy.util.Arrays;
 
 import java.io.Reader;
 import java.lang.reflect.Array;
@@ -313,7 +313,7 @@ public class Buffer<T> {
 
 			if (buffer instanceof int[])
 				System.arraycopy(this.data, index, buffer, off, length);
-			else Arrayu.hardcopy(this.data, index, buffer, off, length);
+			else Arrays.hardcopy(this.data, index, buffer, off, length);
 
 			return length;
 		}
@@ -485,7 +485,7 @@ public class Buffer<T> {
 
 			if (buffer instanceof int[])
 				System.arraycopy(buffer, off, this.data, index, len);
-			else Arrayu.hardcopy(buffer, off, this.data, index, len);
+			else Arrays.hardcopy(buffer, off, this.data, index, len);
 		}
 	}
 

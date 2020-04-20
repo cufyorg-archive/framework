@@ -3,6 +3,8 @@ package cufy.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Utils all about maps.
@@ -11,13 +13,13 @@ import java.util.*;
  * @version 0.1.3
  * @since 11-Jun-2019
  */
-final public class Collectionu {
+final public class Collections {
 	/**
 	 * This is a util class. And shall not be instanced as an object.
 	 *
 	 * @throws AssertionError when called
 	 */
-	private Collectionu() {
+	private Collections() {
 		throw new AssertionError("No instance for you!");
 	}
 
@@ -164,7 +166,7 @@ final public class Collectionu {
 				if (this.entrySet == null) {
 					HashSet<Entry<String, T>> entrySet = new HashSet<>();
 
-					for (Field field : Reflectionu.getAllFields(object.getClass()))
+					for (Field field : Reflection.getAllFields(object.getClass()))
 						if (Modifier.isPublic(field.getModifiers()))
 							entrySet.add(new Entry<String, T>() {
 								@Override
@@ -194,7 +196,7 @@ final public class Collectionu {
 								}
 							});
 
-					this.entrySet = Collections.unmodifiableSet(entrySet);
+					this.entrySet = java.util.Collections.unmodifiableSet(entrySet);
 				}
 
 				return this.entrySet;
@@ -346,6 +348,130 @@ final public class Collectionu {
 			private void fix() {
 				while (iterators.length > this.i && !iterators[this.i].hasNext())
 					this.i++;
+			}
+		};
+	}
+
+	/**
+	 * Get a group that reads directly from the given group, but can't modify it.
+	 *
+	 * @param group to get an unmodifiable group for
+	 * @param <T>   the type of the elements on given group
+	 * @return an unmodifiable group for the given group
+	 * @throws NullPointerException if the given 'group' is null
+	 */
+	public static <T> Group<T> unmodifiableGroup(Group<T> group) {
+		Objects.requireNonNull(group, "group");
+		return new Group<T>() {
+			@Override
+			public void forEach(Consumer<? super T> action) {
+				group.forEach(action);
+			}
+
+			@Override
+			public int hashCode() {
+				return group.hashCode();
+			}
+
+			@Override
+			public boolean equals(Object obj) {
+				return group.equals(obj);
+			}
+
+			@Override
+			public String toString() {
+				return group.toString();
+			}
+
+			@Override
+			public int size() {
+				return group.size();
+			}
+
+			@Override
+			public boolean isEmpty() {
+				return group.isEmpty();
+			}
+
+			@Override
+			public boolean contains(Object o) {
+				return group.contains(o);
+			}
+
+			@Override
+			public Iterator<T> iterator() {
+				Iterator<T> it = group.iterator();
+				return new Iterator<T>() {
+					@Override
+					public boolean hasNext() {
+						return it.hasNext();
+					}
+
+					@Override
+					public T next() {
+						return it.next();
+					}
+				};
+			}
+
+			@Override
+			public Object[] toArray() {
+				return group.toArray();
+			}
+
+			@Override
+			public Object[] toArray(Object[] ts) {
+				return group.toArray(ts);
+			}
+
+			@Override
+			public boolean add(T t) {
+				throw new UnsupportedOperationException("add");
+			}
+
+			@Override
+			public boolean remove(Object o) {
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public boolean containsAll(Collection<?> collection) {
+				return group.contains(collection);
+			}
+
+			@Override
+			public boolean addAll(Collection<? extends T> collection) {
+				throw new UnsupportedOperationException("addAll");
+			}
+
+			@Override
+			public boolean removeAll(Collection<?> collection) {
+				throw new UnsupportedOperationException("removeAll");
+			}
+
+			@Override
+			public boolean removeIf(Predicate<? super T> filter) {
+				throw new UnsupportedOperationException("removeIf");
+			}
+
+			@Override
+			public boolean retainAll(Collection<?> collection) {
+				throw new UnsupportedOperationException("retainAll");
+			}
+
+			@Override
+			public void clear() {
+				throw new UnsupportedOperationException("clear");
+			}
+
+			@Override
+			public Group<T> subGroup(Object key, Predicate<T> predicate) {
+				return unmodifiableGroup(group.subGroup(key, predicate));
+			}
+
+			@Override
+			public Group<T> subGroup(Object key) {
+				return unmodifiableGroup(group.subGroup(key));
 			}
 		};
 	}

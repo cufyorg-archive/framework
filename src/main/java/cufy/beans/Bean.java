@@ -22,7 +22,7 @@ import cufy.lang.Clazz;
 import cufy.meta.Recipe;
 import cufy.meta.Where;
 import cufy.meta.Type;
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -81,7 +81,7 @@ public interface Bean<K, V> extends Map<K, V> {
 						return entry.setValue(value);
 
 				//looking for a field with removed entry
-				for (Field field : Reflectionu.getAllFields(instance.getClass()))
+				for (Field field : Reflection.getAllFields(instance.getClass()))
 					if (field.isAnnotationPresent(Property.class) && Objects.equals(key, FieldEntry.getKey(field))) {
 						FieldEntry<K, V> entry = new FieldEntry(instance, field);
 						this.entrySet().add(entry);
@@ -100,7 +100,7 @@ public interface Bean<K, V> extends Map<K, V> {
 	default int size() {
 		Set<K> keys = new HashSet<>();
 
-		for (Field field : Reflectionu.getAllFields(this.getClass()))
+		for (Field field : Reflection.getAllFields(this.getClass()))
 			if (field.isAnnotationPresent(Property.class))
 				keys.add(FieldEntry.getKey(field));
 
@@ -109,7 +109,7 @@ public interface Bean<K, V> extends Map<K, V> {
 
 	@Override
 	default boolean isEmpty() {
-		for (Field field : Reflectionu.getAllFields(this.getClass()))
+		for (Field field : Reflection.getAllFields(this.getClass()))
 			if (field.isAnnotationPresent(Property.class))
 				return false;
 
@@ -118,7 +118,7 @@ public interface Bean<K, V> extends Map<K, V> {
 
 	@Override
 	default boolean containsKey(Object key) {
-		for (Field field : Reflectionu.getAllFields(this.getClass()))
+		for (Field field : Reflection.getAllFields(this.getClass()))
 			if (field.isAnnotationPresent(Property.class) && Objects.equals(key, FieldEntry.getKey(field)))
 				return true;
 
@@ -129,7 +129,7 @@ public interface Bean<K, V> extends Map<K, V> {
 	default boolean containsValue(Object value) {
 		Set<K> keys = new HashSet<>();
 
-		for (Field field : Reflectionu.getAllFields(this.getClass()))
+		for (Field field : Reflection.getAllFields(this.getClass()))
 			if (field.isAnnotationPresent(Property.class) && keys.add(FieldEntry.getKey(field)))
 				if (Objects.equals(value, FieldEntry.getValue(field, this)))
 					return true;
@@ -139,7 +139,7 @@ public interface Bean<K, V> extends Map<K, V> {
 
 	@Override
 	default V get(Object key) {
-		for (Field field : Reflectionu.getAllFields(this.getClass()))
+		for (Field field : Reflection.getAllFields(this.getClass()))
 			if (field.isAnnotationPresent(Property.class) && Objects.equals(key, FieldEntry.getKey(field)))
 				return (V) FieldEntry.getValue(field, this);
 
@@ -148,7 +148,7 @@ public interface Bean<K, V> extends Map<K, V> {
 
 	@Override
 	default V put(K key, V value) {
-		for (Field field : Reflectionu.getAllFields(this.getClass()))
+		for (Field field : Reflection.getAllFields(this.getClass()))
 			if (field.isAnnotationPresent(Property.class) && Objects.equals(key, FieldEntry.getKey(field)))
 				return FieldEntry.setValue(field, this, value);
 
@@ -166,7 +166,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		Set<K> keys = new HashSet<>();
 		K key;
 
-		for (Field field : Reflectionu.getAllFields(this.getClass()))
+		for (Field field : Reflection.getAllFields(this.getClass()))
 			if (field.isAnnotationPresent(Property.class) && keys.add(key = FieldEntry.getKey(field)) && map.containsKey(key))
 				FieldEntry.setValue(field, this, map.get(key));
 
@@ -403,7 +403,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			Set<K> keys = new HashSet<>();
 			K key;
 
-			for (Field field : Reflectionu.getAllFields(instance.getClass()))
+			for (Field field : Reflection.getAllFields(instance.getClass()))
 				if (field.isAnnotationPresent(Property.class) && keys.add(key = getKey(field)))
 					entrySet.add(new FieldEntry<>(instance, field, key));
 

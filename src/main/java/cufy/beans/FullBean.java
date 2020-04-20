@@ -15,7 +15,7 @@
  */
 package cufy.beans;
 
-import cufy.util.Reflectionu;
+import cufy.util.Reflection;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -75,7 +75,7 @@ public interface FullBean<K, V> extends Bean<K, V> {
 				return entry.setValue(value);
 
 		//looking for a field with removed entry
-		for (Field field : Reflectionu.getAllFields(this.getClass()))
+		for (Field field : Reflection.getAllFields(this.getClass()))
 			if (field.isAnnotationPresent(Property.class) && Objects.equals(key, FieldEntry.getKey(field))) {
 				FieldEntry<K, V> entry = new FieldEntry(this, field);
 				this.entrySet().add(entry);
