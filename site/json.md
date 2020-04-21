@@ -1,6 +1,9 @@
-# JSON
+<font color="red">SORRY: THIS SITE STILL UNDER DEVELOPMENT!</font>
 
-So advanced JSON formatter, parser and classifier.
+# JSON
+is a lightweight data-interchange format. It is easy for humans to read 
+and write. It is easy for machines to parse and generate. And this package
+provides it with respect to the abstraction of the package Text.
 
 ## Why?
 - Accept `java.io.Reader` as input
