@@ -14,10 +14,14 @@
  *	limitations under the License.
  */
 /**
- * Classes that deals with Input/Output ports.
+ * Input and Output ports is kind of the purpose of computers. But it needs
+ * protocols and standards to be able to use it everywhere with the same code.
+ * This package provides utilities to deal with those protocols and standards
+ * more easily.
  *
  * @author lsafer
  * @version 0.1.3
+ * @see <a href="https://framework.cufy.org/site/io">framework.cufy.org/site/io</a>
  * @since 18-May-2019
  */
 package cufy.io;

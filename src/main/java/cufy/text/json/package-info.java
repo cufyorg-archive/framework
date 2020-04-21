@@ -14,11 +14,13 @@
  *	limitations under the License.
  */
 /**
- * All about json.
+ * is a lightweight data-interchange format. It is easy for humans to read
+ * and write. It is easy for machines to parse and generate. And this package
+ * provides it with respect to the abstraction of the package Text.
  *
  * @author lsafer
  * @version 0.1.3
- * @see <a href="https://cufyorg.github.io/framework/site/cufy.text.json.html">cufy.text.json</a>
+ * @see <a href="https://framework.cufy.org/site/json">framework.cufy.org/site/json</a>
  * @since 09-July-2019
  */
 package cufy.text.json;

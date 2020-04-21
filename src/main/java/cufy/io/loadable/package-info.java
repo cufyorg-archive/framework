@@ -14,10 +14,14 @@
  *	limitations under the License.
  */
 /**
- * Objects that can be loaded and saved.
+ * The ways to load and save data is different from a position to another,
+ * but at the end it still data and still be loaded and saved using protocols
+ * and standards; Loadables in the other hand don't care about how the data will
+ * be transferred, as long as the data will be transferred successfully.
  *
  * @author lsafer
  * @version 0.1.3
+ * @see <a href="https://framework.cufy.org/site/io#loadables">framework.cufy.org/site/io#loadables</a>
  * @since 13-Feb-2020
  */
 package cufy.io.loadable;

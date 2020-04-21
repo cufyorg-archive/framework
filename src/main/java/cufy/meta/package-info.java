@@ -14,10 +14,14 @@
  *	limitations under the License.
  */
 /**
- * Meta environment (Runtime Annotations).
+ * Annotations are a big part of the java language. It makes the code more
+ * easier yet powerful. But annotations has so many limitations and can't
+ * specify that much data without base annotations to depend on. This package
+ * provides base annotations that have so many uses.
  *
  * @author lsafer
  * @version 0.1.3
+ * @see <a href="https://framework.cufy.org/site/meta">framework.cufy.org/site/meta</a>
  * @since 21-Nov-2019
  */
 package cufy.meta;

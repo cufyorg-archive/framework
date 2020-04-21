@@ -14,11 +14,14 @@
  *	limitations under the License.
  */
 /**
- * All about beans.
+ * Objects have fields. Those fields can't be maneged easily when the class of
+ * the object is unknown (without reflection). The beans fixes that by treating
+ * the object as a map and the fields of that object will work as if they're
+ * the entries of the map. keeping the reflection part hidden from the user.
  *
  * @author lsafer
  * @version 0.1.3
- * @see <a href="https://cufyorg.github.io/framework/site/cufy.beans.html">cufy.beans</a>
+ * @see <a href="https://framework.cufy.org/site/beans">framework.cufy.org/site/beans</a>
  * @since 11-Jun-2019
  */
 package cufy.beans;

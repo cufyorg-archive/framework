@@ -14,10 +14,16 @@
  *	limitations under the License.
  */
 /**
- * All about text and formatting/parsing it.
+ * Text is a huge part of any programming language since a lot of data are
+ * stored and transferred as text. But text should be parsed to be able to
+ * use it. And data should be formatted to be able to treat it as text.
+ * This package provide abstract for how the parsing and formatting process
+ * should be done. And also have some text languages formatters and parsers
+ * such as JSON.
  *
  * @author lsafer
  * @version 0.1.3
+ * @see <a href="https://framework.cufy.org/site/text">framework.cufy.org/site/text</a>
  * @since 09-Jul-2019
  */
 package cufy.text;
