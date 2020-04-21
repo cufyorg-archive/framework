@@ -135,6 +135,88 @@ public class CollectionsTest {
 		}
 	}
 
+	@SuppressWarnings("MessageMissingOnJUnitAssertion")
+	@Test
+	public void docs_asList() {
+		Map map = new HashMap();
+
+		map.put(8, "value");
+
+		List list = Collections.asList(map);
+
+		Assert.assertEquals(9, list.size());
+		Assert.assertEquals("value", list.get(8));
+
+		list.add("another");
+
+		Assert.assertEquals("another", map.get(9));
+
+		map.put(10, "different");
+
+		Assert.assertEquals(11, list.size());
+		Assert.assertEquals("different", list.get(10));
+	}
+
+	@SuppressWarnings("MessageMissingOnJUnitAssertion")
+	@Test
+	public void docs_asMap() {
+		class Test {
+			public String key = "value";
+		}
+
+		Test instance = new Test();
+
+		Map map = Collections.asMap(instance);
+
+		Assert.assertEquals(1, map.size());
+		Assert.assertEquals("value", map.get("key"));
+
+		map.put("key", "another");
+
+		Assert.assertEquals("another", instance.key);
+
+		instance.key = "different";
+
+		Assert.assertEquals("different", map.get("key"));
+	}
+
+	@SuppressWarnings("MessageMissingOnJUnitAssertion")
+	@Test
+	public void docs_asMap1() {
+		List list = new ArrayList(Arrays.asList("value"));
+
+		Map map = Collections.asMap(list);
+
+		Assert.assertEquals(1, map.size());
+		Assert.assertEquals("value", map.get(0));
+
+		map.put(2, "another");
+
+		Assert.assertEquals(3, list.size());
+		Assert.assertNull(list.get(1));
+		Assert.assertEquals("another", list.get(2));
+
+		list.add("different");
+
+		Assert.assertEquals(4, map.size());
+		Assert.assertEquals("different", map.get(3));
+	}
+
+	@SuppressWarnings({"StringConcatenationInLoop", "MessageMissingOnJUnitAssertion"})
+	@Test
+	public void docs_combine() {
+		Iterator first = Arrays.asList("abc-".toCharArray()).iterator();
+		Iterator second = Arrays.asList("-def".toCharArray()).iterator();
+
+		Iterator combine = Collections.combine(first, second);
+
+		String s = "";
+		while(combine.hasNext())
+			s += (char) combine.next();
+
+		Assert.assertEquals("abc--def", s);
+	}
+
 	@Test
 	public void unmodifiableGroup() {
 		String[] strings = {"my abc", "my def", "my ghi", "abc", "def", "ghi"};

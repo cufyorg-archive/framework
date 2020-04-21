@@ -8,6 +8,15 @@ import org.junit.Test;
 public class RecipeTest {
 	@Test
 	@Recipe(
+			value = "9",
+			type = @Type(Integer.class)
+	)
+	public void docs() {
+		//the following object will be an integer with the value 9
+	}
+
+	@Test
+	@Recipe(
 			value = "3",
 			type = @Type(Integer.class),
 			converter = @Where(BaseConverter.class)

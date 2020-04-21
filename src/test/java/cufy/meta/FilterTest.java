@@ -3,10 +3,7 @@ package cufy.meta;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("JavaDoc")
 public class FilterTest {
@@ -25,11 +22,23 @@ public class FilterTest {
 		Assert.assertFalse("Number is not included anywhere", Filter.util.test(type, Number.class));
 		//out
 		Assert.assertFalse("HashMap is absolute excluded", Filter.util.test(type, HashMap.class));
-		//subin
+		//subIn
 		Assert.assertTrue("List is absolute included", Filter.util.test(type, List.class));
 		Assert.assertTrue("ArrayList is a sub included", Filter.util.test(type, ArrayList.class));
-		//subout
+		//subOut
 		Assert.assertFalse("CharSequence is absolute excluded", Filter.util.test(type, CharSequence.class));
 		Assert.assertFalse("String is sub excluded", Filter.util.test(type, String.class));
+	}
+
+	@Test
+	@Filter(
+			in = String.class,
+			out = HashSet.class,
+			subIn = Collection.class,
+			subOut = List.class
+	)
+	public void docs() {
+		//this filter will include String.class, any Collection,
+		//but not any class extends List.class or the class HashSet
 	}
 }
