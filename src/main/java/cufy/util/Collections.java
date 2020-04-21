@@ -214,32 +214,36 @@ final public class Collections {
 	 */
 	public static <T> Map<Integer, T> asMap(List<T> list) {
 		Objects.requireNonNull(list, "list");
-		return new AbstractMap<Integer, T>() {
+		return (Map) new AbstractMap<Object, T>() {
 			/**
 			 * The entrySet of this map.
 			 */
-			private Set<Entry<Integer, T>> entrySet;
+			private Set<Entry<Object, T>> entrySet;
 
 			@Override
-			public T put(Integer key, T value) {
-				if (list.size() > key)
-					return list.set(key, value);
+			public T put(Object key, T value) {
+				if (!(key instanceof Integer) || ((Integer) key) < 0)
+					throw new UnsupportedOperationException("can't store the key: " + key);
 
-				while (list.size() <= key)
-					list.add(null);
+				int index = (Integer) key;
 
-				list.add(value);
-				return null;
+				if (list.size() > index) {
+					return list.set(index, value);
+				} else {
+					list.addAll(java.util.Collections.nCopies(index - list.size(), null));
+					list.add(value);
+					return null;
+				}
 			}
 
 			@Override
-			public Set<Entry<Integer, T>> entrySet() {
+			public Set<Entry<Object, T>> entrySet() {
 				if (this.entrySet == null) {
-					this.entrySet = new AbstractSet<Entry<Integer, T>>() {
+					this.entrySet = new AbstractSet<Entry<Object, T>>() {
 						@Override
-						public Iterator<Entry<Integer, T>> iterator() {
+						public Iterator<Entry<Object, T>> iterator() {
 							int mod = list.size();
-							return new Iterator<Entry<Integer, T>>() {
+							return new Iterator<Entry<Object, T>>() {
 								/**
 								 * The current position of this iterator.
 								 */
@@ -251,10 +255,10 @@ final public class Collections {
 								}
 
 								@Override
-								public Entry<Integer, T> next() {
+								public Entry<Object, T> next() {
 									this.checkModification();
 									int key = this.cursor++;
-									return new Entry<Integer, T>() {
+									return new Entry<Object, T>() {
 										@Override
 										public Integer getKey() {
 											return key;
@@ -339,6 +343,15 @@ final public class Collections {
 					return t;
 				} else {
 					throw new NoSuchElementException("No more elements");
+				}
+			}
+
+			@Override
+			public void remove() {
+				if (iterators.length > this.i) {
+					iterators[this.i].remove();
+				} else {
+					throw new IllegalStateException("remove");
 				}
 			}
 
