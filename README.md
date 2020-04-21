@@ -15,45 +15,34 @@
     </a>
 </p>
 
+### About
 The cufy framework is focused on to be more inheritable and more reflection 
 friendly. Making it less efficient (minor) but more fun and reliable in big
 complex projects.
 
-### Util
-Utils and commons that supports reflection.
-[<b>more</b>](web/cufy.util.md)
+### Guide
+The user guide can be found ether in the javadoc or the official website of the framework. 
+-   Website: https://framework.cufy.org
+-   Javadoc: https://framework.cufy.org/docs
+-   Jitpack: https://jitpack.io/#cufyorg/framework
 
-### Util: Function
-Functional interfaces.
-[<b>more</b>](web/cufy.util.function.md)
+### Support
+If you have any problem please contact us at one of the following:
+-   Email: cufyorg@gmail.com
+-   Email: lsaferse@gmail.com
+-   Gitter: https://gitter.im/cufyorg/community
 
-### Lang
-Base concepts with powerful features.
+### Licence
+Copyright 2020 Cufy
 
-### Meta
-Support for runtime annotations that the program is depending on for it's
-computations.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-### Convert
-Converting objects to different types.
+http://www.apache.org/licenses/LICENSE-2.0
 
-### Text
-Abstracts for formatting, parsing and classifying text.
-
-### JSON
-So advanced JSON formatter, parser and classifier.
-[<b>more</b>](web/cufy.text.json.md)
-
-### Beans
-A bean is a map that it's fields is the properties of it. 
-[<b>more</b>](web/cufy.beans.md)
-
-### Concurrent
-Utils to deal with concurrent actions and infinite loops. All utils depends on
-the logic rather than the timing
-
-### IO
-Utils to deal with Input/Output ports. Like dealing with files and internet.
-
-### Loadable
-Objects that can be loaded and saved.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

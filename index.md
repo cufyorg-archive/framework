@@ -17,41 +17,82 @@ The cufy framework is focused on to be more inheritable and more reflection
 friendly. Making it less efficient (minor) but more fun and reliable in big
 complex projects.
 
-### Util
-Utils and commons that supports reflection.
-[<b>more</b>](web/cufy.util.md)
+-   ## Packages
+    The framework is divided onto different packages. Each package allowed to use
+    specific packages only. And each package have it's own targets. The following
+    is a list of the main packages in this framework.
 
-### Function
-Functional interfaces.
-[<b>more</b>](web/cufy.util.function.md)
+    -   ### Util
+        A package of utilities used in the framework. The utilities can be used
+        anywhere and it is not designed to work only on the framework. It have been
+        designed help to the syntax user and the reflection user. It have a variant
+        type of utils such as utils for arrays, collections, readers and reflection
+        and many more.
+        -   [Website](site/util.md)
+        -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/util)
 
-### Lang
-Base concepts with powerful features.
+    -   ### Lang
+        A package with classes that treated as if it's a part of the language. Such
+        Classes are universal and have no main purpose. But deep in the code, It so
+        helpful. Specially if it designed that anyone is relying on them.
+        -   [Website](site/lang.md)
+        -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/lang)
 
-### Meta
-Support for runtime annotations that the program is depending on for it's
-computations.
+    -   ### Meta
+        Annotations are a big part of the java language. It makes the code more
+        easier yet powerful. But annotations has so many limitations and can't 
+        specify that much data without base annotations to depend on. This package
+        provides base annotations that have so many uses.
+        -   [Website](site/meta.md)
+        -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/meta)
 
-### Convert
-Converting objects to different types.
+    -   ### Convert
+        Java is a type sensitive language. And in complex projects, Sometimes you 
+        don't want that complexity. Or sometimes you want to pass a value and you
+        want the receiver to convert it to the compatible type. Or you maybe the
+        receiver and you want any value to be converted to a specific type. All 
+        of that is possible with the convert package.
+        -   [Website](site/convert.md)
+        -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/convert)
 
-### Text
-Abstracts for formatting, parsing and classifying text.
+    -   ### Text
+        Text is a huge part of any programming language since a lot of data are
+        stored and transferred as text. But text should be parsed to be able to
+        use it. And data should be formatted to be able to treat it as text.
+        This package provide abstract for how the parsing and formatting process
+        should be done. And also have some text languages formatters and parsers
+        such as JSON.
+        -   [Website](site/text.md)
+        -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/text)
 
-### JSON
-So advanced JSON formatter, parser and classifier.
-[<b>more</b>](web/cufy.text.json.md)
+    -   ### JSON
+        is a lightweight data-interchange format. It is easy for humans to read 
+        and write. It is easy for machines to parse and generate. And this package
+        provides it with respect to the abstraction of the package Text.
+        -   [Website](site/json.md)
+        -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/text/json)
 
-### Beans
-A bean is a map that it's fields is the properties of it. 
-[<b>more</b>](web/cufy.beans.md)
+    -   ### Beans
+        Objects have fields. Those fields can't be maneged easily when the class of
+        the object is unknown (without reflection). The beans fixes that by treating
+        the object as a map and the fields of that object will work as if they're
+        the entries of the map. keeping the reflection part hidden from the user.
+        -   [Website](site/beans.md)
+        -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/beans)
 
-### Concurrent
-Utils to deal with concurrent actions and infinite loops. All utils depends on
-the logic rather than the timing
+    -   ### Concurrent
+        When it comes to concurrent actions. Complexity is all over the place.
+        Using instances that manages those concurrent actions is the solution.  
+        Those utils helps to deal with concurrent actions and infinite loops.
+        And many other concurrent actions. And what makes it special that it
+        depends on the logic rather than the timing.
+        -   [Website](site/concurrent.md)
+        -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/concurrent)
 
-### IO
-Utils to deal with Input/Output ports. Like dealing with files and internet.
-
-### Loadable
-Objects that can be loaded and saved.
+    -   ### IO
+        Input and Output ports is kind of the purpose of computers. But it needs
+        protocols and standards to be able to use it everywhere with the same code.
+        This package provides utilities to deal with those protocols and standards
+        more easily.
+        -   [Website](site/io.md)
+        -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/io)
