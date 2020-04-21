@@ -60,6 +60,9 @@ public interface Converter {
 
 	/**
 	 * Convert the given input to the given output.
+	 * <p>
+	 * Note: the given output is the final output, so given a null output could throw an exception, since why there is a method converting things into
+	 * null
 	 *
 	 * @param input  the input instance
 	 * @param output the output instance
@@ -67,8 +70,6 @@ public interface Converter {
 	 * @param <O>    the type of the output
 	 * @return the output
 	 * @throws ConvertException if any conversion exception occurred
-	 * @apiNote the given output is the final output, so given a null output could throw an exception, since why there is a method converting things
-	 * into null
 	 */
 	default <I, O> O convert(I input, O output) {
 		return this.convert(new ConvertToken<>(input, output, Clazz.ofi(input), Clazz.ofi(output)));

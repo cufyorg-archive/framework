@@ -23,19 +23,19 @@ import java.util.Objects;
 
 /**
  * A conversion instance that holds the variables of a conversion.
- *
+ * <p>
+ * Combinations:
  * <ul>
- *     Combinations:
  *     <li>
  *         To clone an object:
  *         <pre>
- * new ConvertToken<>(input, null, inputClazz, inputClazz)
+ * new ConvertToken(input, null, inputClazz, inputClazz)
  *         </pre>
  *     </li>
  *     <li>
  *         To apply a type to an object:
  *         <pre>
- * new ConvertToken<>(input, input, inputClazz, newClazz)
+ * new ConvertToken(input, input, inputClazz, newClazz)
  *         </pre>
  *     </li>
  *     <li>
@@ -122,7 +122,6 @@ public class ConvertToken<I, O> {
 	 * @param inputClazz  the clazz of the input
 	 * @param outputClazz the clazz to be for the output
 	 * @throws NullPointerException if the given 'parent' or 'inputClass' or 'outputClass' is null
-	 * @implSpec dejaVu autodetect!
 	 */
 	protected ConvertToken(ConvertToken parent, I input, O output, Clazz inputClazz, Clazz outputClazz) {
 		Objects.requireNonNull(parent, "parent");
@@ -157,9 +156,9 @@ public class ConvertToken<I, O> {
 
 	/**
 	 * Get a sub token of this token with the given parameters.
-	 * <br/>
+	 * <p>
+	 * The rules:
 	 * <ul>
-	 *     The rules
 	 *     <li>
 	 *         subToken.klazz.klass
 	 *         <ul>

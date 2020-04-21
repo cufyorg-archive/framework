@@ -27,7 +27,6 @@ import java.lang.annotation.Target;
  *
  * @author lsafer
  * @version 0.1.3
- * @apiNote the annotated method SHOULD match the {@link AbstractFormat#format0} rules
  * @since 30-Mar-2020
  */
 @Retention(RetentionPolicy.RUNTIME)

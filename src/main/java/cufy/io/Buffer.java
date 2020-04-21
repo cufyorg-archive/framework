@@ -44,8 +44,8 @@ public class Buffer<T> {
 	protected T[] data;
 	/**
 	 * Indicates to the size of the valid data on the data array of this.
-	 *
-	 * @implSpec no decremental allowed
+	 * <p>
+	 * Note: no decrementing allowed
 	 */
 	protected int size = 0;
 
@@ -155,7 +155,7 @@ public class Buffer<T> {
 	 * @param len    Maximum number of values to read
 	 * @return The number of values read, or -1 if the end of the buffer has been reached
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 * @see Reader#read(char[], int, int)
 	 */
 	public int read(Object[] buffer, int off, int len) {
@@ -170,7 +170,7 @@ public class Buffer<T> {
 	 * @param len    Maximum number of values to read
 	 * @return The number of values read, or -1 if the end of the buffer has been reached
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 * @see Reader#read(char[], int, int)
 	 */
 	public int read(boolean[] buffer, int off, int len) {
@@ -185,7 +185,7 @@ public class Buffer<T> {
 	 * @param len    Maximum number of values to read
 	 * @return The number of values read, or -1 if the end of the buffer has been reached
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 * @see Reader#read(char[], int, int)
 	 */
 	public int read(byte[] buffer, int off, int len) {
@@ -200,7 +200,7 @@ public class Buffer<T> {
 	 * @param len    Maximum number of values to read
 	 * @return The number of values read, or -1 if the end of the buffer has been reached
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 * @see Reader#read(char[], int, int)
 	 */
 	public int read(char[] buffer, int off, int len) {
@@ -215,7 +215,7 @@ public class Buffer<T> {
 	 * @param len    Maximum number of values to read
 	 * @return The number of values read, or -1 if the end of the buffer has been reached
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 * @see Reader#read(char[], int, int)
 	 */
 	public int read(double[] buffer, int off, int len) {
@@ -230,7 +230,7 @@ public class Buffer<T> {
 	 * @param len    Maximum number of values to read
 	 * @return The number of values read, or -1 if the end of the buffer has been reached
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 * @see Reader#read(char[], int, int)
 	 */
 	public int read(float[] buffer, int off, int len) {
@@ -245,7 +245,7 @@ public class Buffer<T> {
 	 * @param len    Maximum number of values to read
 	 * @return The number of values read, or -1 if the end of the buffer has been reached
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 * @see Reader#read(char[], int, int)
 	 */
 	public int read(int[] buffer, int off, int len) {
@@ -260,7 +260,7 @@ public class Buffer<T> {
 	 * @param len    Maximum number of values to read
 	 * @return The number of values read, or -1 if the end of the buffer has been reached
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 * @see Reader#read(char[], int, int)
 	 */
 	public int read(long[] buffer, int off, int len) {
@@ -275,7 +275,7 @@ public class Buffer<T> {
 	 * @param len    Maximum number of values to read
 	 * @return The number of values read, or -1 if the end of the buffer has been reached
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 * @see Reader#read(char[], int, int)
 	 */
 	public int read(short[] buffer, int off, int len) {
@@ -290,7 +290,7 @@ public class Buffer<T> {
 	 * @param len    Maximum number of values to read
 	 * @return The number of values read, or -1 if the end of the buffer has been reached
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 * @throws IllegalArgumentException  if the given 'cbuf' is not an array
 	 * @see Reader#read(char[], int, int)
 	 */
@@ -363,7 +363,7 @@ public class Buffer<T> {
 	 * @param off    the offset to start storing from
 	 * @param len    the maximum number of values to store
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 */
 	public void write(int[] buffer, int off, int len) {
 		this.write0(buffer, off, len);
@@ -376,7 +376,7 @@ public class Buffer<T> {
 	 * @param off    the offset to start storing from
 	 * @param len    the maximum number of values to store
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 */
 	public void write(char[] buffer, int off, int len) {
 		this.write0(buffer, off, len);
@@ -389,7 +389,7 @@ public class Buffer<T> {
 	 * @param off    the offset to start storing from
 	 * @param len    the maximum number of values to store
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 */
 	public void write(byte[] buffer, int off, int len) {
 		this.write0(buffer, off, len);
@@ -402,7 +402,7 @@ public class Buffer<T> {
 	 * @param off    the offset to start storing from
 	 * @param len    the maximum number of values to store
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 */
 	public void write(short[] buffer, int off, int len) {
 		this.write0(buffer, off, len);
@@ -415,7 +415,7 @@ public class Buffer<T> {
 	 * @param off    the offset to start storing from
 	 * @param len    the maximum number of values to store
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 */
 	public void write(boolean[] buffer, int off, int len) {
 		this.write0(buffer, off, len);
@@ -428,7 +428,7 @@ public class Buffer<T> {
 	 * @param off    the offset to start storing from
 	 * @param len    the maximum number of values to store
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 */
 	public void write(long[] buffer, int off, int len) {
 		this.write0(buffer, off, len);
@@ -441,7 +441,7 @@ public class Buffer<T> {
 	 * @param off    the offset to start storing from
 	 * @param len    the maximum number of values to store
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 */
 	public void write(double[] buffer, int off, int len) {
 		this.write0(buffer, off, len);
@@ -454,7 +454,7 @@ public class Buffer<T> {
 	 * @param off    the offset to start storing from
 	 * @param len    the maximum number of values to store
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 */
 	public void write(float[] buffer, int off, int len) {
 		this.write0(buffer, off, len);
@@ -467,7 +467,7 @@ public class Buffer<T> {
 	 * @param off    the offset to start storing from
 	 * @param len    the maximum number of values to store
 	 * @throws NullPointerException      if the given array is null
-	 * @throws IndexOutOfBoundsException if (off >= cbuf.length). Or (off + len > cbuf.length). Or (off < 0). Or (len < 0)
+	 * @throws IndexOutOfBoundsException if (off &gt;= cbuf.length). Or (off + len &gt;= cbuf.length). Or (off &lt; 0). Or (len &lt; 0)
 	 * @throws IllegalArgumentException  if the given 'cbuf' is not an array
 	 */
 	public void write0(Object buffer, int off, int len) {

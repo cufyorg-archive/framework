@@ -30,14 +30,10 @@ import java.util.Objects;
 public class SyntaxTracker implements Appendable {
 	/**
 	 * The map for literal syntax. Such syntax shouldn't contain any meaningful syntax inside it.
-	 *
-	 * @implSpec should be used as a final
 	 */
 	final protected Map<String, String> LITERAL;
 	/**
 	 * The map for nestable syntax. Such syntax can have a nested syntax in it.
-	 *
-	 * @apiNote no change after initialize
 	 */
 	final protected Map<String, String> NESTABLE;
 
@@ -134,7 +130,7 @@ public class SyntaxTracker implements Appendable {
 	 * Apply the unwrapping algorithm to the given character.
 	 *
 	 * @param c the character for the current position
-	 * @return true if {@link #unwrap0)} got invoked
+	 * @return true if 'unwrap0()' got invoked
 	 */
 	protected boolean unwrap(char c) {
 		if (this.unwrap.length() == 0) {

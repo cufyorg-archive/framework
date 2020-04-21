@@ -179,7 +179,6 @@ public class Lock<T> extends Thread implements Closeable {
 	 * Sleep with while owning the lock.
 	 *
 	 * @throws IllegalThreadException if the caller thread isn't this thread
-	 * @implSpec notify {@link #state} before sleeping
 	 */
 	protected void lock0() {
 		this.assertThisThread();

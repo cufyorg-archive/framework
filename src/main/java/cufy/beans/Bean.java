@@ -20,8 +20,8 @@ import cufy.convert.ConvertToken;
 import cufy.convert.Converter;
 import cufy.lang.Clazz;
 import cufy.meta.Recipe;
-import cufy.meta.Where;
 import cufy.meta.Type;
+import cufy.meta.Where;
 import cufy.util.Reflection;
 
 import java.lang.annotation.ElementType;
@@ -34,9 +34,9 @@ import java.util.*;
 /**
  * An interface changes the act of the fields of the class implementing it. The classes that implement this interface change to be used as a map.
  * All of the fields of that class will be like {@link Entry entries} on maps.
- * <br/>
+ * <p>
  * To enhance the security of the beans. Only the field that annotated with {@link Property} will be used as fields.
- * <br/>
+ * <p>
  * Since this is an interface. It can't have fields. So it can't store it's entrySet, so it will be so heavy to create a new entrySet each time it
  * requires it. So all of the methods have been designed not to use the entrySet. Witch is way back in performance compared to do it with a final
  * entrySet. Also since it can't have a final entrySet, so it can't store keys that it haven't a field for it.
@@ -51,15 +51,16 @@ public interface Bean<K, V> extends Map<K, V> {
 	/**
 	 * Get a remote bean for the instance given. The remote bean will remotely access the given instance. All the rules of {@link Bean} will be
 	 * applied. Only the fields annotated with {@link Property} will be accessed.
+	 * <p>
+	 * Note: if you write a key that is not in the instance, It will be stored locally on the returned bean
+	 * <p>
+	 * Note: If the given instance is a bean. Then the behaviour is essential and some features of the bean given will be lost.
 	 *
 	 * @param instance the target instance to get a bean of
 	 * @param <K>      the type of the keys
 	 * @param <V>      the type of the values
 	 * @return a remote bean read and write from the given instance
 	 * @throws NullPointerException if the given instance is null
-	 * @apiNote if you write a key that is not in the instance, It will be stored locally on the returned bean
-	 * @apiNote If the given instance is a bean. Then the behaviour is essential and some features of the
-	 * bean given will be lost.
 	 */
 	static <K, V> Bean<K, V> forInstance(Object instance) {
 		Objects.requireNonNull(instance, "instance");

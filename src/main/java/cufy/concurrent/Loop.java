@@ -29,13 +29,6 @@ import java.util.function.Function;
 /**
  * Controllable loop. The concept is to do a block. Check if shall continue or not, do the posts. Then do the next block and so on.
  *
- * <ul>
- *     <b>Strategies</b>
- *     <li>
- *         <b>Function Altering</b>: Completely cancel the represented function and do the alter function (on the caller thread) instead.
- *     </li>
- * </ul>
- *
  * @param <I> the functional interface for the looping code
  * @param <P> the parameter type for invoking {@link #next(Object)}
  * @author lsafer
@@ -58,27 +51,20 @@ public abstract class Loop<I, P> {
 
 	/**
 	 * The code to loop.
-	 *
-	 * @implSpec synchronized use only
 	 */
 	final protected List<Consumer<P>> code = new ArrayList<>(10);
 	/**
 	 * All undone posts of this loop.
-	 *
-	 * @implSpec synchronized use only
 	 */
 	final protected List<Function<Loop<I, P>, Boolean>> posts = new ArrayList<>(10);
 	/**
 	 * The state of this loop.
-	 *
-	 * @implSpec synchronized use only
 	 */
 	final protected AtomicReference<String> state = new AtomicReference<>(CONTINUE);
 	/**
 	 * The first caller of this loop.
-	 *
-	 * @implSpec synchronized use only.
-	 * @implSpec having more than one caller is unpredictable and ILLEGAL!.
+	 * <p>
+	 * Note: having more than one caller is unpredictable and ILLEGAL!.
 	 */
 	final protected AtomicReference<Thread> thread = new AtomicReference<>();
 
@@ -115,7 +101,6 @@ public abstract class Loop<I, P> {
 	 * Get the {@link #code} of this loop.
 	 *
 	 * @return the code list of this
-	 * @implSpec return a final field instance
 	 * @see #getCode(Consumer)
 	 */
 	public List<Consumer<P>> getCode() {
@@ -143,7 +128,6 @@ public abstract class Loop<I, P> {
 	 * Get the {@link #posts} of this loop.
 	 *
 	 * @return the posts list of this
-	 * @implSpec return a final field instance
 	 * @see #getPosts(Consumer)
 	 */
 	public List<Function<Loop<I, P>, Boolean>> getPosts() {
@@ -171,7 +155,6 @@ public abstract class Loop<I, P> {
 	 * Get the {@link #state} of this loop.
 	 *
 	 * @return the state instance of this
-	 * @implSpec return final a field instance
 	 * @see #getState(Consumer)
 	 */
 	public AtomicReference<String> getState() {
@@ -199,7 +182,6 @@ public abstract class Loop<I, P> {
 	 * Get the {@link #thread} of this loop.
 	 *
 	 * @return the thread atomic reference of this
-	 * @implSpec return a final field instance
 	 * @see #getThread(Consumer)
 	 */
 	public AtomicReference<Thread> getThread() {
@@ -208,11 +190,12 @@ public abstract class Loop<I, P> {
 
 	/**
 	 * Do the given action to the {@link #thread} of this. with a locked access.
+	 * <p>
+	 * Note:  this may not be useful if this loop rapidly starts and finishes
 	 *
 	 * @param action to be done to the thread of this
 	 * @return this
 	 * @throws NullPointerException if the given action is null
-	 * @apiNote this may not be useful if this loop rapidly starts and finishes
 	 * @see #getThread()
 	 */
 	public Loop<I, P> getThread(Consumer<Thread> action) {
@@ -226,9 +209,10 @@ public abstract class Loop<I, P> {
 
 	/**
 	 * Get if this loop is alive or not.
+	 * <p>
+	 * Note: this may not be useful if this loop rapidly starts and finishes
 	 *
 	 * @return whether this loop is alive or not.
-	 * @apiNote this may not be useful if this loop rapidly starts and finishes
 	 */
 	public boolean isAlive() {
 		synchronized (this.thread) {
@@ -238,9 +222,10 @@ public abstract class Loop<I, P> {
 
 	/**
 	 * Check if the caller thread is the current thread of this loop.
+	 * <p>
+	 * Note: this may not be useful if this loop rapidly starts and finishes
 	 *
 	 * @return whether the caller thread is the thread of this
-	 * @apiNote this may not be useful if this loop rapidly starts and finishes
 	 */
 	public boolean isCurrentThread() {
 		synchronized (this.thread) {
@@ -250,10 +235,11 @@ public abstract class Loop<I, P> {
 
 	/**
 	 * Waits for this loop to die.
+	 * <p>
+	 * Note: this may not be useful if this loop rapidly starts and finishes
 	 *
 	 * @return this
 	 * @throws IllegalThreadException if the caller thread is the current thread of this loop
-	 * @apiNote this may not be useful if this loop rapidly starts and finishes
 	 */
 	public Loop<I, P> join() {
 		this.assertNotRecursiveThreadCall();
@@ -264,6 +250,8 @@ public abstract class Loop<I, P> {
 
 	/**
 	 * Waits at most millis milliseconds for this loop to die.
+	 * <p>
+	 * Note: this may not be useful if this loop rapidly starts and finishes
 	 *
 	 * @param alter  what to do when the timeout is done
 	 * @param millis the time to wait in milliseconds
@@ -271,7 +259,6 @@ public abstract class Loop<I, P> {
 	 * @throws IllegalArgumentException if the value of millis is negative
 	 * @throws NullPointerException     if the given alter is null
 	 * @throws IllegalThreadException   if the caller thread is the current thread of this loop
-	 * @apiNote this may not be useful if this loop rapidly starts and finishes
 	 */
 	public Loop<I, P> join(Consumer<Loop<I, P>> alter, long millis) {
 		this.assertNotRecursiveThreadCall();
@@ -342,7 +329,6 @@ public abstract class Loop<I, P> {
 	 * @param action to be done by this loop (return false to remove the action)
 	 * @return this
 	 * @throws NullPointerException if the given action is null
-	 * @implSpec action SHOULDN'T be synchronously invoked on ANY non-local object
 	 */
 	public Loop<I, P> post(Function<Loop<I, P>, Boolean> action) {
 		Objects.requireNonNull(action, "action");
@@ -356,18 +342,15 @@ public abstract class Loop<I, P> {
 	/**
 	 * Make this loop (specifically the current thread looping) do the function given. Then remove that action if the action returns false. Or if this
 	 * loop don't have a running thread.
-	 *
-	 * <ul>
-	 *     What triggers the "Function Altering" strategy? (see {@link Loop  Loop/Strategies/Function Altering}):
-	 *     <li>If this loop don't have a running thread (currently)</li>
-	 * </ul>
+	 * <p>
+	 * Note: no matter what. One (AND JUST ONE) of the given actions will be invoked.
+	 * <p>
+	 * Note: action SHOULDN'T be synchronously invoked on ANY non-local object
 	 *
 	 * @param action to be done by this loop (return false to remove the action)
 	 * @param alter  the action to be done if this loop don't have a running thread
 	 * @return this
 	 * @throws NullPointerException if ether the given 'action' or the given 'alter' is null
-	 * @implSpec no matter what. One (AND JUST ONE) of the given actions should be invoked once (also, JUST ONCE).
-	 * @implSpec action SHOULDN'T be synchronously invoked on ANY non-local object
 	 */
 	public Loop<I, P> post(Function<Loop<I, P>, Boolean> action, Consumer<Loop<I, P>> alter) {
 		Objects.requireNonNull(action, "action");
@@ -389,11 +372,8 @@ public abstract class Loop<I, P> {
 	/**
 	 * Make this loop (specifically the current thread looping) do the function given. Then remove that action if the action returns false. Or the
 	 * given timeout ended.
-	 *
-	 * <ul>
-	 *     What triggers the "Function Altering" strategy? (see {@link Loop  Loop/Strategies/Function Altering}):
-	 *     <li>If the timeout ended before this loop invokes the 'action'</li>
-	 * </ul>
+	 * <p>
+	 * Note: no matter what. One (AND JUST ONE) of the given actions should be invoked.
 	 *
 	 * @param action  to be done by this loop (return false to remove the action)
 	 * @param alter   to do when timeout and the action has not been done
@@ -401,8 +381,6 @@ public abstract class Loop<I, P> {
 	 * @return this
 	 * @throws NullPointerException     if ether the given 'action' or 'alter' is null
 	 * @throws IllegalArgumentException if ether the given 'timeout' is negative
-	 * @implSpec no matter what. One (AND JUST ONE) of the given actions should be invoked once (also, JUST ONCE).
-	 * @implSpec action SHOULDN'T be synchronously invoked on ANY non-local object
 	 */
 	public Loop<I, P> post(Function<Loop<I, P>, Boolean> action, Consumer<Loop<I, P>> alter, long timeout) {
 		Objects.requireNonNull(action, "action");
@@ -466,7 +444,6 @@ public abstract class Loop<I, P> {
 	 *
 	 * @return this
 	 * @throws IllegalStateException if this loop still alive
-	 * @implSpec do last tick after the loop finishes
 	 */
 	public synchronized Loop<I, P> start() {
 		synchronized (this.thread) {
@@ -491,7 +468,6 @@ public abstract class Loop<I, P> {
 	 * @return this
 	 * @throws IllegalStateException if this loop still alive
 	 * @throws NullPointerException  if the given state is null
-	 * @implSpec do last tick after the loop finishes
 	 */
 	public synchronized Loop<I, P> start(String state) {
 		Objects.requireNonNull(state, "state");
@@ -507,7 +483,6 @@ public abstract class Loop<I, P> {
 	 * @return this
 	 * @throws NullPointerException   if the given 'action' is null
 	 * @throws IllegalThreadException if the caller thread is the current thread of this loop
-	 * @implSpec action SHOULDN'T be synchronously invoked on ANY non-local object
 	 */
 	public Loop<I, P> synchronously(Consumer<Loop<I, P>> action) {
 		this.assertNotRecursiveThreadCall();
@@ -547,21 +522,18 @@ public abstract class Loop<I, P> {
 	/**
 	 * Make this loop (specifically the current thread looping) do the function given. And WAIT for the loop to do it. Or if this loop don't have a
 	 * running thread (currently).
-	 *
-	 * <ul>
-	 *     What triggers the "Function Altering" strategy? (see {@link Loop Loop/Strategies/Function Altering}):
-	 *     <li>If this loop don't have a running thread (currently)</li>
-	 *     <li>If the CALLER thread get interrupted while it's waiting on this method</li>
-	 * </ul>
+	 * <p>
+	 * Note: this may not be useful if this loop rapidly starts and finishes
+	 * <p>
+	 * Note: no matter what. One (AND JUST ONE) of the given actions will be invoked once (also, JUST ONCE).
+	 * <p>
+	 * Note:  action SHOULDN'T be synchronously invoked on ANY non-local object
 	 *
 	 * @param action to be done by this loop
 	 * @param alter  the action to be done if this loop don't have a running thread or if the action is canceled
 	 * @return this
 	 * @throws NullPointerException   if ether the given 'action' or the given 'alter' is null
 	 * @throws IllegalThreadException if the caller thread is the current thread of this loop
-	 * @apiNote this may not be useful if this loop rapidly starts and finishes
-	 * @implSpec no matter what. One (AND JUST ONE) of the given actions should be invoked once (also, JUST ONCE).
-	 * @implSpec action SHOULDN'T be synchronously invoked on ANY non-local object
 	 */
 	public Loop<I, P> synchronously(Consumer<Loop<I, P>> action, Consumer<Loop<I, P>> alter) {
 		this.assertNotRecursiveThreadCall();
@@ -615,12 +587,8 @@ public abstract class Loop<I, P> {
 	/**
 	 * Make this loop (specifically the current thread looping) do the function given. And WAIT until the loop invokes it. Or the given timeout
 	 * ended.
-	 *
-	 * <ul>
-	 *     What triggers the "Function Altering" strategy? (see {@link Loop  Loop/Strategies/Function Altering}):
-	 *     <li>If the timeout ended before this loop invokes the 'action'</li>
-	 *     <li>If the CALLER thread get interrupted while it's waiting on this method</li>
-	 * </ul>
+	 * <p>
+	 * Note: no matter what. One (AND JUST ONE) of the given actions should be invoked.
 	 *
 	 * @param action  to do with the looping thread
 	 * @param alter   to do when the time is out before the action done
@@ -629,8 +597,6 @@ public abstract class Loop<I, P> {
 	 * @throws NullPointerException     if ether the given 'action' or 'alter' is null
 	 * @throws IllegalArgumentException if the given 'timeout' is negative
 	 * @throws IllegalThreadException   if the caller thread is the current thread of this loop
-	 * @implSpec no matter what. One (AND JUST ONE) of the given actions should be invoked once (also, JUST ONCE).
-	 * @implSpec action SHOULDN'T be synchronously invoked on ANY non-local object
 	 */
 	public Loop<I, P> synchronously(Consumer<Loop<I, P>> action, Consumer<Loop<I, P>> alter, long timeout) {
 		this.assertNotRecursiveThreadCall();
@@ -704,7 +670,6 @@ public abstract class Loop<I, P> {
 	 *
 	 * @param params to pass it to the next code
 	 * @return whether allowed to continue the loop or not
-	 * @implSpec break code if a {@link #tick()} call returns false
 	 */
 	protected boolean next(P params) {
 		synchronized (this.code) {
@@ -720,7 +685,6 @@ public abstract class Loop<I, P> {
 	 * code.
 	 *
 	 * @return whether the loop shall continue or break
-	 * @implSpec must support the constants {@link #CONTINUE}, {@link #BREAK}, {@link #SLEEP} and do the {@link #posts}
 	 */
 	protected boolean tick() {
 		//get the lock of the posts list
@@ -767,8 +731,6 @@ public abstract class Loop<I, P> {
 
 	/**
 	 * The looping cod. call {@link #next(Object)} inside the loop to invoke the code of this loop. Break the loop if it returned false.
-	 *
-	 * @implNote as default no synchronizations needed
 	 */
 	protected abstract void loop();
 }

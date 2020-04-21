@@ -21,9 +21,9 @@ import java.util.Objects;
 
 /**
  * Class ranging annotation. A way to specify a range of classes.
- *
+ * <p>
+ * The levels of Overriding:
  * <ul>
- *     The levels of Overriding:
  *     <li>{@link #out()}</li>
  *     <li>{@link #in()}</li>
  *     <li>{@link #value()}</li>
@@ -41,7 +41,6 @@ public @interface Filter {
 	 * Classes in range (subclasses NOT included).
 	 *
 	 * @return absolute classes in range
-	 * @apiNote this will override {@link #subOut()}
 	 */
 	Class<?>[] in() default {};
 
@@ -49,7 +48,6 @@ public @interface Filter {
 	 * Classes not in range (subclasses NOT included).
 	 *
 	 * @return absolute classes not in range
-	 * @apiNote this will override {@link #in()}, {@link #subIn()}
 	 */
 	Class<?>[] out() default {};
 
@@ -64,7 +62,6 @@ public @interface Filter {
 	 * Classes not in range (subclasses included).
 	 *
 	 * @return super classes not in range
-	 * @apiNote this will override {@link #subIn()}
 	 */
 	Class<?>[] subOut() default {};
 
@@ -72,7 +69,6 @@ public @interface Filter {
 	 * Classes in range (subclasses NOT included).
 	 *
 	 * @return absolute classes in range
-	 * @apiNote this will override {@link #subOut()}
 	 */
 	Class<?>[] value() default {};
 

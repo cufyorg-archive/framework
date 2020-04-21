@@ -40,8 +40,8 @@ public abstract class AbstractConverter implements Converter {
 	final protected Group<Method> methods = Collections.unmodifiableGroup(new HashGroup<>(Reflection.getAllMethods(this.getClass())));
 	/**
 	 * If this class in a debugging mode or not.
-	 *
-	 * @implSpec if this set false all null-checks and type-checks should not be executed at runtime.
+	 * <p>
+	 * Note: if this set to false all null-checks and type-checks should not be executed at runtime.
 	 */
 	protected boolean DEBUGGING = false;
 
@@ -90,11 +90,12 @@ public abstract class AbstractConverter implements Converter {
 
 	/**
 	 * Get invoked if no conversion method is found for the given token.
+	 * <p>
+	 * Note: called dynamically. No need for direct call
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
 	 * @throws ConvertException     if any converting error occurred
 	 * @throws NullPointerException if the given token is null
-	 * @apiNote called dynamically. No need for direct call
 	 */
 	protected void convertElse(ConvertToken token) {
 		if (DEBUGGING) {

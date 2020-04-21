@@ -47,9 +47,6 @@ public class JSONConverter extends BaseConverter {
 	final public static JSONConverter global = new JSONConverter();
 
 	/**
-	 * Object => String
-	 * <br/>
-	 *
 	 * Set the {@link ConvertToken#output} with a new {@link String} that holds the value of the given {@link ConvertToken#input}. Using
 	 * {@link JSON}.
 	 *
@@ -89,8 +86,6 @@ public class JSONConverter extends BaseConverter {
 	}
 
 	/**
-	 * String => Object
-	 * <br/>
 	 * Try to construct a new object of the value of the given {@link ConvertToken#input} with type of the {@link ConvertToken#outputClazz}.
 	 * Using {@link JSON}.
 	 *

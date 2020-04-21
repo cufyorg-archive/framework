@@ -124,9 +124,9 @@ public class ParseToken<T> {
 
 	/**
 	 * Get a sub token of this token with the given parameters.
-	 * <br/>
+	 * <p>
+	 * The rules:
 	 * <ul>
-	 *     The rules
 	 *     <li>
 	 *         subToken.klazz.klass
 	 *         <ul>

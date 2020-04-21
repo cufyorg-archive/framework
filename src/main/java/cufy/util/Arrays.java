@@ -1822,6 +1822,9 @@ final public class Arrays {
 	 * source array components from positions srcPos through srcPos+k-1 will already have been copied to destination array positions destPos through
 	 * destPos+k-1 and no other positions of the destination array will have been modified. (Because of the restrictions already itemized, this
 	 * paragraph effectively applies only to the situation where both arrays have component types that are reference types.)
+	 * <p>
+	 * Note: the different between this method and {@link System#arraycopy(Object, int, Object, int, int)} is how it deals with primitive array. As
+	 * this method don't mind if ether the src or dest have primitive or objective types. It copies anyway.
 	 *
 	 * @param src     the source array.
 	 * @param srcPos  starting position in the source array.
@@ -1831,8 +1834,6 @@ final public class Arrays {
 	 * @throws IndexOutOfBoundsException if copying would cause access of data outside array bounds.
 	 * @throws ArrayStoreException       if an element in the src array could not be stored into the dest array because of a type mismatch.
 	 * @throws NullPointerException      if either src or dest is null.
-	 * @apiNote the different between this method and {@link System#arraycopy(Object, int, Object, int, int)} is how it deals with primitive array. As
-	 * this method don't mind if ether the src or dest have primitive or objective types. It copies anyway.
 	 * @see System#arraycopy(Object, int, Object, int, int)
 	 */
 	public static void hardcopy(Object src, int srcPos, Object dest, int destPos, int length) {

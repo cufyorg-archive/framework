@@ -142,7 +142,6 @@ final public class Collections {
 	 * @param <T>    the type of values on the returned map
 	 * @return a remote map to that instance
 	 * @throws NullPointerException if the given object is null
-	 * @apiNote the returned map WILL contain ALL the accessible fields of the given instance! so be careful when using it!.
 	 */
 	public static <T> Map<String, T> asMap(Object object) {
 		Objects.requireNonNull(object, "object");
@@ -315,7 +314,6 @@ final public class Collections {
 	 * @param iterators to combine
 	 * @return an iterator combined from the given iterators.
 	 * @throws NullPointerException if any of the given iterators is null. Or if the given iterator array is null itself
-	 * @apiNote the given iterator WILL invoke {@link Iterator#next()} on the given iterators
 	 */
 	public static <T> Iterator<T> combine(Iterator<? extends T>... iterators) {
 		Objects.requireNonNull(iterators, "iterators");

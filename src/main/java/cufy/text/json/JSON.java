@@ -35,11 +35,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A formatter/parser for JSON.
- *
+ * <p>
+ * <b>Dynamic Methods:</b>
  * <ul>
- *     <font color="orange" size="4"><b>Dynamic Methods:</b></font>
  *     <li>
- *         <font color="yellow">{@link Collection Array}</font>
+ *         <b>{@link Collection Array}</b>
  *         <ul>
  *             	<li>{@link #formatArray format}</li>
  *         		<li>{@link #isArray classify}</li>
@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *         </ul>
  *     </li>
  *     <li>
- *         <font color="yellow">{@link Boolean}</font>
+ *         <b>{@link Boolean}</b>
  *     		<ul>
  *     		 	<li>{@link #formatBoolean format}</li>
  *     			<li>{@link #isBoolean classify}</li>
@@ -55,7 +55,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *     		</ul>
  *     </li>
  *     <li>
- *         <font color="yellow">{@link Number}</font>
+ *         <b>{@link Number}</b>
  *         <ul>
  *             	<li>{@link #formatNumber format}</li>
  *             	<li>{@link #isNumber classify}</li>
@@ -63,7 +63,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *         </ul>
  *     </li>
  *     <li>
- *         <font color="yellow">{@link Map Object}</font>
+ *         <b>{@link Map Object}</b>
  *         <ul>
  *            	<li>{@link #formatObject format}</li>
  *            	<li>{@link #isObject classify}</li>
@@ -71,7 +71,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *         </ul>
  *     </li>
  *     <li>
- *         <font color="yellow">{@link CharSequence String}</font>
+ *         <b>{@link CharSequence String}</b>
  *         <ul>
  *             	<li>{@link #formatString format}</li>
  *             	<li>{@link #isString classify}</li>
@@ -79,13 +79,13 @@ import java.util.concurrent.atomic.AtomicReference;
  *         </ul>
  *     </li>
  *     <li>
- *         <font color="yellow">{@link Object Else}</font>
+ *         <b>{@link Object Else}</b>
  *         <ul>
  *             <li>{@link #formatElse format}</li>
  *         </ul>
  *     </li>
  *     <li>
- *         <font color="yellow">{@link Void Null}</font>
+ *         <b>{@link Void Null}</b>
  *         <ul>
  *         		<li>{@link #formatNull foramt}</li>
  *         		<li>{@link #isNull classify}</li>
@@ -93,7 +93,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *         </ul>
  *     </li>
  *     <li>
- *         <font color="yellow">{@link Empty}</font>
+ *         <b>{@link Empty}</b>
  *         <ul>
  *             <li>{@link  #isEmpty classify}</li>
  *         </ul>
@@ -102,7 +102,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author lsafer
  * @version 0.1.3
- * @see <a href="http://www.json.org/">json.org</a> for more about JSON
+ * @see <a href="https://www.json.org/">json.org</a>
  * @since 09-Jul-2019
  */
 public class JSON extends AbstractFormat {
@@ -126,8 +126,8 @@ public class JSON extends AbstractFormat {
 	protected int DEFAULT_VALUE_LENGTH;
 	/**
 	 * The number of whitespaces characters expected to be read continuously.
-	 *
-	 * @implNote larger number will effect the RAM. Lower number will effect the performance
+	 * <p>
+	 * Note: larger number will effect the RAM. Lower number will effect the performance
 	 */
 	protected int DEFAULT_WHITE_SPACE_LENGTH;
 	/**
@@ -140,20 +140,14 @@ public class JSON extends AbstractFormat {
 	protected Syntax SYNTAX;
 	/**
 	 * The comment symbols.
-	 *
-	 * @apiNote final after initialization
 	 */
 	protected Map<String, String> SYNTAX_COMMENT;
 	/**
 	 * The literal symbols relationships for the syntax tracker.
-	 *
-	 * @apiNote final after initialization
 	 */
 	protected Map<String, String> SYNTAX_LITERAL;
 	/**
 	 * The nestable symbols relationships for the syntax tracker.
-	 *
-	 * @apiNote final after initialization
 	 */
 	protected Map<String, String> SYNTAX_NESTABLE;
 
@@ -168,8 +162,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Format Array
-	 * <br/>
 	 * Format the given {@link Collection Array}. To a {@link JSON} text. Then {@link Writer#append} it to the given {@link Writer}.
 	 *
 	 * @param token the formatting instance that holds the variables of this formatting
@@ -231,8 +223,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Format Boolean
-	 * <br/>
 	 * Format the given {@link Boolean}. To a {@link JSON} text. Then {@link Writer#append} it to the given {@link Writer}.
 	 *
 	 * @param token the formatting instance that holds the variables of this formatting
@@ -251,8 +241,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Format Null
-	 * <br/>
 	 * Append null to the given writer.
 	 *
 	 * @param token the formatting instance that holds the variables of this formatting
@@ -270,8 +258,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Format Number
-	 * <br/>
 	 * Format the given {@link Number}. To a {@link JSON} text. Then {@link Writer#append} it to the given {@link Writer}.
 	 *
 	 * @param token the formatting instance that holds the variables of this formatting
@@ -311,8 +297,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Format Object
-	 * <br/>
 	 * Format the given {@link Map Object}. To a {@link JSON} text. Then {@link Writer#append} it to the given {@link Writer}.
 	 *
 	 * @param token the formatting instance that holds the variables of this formatting
@@ -369,8 +353,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Format String
-	 * <br/>
 	 * Format the given {@link CharSequence String}. To a {@link JSON} text. Then {@link Writer#append} it to the given {@link Writer}.
 	 *
 	 * @param token the formatting instance that holds the variables of this formatting
@@ -396,8 +378,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Classify Array
-	 * <br/>
 	 * Check if the given string should be parsed as {@link Collection Array} or not.
 	 *
 	 * @param token the classification instance that holds the variables of this classification
@@ -427,8 +407,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Classify Boolean
-	 * <br/>
 	 * Check if the given string should be parsed as {@link Boolean} or not.
 	 *
 	 * @param token the classification instance that holds the variables of this classification
@@ -458,8 +436,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Classify Empty
-	 * <br/>
 	 * Check if no value the reader contains.
 	 *
 	 * @param token the classification instance that holds the variables of this classification
@@ -491,8 +467,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Classify Null
-	 * <br/>
 	 * Check if the remaining character on the given reader should be parsed as null or not.
 	 *
 	 * @param token the classification instance that holds the variables of this classification
@@ -522,8 +496,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Classify Number
-	 * <br/>
 	 * Check if the given string should be parsed as {@link Number} or not.
 	 *
 	 * @param token the classification instance that holds the variables of this classification
@@ -553,8 +525,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Classify Object
-	 * <br/>
 	 * Check if the given string should be parsed as {@link Map Object} or not.
 	 *
 	 * @param token the classification instance that holds the variables of this classification
@@ -584,8 +554,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Classify String
-	 * <br/>
 	 * Check if the given string should be parsed as {@link CharSequence String} or not.
 	 *
 	 * @param token the classification instance that holds the variables of this classification
@@ -615,8 +583,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Parse Array
-	 * <br/>
 	 * Parse the string from the given reader to an {@link Collection Array}. Then set it to the given {@link AtomicReference buffer}.
 	 *
 	 * @param token the parsing instance that holds the variables of this parsing
@@ -771,8 +737,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Parse Boolean
-	 * <br/>
 	 * Parse the string from the given reader to an {@link Boolean}. Then set it to the given {@link AtomicReference buffer}.
 	 *
 	 * @param token the parsing instance that holds the variables of this parsing
@@ -799,8 +763,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Parse Null
-	 * <br/>
 	 * Set null to the given buffer.
 	 *
 	 * @param token the parsing instance that holds the variables of this parsing
@@ -825,8 +787,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Parse Number
-	 * <br/>
 	 * Parse the string from the given reader to an {@link Number}. Then set it to the given {@link AtomicReference buffer}.
 	 *
 	 * @param token the parsing instance that holds the variables of this parsing
@@ -897,8 +857,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Parse Object
-	 * <br/>
 	 * Parse the string from the given reader to an {@link Map Object}. Then set it to the given {@link AtomicReference buffer}.
 	 *
 	 * @param token the parsing instance that holds the variables of this parsing
@@ -1030,8 +988,6 @@ public class JSON extends AbstractFormat {
 	}
 
 	/**
-	 * Parse String
-	 * <br/>
 	 * Parse the string from the given reader to an {@link String}. Then set it to the given {@link AtomicReference buffer}.
 	 *
 	 * @param token the parsing instance that holds the variables of this parsing
@@ -1108,8 +1064,6 @@ public class JSON extends AbstractFormat {
 
 	/**
 	 * A structure holding the symbols of a JSON formatter.
-	 *
-	 * @implSpec all values should be used as final
 	 */
 	public static class Syntax {
 		/**
@@ -1124,6 +1078,14 @@ public class JSON extends AbstractFormat {
 		 * Declare that the comment ended.
 		 */
 		public String COMMENT_END = "*/";
+		/**
+		 * Declare that the line comment ended.
+		 */
+		public String COMMENT_LINE_END = "\n";
+		/**
+		 * Declare that the next characters are commented. Until the {@link #COMMENT_LINE_END} cancel it.
+		 */
+		public String COMMENT_LINE_START = "//";
 		/**
 		 * Declare that further characters are commented. Until the {@link #COMMENT_END} cancel it.
 		 */
@@ -1141,21 +1103,13 @@ public class JSON extends AbstractFormat {
 		 */
 		public String FALSE = "false";
 		/**
-		 * A symbol used to shows a line. To make the code more readable.
-		 */
-		public String NEW_LINE = "\n";
-		/**
-		 * Declare that the line comment ended.
-		 */
-		public String COMMENT_LINE_END = "\n";
-		/**
-		 * Declare that the next characters are commented. Until the {@link #COMMENT_LINE_END} cancel it.
-		 */
-		public String COMMENT_LINE_START = "//";
-		/**
 		 * Member end char on JSON.
 		 */
 		public String MEMBER_END = ",";
+		/**
+		 * A symbol used to shows a line. To make the code more readable.
+		 */
+		public String NEW_LINE = "\n";
 		/**
 		 * The value null on JSON.
 		 */

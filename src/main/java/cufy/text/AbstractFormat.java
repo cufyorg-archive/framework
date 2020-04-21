@@ -34,9 +34,10 @@ import java.util.Objects;
  * adding some futures more easier. Methods in this class will be invoked using the dynamic method grouping algorithm. In order to add a method on a
  * dynamic method group. The method should be annotated with that group annotation. Also the method should match the conditions of that group to
  * avoid parameters/output mismatches.
+ * <p>
  *
+ * The method groups list in this abstract:
  * <ul>
- *     The method groups list in this abstract:
  *     <li>{@link FormatMethod} methods that can format a value to a string then write it to the provided writer.</li>
  *     <li>{@link ParseMethod} methods that can parse a string read from a reader and parse it to the output.</li>
  *     <li>{@link ClassifyMethod} methods that can decide witch class is suitable for the sequence read from the given reader. Then return the reader to it's old position.</li>
@@ -44,7 +45,6 @@ import java.util.Objects;
  *
  * @author lsafer
  * @version 0.1.3
- * @implNote you have to navigate this class to where your dynamic methods is. By using annotations.
  * @since 28-Sep-2019
  */
 public abstract class AbstractFormat implements Format {
@@ -53,9 +53,7 @@ public abstract class AbstractFormat implements Format {
 	 */
 	final protected Group<Method> methods = Collections.unmodifiableGroup(new HashGroup<>(Reflection.getAllMethods(this.getClass())));
 	/**
-	 * If this class in a debugging mode or not.
-	 *
-	 * @implSpec if this set false all null-checks and type-checks should not be executed at runtime.
+	 * If this class in a debugging mode or not. if this set to false all null-checks and type-checks should not be executed at runtime.
 	 */
 	protected boolean DEBUGGING = false;
 
@@ -141,12 +139,13 @@ public abstract class AbstractFormat implements Format {
 
 	/**
 	 * Get invoked if no classifying method is found for the given token.
+	 * <p>
+	 * Note: called dynamically. No need for direct call
 	 *
 	 * @param token the classification instance that holds the variables of this classification
 	 * @throws IOException          if any I/O exception occurs
 	 * @throws NullPointerException if the given 'token' is null
 	 * @throws ClassifyException    if any classifying exception occurs
-	 * @apiNote called dynamically. No need for direct call
 	 */
 	protected void classifyElse(ClassifyToken token) throws IOException {
 		if (DEBUGGING) {
@@ -204,12 +203,13 @@ public abstract class AbstractFormat implements Format {
 
 	/**
 	 * Get invoked if no formatting method is found for the given token.
+	 * <p>
+	 * Note: called dynamically. No need for direct call
 	 *
 	 * @param token the formatting instance that holds the variables of this formatting
 	 * @throws IOException          if any I/O exception occurs
 	 * @throws NullPointerException if the given 'token' is null
 	 * @throws FormatException      if any formatting exception occurs
-	 * @apiNote called dynamically. No need for direct call
 	 */
 	protected void formatElse(FormatToken token) throws IOException {
 		if (DEBUGGING) {
@@ -312,12 +312,13 @@ public abstract class AbstractFormat implements Format {
 
 	/**
 	 * Get invoked if no parsing method is found for the given token.
+	 * <p>
+	 * Note: called dynamically. No need for direct call
 	 *
 	 * @param token the parsing instance that holds the variables of this parsing
 	 * @throws IOException          if any I/O exception occurs
 	 * @throws NullPointerException if the given 'token' is null
 	 * @throws ParseException       if any parsing exception occurs
-	 * @apiNote called dynamically. No need for direct call
 	 */
 	protected void parseElse(ParseToken token) throws IOException {
 		if (DEBUGGING) {

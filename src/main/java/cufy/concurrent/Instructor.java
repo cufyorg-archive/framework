@@ -37,20 +37,20 @@ import java.util.function.Function;
 public class Instructor {
 	/**
 	 * Loops that linked to this.
-	 *
-	 * @implSpec synchronized use only.
+	 * <p>
+	 * Note: synchronized use only.
 	 */
 	final protected List<Loop<?, ?>> loops = new ArrayList<>(10);
 	/**
 	 * All undone posts of this group.
-	 *
-	 * @implSpec synchronized use only.
+	 * <p>
+	 * Note: synchronized use only.
 	 */
 	final protected List<BiFunction<Instructor, Loop<?, ?>, Boolean>> posts = new ArrayList<>(10);
 	/**
 	 * The first position of any further loop get started by this.
-	 *
-	 * @implSpec synchronized use only.
+	 * <p>
+	 * Note: synchronized use only.
 	 */
 	final protected AtomicReference<String> state = new AtomicReference<>(Loop.CONTINUE);
 
@@ -58,7 +58,6 @@ public class Instructor {
 	 * Get the {@link #loops} of this loop.
 	 *
 	 * @return the loops list of this group
-	 * @implSpec return a final field instance
 	 * @see #getLoops(Consumer)
 	 */
 	public List<Loop<?, ?>> getLoops() {
@@ -67,11 +66,12 @@ public class Instructor {
 
 	/**
 	 * Do the given action to the {@link #loops} of this. with a locked access.
+	 * <p>
+	 * Note: this may not be useful if this loop rapidly starts and finishes
 	 *
 	 * @param action to be done to the loops list of this
 	 * @return this
 	 * @throws NullPointerException if the given 'action' is null
-	 * @apiNote this may not be useful if this loop rapidly starts and finishes
 	 * @see #getLoops()
 	 */
 	public Instructor getLoops(Consumer<List<Loop<?, ?>>> action) {
@@ -87,7 +87,6 @@ public class Instructor {
 	 * Get the {@link #posts} of this loop.
 	 *
 	 * @return the posts list of this group
-	 * @implSpec return a final field instance
 	 * @see #getPosts(Consumer)
 	 */
 	public List<BiFunction<Instructor, Loop<?, ?>, Boolean>> getPosts() {
@@ -115,7 +114,6 @@ public class Instructor {
 	 * Get the {@link #state} of this loop.
 	 *
 	 * @return the state instance of this group
-	 * @implSpec return a final field instance
 	 * @see #getState(Consumer)
 	 */
 	public AtomicReference<String> getState() {
@@ -141,9 +139,10 @@ public class Instructor {
 
 	/**
 	 * Get if this group is alive or not.
+	 * <p>
+	 * Note: this may not be useful if this loop rapidly starts and finishes
 	 *
 	 * @return whether this group is alive or not.
-	 * @apiNote this may not be useful if this loop rapidly starts and finishes
 	 * @see Loop#isAlive()
 	 */
 	public boolean isAlive() {
@@ -154,9 +153,10 @@ public class Instructor {
 
 	/**
 	 * Waits for all loops of this group to die.
+	 * <p>
+	 * Note: this may not be useful if this loop rapidly starts and finishes
 	 *
 	 * @return this
-	 * @apiNote this may not be useful if this loop rapidly starts and finishes
 	 * @see Loop#join()
 	 */
 	public Instructor join() {
@@ -176,13 +176,14 @@ public class Instructor {
 
 	/**
 	 * Waits at most millis milliseconds for all loops of this group to die.
+	 * <p>
+	 * Note: this may not be useful if this loop rapidly starts and finishes
 	 *
 	 * @param alter  what to do when the timeout is done
 	 * @param millis the time to wait in milliseconds
 	 * @return this
 	 * @throws IllegalArgumentException if the value of millis is negative
 	 * @throws NullPointerException     if the given alter is null
-	 * @apiNote this may not be useful if this loop rapidly starts and finishes
 	 * @see Loop#join(Consumer, long)
 	 */
 	public Instructor join(Consumer<Instructor> alter, long millis) {
@@ -251,7 +252,6 @@ public class Instructor {
 	 * @param action to be done by a loop of this group (return false to remove the action)
 	 * @return this
 	 * @throws NullPointerException if the given action is null
-	 * @implSpec action SHOULDN'T be synchronously invoked on ANY non-local object
 	 * @see Loop#post(Function)
 	 */
 	public Instructor post(BiFunction<Instructor, Loop<?, ?>, Boolean> action) {
@@ -265,18 +265,13 @@ public class Instructor {
 
 	/**
 	 * Make a loop of this group do the given action. hen remove that action if the action returns false. Or if this group don't have a running loop.
-	 *
-	 * <ul>
-	 *     What triggers the "Function Altering" strategy? (see {@link Loop  Loop/Strategies/Function Altering}):
-	 *     <li>If this group don't have a running loop (currently)</li>
-	 * </ul>
+	 * <p>
+	 * Note: no matter what. One (AND JUST ONE) of the given actions should be invoked.
 	 *
 	 * @param action to be done by a loop of this (return false to remove the action)
 	 * @param alter  the action to be done if this group don't have a running loop
 	 * @return this
 	 * @throws NullPointerException if ether the given 'action' or the given 'alter' is null
-	 * @implSpec no matter what. One (AND JUST ONE) of the given actions should be invoked once (also, JUST ONCE).
-	 * @implSpec action SHOULDN'T be synchronously invoked on ANY non-local object
 	 * @see Loop#post(Function, Consumer)
 	 */
 	public Instructor post(BiFunction<Instructor, Loop<?, ?>, Boolean> action, Consumer<Instructor> alter) {
@@ -297,11 +292,8 @@ public class Instructor {
 
 	/**
 	 * Make a loop of this group do the given action. Then remove that action if the action returns false. Or the given timeout ended.
-	 *
-	 * <ul>
-	 *     What triggers the "Function Altering" strategy? (see {@link Loop  Loop/Strategies/Function Altering}):
-	 *     <li>If the timeout ended before this loop invokes the 'action'</li>
-	 * </ul>
+	 * <p>
+	 * Note: no matter what. One (AND JUST ONE) of the given actions should be invoked.
 	 *
 	 * @param action  to be done by a loop of this group
 	 * @param alter   to do when timeout and the action has not been done
@@ -309,8 +301,6 @@ public class Instructor {
 	 * @return this
 	 * @throws NullPointerException     if ether the given 'action' or 'alter' is null
 	 * @throws IllegalArgumentException if ether the given 'timeout' is negative
-	 * @implSpec no matter what. One (AND JUST ONE) of the given actions should be invoked once (also, JUST ONCE).
-	 * @implSpec action SHOULDN'T be synchronously invoked on ANY non-local object
 	 * @see Loop#post(Function, Consumer, long)
 	 */
 	public Instructor post(BiFunction<Instructor, Loop<?, ?>, Boolean> action, Consumer<Instructor> alter, long timeout) {
@@ -363,9 +353,6 @@ public class Instructor {
 	 * @param loop to be started
 	 * @return this
 	 * @throws NullPointerException if the given loop is null
-	 * @implSpec wait until the loop ends
-	 * @implSpec do the posts after the loop finishes
-	 * @implSpec synchronize the loop before starting it
 	 * @see Loop#start()
 	 */
 	public Instructor start(Loop<?, ?> loop) {
@@ -390,7 +377,6 @@ public class Instructor {
 	 * @param action to be done by a loop of this group
 	 * @return this
 	 * @throws NullPointerException if the given 'action' is null
-	 * @implSpec action SHOULDN'T be synchronously invoked on ANY non-local object
 	 * @see Loop#synchronously(Consumer)
 	 */
 	public Instructor synchronously(BiConsumer<Instructor, Loop<?, ?>> action) {
@@ -422,20 +408,17 @@ public class Instructor {
 
 	/**
 	 * Make a loop of this group do the given action. And WAIT for that loop to do. Or if this group don't have a running loop (currently).
-	 *
-	 * <ul>
-	 *     What triggers the "Function Altering" strategy? (see {@link Loop  Loop/Strategies/Function Altering}):
-	 *     <li>If there is no loop running (currently)</li>
-	 *     <li>If the CALLER thread get interrupted while it's waiting on this method</li>
-	 * </ul>
+	 * <p>
+	 * Note: this may not be useful if this group rapidly starts and finishes loops
+	 * <p>
+	 * Note: no matter what. One (AND JUST ONE) of the given actions should be invoked once (also, JUST ONCE).
+	 * <p>
+	 * Note: action SHOULDN'T be synchronously invoked on ANY non-local object
 	 *
 	 * @param action to be done by a loop of this group
 	 * @param alter  to be done if there is no loop on this group (currently)
 	 * @return this
 	 * @throws NullPointerException if ether the given 'action' or 'alter' is null
-	 * @apiNote this may not be useful if this group rapidly starts and finishes loops
-	 * @implSpec no matter what. One (AND JUST ONE) of the given actions should be invoked once (also, JUST ONCE).
-	 * @implSpec action SHOULDN'T be synchronously invoked on ANY non-local object
 	 * @see Loop#synchronously(Consumer, Consumer)
 	 */
 	public Instructor synchronously(BiConsumer<Instructor, Loop<?, ?>> action, Consumer<Instructor> alter) {
@@ -476,12 +459,8 @@ public class Instructor {
 
 	/**
 	 * Make a loop of this group do the given action. And WAIT until that loop invokes it. Or the given timeout ended.
-	 *
-	 * <ul>
-	 *     What triggers the "Function Altering" strategy? (see {@link Loop  Loop/Strategies/Function Altering}):
-	 *     <li>If the timeout ended before a loop of this group invokes the 'action'</li>
-	 *     <li>If the CALLER thread get interrupted while it's waiting on this method</li>
-	 * </ul>
+	 * <p>
+	 * Note: no matter what. One (AND JUST ONE) of the given actions should be invoked once (also, JUST ONCE).
 	 *
 	 * @param action  to be done by a loop of this group
 	 * @param alter   to be done if the timeout ended
@@ -489,8 +468,6 @@ public class Instructor {
 	 * @return this
 	 * @throws NullPointerException     if ether the given 'action' or 'alter' is null
 	 * @throws IllegalArgumentException if the given 'timeout' is negative
-	 * @implSpec no matter what. One (AND JUST ONE) of the given actions should be invoked once (also, JUST ONCE).
-	 * @implSpec action SHOULDN'T be synchronously invoked on ANY non-local object
 	 * @see Loop#synchronously(Consumer, Consumer, long)
 	 */
 	public Instructor synchronously(BiConsumer<Instructor, Loop<?, ?>> action, Consumer<Instructor> alter, long timeout) {
@@ -542,10 +519,11 @@ public class Instructor {
 
 	/**
 	 * Do the posts posted on this group. With no caller.
+	 * <p>
+	 * Note: this designed to be called by a loop of this instructor
 	 *
 	 * @return this
 	 * @throws NullPointerException when a post tris doing anything to the caller without doing a null check
-	 * @apiNote this designed to be called by a loop of this group
 	 */
 	public Instructor tick() {
 		return this.tick(null);
@@ -558,7 +536,6 @@ public class Instructor {
 	 * @return this
 	 * @throws NullPointerException   when the 'caller' is null and a post tris doing anything to the caller without doing a null check
 	 * @throws IllegalThreadException if the 'caller' isn't null and the caller thread ins't the thread of the given loop
-	 * @apiNote this designed to be called by a loop of this group
 	 */
 	public Instructor tick(Loop<?, ?> caller) {
 		if (caller != null && caller.isAlive() && !caller.isCurrentThread())

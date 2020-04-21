@@ -34,7 +34,6 @@ public @interface Type {
 	 * The component types of this clazz.
 	 *
 	 * @return the component types of this clazz
-	 * @apiNote unfortunately we can't make it more customizable. Classes will be represented by clazzes with no component types (except arrays)
 	 * @see Clazz#componentTypes
 	 */
 	Class[] componentTypes() default {};

@@ -17,7 +17,10 @@ package cufy.util;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
 
 /**
  * Useful utils for {@link Reader}s.
@@ -89,6 +92,10 @@ final public class Readers {
 	/**
 	 * This method will check if the remaining characters in the given reader is equals to any of the given strings. This method will depend on the
 	 * given rules on the equation.
+	 * <p>
+	 * Note: can't predict after how many characters will this method stop reading from the given reader.
+	 * <p>
+	 * Note: this method will not invoke {@link Reader#mark} or {@link Reader#reset()}
 	 *
 	 * @param reader     to read from
 	 * @param trim       when true, this method will ignore the first and last characters if it's whitespaces
@@ -98,8 +105,6 @@ final public class Readers {
 	 * @return the index of the string matched. Or -1 if no string matching
 	 * @throws NullPointerException if the given 'reader' or 'strings' or any of the given strings is null
 	 * @throws IOException          if any I/O exception occurred
-	 * @apiNote can't predict after how many characters will this method stop reading from the given reader.
-	 * @implSpec this method will not invoke {@link Reader#mark} or {@link Reader#reset()}
 	 */
 	public static int isRemainingEquals(Reader reader, boolean trim, boolean fullRead, boolean ignoreCase, String... strings) throws IOException {
 		Objects.requireNonNull(reader, "reader");

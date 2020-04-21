@@ -41,8 +41,8 @@ public class ClassifyToken<T> {
 	final public int depth;
 	/**
 	 * The reader to read input from.
-	 *
-	 * @apiNote return it to it's original position after using it
+	 * <p>
+	 * Note: return it to it's original position after using it
 	 */
 	final public Reader input;
 	/**

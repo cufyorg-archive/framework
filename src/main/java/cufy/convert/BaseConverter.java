@@ -27,9 +27,9 @@ import java.util.*;
 
 /**
  * A converter that has a basic converting methods.
- *
+ * <p>
+ * Methods:
  * <ul>
- *     Methods:
  *     <li>
  *         <b>Collections</b>
  *         <ul>
@@ -39,14 +39,14 @@ import java.util.*;
  *         </ul>
  *     </li>
  *     <li>
+ *         <b>Maps</b>
  *         <ul>
- *             <b>Maps</b>
  *             <li>{@link #map_map}</li>
  *         </ul>
  *     </li>
  *     <li>
+ *         <b>Numbers</b>
  *         <ul>
- *             <b>Numbers</b>
  *             <li>{@link #number_byte}</li>
  *             <li>{@link #number_double}</li>
  *             <li>{@link #number_float}</li>
@@ -56,8 +56,8 @@ import java.util.*;
  *         </ul>
  *     </li>
  *     <li>
+ *         <b>Objects</b>
  *         <ul>
- *             <b>Objects</b>
  *             <li>{@link #object_string}</li>
  *             <li>{@link #string_object}</li>
  *             <li>{@link #dejaVu_object}</li>
@@ -112,8 +112,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Collection => Array
-	 * <br/>
 	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
 	 * the output is null, or have a type different than the class at {@link ConvertToken#outputClazz}. Or have length other than the length of
 	 * the {@link ConvertToken#input}. Then the output will be replaced with a new output with the class of {@link
@@ -184,8 +182,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Collection => Collection
-	 * <br/>
 	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
 	 * the output is null, or have a type different than the class at {@link ConvertToken#outputClazz}. Then the output will be replaced with a
 	 * new output with the class of {@link ConvertToken#outputClazz}.
@@ -251,8 +247,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Collection => Collection
-	 * <br/>
 	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
 	 * the output is null, or have a type different than the class at {@link ConvertToken#outputClazz}. Then the output will be replaced with a
 	 * new output with the class of {@link ConvertToken#outputClazz}.
@@ -326,8 +320,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * DejaVu => Object
-	 * <br/>
 	 * Get invoked when a dejaVu converting occurred. Set the {@link ConvertToken#output} to the mapped output for the dejaVu input.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
@@ -360,8 +352,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Map => Map
-	 * <br/>
 	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
 	 * the output is null, or have a type different than the class at {@link ConvertToken#outputClazz}. Then the output will be replaced with a
 	 * new output with the class of {@link ConvertToken#outputClazz}.
@@ -412,8 +402,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Number => Byte
-	 * <br/>
 	 * Set the {@link ConvertToken#output} with a new {@link Byte} that holds the value of the given {@link ConvertToken#input}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
@@ -443,8 +431,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Number => Double
-	 * <br/>
 	 * Set the {@link ConvertToken#output} with a new {@link Double} that holds the value of the given {@link ConvertToken#input}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
@@ -474,8 +460,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Number => Float
-	 * <br/>
 	 * Set the {@link ConvertToken#output} with a new {@link Float} that holds the value of the given {@link ConvertToken#input}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
@@ -505,8 +489,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Number => Integer
-	 * <br/>
 	 * Set the {@link ConvertToken#output} with a new {@link Integer} that holds the value of the given {@link ConvertToken#input}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
@@ -536,8 +518,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Number => Long
-	 * <br/>
 	 * Set the {@link ConvertToken#output} with a new {@link Long} that holds the value of the given {@link ConvertToken#input}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
@@ -567,8 +547,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Number => Short
-	 * <br/>
 	 * Set the {@link ConvertToken#output} with a new {@link Short} that holds the value of the given {@link ConvertToken#input}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
@@ -598,9 +576,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Object => String
-	 * <br/>
-	 *
 	 * Set the {@link ConvertToken#output} with a new {@link String} that holds the value of the given {@link ConvertToken#input}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
@@ -630,8 +605,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Recurse => Object
-	 * <br/>
 	 * Get invoked when a recursion converting occurred. Set the {@link ConvertToken#output} to the mapped output for the recurred input.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
@@ -664,8 +637,6 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * String => Object
-	 * <br/>
 	 * Try to construct a new object of the value of the given {@link ConvertToken#input} with type of the {@link ConvertToken#outputClazz}.
 	 * Using ether a method with a signature equals to 'valueOf(String)'. Or a constructor with a signature equals to '(String)'.
 	 *

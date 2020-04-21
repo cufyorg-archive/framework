@@ -22,11 +22,12 @@ import java.util.Objects;
 /**
  * An alternative representation for {@link Class classes}. This provides more data about the targeted type. About the component types and the family
  * of that class. The family is how the class should be treated.
+ * <p>
+ * Note: the class {@link Void} is the class of null
  *
  * @param <C> the "klass" this clazz is holding
  * @author lsafer
  * @version 0.1.3
- * @apiNote the class {@link Void} is representing null
  * @since 29-Mar-2020
  */
 final public class Clazz<C> {
@@ -36,8 +37,6 @@ final public class Clazz<C> {
 	final private static Map<Class, Clazz> clazzes = new HashMap<>();
 	/**
 	 * The components specified to be held by the instance of this clazz.
-	 *
-	 * @implSpec unmodifiable
 	 */
 	final private Clazz[] componentTypes;
 	/**
@@ -121,7 +120,6 @@ final public class Clazz<C> {
 	 * @param <C>            the "klass" this clazz is holding
 	 * @return a clazz represents the given class with the given component types
 	 * @throws NullPointerException if the given 'componentTypes' is null
-	 * @apiNote {@link Void} is the class for null
 	 */
 	public static <C> Clazz<C> ofi(C instance, Clazz... componentTypes) {
 		return of((Class) (instance == null ? Void.class : instance.getClass()), componentTypes);
@@ -141,7 +139,6 @@ final public class Clazz<C> {
 	 * @param <C>            the "klass" this clazz is holding
 	 * @return a clazz represents the given class with the given component types
 	 * @throws NullPointerException if the given 'family' or 'componentTypes' is null
-	 * @apiNote {@link Void} is the class for null
 	 */
 	public static <C> Clazz<C> ofi(Class family, C instance, Clazz... componentTypes) {
 		return of(family, (Class) (instance == null ? Void.class : instance.getClass()), componentTypes);
@@ -361,9 +358,10 @@ final public class Clazz<C> {
 
 	/**
 	 * Returns the Class representing the component type of an array. If this clazz does not represent an array class this method returns null.
+	 * <p>
+	 * Note: don't get confused between this and {@link #getComponentType(int)}
 	 *
 	 * @return the Class representing the component type of this class if this class is an array
-	 * @apiNote don't confuse between this and {@link #getComponentType(int)}
 	 */
 	public Class getComponentType() {
 		return this.klass.getComponentType();
@@ -455,7 +453,6 @@ final public class Clazz<C> {
 	 *
 	 * @param instance the object to check
 	 * @return true if obj is an instance of this clazz
-	 * @apiNote null is instance of {@link Void}
 	 */
 	public boolean isInstance(Object instance) {
 		return instance == null ? this.klass == Void.class : this.klass.isInstance(instance);
