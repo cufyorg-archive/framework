@@ -6,7 +6,7 @@
               let link = top.document.createElement("link");
               link.type = "image/*";
               link.rel = "icon";
-              link.href = "cufy.png";
+              link.href = "../cufy.png";
               top.document.getElementsByTagName("head")[0].appendChild(link);
             };
         </script>

@@ -13,6 +13,12 @@
     <a href="https://gitter.im/cufyorg/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
         <img alt="gitter" src="https://badges.gitter.im/cufyorg/community.svg"/>
     </a>
+    <a href="https://discord.gg/ASAGGy7">
+        <img alt="discord" src="https://img.shields.io/discord/702199951278473359?label=Discord&style=plastic">
+    </a>
+    <a href="https://www.apache.org/licenses/LICENSE-2.0">
+        <img alt="Hex.pm" src="https://img.shields.io/hexpm/l/plug">
+    </a>
 </p>
 
 -   ### About
@@ -30,6 +36,7 @@
     If you have any problem please contact us at one of the following:
     -   Organization Email: cufyorg@gmail.com
     -   Leader Email: lsaferse@gmail.com
+    -   Discord: https://discord.gg/ASAGGy7
     -   Gitter: https://gitter.im/cufyorg/community
 
 -   ### Licence

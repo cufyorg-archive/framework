@@ -1,17 +1,4 @@
-<html lang="en">
-    <head>
-        <title>Cufy</title>
-        <script>
-            window.onload = function() {
-              let link = top.document.createElement("link");
-              link.type = "image/*";
-              link.rel = "icon";
-              link.href = "cufy.png";
-              top.document.getElementsByTagName("head")[0].appendChild(link);
-            };
-        </script>
-    </head>
-</html>
+<font color="red">SORRY: THIS SITE STILL UNDER DEVELOPMENT!</font>
 
 # Util
 A package of utilities used in the framework. The utilities can be used anywhere
