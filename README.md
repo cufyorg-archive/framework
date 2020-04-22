@@ -49,6 +49,7 @@
     -   Feature Request: https://github.com/cufyorg/framework/blob/master/.github/ISSUE_TEMPLATE/feature_request.md
 
     And send it to one of the following:
+    -   Repository Email: framework@cufy.org
     -   Support Email: support@cufy.org
     -   Admin Email: admin@cufy.org
     -   Discord: https://discord.gg/ASAGGy7
