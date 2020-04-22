@@ -16,9 +16,10 @@
 package cufy.io.loadable;
 
 import cufy.concurrent.Instructor;
-import cufy.io.BufferedInputStream;
-import cufy.io.BufferedReader;
-import cufy.io.*;
+import cufy.io.RemoteInputStream;
+import cufy.io.RemoteOutputStream;
+import cufy.io.RemoteReader;
+import cufy.io.RemoteWriter;
 
 import java.io.*;
 import java.net.URL;

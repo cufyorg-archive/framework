@@ -45,6 +45,19 @@ public class ArraysTest {
 	}
 
 	@Test
+	public void docs_asList() {
+		int[] array = {};
+		Object object = array;
+
+		//if you are a syntax user, this will be the best deal for you!
+		List<Integer> arrayAsList = Arrays.asList(array);
+
+		//but if you are a reflection user, the array you have could be unsigned
+		//and this method will save your time.
+		List objectAsList = Arrays.asList0(object);
+	}
+
+	@Test
 	public void hardcopy() {
 		char[] array = {'A', 'B', 'C'};
 		char[] array1 = {'a', 'b', 'c'};
@@ -86,18 +99,5 @@ public class ArraysTest {
 	@Test
 	public void sum() {
 		Assert.assertEquals("Wrong sum", (Integer) 12, Arrays.<Integer>sum(new int[]{5, 4, 3}, 0, Integer::sum));
-	}
-
-	@Test
-	public void docs_asList() {
-		int[] array = {};
-		Object object = array;
-
-		//if you are a syntax user, this will be the best deal for you!
-		List<Integer> arrayAsList = Arrays.asList(array);
-
-		//but if you are a reflection user, the array you have could be unsigned
-		//and this method will save your time.
-		List objectAsList = Arrays.asList0(object);
 	}
 }

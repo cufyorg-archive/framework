@@ -15,8 +15,8 @@
  */
 package cufy.io;
 
-import cufy.concurrent.Once;
 import cufy.concurrent.Instructor;
+import cufy.concurrent.Once;
 import cufy.util.function.ThrowRunnable;
 
 import java.io.IOException;

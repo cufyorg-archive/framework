@@ -7,6 +7,18 @@ import java.util.*;
 
 @SuppressWarnings("JavaDoc")
 public class FilterTest {
+	@Test
+	@Filter(
+			in = String.class,
+			out = HashSet.class,
+			subIn = Collection.class,
+			subOut = List.class
+	)
+	public void docs() {
+		//this filter will include String.class, any Collection,
+		//but not any class extends List.class or the class HashSet
+	}
+
 	@Test(timeout = 50)
 	@Filter(
 			in = Map.class,
@@ -28,17 +40,5 @@ public class FilterTest {
 		//subOut
 		Assert.assertFalse("CharSequence is absolute excluded", Filter.util.test(type, CharSequence.class));
 		Assert.assertFalse("String is sub excluded", Filter.util.test(type, String.class));
-	}
-
-	@Test
-	@Filter(
-			in = String.class,
-			out = HashSet.class,
-			subIn = Collection.class,
-			subOut = List.class
-	)
-	public void docs() {
-		//this filter will include String.class, any Collection,
-		//but not any class extends List.class or the class HashSet
 	}
 }

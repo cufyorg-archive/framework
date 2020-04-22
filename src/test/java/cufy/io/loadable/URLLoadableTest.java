@@ -16,7 +16,7 @@ import java.util.List;
 public class URLLoadableTest {
 	@Test
 	public void file_format_bean_json_load_save() throws IOException {
-		File temp = new File("/Aspacex/file-format-loadable-bean-test-temp");
+		File temp = new File("/projects/test/files/file-format-loadable-bean-test-temp");
 		temp.delete();
 
 		class TestBean extends AbstractBean implements FileLoadable, FormatLoadable {

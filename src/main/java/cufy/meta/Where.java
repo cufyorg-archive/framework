@@ -96,7 +96,7 @@ public @interface Where {
 		 * Get the static value stored at the reference given.
 		 *
 		 * @param where where the value stored
-		 * @param <O>       the type of the returned value
+		 * @param <O>   the type of the returned value
 		 * @return the value stored at the given reference
 		 */
 		public static <O> O getValue(Where where) {
@@ -110,9 +110,9 @@ public @interface Where {
 		/**
 		 * Get the value stored at the reference given in the given instance.
 		 *
-		 * @param where where the value stored
-		 * @param instance  to get the value from
-		 * @param <O>       the type of the returned value
+		 * @param where    where the value stored
+		 * @param instance to get the value from
+		 * @param <O>      the type of the returned value
 		 * @return the value stored at the given reference in the given instance
 		 */
 		public static <O> O getValue(Where where, Object instance) {

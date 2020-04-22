@@ -1,5 +1,8 @@
 apply plugin: 'java-library'
 
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
 repositories {
 	jcenter()
 	mavenCentral()
@@ -11,6 +14,3 @@ repositories {
 dependencies {
 	testImplementation 'junit:junit:4.11'
 }
-
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"

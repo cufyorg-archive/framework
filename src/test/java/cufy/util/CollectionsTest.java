@@ -211,7 +211,7 @@ public class CollectionsTest {
 		Iterator combine = Collections.combine(first, second);
 
 		String s = "";
-		while(combine.hasNext())
+		while (combine.hasNext())
 			s += (char) combine.next();
 
 		Assert.assertEquals("abc--def", s);
