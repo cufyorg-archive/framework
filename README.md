@@ -27,6 +27,7 @@
     focused on to be more inheritable and more reflection friendly. Making it 
     more reliable in big complex projects. The framework still not completely
     ready to be used in really big projects since it is still in the beta stage.
+    - Cufy Legacy: https://framework.cufy.org/LEGACY
 
 -   ### Guide
     The user guide can be found ether in the javadoc or the official website of the framework. 
