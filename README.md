@@ -34,13 +34,25 @@
     -   Javadoc: https://framework.cufy.org/docs
     -   Jitpack: https://jitpack.io/#cufyorg/framework
 
+-   ### Contributing
+    The you can view the guid lines of our contributors here:
+    -   Code Of Conduct: https://github.com/cufyorg/framework/blob/master/CODE_OF_CONDUCT.md
+    -   Contributing Guid Lines: https://github.com/cufyorg/framework/blob/master/CONTRIBUTING.md
+
 -   ### Support
-    If you have any problem please contact us at one of the following:
+    If you have any problem or have a feature request please submit an issue here:
+    -   Github: https://github.com/cufyorg/framework/issues/new/choose
+    
+    Or fill one of these templates:
+    -   Bug Report: https://github.com/cufyorg/framework/blob/master/.github/ISSUE_TEMPLATE/bug_report.md
+    -   Feature Request: https://github.com/cufyorg/framework/blob/master/.github/ISSUE_TEMPLATE/feature_request.md
+
+    And send it to one of the following:
     -   Organization Email: cufyorg@gmail.com
-    -   Leader Email: lsaferse@gmail.com
+    -   Admin Email: lsaferse@gmail.com
     -   Discord: https://discord.gg/ASAGGy7
     -   Gitter: https://gitter.im/cufyorg/community
-
+    
 -   ### Licence
     Copyright 2020 Cufy
 
