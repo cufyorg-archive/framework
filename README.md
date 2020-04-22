@@ -49,11 +49,11 @@
     -   Feature Request: https://github.com/cufyorg/framework/blob/master/.github/ISSUE_TEMPLATE/feature_request.md
 
     And send it to one of the following:
-    -   Organization Email: cufyorg@gmail.com
-    -   Admin Email: lsaferse@gmail.com
+    -   Support Email: support@cufy.org
+    -   Admin Email: admin@cufy.org
     -   Discord: https://discord.gg/ASAGGy7
     -   Gitter: https://gitter.im/cufyorg/community
-    
+
 -   ### Licence
     Copyright 2020 Cufy
 
