@@ -22,9 +22,11 @@
 </p>
 
 -   ### About
-    The cufy framework is focused on to be more inheritable and more reflection 
-    friendly. Making it less efficient (minor) but more fun and reliable in big
-    complex projects.
+    The main project of the cufy organization. The framework is written in java.
+    The framework tries to compete with other frameworks. The cufy framework is
+    focused on to be more inheritable and more reflection friendly. Making it 
+    more reliable in big complex projects. The framework still not completely
+    ready to be used in really big projects since it is still in the beta stage.
 
 -   ### Guide
     The user guide can be found ether in the javadoc or the official website of the framework. 
