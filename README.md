@@ -7,8 +7,8 @@
   <b>A Framework to be Inherited</b>
 </p>
 <p align="center">
-    <a href="https://jitpack.io/#cufyorg/framework">
-        <img alt="jitpack" src="https://jitpack.io/v/cufyorg/framework.svg"/>
+    <a href="https://jitpack.io/#org.cufy/framework">
+        <img alt="jitpack" src="https://jitpack.io/v/org.cufy/framework.svg"/>
     </a>
     <a href="https://gitter.im/cufyorg/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">
         <img alt="gitter" src="https://badges.gitter.im/cufyorg/community.svg"/>
@@ -33,7 +33,7 @@
     The user guide can be found ether in the javadoc or the official website of the framework. 
     -   Website: https://framework.cufy.org
     -   Javadoc: https://framework.cufy.org/docs
-    -   Jitpack: https://jitpack.io/#cufyorg/framework
+    -   Jitpack: https://jitpack.io/#org.cufy/framework
 
 -   ### Contributing
     The you can view the guid lines of our contributors here:
