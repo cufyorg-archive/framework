@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://cufyorg.github.io/">
+  <a href="https://cufy.org/">
     <img alt="cufy" src="cufy_w.png" width="400" height="225">
   </a>
 </p>
