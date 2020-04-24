@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://cufyorg.github.io/">
-    <img alt="cufy" src="cufy.png" width="400" height="400">
+    <img alt="cufy" src="cufy.png" width="400" height="200">
   </a>
 </p>
 <p align="center">
