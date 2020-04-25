@@ -1,4 +1,16 @@
-
+<html lang="en">
+    <head>
+        <script>
+            window.onload = function() {
+              let link = top.document.createElement("link");
+              link.type = "image/*";
+              link.rel = "icon";
+              link.href = "favicon.png";
+              top.document.getElementsByTagName("head")[0].appendChild(link);
+            };
+        </script>
+    </head>
+</html>
 
 The main project of the cufy organization. The framework is written in java.
 The framework tries to compete with other frameworks. The cufy framework is
