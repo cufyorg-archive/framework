@@ -2,3 +2,16 @@ theme: jekyll-theme-slate
 
 title: Cufy Framework
 description: A Framework to be Inherited
+
+# show feedback button in top nav bar?
+show_feedback: true
+# email address feedback gets sent to
+feedback_email: support@cufy.org
+
+# use a logo image in your nav bar.
+use_logo: true
+# logo image to use. logo images are constrained at 50px in height.
+logo: favicon.png
+
+# the little icon that appears in the browser window's tab
+favicon: favicon.png
