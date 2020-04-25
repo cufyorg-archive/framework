@@ -1,7 +1,0 @@
-theme: jekyll-theme-slate
-
-title: Cufy Framework
-description: A Framework to be Inherited
-
-source: ./site
-destination: ./
