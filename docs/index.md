@@ -1,10 +1,3 @@
-<html lang="en">
-    <head>
-        <title>Cufy</title>
-        <link type="image/x-icon" rel="icon" href="favicon.ico"/>
-    </head>
-</html>
-
 The main project of the cufy organization. The framework is written in java.
 The framework tries to compete with other frameworks. The cufy framework is
 focused on to be more inheritable and more reflection friendly. Making it 
