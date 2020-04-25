@@ -1,15 +1,7 @@
 <html lang="en">
     <head>
         <title>Cufy</title>
-        <script>
-            window.onload = function() {
-              let link = top.document.createElement("link");
-              link.type = "image/*";
-              link.rel = "icon";
-              link.href = "cufy.png";
-              top.document.getElementsByTagName("head")[0].appendChild(link);
-            };
-        </script>
+        <link type="image/*" rel="icon" href="../cufy.png"/>
     </head>
 </html>
 
@@ -31,7 +23,7 @@ ready to be used in really big projects since it is still in the beta stage.
         type of utils such as utils for arrays, collections, readers and reflection
         and many more.
         -   [Website](util.md)
-        -   [Javadoc](../docs/cufy/util/package-summary.html)
+        -   [Javadoc](javadoc/cufy/util/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/util)
 
     -   ### Lang
@@ -39,7 +31,7 @@ ready to be used in really big projects since it is still in the beta stage.
         Classes are universal and have no main purpose. But deep in the code, It so
         helpful. Specially if it designed that anyone is relying on them.
         -   [Website](lang.md)
-        -   [Javadoc](../docs/cufy/lang/package-summary.html)
+        -   [Javadoc](javadoc/cufy/lang/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/lang)
 
     -   ### Meta
@@ -48,7 +40,7 @@ ready to be used in really big projects since it is still in the beta stage.
         specify that much data without base annotations to depend on. This package
         provides base annotations that have so many uses.
         -   [Website](meta.md)
-        -   [Javadoc](../docs/cufy/meta/package-summary.html)
+        -   [Javadoc](javadoc/cufy/meta/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/meta)
 
     -   ### Convert
@@ -58,7 +50,7 @@ ready to be used in really big projects since it is still in the beta stage.
         receiver and you want any value to be converted to a specific type. All 
         of that is possible with the convert package.
         -   [Website](convert.md)
-        -   [Javadoc](../docs/cufy/convert/package-summary.html)
+        -   [Javadoc](javadoc/cufy/convert/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/convert)
 
     -   ### Text
@@ -69,7 +61,7 @@ ready to be used in really big projects since it is still in the beta stage.
         should be done. And also have some text languages formatters and parsers
         such as JSON.
         -   [Website](text.md)
-        -   [Javadoc](../docs/cufy/text/package-summary.html)
+        -   [Javadoc](javadoc/cufy/text/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/text)
 
     -   ### JSON
@@ -77,7 +69,7 @@ ready to be used in really big projects since it is still in the beta stage.
         and write. It is easy for machines to parse and generate. And this package
         provides it with respect to the abstraction of the package Text.
         -   [Website](json.md)
-        -   [Javadoc](../docs/cufy/text/json/package-summary.html)
+        -   [Javadoc](javadoc/cufy/text/json/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/text/json)
 
     -   ### Beans
@@ -86,7 +78,7 @@ ready to be used in really big projects since it is still in the beta stage.
         the object as a map and the fields of that object will work as if they're
         the entries of the map. keeping the reflection part hidden from the user.
         -   [Website](beans.md)
-        -   [Javadoc](../docs/cufy/beans/package-summary.html)
+        -   [Javadoc](javadoc/cufy/beans/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/beans)
 
     -   ### Concurrent
@@ -96,7 +88,7 @@ ready to be used in really big projects since it is still in the beta stage.
         And many other concurrent actions. And what makes it special that it
         depends on the logic rather than the timing.
         -   [Website](concurrent.md)
-        -   [Javadoc](../docs/cufy/concurrent/package-summary.html)
+        -   [Javadoc](javadoc/cufy/concurrent/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/concurrent)
 
     -   ### IO
@@ -105,5 +97,5 @@ ready to be used in really big projects since it is still in the beta stage.
         This package provides utilities to deal with those protocols and standards
         more easily.
         -   [Website](io.md)
-        -   [Javadoc](../docs/cufy/io/package-summary.html)
+        -   [Javadoc](javadoc/cufy/io/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/io)
