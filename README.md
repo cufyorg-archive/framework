@@ -32,7 +32,7 @@
 -   ### Guide
     The user guide can be found ether in the javadoc or the official website of the framework. 
     -   Website: https://framework.cufy.org
-    -   Javadoc: https://framework.cufy.org/docs
+    -   Javadoc: https://framework.cufy.org/javadoc
     -   Jitpack: https://jitpack.io/#org.cufy/framework
     -   Youtube: https://www.youtube.com/playlist?list=PL4GvMdlkZJ6Y1SkrorANkRHArohilF2Ye
 
