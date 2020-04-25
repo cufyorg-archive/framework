@@ -30,16 +30,16 @@ ready to be used in really big projects since it is still in the beta stage.
         designed help to the syntax user and the reflection user. It have a variant
         type of utils such as utils for arrays, collections, readers and reflection
         and many more.
-        -   [Website](site/util.md)
-        -   [Javadoc](docs/cufy/util/package-summary.html)
+        -   [Website](util.md)
+        -   [Javadoc](../docs/cufy/util/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/util)
 
     -   ### Lang
         A package with classes that treated as if it's a part of the language. Such
         Classes are universal and have no main purpose. But deep in the code, It so
         helpful. Specially if it designed that anyone is relying on them.
-        -   [Website](site/lang.md)
-        -   [Javadoc](docs/cufy/lang/package-summary.html)
+        -   [Website](lang.md)
+        -   [Javadoc](../docs/cufy/lang/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/lang)
 
     -   ### Meta
@@ -47,8 +47,8 @@ ready to be used in really big projects since it is still in the beta stage.
         easier yet powerful. But annotations has so many limitations and can't 
         specify that much data without base annotations to depend on. This package
         provides base annotations that have so many uses.
-        -   [Website](site/meta.md)
-        -   [Javadoc](docs/cufy/meta/package-summary.html)
+        -   [Website](meta.md)
+        -   [Javadoc](../docs/cufy/meta/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/meta)
 
     -   ### Convert
@@ -57,8 +57,8 @@ ready to be used in really big projects since it is still in the beta stage.
         want the receiver to convert it to the compatible type. Or you maybe the
         receiver and you want any value to be converted to a specific type. All 
         of that is possible with the convert package.
-        -   [Website](site/convert.md)
-        -   [Javadoc](docs/cufy/convert/package-summary.html)
+        -   [Website](convert.md)
+        -   [Javadoc](../docs/cufy/convert/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/convert)
 
     -   ### Text
@@ -68,16 +68,16 @@ ready to be used in really big projects since it is still in the beta stage.
         This package provide abstract for how the parsing and formatting process
         should be done. And also have some text languages formatters and parsers
         such as JSON.
-        -   [Website](site/text.md)
-        -   [Javadoc](docs/cufy/text/package-summary.html)
+        -   [Website](text.md)
+        -   [Javadoc](../docs/cufy/text/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/text)
 
     -   ### JSON
         is a lightweight data-interchange format. It is easy for humans to read 
         and write. It is easy for machines to parse and generate. And this package
         provides it with respect to the abstraction of the package Text.
-        -   [Website](site/json.md)
-        -   [Javadoc](docs/cufy/text/json/package-summary.html)
+        -   [Website](json.md)
+        -   [Javadoc](../docs/cufy/text/json/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/text/json)
 
     -   ### Beans
@@ -85,8 +85,8 @@ ready to be used in really big projects since it is still in the beta stage.
         the object is unknown (without reflection). The beans fixes that by treating
         the object as a map and the fields of that object will work as if they're
         the entries of the map. keeping the reflection part hidden from the user.
-        -   [Website](site/beans.md)
-        -   [Javadoc](docs/cufy/beans/package-summary.html)
+        -   [Website](beans.md)
+        -   [Javadoc](../docs/cufy/beans/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/beans)
 
     -   ### Concurrent
@@ -95,8 +95,8 @@ ready to be used in really big projects since it is still in the beta stage.
         Those utils helps to deal with concurrent actions and infinite loops.
         And many other concurrent actions. And what makes it special that it
         depends on the logic rather than the timing.
-        -   [Website](site/concurrent.md)
-        -   [Javadoc](docs/cufy/concurrent/package-summary.html)
+        -   [Website](concurrent.md)
+        -   [Javadoc](../docs/cufy/concurrent/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/concurrent)
 
     -   ### IO
@@ -104,6 +104,6 @@ ready to be used in really big projects since it is still in the beta stage.
         protocols and standards to be able to use it everywhere with the same code.
         This package provides utilities to deal with those protocols and standards
         more easily.
-        -   [Website](site/io.md)
-        -   [Javadoc](docs/cufy/io/package-summary.html)
+        -   [Website](io.md)
+        -   [Javadoc](../docs/cufy/io/package-summary.html)
         -   [Github](https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/io)

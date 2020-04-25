@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://cufy.org/">
-    <img alt="cufy" src="cufy_w.png" width="400" height="225">
+    <img alt="cufy" src="site/cufy_w.png" width="400" height="225">
   </a>
 </p>
 <p align="center">
@@ -27,7 +27,7 @@
     focused on to be more inheritable and more reflection friendly. Making it 
     more reliable in big complex projects. The framework still not completely
     ready to be used in really big projects since it is still in the beta stage.
-    - Legacy: https://github.com/cufyorg/framework/blob/master/LEGACY.md
+    - Legacy: https://github.com/cufyorg/framework/blob/master/site/legacy.html
 
 -   ### Guide
     The user guide can be found ether in the javadoc or the official website of the framework. 
