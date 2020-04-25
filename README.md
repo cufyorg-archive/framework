@@ -34,6 +34,7 @@
     -   Website: https://framework.cufy.org
     -   Javadoc: https://framework.cufy.org/docs
     -   Jitpack: https://jitpack.io/#org.cufy/framework
+    -   Youtube: https://www.youtube.com/playlist?list=PL4GvMdlkZJ6Y1SkrorANkRHArohilF2Ye
 
 -   ### Contributing
     The you can view the guid lines of our contributors here:
