@@ -1,7 +1,7 @@
 <html lang="en">
     <head>
         <title>Cufy</title>
-        <link type="image/x-icon" rel="icon" href="../cufy.png"/>
+        <link type="image/x-icon" rel="icon" href="favicon.ico"/>
     </head>
 </html>
 
