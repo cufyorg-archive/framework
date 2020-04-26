@@ -33,6 +33,9 @@ is a list of the main packages in this framework.
     <a class="candy" href="https://github.com/cufyorg/framework">
         <img alt="Github" src="images/github.png" width="50" height="50">
     </a>
+    <a class="candy" href="https://jitpack.io/#org.cufy/framework">
+        <img alt="Jitpack" src="images/jitpack.png" width="50" height="50">
+    </a>
     <a class="candy" href="https://youtube.com/playlist?list=PL4GvMdlkZJ6Y1SkrorANkRHArohilF2Ye">
         <img alt="Youtube" src="images/youtube.png" width="50" height="50">
     </a>
