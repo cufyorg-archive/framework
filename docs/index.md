@@ -2,7 +2,7 @@
     <head>
         <script>
             window.onload = function() {
-              top.title = "Cufy Framework";
+              top.document.title = "Cufy Framework";
               let link = top.document.createElement("link");
               link.type = "image/*";
               link.rel = "icon";
