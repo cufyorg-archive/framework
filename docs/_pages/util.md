@@ -4,6 +4,7 @@ layout: page
 title: Util
 permalink: util
 links:
+    Framework: https://framework.cufy.org/
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/util
     Javadoc: https://framework.cufy.org/javadoc/cufy/util/package-summary.html
 description: >-
