@@ -4,7 +4,6 @@ layout: page
 title: Lang
 permalink: lang
 links:
-    Framework: https://framework.cufy.org/
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/lang
     Javadoc: https://framework.cufy.org/javadoc/cufy/lang/package-summary.html
 description: >-

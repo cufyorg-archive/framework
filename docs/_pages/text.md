@@ -4,7 +4,6 @@ layout: page
 title: Text
 permalink: text
 links:
-    Framework: https://framework.cufy.org/
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/text
     Javadoc: https://framework.cufy.org/javadoc/cufy/text/package-summary.html
 description: >-

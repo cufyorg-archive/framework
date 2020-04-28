@@ -4,7 +4,6 @@ layout: page
 title: Beans
 permalink: beans
 links:
-    Framework: https://framework.cufy.org/
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/beans
     Javadoc: https://framework.cufy.org/javadoc/cufy/beans/package-summary.html
 description: >-

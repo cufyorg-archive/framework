@@ -4,7 +4,6 @@ layout: page
 title: Concurrent
 permalink: concurrent
 links:
-    Framework: https://framework.cufy.org/
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/concurrent
     Javadoc: https://framework.cufy.org/javadoc/cufy/concurrent/package-summary.html
 description: >-

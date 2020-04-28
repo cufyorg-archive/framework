@@ -4,7 +4,6 @@ layout: page
 title: JSON
 permalink: json
 links:
-    Framework: https://framework.cufy.org/
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/text/json
     Javadoc: https://framework.cufy.org/javadoc/cufy/text/json/package-summary.html
 description: >-
