@@ -1,5 +1,7 @@
 ---
+beta: true
 index: 7
+name: concurrent
 layout: page
 title: Concurrent
 permalink: concurrent
@@ -13,5 +15,3 @@ description: >-
     And many other concurrent actions. And what makes it special that it
     depends on the logic rather than the timing.
 ---
-
-<br><font color="red">SORRY: THIS SITE STILL UNDER DEVELOPMENT!</font>

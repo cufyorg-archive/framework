@@ -1,0 +1,15 @@
+---
+---
+
+<a class="big_candy" href="{{ page.link }}">{{page.title}}</a>
+<div>
+    {% for link in page.links %}
+    <a class="small_candy" href="{{ link[1] }}">{{ link[0] }}</a>
+    {% endfor %}
+</div>
+
+<hr/><br>
+{{ page.description }}
+<br>
+<br>
+{{ content }}

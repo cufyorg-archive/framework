@@ -1,5 +1,7 @@
 ---
+beta: true
 index: 3
+name: convert
 layout: page
 title: Convert
 permalink: convert
@@ -13,5 +15,3 @@ description: >-
     receiver and you want any value to be converted to a specific type. All 
     of that is possible with the convert package.
 ---
-
-<br><font color="red">SORRY: THIS SITE STILL UNDER DEVELOPMENT!</font>

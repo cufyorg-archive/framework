@@ -1,5 +1,7 @@
 ---
+beta: true
 index: 4
+name: text
 layout: page
 title: Text
 permalink: text
@@ -14,5 +16,3 @@ description: >-
     should be done. And also have some text languages formatters and parsers
     such as JSON.
 ---
-
-<br><font color="red">SORRY: THIS SITE STILL UNDER DEVELOPMENT!</font>

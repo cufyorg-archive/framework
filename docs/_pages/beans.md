@@ -1,5 +1,7 @@
 ---
+beta: true
 index: 6
+name: beans
 layout: page
 title: Beans
 permalink: beans
@@ -12,8 +14,6 @@ description: >-
     the object as a map and the fields of that object will work as if they're
     the entries of the map. keeping the reflection part hidden from the user.
 ---
-
-<br><font color="red">SORRY: THIS SITE STILL UNDER DEVELOPMENT!</font>
 
 ## Why?
 - Compatible anywhere. Since it is a map.
@@ -30,25 +30,3 @@ features of the `FullBean` and you don't have to override anything. Also it has 
 the functionality a typical map have. What? you don't want to inherit anything?
 No problem at all. You could still use the full functionality of an `AbstractBean`
 on your object with the method `Bean.forInstance`.
-
-- An example of a typical `Bean`:
-
-```java 
-    class MyBean extends Bean {
-        @Property
-        int ex_property;
-    }
-```
-
-- A bean for a non-bean instance (fields should be annotated):
-
-```java 
-    Bean.forInstance(theInstance);
-```
-
-- You can override the key (default is a string of field's name) and the type of the property:
-
-```java 
-    @Property(key = @MetaObject("newKey"), type = @MetaClazz(Integer.class))
-    int ex_property;
-```
