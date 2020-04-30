@@ -7,58 +7,47 @@ import cufy.text.json.JSON;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
+import java.net.UnknownHostException;
 
 @SuppressWarnings("JavaDoc")
 public class URLLoadableTest {
 	@Test
-	public void file_format_bean_json_load_save() throws IOException {
-		File temp = new File("/projects/test/files/file-format-loadable-bean-test-temp");
-		temp.delete();
+	public void url_format_bean_json_load() throws IOException {
+		URL target = new URL("https://api.fixer.io/");
 
-		class TestBean extends AbstractBean implements FileLoadable, FormatLoadable {
-			@Property(key = @Recipe("za list ta"))
-			final public List<String> list = new ArrayList<>();
+		try {
+			target.openStream();
+		} catch (UnknownHostException e) {
+			//Possible: no internet
+			System.err.println("TEST failed: " + e.getMessage());
+			return;
+		}
 
-			public File getFile() {
-				return temp;
-			}
+		class TestBean extends AbstractBean implements FormatLoadable, URLLoadable {
+			@Property(key = @Recipe("1"))
+			public String one;
+			@Property(key = @Recipe("7"))
+			public String seven;
+			@Property(key = @Recipe("0"))
+			public String zero;
 
 			public Format getFormat() {
 				return JSON.global;
 			}
+
+			public URL getURL() {
+				return target;
+			}
 		}
 
-		{
-			TestBean bean = new TestBean();
+		TestBean bean = new TestBean();
 
-			bean.list.add("Success");
+		bean.load();
 
-			while (true)
-				try {
-					bean.save();
-					break;
-				} catch (IOException e) {
-					if (temp.isDirectory()) {
-						temp.delete();
-					} else if (!temp.exists()) {
-						temp.createNewFile();
-					} else {
-						throw e;
-					}
-				}
-		}
-		{
-			TestBean bean = new TestBean();
-
-			bean.load();
-
-			Assert.assertEquals("Wrong value stored", "Success", bean.list.get(0));
-		}
-
-		temp.delete();
+		Assert.assertNotNull("Property missing, Or website changed it's content", bean.zero);
+		Assert.assertNotNull("Property missing, Or website changed it's content", bean.one);
+		Assert.assertNotNull("Property missing, Or website changed it's content", bean.seven);
 	}
 }
