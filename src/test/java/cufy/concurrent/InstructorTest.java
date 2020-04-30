@@ -8,22 +8,27 @@ public class InstructorTest {
 	@Test(timeout = 50)
 	public void join() {
 		Instructor group = new Instructor();
-		Forever parallel1 = new Forever(group::tick);
-		Forever forever2 = new Forever(group::tick);
+		Forever loop0 = new Forever(group::tick);
+		Forever loop1 = new Forever(group::tick);
 
-		group.thread(parallel1);
-		group.thread(forever2);
+		group.thread(loop0);
+		group.thread(loop1);
+
 		group.pair();
 
-		Assert.assertEquals("Group should have 2 loops", 2, group.getLoops().size());
-		Assert.assertTrue("Loops should be alive", parallel1.isAlive() & forever2.isAlive());
+		Assert.assertTrue("haven't paired correctly!", group.getLoops().size() > 1);
+
+		loop0.pair();
+		loop1.pair();
+
+		Assert.assertTrue("Loops should be alive", loop0.isAlive() & loop1.isAlive());
 
 		group.notify(Loop.BREAK);
 
 		group.join();
 
 		Assert.assertEquals("Group still have loops", 0, group.getLoops().size());
-		Assert.assertFalse("Loops should be dead", parallel1.isAlive() | forever2.isAlive());
+		Assert.assertFalse("Loops should be dead", loop0.isAlive() | loop1.isAlive());
 	}
 
 	@Test(timeout = 20)

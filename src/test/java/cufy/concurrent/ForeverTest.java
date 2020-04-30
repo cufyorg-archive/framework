@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ForeverTest {
 	@Test(timeout = 110)
 	public void start() throws InterruptedException {
-		Thread main = Thread.currentThread();
 		Forever parallel = new Forever();
 		AtomicBoolean state = new AtomicBoolean(true);
 		Thread thread = new Thread(() -> {

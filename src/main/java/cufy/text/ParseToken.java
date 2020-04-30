@@ -54,7 +54,7 @@ public class ParseToken<T> {
 	/**
 	 * The depth of this token form the first parent.
 	 */
-	final int depth;
+	final public int depth;
 	/**
 	 * The class that the output should have.
 	 */
