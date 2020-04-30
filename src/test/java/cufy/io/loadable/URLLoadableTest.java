@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.UnknownHostException;
 
 @SuppressWarnings("JavaDoc")
 public class URLLoadableTest {
@@ -19,9 +18,8 @@ public class URLLoadableTest {
 
 		try {
 			target.openStream();
-		} catch (UnknownHostException e) {
-			//Possible: no internet
-			System.err.println("TEST failed: " + e.getMessage());
+		} catch (Throwable e) {
+			//no internet
 			return;
 		}
 
