@@ -10,10 +10,10 @@ layout: default
 <br><br>
 {{ content }}
 
-{% assign pieces = site.pieces | where: "parent", page.name %}
-{% assign sorted = pieces | sort: 'index' %}
-{% for piece in sorted %}
+{% assign fragments = site.fragments | where: "parent", page.name %}
+{% assign sorted = fragments | sort: 'index' %}
+{% for fragment in sorted %}
 <br>
-{{ piece }}
+{{ fragment }}
 <br>
 {% endfor %}

@@ -1,80 +1,37 @@
-# Welcome to Jekyll!
-#
-# This config file is meant for settings that affect your whole blog, values
-# which you are expected to set up once and rarely edit after that. If you find
-# yourself editing this file very often, consider using Jekyll's data files
-# feature for the data you need to update frequently.
-#
-# For technical reasons, this file is *NOT* reloaded automatically when you use
-# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
-#
-# If you need help with YAML syntax, here are some quick references for you: 
-# https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
-# https://learnxinyminutes.com/docs/yaml/
-#
-# Site settings
-# These are used to personalize your new site. If you look in the HTML files,
-# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
-# You can create any custom variable you would like, and they will be accessible
-# in the templates via {{ site.myvariable }}.
-name: Framework.cufy.org
+# Info
+name: framework.cufy.org
 title: Cufy Framework
 email: framework@cufy.org
-description: >- # this means to ignore newlines until "baseurl:"
-  The main project of the cufy organization. The framework is written in java.
-  The framework tries to compete with other frameworks. The cufy framework is
-  focused on to be more inheritable and more reflection friendly. Making it
-  more reliable in big complex projects. The framework still not completely
-  ready to be used in really big projects since it is still in the beta stage.
-  The framework is divided onto different packages. Each package allowed to use
-  specific packages only. And each package have it's own targets.
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+description: >-
+  The main project on the cufy organization. It is written in java.
+  It tries to compete with other java frameworks. Cufy framework focuses on
+  inheritance and reflection, making it more reliable in big complex projects.
+  The framework still not completely ready to be used in big projects since it
+  still in the beta stage. Cufy Framework have been divided onto different packages,
+  each package limited to access specific packages only and each package have different purpose.
 
-collections:
-  pieces:
-    output: true
-  pages:
-    output: true
-
-emails:
-  cmail: framework@cufy.org
-
-# Build settings
-theme: jekyll-theme-slate
-plugins:
-  - jekyll-feed
-
-# defaults
-defaults:
-  - scope:
-      path: ""
-    values:
-      favicon: '/assets/logo/cufy.ico'
-      title: 'Cufy Framework'
-
-# github information
+# GitHub
 github:
   is_project_page: true
   repository_url: https://github.com/cufyorg/framework
   owner_url: https://github.com/cufyorg
   owner_name: Cufy
 
-# The following items will not be processed, by default.
-# Any item listed under the `exclude:` key here will be automatically added to
-# the internal "default list".
-#
-# Excluded items can be processed by explicitly listing the directories or
-# their entries' file path in the `include:` list.
-#
-# exclude:
-#   - .sass-cache/
-#   - .jekyll-cache/
-#   - gemfiles/
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules/
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+# Collections
+collections:
+  fragments:
+  pages:
+    output: true
+
+# Build
+theme: jekyll-theme-slate
+plugins:
+  - jekyll-feed
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+    values:
+      favicon: '/assets/logo/cufy.ico'
+      title: 'Cufy Framework'

@@ -32,7 +32,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
- * An interface changes the act of the fields of the class implementing it. The classes that implement this interface change to be used as a map.
+ * An interface that changes the act of the fields of the class implementing it. The classes that implement this interface change to be used as a map.
  * All of the fields of that class will be like {@link Entry entries} on maps.
  * <p>
  * To enhance the security of the beans. Only the field that annotated with {@link Property} will be used as fields.

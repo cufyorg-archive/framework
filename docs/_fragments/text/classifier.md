@@ -1,0 +1,19 @@
+---
+index: 1
+layout: fragment
+parent: text
+title: Classifier
+links:
+    GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/Classifier.java
+    Javadoc: https://framework.cufy.org/javadoc/cufy/text/Classifier.html
+description: >-
+    TODO
+---
+
+- `classify(CharSequence)` TODO
+<br>
+
+- `classify(Reader)` TODO
+<br>
+
+- `classify(ClassifyToken)` TODO
