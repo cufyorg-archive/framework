@@ -19,6 +19,9 @@
     <a href="https://www.apache.org/licenses/LICENSE-2.0">
         <img alt="Hex.pm" src="https://img.shields.io/hexpm/l/plug">
     </a>
+    <a href="https://app.codacy.com/gh/cufyorg/framework?utm_source=github.com&utm_medium=referral&utm_content=cufyorg/framework&utm_campaign=Badge_Grade_Dashboard">
+        <img alt="Codacy Badge" src="https://api.codacy.com/project/badge/Grade/e5e5c7c27cc74d47ac74baee3bce8af9">
+    </a>
 </p>
 
 -   ### About
