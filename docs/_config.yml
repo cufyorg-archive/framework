@@ -33,5 +33,5 @@ defaults:
   - scope:
       path: ""
     values:
-      favicon: '/assets/logo/cufy.ico'
+      favicon: '/assets/logo/framework.ico'
       title: 'Cufy Framework'
