@@ -1,3 +1,6 @@
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e5e5c7c27cc74d47ac74baee3bce8af9)](https://app.codacy.com/gh/cufyorg/framework?utm_source=github.com&utm_medium=referral&utm_content=cufyorg/framework&utm_campaign=Badge_Grade_Dashboard)
+
 <p align="center">
   <a href="https://framework.cufy.org/">
     <img alt="framework" src="framework.png" width="720" height="405‬">
