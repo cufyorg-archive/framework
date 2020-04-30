@@ -17,6 +17,6 @@ description: >-
 To create a bean. You only need to inherit the interface `Bean` but it has not the
 full features of the `FullBean`. Speaking of the `FullBean`, `FullBean` is also an interface,
 but you should override some methods. `AbstractBean`has all the features of the `FullBean` and
-you don't have to override anything. Also, it has all the functionality a typical map have. What?
+you don't have to override anything. Also, it has all the functionality of a typical map. What?
 you don't want to inherit anything? No problem at all. You could still use the full functionality
 of an `AbstractBean` on your object with the method `Bean.forInstance(Object)`.
