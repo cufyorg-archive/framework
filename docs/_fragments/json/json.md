@@ -26,8 +26,6 @@ specify the clazz of the object (the type of the formatting).
     //this will format the object as the type 'type'
     JSON.global.format(new FormatToken<>(obj, out, type));
 ```
-Or if you want a string directly (without using writers):
-<br>
 ```java 
     Object obj = ...; //the object to format
     String out = ...; //the output string
@@ -45,8 +43,6 @@ Or if you want a string directly (without using writers):
     
     type = JSON.global.classify(rdr);
 ```
-Or if you have a CharSequence and not a reader:
-<br>
 ```java 
     String str = ...; //the text
     Clazz type = ...; //the output
@@ -71,8 +67,6 @@ Also, you can pass the output instance, so the method parses directly to it.
     //and 'out' will change if it's not valid
     out = JSON.global.parse(new ParseToken<>(rdr, out, type));
 ```
-Or if you have a CharSequence and not a reader:
-<br>
 ```java 
     String str = ...; //the text
     Object out = ...; //the initial output
@@ -91,8 +85,6 @@ It is like a shortcut.
     
     out = JSON.global.cparse(str, out);
 ```
-Or if you want to classify and parse the text in a reader to a java-object:
-<br>
 ```java 
     Reader rdr = ...; //the reader (should support mark() and reset()!)
     Object out = ...; //the output java-object
