@@ -20,10 +20,10 @@ import cufy.lang.Empty;
 import cufy.meta.Filter;
 import cufy.meta.Where;
 import cufy.text.*;
-import cufy.util.Arrays;
-import cufy.util.Readers;
+import cufy.util.Arrayz;
+import cufy.util.Readerz;
 import cufy.util.Reflection;
-import cufy.util.Strings;
+import cufy.util.Stringz;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -188,9 +188,9 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		Iterator it = token.input instanceof Collection ? token.input.iterator() : Arrays.asList(token.input).iterator();
+		Iterator it = token.input instanceof Collection ? token.input.iterator() : Arrayz.asList(token.input).iterator();
 
-		String TAB = Strings.repeat(SYNTAX.TAB, token.depth);
+		String TAB = Stringz.repeat(SYNTAX.TAB, token.depth);
 		String SHIFT = TAB + SYNTAX.TAB;
 
 		if (it.hasNext()) {
@@ -313,7 +313,7 @@ public class JSON extends AbstractFormat {
 
 		Iterator<Map.Entry> it = token.input.entrySet().iterator();
 
-		String TAB = Strings.repeat(SYNTAX.TAB, token.depth);
+		String TAB = Stringz.repeat(SYNTAX.TAB, token.depth);
 		String SHIFT = TAB + SYNTAX.TAB;
 
 		if (it.hasNext()) {
@@ -394,7 +394,7 @@ public class JSON extends AbstractFormat {
 
 		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.ARRAY_START.length());
 
-		int r = Readers.isRemainingEquals(token.input, true, false, false, SYNTAX.ARRAY_START);
+		int r = Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.ARRAY_START);
 
 		token.input.reset();
 
@@ -423,7 +423,7 @@ public class JSON extends AbstractFormat {
 
 		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + Math.max(SYNTAX.TRUE.length(), SYNTAX.FALSE.length()));
 
-		int r = Readers.isRemainingEquals(token.input, true, true, true, SYNTAX.TRUE, SYNTAX.FALSE);
+		int r = Readerz.isRemainingEquals(token.input, true, true, true, SYNTAX.TRUE, SYNTAX.FALSE);
 
 		token.input.reset();
 
@@ -483,7 +483,7 @@ public class JSON extends AbstractFormat {
 
 		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.NULL.length());
 
-		int r = Readers.isRemainingEquals(token.input, true, true, true, SYNTAX.NULL);
+		int r = Readerz.isRemainingEquals(token.input, true, true, true, SYNTAX.NULL);
 
 		token.input.reset();
 
@@ -512,7 +512,7 @@ public class JSON extends AbstractFormat {
 
 		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + 1);
 
-		int r = Readers.isRemainingEquals(token.input, true, false, false, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+		int r = Readerz.isRemainingEquals(token.input, true, false, false, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
 
 		token.input.reset();
 
@@ -541,7 +541,7 @@ public class JSON extends AbstractFormat {
 
 		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.OBJECT_START.length());
 
-		int r = Readers.isRemainingEquals(token.input, true, false, false, SYNTAX.OBJECT_START);
+		int r = Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.OBJECT_START);
 
 		token.input.reset();
 
@@ -570,7 +570,7 @@ public class JSON extends AbstractFormat {
 
 		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.STRING_START.length());
 
-		int r = Readers.isRemainingEquals(token.input, true, false, false, SYNTAX.STRING_START);
+		int r = Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.STRING_START);
 
 		token.input.reset();
 
@@ -615,7 +615,7 @@ public class JSON extends AbstractFormat {
 
 		//setup the output
 		if (token.klazz.isArray())
-			token.output = token.klazz.isInstance(token.output) ? new ArrayList(Arrays.asList(array)) : new ArrayList();
+			token.output = token.klazz.isInstance(token.output) ? new ArrayList(Arrayz.asList(array)) : new ArrayList();
 		else if (!token.klazz.isInstance(token.output))
 			token.output = token.klazz.isAssignableFrom(List.class) ? new ArrayList() : token.klazz.getKlass().getConstructor().newInstance();
 		else if (!(token.output instanceof List))
@@ -638,7 +638,7 @@ public class JSON extends AbstractFormat {
 		boolean overwrite = token.output.size() > index;
 
 		//first run
-		if (Readers.isRemainingEquals(token.input, true, false, false, SYNTAX.ARRAY_START) != 0)
+		if (Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.ARRAY_START) != 0)
 			throw new ParseException("array not started");
 
 		for (int i; (i = token.input.read()) != -1; ) {
@@ -728,7 +728,7 @@ public class JSON extends AbstractFormat {
 				token.output.toArray((Object[]) array);
 			} else {
 				Object[] output = token.output.toArray();
-				Arrays.hardcopy(output, 0, array, 0, output.length);
+				Arrayz.hardcopy(output, 0, array, 0, output.length);
 			}
 
 			//noinspection RedundantCast
@@ -751,7 +751,7 @@ public class JSON extends AbstractFormat {
 		}
 
 		int l = Math.max(SYNTAX.TRUE.length(), SYNTAX.FALSE.length());
-		String string = Readers.getRemaining(token.input, l, l).trim();
+		String string = Readerz.getRemaining(token.input, l, l).trim();
 
 		if (SYNTAX.TRUE.equals(string)) {
 			token.output = true;
@@ -777,7 +777,7 @@ public class JSON extends AbstractFormat {
 		}
 
 		int l = SYNTAX.NULL.length();
-		String string = Readers.getRemaining(token.input, l, l).trim();
+		String string = Readerz.getRemaining(token.input, l, l).trim();
 
 		if (string.equals(SYNTAX.NULL)) {
 			token.output = null;
@@ -818,7 +818,7 @@ public class JSON extends AbstractFormat {
 			else throw new IllegalArgumentException(token.klazz + " can't be satisfied with a number");
 
 		int l = DEFAULT_VALUE_LENGTH;
-		String string = Readers.getRemaining(token.input, l, l).trim().toUpperCase();
+		String string = Readerz.getRemaining(token.input, l, l).trim().toUpperCase();
 		char suffix = string.charAt(string.length() - 1);
 		String number = Character.isDigit(suffix) ? string : string.substring(0, string.length() - 1);
 
@@ -893,7 +893,7 @@ public class JSON extends AbstractFormat {
 		StringBuilder keyBuilder = null;
 
 		//first read
-		if (Readers.isRemainingEquals(token.input, true, false, false, SYNTAX.OBJECT_START) != 0)
+		if (Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.OBJECT_START) != 0)
 			throw new ParseException("Object not started");
 
 		for (int i; (i = token.input.read()) != -1; ) {
@@ -1005,7 +1005,7 @@ public class JSON extends AbstractFormat {
 		Class klass = token.klazz.getKlass();
 
 		int l = DEFAULT_VALUE_LENGTH;
-		String string = Readers.getRemaining(token.input, l, l).trim();
+		String string = Readerz.getRemaining(token.input, l, l).trim();
 		String value = string.substring(SYNTAX.STRING_START.length(), string.length() - SYNTAX.STRING_END.length());
 
 		for (Map.Entry<String, String> escapable : STRING_ESCAPABLES.entrySet())

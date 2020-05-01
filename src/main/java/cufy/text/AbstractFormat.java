@@ -17,7 +17,7 @@ package cufy.text;
 
 import cufy.lang.Clazz;
 import cufy.meta.Filter;
-import cufy.util.Collections;
+import cufy.util.Collectionz;
 import cufy.util.Group;
 import cufy.util.HashGroup;
 import cufy.util.Reflection;
@@ -51,7 +51,7 @@ public abstract class AbstractFormat implements Format {
 	/**
 	 * The dynamic methods of this class.
 	 */
-	final protected Group<Method> methods = Collections.unmodifiableGroup(new HashGroup<>(Reflection.getAllMethods(this.getClass())));
+	final protected Group<Method> methods = Collectionz.unmodifiableGroup(new HashGroup<>(Reflection.getAllMethods(this.getClass())));
 	/**
 	 * If this class in a debugging mode or not. if this set to false all null-checks and type-checks should not be executed at runtime.
 	 */

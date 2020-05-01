@@ -29,13 +29,13 @@ import java.util.Objects;
  * @version 0.1.3
  * @since 12-Dec-2019
  */
-final public class Readers {
+final public class Readerz {
 	/**
 	 * This is a util class. And shall not be instanced as an object.
 	 *
 	 * @throws AssertionError when called
 	 */
-	private Readers() {
+	private Readerz() {
 		throw new AssertionError("No instance for you!");
 	}
 
@@ -110,7 +110,7 @@ final public class Readers {
 		Objects.requireNonNull(reader, "reader");
 		Objects.requireNonNull(strings, "strings");
 
-		List<String> list = new ArrayList<>(Arrays.asList(strings));
+		List<String> list = new ArrayList<>(Arrayz.asList(strings));
 		list.replaceAll(s -> {
 			Objects.requireNonNull(s, "strings[?]");
 			if (trim)

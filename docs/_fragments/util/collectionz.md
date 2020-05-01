@@ -2,10 +2,10 @@
 index: 1
 layout: fragment
 parent: util
-title: Collections
+title: Collectionz
 links:
-    GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/util/Collections.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/util/Collections.html
+    GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/util/Collectionz.java
+    Javadoc: https://framework.cufy.org/javadoc/cufy/util/Collectionz.html
 description: >-
     The class collection is an utils for collections and maps (and anything from
     changing things to collections or changing collections into maps or changing 
@@ -21,7 +21,7 @@ passed map. Those keys are the indexes of the values associated to them.
 ```java 
     Map map = new HashMap();
     map.put(8, "value");
-    List list = Collections.asList(map);
+    List list = Collectionz.asList(map);
     assert list.size() == 9;
     assert list.get(8).equals("value");
     list.add("another");
@@ -42,7 +42,7 @@ and writes to it while maintaining the utilities of the maps.
     }
     
     Test instance = new Test();
-    Map map = Collections.asMap(instance);
+    Map map = Collectionz.asMap(instance);
     
     assert map.size() == 1;
     assert map.get("key").equals("value");
@@ -60,7 +60,7 @@ from the list and writes directly to it.
 <br><br>
 ```java 
     List list = new ArrayList(Arrays.asList("value"));
-    Map map = Collections.asMap(list);
+    Map map = Collectionz.asMap(list);
     assert map.size() == 1;
     assert map.get(0).equals("value");
     map.put(2, "another");
@@ -79,7 +79,7 @@ The returned iterator reads and writes directly from the iterators.
 ```java 
     Iterator first = Arrays.asList("abc-".toCharArray()).iterator();
     Iterator second = Arrays.asList("-def".toCharArray()).iterator();
-    Iterator combine = Collections.combine(first, second);
+    Iterator combine = Collectionz.combine(first, second);
     String s = "";
     while(combine.hasNext())
         s += (char) combine.next();
@@ -94,7 +94,7 @@ and throws an exception each time someone attempts to write to it.
     Group group = new HashGroup();
     group.add("something");
 
-    Group um = Collections.unmodifiableGroup(group);
+    Group um = Collectionz.unmodifiableGroup(group);
 
     assert um.size() == 1;
 

@@ -20,7 +20,7 @@ import cufy.lang.DejaVu;
 import cufy.lang.Recurse;
 import cufy.meta.Filter;
 import cufy.meta.Where;
-import cufy.util.Arrays;
+import cufy.util.Arrayz;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -152,7 +152,7 @@ public class BaseConverter extends AbstractConverter {
 		}
 
 		//declare the input
-		Collection input = token.input instanceof Collection ? token.input : Arrays.asList0(token.input);
+		Collection input = token.input instanceof Collection ? token.input : Arrayz.asList0(token.input);
 
 		//declare the output
 		if (!token.outputClazz.isInstance(token.output) || Array.getLength(token.output) != input.size()) {
@@ -215,7 +215,7 @@ public class BaseConverter extends AbstractConverter {
 		}
 
 		//declare the input
-		Collection input = token.input instanceof Collection ? token.input : Arrays.asList0(token.input);
+		Collection input = token.input instanceof Collection ? token.input : Arrayz.asList0(token.input);
 
 		//declare the output
 		if (!token.outputClazz.isInstance(token.output)) {
@@ -279,7 +279,7 @@ public class BaseConverter extends AbstractConverter {
 		}
 
 		//declare the input
-		Collection input = token.input instanceof Collection ? token.input : Arrays.asList0(token.input);
+		Collection input = token.input instanceof Collection ? token.input : Arrayz.asList0(token.input);
 
 		//declare the output
 		if (!token.outputClazz.isInstance(token.output)) {

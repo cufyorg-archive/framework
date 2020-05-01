@@ -2,10 +2,10 @@
 index: 6
 layout: fragment
 parent: util
-title: Strings
+title: Stringz
 links:
-    GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/util/Strings.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/util/Strings.html
+    GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/util/Stringz.java
+    Javadoc: https://framework.cufy.org/javadoc/cufy/util/Stringz.html
 description: TODO
 ---
 

@@ -8,7 +8,7 @@ public class GroupTest {
 	@SuppressWarnings("MessageMissingOnJUnitAssertion")
 	@Test
 	public void docs() {
-		Group food = new HashGroup(Arrays.asList("pizza", "potato", "apple", "orange"));
+		Group food = new HashGroup(Arrayz.asList("pizza", "potato", "apple", "orange"));
 		Group healthy = food.subGroup("healthy", f -> !f.equals("pizza"));
 		Group h = food.subGroup("healthy");
 

@@ -37,7 +37,7 @@ public abstract class AbstractConverter implements Converter {
 	/**
 	 * The converting methods of this class.
 	 */
-	final protected Group<Method> methods = Collections.unmodifiableGroup(new HashGroup<>(Reflection.getAllMethods(this.getClass())));
+	final protected Group<Method> methods = Collectionz.unmodifiableGroup(new HashGroup<>(Reflection.getAllMethods(this.getClass())));
 	/**
 	 * If this class in a debugging mode or not.
 	 * <p>
@@ -147,7 +147,7 @@ public abstract class AbstractConverter implements Converter {
 		//QUERY the best method!
 		Group<Method> valid = this.methods
 				.subGroup(ConvertMethod.class, m -> m.isAnnotationPresent(ConvertMethod.class))
-				.subGroup(Arrays.asList(inputClass, outputClass), m -> {
+				.subGroup(Arrayz.asList(inputClass, outputClass), m -> {
 					ConvertMethod ann = m.getAnnotation(ConvertMethod.class);
 					return Filter.util.test(ann.input(), inputClass) &&
 						   Filter.util.test(ann.output(), outputClass);

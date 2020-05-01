@@ -6,7 +6,7 @@ import org.junit.Test;
 import java.util.*;
 
 @SuppressWarnings("JavaDoc")
-public class CollectionsTest {
+public class CollectionzTest {
 	@Test
 	public void asList() {
 		Map map = new HashMap();
@@ -19,7 +19,7 @@ public class CollectionsTest {
 		map.put(3, "three");
 		map.put(7, "seven");
 
-		List list = Collections.asList(map);
+		List list = Collectionz.asList(map);
 
 		list.add("four"); //eight
 		list.add(9, "ten"); //nine
@@ -82,7 +82,7 @@ public class CollectionsTest {
 		}
 
 		TestObject instance = new TestObject();
-		Map<String, Object> remote = Collections.asMap(instance);
+		Map<String, Object> remote = Collectionz.asMap(instance);
 
 		Assert.assertEquals("Can't get final fields", 3, remote.get("pub"));
 		Assert.assertEquals("Can't get public fields", 3, remote.get("pub"));
@@ -115,11 +115,11 @@ public class CollectionsTest {
 
 	@Test
 	public void combine() {
-		Iterator<String> a = Arrays.asList("a", "B", "c").iterator();
-		Iterator<String> b = Arrays.asList("a", "B", "c").iterator();
-		Iterator<String> c = Arrays.asList("a", "B", "c").iterator();
+		Iterator<String> a = Arrayz.asList("a", "B", "c").iterator();
+		Iterator<String> b = Arrayz.asList("a", "B", "c").iterator();
+		Iterator<String> c = Arrayz.asList("a", "B", "c").iterator();
 
-		Iterator<String> x = Collections.combine(a, b, c);
+		Iterator<String> x = Collectionz.combine(a, b, c);
 
 		StringBuilder string = new StringBuilder();
 
@@ -142,7 +142,7 @@ public class CollectionsTest {
 
 		map.put(8, "value");
 
-		List list = Collections.asList(map);
+		List list = Collectionz.asList(map);
 
 		Assert.assertEquals(9, list.size());
 		Assert.assertEquals("value", list.get(8));
@@ -166,7 +166,7 @@ public class CollectionsTest {
 
 		Test instance = new Test();
 
-		Map map = Collections.asMap(instance);
+		Map map = Collectionz.asMap(instance);
 
 		Assert.assertEquals(1, map.size());
 		Assert.assertEquals("value", map.get("key"));
@@ -183,9 +183,9 @@ public class CollectionsTest {
 	@SuppressWarnings("MessageMissingOnJUnitAssertion")
 	@Test
 	public void docs_asMap1() {
-		List list = new ArrayList(Arrays.asList("value"));
+		List list = new ArrayList(Arrayz.asList("value"));
 
-		Map map = Collections.asMap(list);
+		Map map = Collectionz.asMap(list);
 
 		Assert.assertEquals(1, map.size());
 		Assert.assertEquals("value", map.get(0));
@@ -205,10 +205,10 @@ public class CollectionsTest {
 	@SuppressWarnings({"StringConcatenationInLoop", "MessageMissingOnJUnitAssertion"})
 	@Test
 	public void docs_combine() {
-		Iterator first = Arrays.asList("abc-".toCharArray()).iterator();
-		Iterator second = Arrays.asList("-def".toCharArray()).iterator();
+		Iterator first = Arrayz.asList("abc-".toCharArray()).iterator();
+		Iterator second = Arrayz.asList("-def".toCharArray()).iterator();
 
-		Iterator combine = Collections.combine(first, second);
+		Iterator combine = Collectionz.combine(first, second);
 
 		String s = "";
 		while (combine.hasNext())
@@ -220,7 +220,7 @@ public class CollectionsTest {
 	@Test
 	public void unmodifiableGroup() {
 		String[] strings = {"my abc", "my def", "my ghi", "abc", "def", "ghi"};
-		Group<String> constants = Collections.unmodifiableGroup(new HashGroup<>(Arrays.asList(strings)));
+		Group<String> constants = Collectionz.unmodifiableGroup(new HashGroup<>(Arrayz.asList(strings)));
 		Group<String> my = constants.subGroup("my", s -> s.startsWith("my"));
 		Group<String> abc = constants.subGroup("abc", s -> s.contains("abc"));
 

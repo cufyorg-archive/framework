@@ -13,13 +13,13 @@ import java.util.function.Predicate;
  * @version 0.1.3
  * @since 11-Jun-2019
  */
-final public class Collections {
+final public class Collectionz {
 	/**
 	 * This is a util class. And shall not be instanced as an object.
 	 *
 	 * @throws AssertionError when called
 	 */
-	private Collections() {
+	private Collectionz() {
 		throw new AssertionError("No instance for you!");
 	}
 

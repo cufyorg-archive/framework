@@ -2,7 +2,7 @@ package cufy.text.json;
 
 import cufy.convert.ConvertToken;
 import cufy.lang.Clazz;
-import cufy.util.Arrays;
+import cufy.util.Arrayz;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public class JSONConverterTest {
 	public void convert() {
 		List<Object> list = new ArrayList<>();
 		list.add(5L);
-		list.add(Arrays.asList(0L, 1L, 2L));
+		list.add(Arrayz.asList(0L, 1L, 2L));
 
 		int length = list.size();
 
@@ -31,6 +31,6 @@ public class JSONConverterTest {
 		Assert.assertEquals("map->string->set Haven't included all items", length, set.size());
 		Assert.assertEquals("map->string->set Items don't match", new HashSet<>(list), set);
 		Assert.assertEquals("set->string->array Haven't included all items", length, array.length);
-		Assert.assertEquals("Haven't translate all items", -1, Arrays.all(list.toArray(), array));
+		Assert.assertEquals("Haven't translate all items", -1, Arrayz.all(list.toArray(), array));
 	}
 }

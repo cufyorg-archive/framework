@@ -24,13 +24,13 @@ import java.util.Objects;
  * @version 0.1.3
  * @since 11 Jun 2019
  */
-final public class Strings {
+final public class Stringz {
 	/**
 	 * This is a util class. And shall not be instanced as an object.
 	 *
 	 * @throws AssertionError when called
 	 */
-	private Strings() {
+	private Stringz() {
 		throw new AssertionError("No instance for you!");
 	}
 
