@@ -98,6 +98,6 @@ public class ArrayzTest {
 
 	@Test
 	public void sum() {
-		Assert.assertEquals("Wrong sum", (Integer) 12, Arrayz.<Integer>sum(new int[]{5, 4, 3}, 0, Integer::sum));
+		Assert.assertEquals("Wrong sum", 12, Arrayz.sum(new int[]{5, 4, 3}, 0, Integer::sum), 0);
 	}
 }
