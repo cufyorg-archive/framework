@@ -1358,7 +1358,7 @@ final public class Arrayz {
 	//copyOfRange
 
 	/**
-	 * Remove the last and the first elements of the given {@link Object array}. Depending on the given values.
+	 * Copies the specified range of the specified array into a new array.
 	 *
 	 * @param array      to get a subarray of
 	 * @param beginIndex the index to begin
@@ -1394,7 +1394,7 @@ final public class Arrayz {
 	}
 
 	/**
-	 * Remove the last and the first elements of the given {@link Object array}. Depending on the given values.
+	 * Copies the specified range of the specified array into a new array.
 	 *
 	 * @param array      to get a subarray of
 	 * @param beginIndex the index to begin
@@ -1432,7 +1432,7 @@ final public class Arrayz {
 	}
 
 	/**
-	 * Remove the last and the first elements of the given {@link Object array}. Depending on the given values.
+	 * Copies the specified range of the specified array into a new array.
 	 *
 	 * @param array      to get a subarray of
 	 * @param beginIndex the index to begin
@@ -1467,7 +1467,7 @@ final public class Arrayz {
 	}
 
 	/**
-	 * Remove the last and the first elements of the given {@link Object array}. Depending on the given values.
+	 * Copies the specified range of the specified array into a new array.
 	 *
 	 * @param array      to get a subarray of
 	 * @param beginIndex the index to begin
@@ -1502,7 +1502,7 @@ final public class Arrayz {
 	}
 
 	/**
-	 * Remove the last and the first elements of the given {@link Object array}. Depending on the given values.
+	 * Copies the specified range of the specified array into a new array.
 	 *
 	 * @param array      to get a subarray of
 	 * @param beginIndex the index to begin
@@ -1537,7 +1537,7 @@ final public class Arrayz {
 	}
 
 	/**
-	 * Remove the last and the first elements of the given {@link Object array}. Depending on the given values.
+	 * Copies the specified range of the specified array into a new array.
 	 *
 	 * @param array      to get a subarray of
 	 * @param beginIndex the index to begin
@@ -1572,7 +1572,7 @@ final public class Arrayz {
 	}
 
 	/**
-	 * Remove the last and the first elements of the given {@link Object array}. Depending on the given values.
+	 * Copies the specified range of the specified array into a new array.
 	 *
 	 * @param array      to get a subarray of
 	 * @param beginIndex the index to begin
@@ -1607,7 +1607,7 @@ final public class Arrayz {
 	}
 
 	/**
-	 * Remove the last and the first elements of the given {@link Object array}. Depending on the given values.
+	 * Copies the specified range of the specified array into a new array.
 	 *
 	 * @param array      to get a subarray of
 	 * @param beginIndex the index to begin
@@ -1642,7 +1642,7 @@ final public class Arrayz {
 	}
 
 	/**
-	 * Remove the last and the first elements of the given {@link Object array}. Depending on the given values.
+	 * Copies the specified range of the specified array into a new array.
 	 *
 	 * @param array      to get a subarray of
 	 * @param beginIndex the index to begin
@@ -1677,7 +1677,7 @@ final public class Arrayz {
 	}
 
 	/**
-	 * Remove the last and the first elements of the given {@link Object array}. Depending on the given values.
+	 * Copies the specified range of the specified array into a new array.
 	 *
 	 * @param array      to get a subarray of
 	 * @param beginIndex the index to begin
@@ -1712,7 +1712,7 @@ final public class Arrayz {
 	}
 
 	/**
-	 * Remove the last and the first elements of the given {@link Object array}. Depending on the given values.
+	 * Copies the specified range of the specified array into a new array.
 	 *
 	 * @param array      to get a subarray of
 	 * @param beginIndex the index to begin
@@ -1751,7 +1751,7 @@ final public class Arrayz {
 	}
 
 	/**
-	 * Remove the last and the first elements of the given {@link Object array}. Depending on the given values.
+	 * Copies the specified range of the specified array into a new array.
 	 *
 	 * @param array      to get a subarray of
 	 * @param beginIndex the index to begin
