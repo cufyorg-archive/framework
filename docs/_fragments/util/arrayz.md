@@ -12,7 +12,7 @@ description: >-
     '0' version of it. The '0' version accept object as array parameter.
 ---
 
-- `all(...)` `all0(Object, Object)` checks if an array contains all the given elements.
+- `all(...)` checks if an array contains all the given elements.
 <br><br>
 ```java 
     char[] chars = {'a', 'b', 'c', 'd', 'e'};
@@ -22,7 +22,7 @@ description: >-
 ```
 <br>
 
-- `any(...)` `any0(Object, Object)` checks if an array contains any of the given elements.
+- `any(...)` checks if an array contains any of the given elements.
 <br><br>
 ```java 
     char[] chars = {'a', 'b', 'c', 'd', 'e'};
@@ -32,7 +32,7 @@ description: >-
 ```
 <br>
 
-- `asList(...)` `asList0(Object)` get a List that reads and writes to the given array.
+- `asList(...)` get a List that reads and writes to the given array.
 <br><br>
 ```java 
     int[] array = {};
@@ -47,22 +47,54 @@ description: >-
 ```
 <br>
 
-- `copfyOf(...)` `copyOf0(...)` Get a copy of the provided array.
+- `copfyOf(...)` `copyOfRange(...)` copies the specified range of the specified array into a new array.
 <br><br>
-    int[] i = {0, 1, 2};
+```java 
+    int[] array = {0, 1, 2};
     
-    Object[] o = Arrayz.copyOf(i, 2, Object[].class);
+    Object[] objects = Arrayz.copyOf(i, 2, Object[].class);
     
-    assert 
+    assert objects.length == 2;
+    assert objects[0] == 0;
+    assert objects[1] == 1;
+```
 <br>
 
-- `copyOfRange(...)` `copyOfRange0(...)` TODO
+- `hardcopy(Object, int, Object, int, int)` copies elements on the second array from the first array
+basic for loop. This method skips type checks and uses primitive-cast.
+<br><br>
+```java 
+    Integer[] integers = {0, 1, 2};
+    short[] shorts = new short[3];
+    
+    Arrayz.hardcopy(integers, 0, shorts, 0, integers.length);
+    
+    assert shorts[0] == 0;
+    assert shorts[1] == 1;
+    assert shorts[2] == 2;
+```
 <br>
 
-- `hardcopy(Object, int, Object, int, int)` TODO
+- `merge(...)` merges the provided arrays into one array.
+<br><br>
+```java 
+    int[][] arrays = {{0, 1}, {2}, {3, 4}};
+    
+    int[] merged = Arrayz.merge(arrays);
+    
+    assert merged.length == 5;
+    assert merged[0] == 0;
+    assert merged[2] == 2;
+    assert merged[3] == 3;
+```
 <br>
 
-- `merge(...)` `merge0(...)` TODO
-<br>
-
-- `sum(...)` `sum0(Object, Object, BiFunction)` TODO
+- `sum(...)` get the result of applying a function while iterating the items of the provided arrays.
+<br><br>
+```java 
+    int[] array = {0, 1, 2, 3};
+    
+    int sum = Arrayz.sum(array, /*initial value*/ 0, Integer::sum);
+    
+    assert sum == 6;
+```
