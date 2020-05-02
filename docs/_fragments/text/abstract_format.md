@@ -1,4 +1,5 @@
 ---
+beta: true
 index: 5
 layout: fragment
 parent: text

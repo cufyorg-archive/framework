@@ -1,7 +1,7 @@
 ---
 ---
 
-<a class="big_candy" href="{{ page.link }}">{{page.title}}</a>
+<a class="big_candy" href="{{ page.link }}">{{page.title}} {% if page.beta %}<font color="red">*</font>{% endif %}</a>
 <div>
     {% for link in page.links %}
     <a class="small_candy" href="{{ link[1] }}">{{ link[0] }}</a>
