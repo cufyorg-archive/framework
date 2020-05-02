@@ -1,4 +1,5 @@
 ---
+beta: true
 index: 1
 layout: fragment
 parent: json
