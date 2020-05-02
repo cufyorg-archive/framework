@@ -15,9 +15,12 @@ description: >-
 
 ```java 
     try {
-        //the exception will be catched by the catch statment below and will
-        //be the exact exception thrown from the throwingMethod
-    	Runnable runnable = (ThrowRunnable<Exception>) ()-> throwingMethod();
+        //the exception will be catched by the catch statment
+        //below and will be the exact exception thrown from
+        //the throwingMethod
+    	Runnable runnable = (ThrowRunnable<Exception>) ()-> {
+            throwingMethod();
+        };
     } catch (Exception e) {
     }
 ```

@@ -38,11 +38,10 @@ description: >-
     int[] array = {};
     Object object = array;
     
-    //if you are a syntax user, this will be the best deal for you!
+    //if the array's type is defined
     List<Integer> arrayAsList = Arrayz.asList(array);
     
-    //but if you are a reflection user, the array you have could be unsigned
-    //and this method will save your time. 
+    //if the array's type is not defined 
     List objectAsList = Arrayz.asList0(object);
 ```
 <br>

@@ -13,9 +13,17 @@ description: >-
 ---
 
 ```java 
-    Group food = new HashGroup(Arrays.asList("pizza", "potato", "apple", "orange"));
+    Group food = new HashGroup(Arrays.asList(
+        "pizza",
+        "potato",
+        "apple",
+        "orange"
+    ));
+    
     Group healthy = food.subGroup("healthy", f -> !f.equals("pizza"));
     Group h = food.subGroup("healthy");
-    //even if the group 'food' is changed, the subgroups will remain equal forever
+
+    //even if the group 'food' is changed
+    //the subgroups will remain equal forever
     assert h.equals(healthy);
 ```
