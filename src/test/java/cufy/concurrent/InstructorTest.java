@@ -16,7 +16,7 @@ public class InstructorTest {
 
 		group.pair();
 
-		Assert.assertTrue("haven't paired correctly!", group.getLoops().size() > 1);
+		Assert.assertTrue("haven't paired correctly!", group.getLoops().size() != 0);
 
 		loop0.pair();
 		loop1.pair();
