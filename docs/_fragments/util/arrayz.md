@@ -78,7 +78,7 @@ basic for loop. This method skips type checks and uses primitive-cast.
 - `merge(...)` merges the provided arrays into one array.
 <br><br>
 ```java 
-    int[][] arrays = {{0, 1}, {2}, {3, 4}};
+    int[][] arrays = { {0, 1}, {2}, {3, 4} };
     
     int[] merged = Arrayz.merge(arrays);
     
