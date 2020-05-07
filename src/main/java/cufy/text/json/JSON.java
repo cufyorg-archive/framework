@@ -512,7 +512,7 @@ public class JSON extends AbstractFormat {
 
 		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + 1);
 
-		int r = Readerz.isRemainingEquals(token.input, true, false, false, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+		int r = Readerz.isRemainingEquals(token.input, true, false, false, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-");
 
 		token.input.reset();
 
