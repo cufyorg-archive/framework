@@ -38,21 +38,21 @@ public class SyntaxTracker implements Appendable {
 	final protected Map<String, String> NESTABLE;
 
 	/**
-	 * An array for the wraps appended to this.
+	 * An array of the fences currently applied.
 	 */
-	final protected ArrayList<String> wraps = new ArrayList<>();
+	final protected ArrayList<Map.Entry<String, String>> fences = new ArrayList<>();
 	/**
-	 * If currently receiving literal (non-nestable) text.
+	 * The current top fence.
+	 */
+	protected Map.Entry<String, String> fence;
+	/**
+	 * If current fence can't have inner fences.
 	 */
 	protected boolean literal = false;
 	/**
-	 * value expected string to unwrap the last wrap.
+	 * The string read after the start of the current fence or the end of the last removed fence.
 	 */
-	protected String unwrap = "";
-	/**
-	 * Value appended before that may match any wrapping string.
-	 */
-	protected String wrap = "";
+	protected String past = "";
 
 	/**
 	 * Initialize a new syntax tracker.
@@ -94,27 +94,40 @@ public class SyntaxTracker implements Appendable {
 
 	@Override
 	public Appendable append(char c) throws IOException {
-		if (!this.unwrap(c) && !this.literal)
-			this.wrap(c);
+		this.past += c;
+
+		if (this.fence != null && this.past.endsWith(this.fence.getValue())) {
+			//if there is a fence applied and the past string read ends with the closer string of the current fence
+			this.unwrap();
+		} else if (!this.literal) {
+			//if there is no fence applied or the current fence haven't been closed yet and can have inner fences.
+			for (Map.Entry<String, String> fence : this.LITERAL.entrySet())
+				if (this.past.endsWith(fence.getKey()))
+					this.wrap(fence, true);
+			for (Map.Entry<String, String> fence : this.NESTABLE.entrySet())
+				if (this.past.endsWith(fence.getKey()))
+					this.wrap(fence, false);
+		}
+
 		return this;
 	}
 
 	/**
-	 * Get the unwrapping string that this tracker is currently waiting for.
+	 * Returns the end string of the current fence.
 	 *
-	 * @return the unwrapping string
+	 * @return the end string of the current fence
 	 */
-	public String getUnwrap() {
-		return this.wraps.size() == 0 ? "" : this.wraps.get(this.wraps.size() - 1);
+	public String fenceEnd() {
+		return this.fence == null ? null : this.fence.getValue();
 	}
 
 	/**
-	 * Return if the last wrap is a literal syntax or not.
+	 * Returns the start string of the current fence.
 	 *
-	 * @return if the last wrap is a literal syntax or not
+	 * @return the start string of the current fence.
 	 */
-	public boolean isLiteral() {
-		return this.literal;
+	public String fenceStart() {
+		return this.fence == null ? null : this.fence.getKey();
 	}
 
 	/**
@@ -123,125 +136,38 @@ public class SyntaxTracker implements Appendable {
 	 * @return the size of the wraps list
 	 */
 	public int length() {
-		return this.wraps.size();
+		return this.fences.size();
 	}
 
 	/**
-	 * Apply the unwrapping algorithm to the given character.
+	 * Remove the current top-fence.
 	 *
-	 * @param c the character for the current position
-	 * @return true if 'unwrap0()' got invoked
+	 * @throws IllegalStateException if `fences.size() == 0`
 	 */
-	protected boolean unwrap(char c) {
-		if (this.unwrap.length() == 0) {
-			return this.unwrap0();
-		} else {
-			if (this.unwrap.charAt(0) == c) {
-				if (this.unwrap.length() == 1) {
-					return this.unwrap0();
-				} else {
-					this.unwrap = this.unwrap.substring(1);
-				}
-			} else {
-				this.resetUnwrap();
-			}
-		}
+	private void unwrap() {
+		if (this.fences.size() == 0)
+			throw new IllegalStateException("fences.size() == 0");
 
-		return false;
-	}
+		int size = this.fences.size();
+		this.fences.remove(size - 1);
 
-	/**
-	 * Apply the wrapping algorithm to the given character.
-	 *
-	 * @param c the character for the current position
-	 * @return true if {@link #wrap0(String)}
-	 */
-	protected boolean wrap(char c) {
-		if (!this.literal) {
-			this.wrap += c;
-
-			boolean startsWith = false;
-			for (Map.Entry<String, String> entry : this.NESTABLE.entrySet()) {
-				String key = entry.getKey();
-
-				if (key.startsWith(this.wrap)) {
-					startsWith = true;
-
-					if (key.length() == this.wrap.length()) {
-						return this.wrap0(entry.getValue());
-					}
-				}
-			}
-			for (Map.Entry<String, String> entry : this.LITERAL.entrySet()) {
-				String key = entry.getKey();
-
-				if (key.startsWith(this.wrap)) {
-					startsWith = true;
-
-					if (key.length() == this.wrap.length()) {
-						this.literal = true;
-						return this.wrap0(entry.getValue());
-					}
-				}
-			}
-
-			if (!startsWith)
-				this.resetWrap();
-		}
-
-		return false;
-	}
-
-	/**
-	 * Reset the mode that blocks any further wrappings.
-	 */
-	private void resetLiteral() {
+		this.past = "";
+		this.fence = size == 1 ? null : this.fences.get(size - 2);
 		this.literal = false;
 	}
 
 	/**
-	 * Reset the mode that holds the unwrapping condition.
-	 */
-	private void resetUnwrap() {
-		this.unwrap = this.wraps.size() == 0 ? "" : this.wraps.get(this.wraps.size() - 1);
-	}
-
-	/**
-	 * Reset the mode that holds the wrapping condition.
-	 */
-	private void resetWrap() {
-		this.wrap = "";
-	}
-
-	/**
-	 * Remove the last wrap (if there is). Then reset the wrapping and unwrapping and literal modes.
+	 * Add the given fence.
 	 *
-	 * @return if this method has actually unwrapped something
+	 * @param fence   to be added
+	 * @param literal if the given fence can't have inner fences
+	 * @throws NullPointerException if the given 'fence' is null
 	 */
-	private boolean unwrap0() {
-		if (this.wraps.size() != 0) {
-			this.wraps.remove(this.wraps.size() - 1);
+	private void wrap(Map.Entry<String, String> fence, boolean literal) {
+		this.fences.add(fence);
 
-			this.resetWrap();
-			this.resetUnwrap();
-			this.resetLiteral();
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Wrap And set the specified string as a unwrapping condition. Then reset the wrapping and unwrapping modes.
-	 *
-	 * @param unwrapMode the unwrapping string to unwrap
-	 * @return true if this method has actually wrapping something
-	 */
-	private boolean wrap0(String unwrapMode) {
-		this.wraps.add(unwrapMode);
-
-		this.resetWrap();
-		this.resetUnwrap();
-		return true;
+		this.past = "";
+		this.fence = fence;
+		this.literal = literal;
 	}
 }
