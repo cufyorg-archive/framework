@@ -16,6 +16,7 @@
 package cufy.io.loadable;
 
 import cufy.concurrent.Instructor;
+import cufy.io.BufferedInputStream;
 import cufy.io.BufferedReader;
 import cufy.io.*;
 
@@ -35,7 +36,7 @@ public interface FileLoadable extends Loadable {
 		Objects.requireNonNull(instructor, "instructor");
 
 		InputStream base = new FileInputStream(this.getFile());
-		InputStream buff = new cufy.io.BufferedInputStream(base);
+		InputStream buff = new BufferedInputStream(base);
 		InputStream ctrl = new RemoteInputStream(instructor, buff);
 
 		return ctrl;
@@ -73,7 +74,7 @@ public interface FileLoadable extends Loadable {
 	@Override
 	default InputStream getInputStream() throws IOException {
 		InputStream base = new FileInputStream(this.getFile());
-		InputStream buff = new cufy.io.BufferedInputStream(base);
+		InputStream buff = new BufferedInputStream(base);
 
 		return buff;
 	}
@@ -87,7 +88,7 @@ public interface FileLoadable extends Loadable {
 	@Override
 	default Reader getReader() throws IOException {
 		Reader base = new FileReader(this.getFile());
-		Reader buff = new cufy.io.BufferedReader(base);
+		Reader buff = new BufferedReader(base);
 
 		return buff;
 	}
