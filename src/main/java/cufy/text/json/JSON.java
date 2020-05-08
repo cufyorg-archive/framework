@@ -22,7 +22,6 @@ import cufy.meta.Where;
 import cufy.text.*;
 import cufy.util.Arrayz;
 import cufy.util.Readerz;
-import cufy.util.Reflection;
 import cufy.util.Stringz;
 
 import java.io.IOException;
@@ -30,6 +29,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -110,46 +110,29 @@ public class JSON extends AbstractFormat {
 	 * The global instance to avoid unnecessary instancing.
 	 */
 	@Where
-	final public static JSON global = new JSON().setDefaults();
-
+	final public static JSON global = new JSON().setDefaults(new Syntax().setDefaults());
 	/**
-	 * The expected number of members on objects or arrays.
+	 * The literal symbols relationships for the syntax tracker.
 	 */
-	protected int DEFAULT_MEMBERS_COUNT;
+	public Map<String, String> LITERAL = new HashMap<>();
 	/**
-	 * The expected depth for nested arrays and object.
+	 * The nestable symbols relationships for the syntax tracker.
 	 */
-	protected int DEFAULT_NESTING_DEPTH;
+	public Map<String, String> NESTABLE = new HashMap<>();
 	/**
 	 * The number of characters expected for values.
 	 */
-	protected int DEFAULT_VALUE_LENGTH;
+	protected int BUFFER_SIZE;
 	/**
 	 * The number of whitespaces characters expected to be read continuously.
 	 * <p>
 	 * Note: larger number will effect the RAM. Lower number will effect the performance
 	 */
-	protected int DEFAULT_WHITE_SPACE_LENGTH;
-	/**
-	 * The relationships between strings and theirs escapes.
-	 */
-	protected Map<String, String> STRING_ESCAPABLES;
+	protected int MARK_LENGTH;
 	/**
 	 * The symbols of this.
 	 */
 	protected Syntax SYNTAX;
-	/**
-	 * The comment symbols.
-	 */
-	protected Map<String, String> SYNTAX_COMMENT;
-	/**
-	 * The literal symbols relationships for the syntax tracker.
-	 */
-	protected Map<String, String> SYNTAX_LITERAL;
-	/**
-	 * The nestable symbols relationships for the syntax tracker.
-	 */
-	protected Map<String, String> SYNTAX_NESTABLE;
 
 	@Override
 	protected boolean formatPre(FormatToken token) throws IOException {
@@ -190,12 +173,12 @@ public class JSON extends AbstractFormat {
 
 		Iterator it = token.input instanceof Collection ? token.input.iterator() : Arrayz.asList(token.input).iterator();
 
-		String TAB = Stringz.repeat(SYNTAX.TAB, token.depth);
-		String SHIFT = TAB + SYNTAX.TAB;
+		String TAB = Stringz.repeat(SYNTAX.WS_TAB, token.depth);
+		String SHIFT = TAB + SYNTAX.WS_TAB;
 
 		if (it.hasNext()) {
-			token.output.append(SYNTAX.ARRAY_START)
-					.append(SYNTAX.NEW_LINE)
+			token.output.append(SYNTAX.FENCE_ARRAY[0])
+					.append(SYNTAX.WS_LN)
 					.append(SHIFT);
 
 			while (true) {
@@ -204,21 +187,21 @@ public class JSON extends AbstractFormat {
 				this.format(token.subToken(element, token.output, Clazz.ofi(element), 0));
 
 				if (it.hasNext()) {
-					token.output.append(SYNTAX.MEMBER_END)
-							.append(SYNTAX.NEW_LINE)
+					token.output.append(SYNTAX.OPERATOR_SEPARATOR[0])
+							.append(SYNTAX.WS_LN)
 							.append(SHIFT);
 				} else {
-					token.output.append(SYNTAX.NEW_LINE)
+					token.output.append(SYNTAX.WS_LN)
 							.append(TAB)
-							.append(SYNTAX.ARRAY_END);
+							.append(SYNTAX.FENCE_ARRAY[1]);
 					break;
 				}
 			}
 		} else {
-			token.output.append(SYNTAX.ARRAY_START)
-					.append(SYNTAX.NEW_LINE)
+			token.output.append(SYNTAX.FENCE_ARRAY[0])
+					.append(SYNTAX.WS_LN)
 					.append(TAB)
-					.append(SYNTAX.ARRAY_END);
+					.append(SYNTAX.FENCE_ARRAY[1]);
 		}
 	}
 
@@ -237,7 +220,7 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		token.output.append(token.input ? SYNTAX.TRUE : SYNTAX.FALSE);
+		token.output.append(SYNTAX.VALUE_BOOLEAN[token.input ? 0 : 1]);
 	}
 
 	/**
@@ -254,7 +237,7 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token, "token");
 		}
 
-		token.output.append(SYNTAX.NULL);
+		token.output.append(SYNTAX.VALUE_NULL[0]);
 	}
 
 	/**
@@ -284,16 +267,18 @@ public class JSON extends AbstractFormat {
 		Class family = token.klazz.getFamily();
 
 		if (family == Byte.class || family == byte.class)
-			token.output.append(Byte.toString(token.input.byteValue())).append("B");
+			token.output.append(Byte.toString(token.input.byteValue()));
 		else if (family == Double.class || family == double.class)
-			token.output.append(Double.toString(token.input.doubleValue())).append("D");
+			token.output.append(Double.toString(token.input.doubleValue()));
 		else if (family == Float.class || family == float.class)
-			token.output.append(Float.toString(token.input.floatValue())).append("F");
+			token.output.append(Float.toString(token.input.floatValue()));
 		else if (family == Long.class || family == long.class)
-			token.output.append(Long.toString(token.input.longValue())).append("L");
+			token.output.append(Long.toString(token.input.longValue()));
 		else if (family == Short.class || family == short.class)
-			token.output.append(Short.toString(token.input.shortValue())).append("S");
-		else token.output.append(Integer.toString(token.input.intValue()));
+			token.output.append(Short.toString(token.input.shortValue()));
+		else if (family == Integer.class || family == int.class)
+			token.output.append(Integer.toString(token.input.intValue()));
+		else token.output.append(token.input.toString());
 	}
 
 	/**
@@ -313,12 +298,12 @@ public class JSON extends AbstractFormat {
 
 		Iterator<Map.Entry> it = token.input.entrySet().iterator();
 
-		String TAB = Stringz.repeat(SYNTAX.TAB, token.depth);
-		String SHIFT = TAB + SYNTAX.TAB;
+		String TAB = Stringz.repeat(SYNTAX.WS_TAB, token.depth);
+		String SHIFT = TAB + SYNTAX.WS_TAB;
 
 		if (it.hasNext()) {
-			token.output.append(SYNTAX.OBJECT_START)
-					.append(SYNTAX.NEW_LINE)
+			token.output.append(SYNTAX.FENCE_OBJECT[0])
+					.append(SYNTAX.WS_LN)
 					.append(SHIFT);
 
 			while (true) {
@@ -329,26 +314,26 @@ public class JSON extends AbstractFormat {
 
 				this.format(token.subToken(key, token.output, Clazz.ofi(key), 0));
 
-				token.output.append(SYNTAX.DECLARATION);
+				token.output.append(SYNTAX.OPERATOR_DECLARATION[0]);
 
 				this.format(token.subToken(value, token.output, Clazz.ofi(value), 1));
 
 				if (it.hasNext()) {
-					token.output.append(SYNTAX.MEMBER_END)
-							.append(SYNTAX.NEW_LINE)
+					token.output.append(SYNTAX.OPERATOR_SEPARATOR[0])
+							.append(SYNTAX.WS_LN)
 							.append(SHIFT);
 				} else {
-					token.output.append(SYNTAX.NEW_LINE)
+					token.output.append(SYNTAX.WS_LN)
 							.append(TAB)
-							.append(SYNTAX.OBJECT_END);
+							.append(SYNTAX.FENCE_OBJECT[1]);
 					break;
 				}
 			}
 		} else {
-			token.output.append(SYNTAX.OBJECT_START)
-					.append(SYNTAX.NEW_LINE)
+			token.output.append(SYNTAX.FENCE_OBJECT[0])
+					.append(SYNTAX.WS_LN)
 					.append(TAB)
-					.append(SYNTAX.OBJECT_END);
+					.append(SYNTAX.FENCE_OBJECT[1]);
 		}
 	}
 
@@ -369,12 +354,12 @@ public class JSON extends AbstractFormat {
 
 		String value = token.input.toString();
 
-		for (Map.Entry<String, String> escapable : STRING_ESCAPABLES.entrySet())
+		for (Map.Entry<String, String> escapable : SYNTAX.ESCAPABLES.entrySet())
 			value = value.replace(escapable.getKey(), escapable.getValue());
 
-		token.output.append(SYNTAX.STRING_START)
+		token.output.append(SYNTAX.FENCE_STRING[0])
 				.append(value)
-				.append(SYNTAX.STRING_END);
+				.append(SYNTAX.FENCE_STRING[1]);
 	}
 
 	/**
@@ -392,9 +377,9 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token, "token");
 		}
 
-		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.ARRAY_START.length());
+		token.input.mark(MARK_LENGTH);
 
-		int r = Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.ARRAY_START);
+		int r = Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.FENCE_ARRAY[0]);
 
 		token.input.reset();
 
@@ -421,9 +406,9 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token, "token");
 		}
 
-		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + Math.max(SYNTAX.TRUE.length(), SYNTAX.FALSE.length()));
+		token.input.mark(MARK_LENGTH);
 
-		int r = Readerz.isRemainingEquals(token.input, true, true, true, SYNTAX.TRUE, SYNTAX.FALSE);
+		int r = Readerz.isRemainingEquals(token.input, true, true, true, SYNTAX.VALUE_BOOLEAN);
 
 		token.input.reset();
 
@@ -450,7 +435,7 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token, "token");
 		}
 
-		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH);
+		token.input.mark(MARK_LENGTH);
 
 		int i;
 
@@ -481,9 +466,9 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token, "token");
 		}
 
-		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.NULL.length());
+		token.input.mark(MARK_LENGTH);
 
-		int r = Readerz.isRemainingEquals(token.input, true, true, true, SYNTAX.NULL);
+		int r = Readerz.isRemainingEquals(token.input, true, true, true, SYNTAX.VALUE_NULL);
 
 		token.input.reset();
 
@@ -510,9 +495,9 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token, "token");
 		}
 
-		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + 1);
+		token.input.mark(MARK_LENGTH);
 
-		int r = Readerz.isRemainingEquals(token.input, true, false, false, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-");
+		int r = Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.VALUE_NUMBER);
 
 		token.input.reset();
 
@@ -539,9 +524,9 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token, "token");
 		}
 
-		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.OBJECT_START.length());
+		token.input.mark(MARK_LENGTH);
 
-		int r = Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.OBJECT_START);
+		int r = Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.FENCE_OBJECT[0]);
 
 		token.input.reset();
 
@@ -568,9 +553,9 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token, "token");
 		}
 
-		token.input.mark(DEFAULT_WHITE_SPACE_LENGTH + SYNTAX.STRING_START.length());
+		token.input.mark(MARK_LENGTH);
 
-		int r = Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.STRING_START);
+		int r = Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.FENCE_STRING[0]);
 
 		token.input.reset();
 
@@ -617,7 +602,8 @@ public class JSON extends AbstractFormat {
 		if (token.klazz.isArray())
 			token.output = token.klazz.isInstance(token.output) ? new ArrayList(Arrayz.asList(array)) : new ArrayList();
 		else if (!token.klazz.isInstance(token.output))
-			token.output = token.klazz.isAssignableFrom(List.class) ? new ArrayList() : token.klazz.getKlass().getConstructor().newInstance();
+			token.output = token.klazz.isAssignableFrom(ArrayList.class) ? new ArrayList() :
+						   token.klazz.getKlass().getConstructor().newInstance();
 		else if (!(token.output instanceof List))
 			token.output.clear();
 
@@ -626,11 +612,11 @@ public class JSON extends AbstractFormat {
 		//comment mode
 		boolean comment = false;
 		//syntax manager
-		SyntaxTracker tracker = new SyntaxTracker(SYNTAX_NESTABLE, SYNTAX_LITERAL);
+		SyntaxTracker tracker = new SyntaxTracker(NESTABLE, LITERAL);
 		//content reading buffer (for members)
-		StringBuilder builder = new StringBuilder(DEFAULT_VALUE_LENGTH);
+		StringBuilder builder = new StringBuilder(BUFFER_SIZE);
 		//short backtrace
-		StringBuilder backtrace = new StringBuilder(DEFAULT_VALUE_LENGTH);
+		StringBuilder backtrace = new StringBuilder(BUFFER_SIZE);
 
 		//last overwritten index
 		int index = 0;
@@ -638,7 +624,7 @@ public class JSON extends AbstractFormat {
 		boolean overwrite = token.output.size() > index;
 
 		//first run
-		if (Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.ARRAY_START) != 0)
+		if (Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.FENCE_ARRAY[0]) != 0)
 			throw new ParseException("array not started");
 
 		for (int i; (i = token.input.read()) != -1; ) {
@@ -653,7 +639,7 @@ public class JSON extends AbstractFormat {
 				//the short past string
 				String past = backtrace.append(point).toString();
 
-				if ((closed = past.endsWith(SYNTAX.ARRAY_END)) || past.endsWith(SYNTAX.MEMBER_END)) {
+				if ((closed = past.endsWith(SYNTAX.FENCE_ARRAY[1])) || Stringz.endsWith(past, SYNTAX.OPERATOR_SEPARATOR) != null) {
 					//element chunk reader
 					Reader elementReader = new StringReader(builder.toString());
 
@@ -682,23 +668,23 @@ public class JSON extends AbstractFormat {
 					}
 
 					//new builders
-					builder = new StringBuilder(DEFAULT_VALUE_LENGTH);
-					backtrace = new StringBuilder(DEFAULT_VALUE_LENGTH);
+					builder = new StringBuilder(BUFFER_SIZE);
+					backtrace = new StringBuilder(BUFFER_SIZE);
 					continue;
 				}
 			} else if (backtrace.length() != 0) {
 				//reset short backtrace
-				backtrace = new StringBuilder(DEFAULT_VALUE_LENGTH);
+				backtrace = new StringBuilder(BUFFER_SIZE);
 			}
 
 			//notify syntax manager
 			tracker.append(point);
 
-			if (this.SYNTAX_COMMENT.containsValue(tracker.getUnwrap())) {
+			if (this.SYNTAX.FENCE_COMMENT.containsValue(tracker.fenceStart())) {
 				//currently in comment mode
 				if (!comment) {
 					//delete the comment open symbol
-					builder.delete(builder.length() - 1, builder.length());
+					builder.delete(builder.length() - tracker.fenceEnd().length() + 1, builder.length());
 					comment = true;
 				}
 			} else if (comment) {
@@ -750,12 +736,11 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token, "token");
 		}
 
-		int l = Math.max(SYNTAX.TRUE.length(), SYNTAX.FALSE.length());
-		String string = Readerz.getRemaining(token.input, l, l).trim();
+		String string = Readerz.getRemaining(token.input, this.BUFFER_SIZE, this.BUFFER_SIZE).trim();
 
-		if (SYNTAX.TRUE.equals(string)) {
+		if (SYNTAX.VALUE_BOOLEAN[0].equals(string)) {
 			token.output = true;
-		} else if (SYNTAX.FALSE.equals(string)) {
+		} else if (SYNTAX.VALUE_BOOLEAN[1].equals(string)) {
 			token.output = false;
 		} else {
 			throw new ParseException("Can't parse \"" + string + "\" as boolean");
@@ -776,10 +761,9 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token, "token");
 		}
 
-		int l = SYNTAX.NULL.length();
-		String string = Readerz.getRemaining(token.input, l, l).trim();
+		String string = Readerz.getRemaining(token.input, this.BUFFER_SIZE, BUFFER_SIZE).trim();
 
-		if (string.equals(SYNTAX.NULL)) {
+		if (Stringz.any(string, SYNTAX.VALUE_NULL) != null) {
 			token.output = null;
 		} else {
 			throw new ParseException("can't parse " + string + " as null");
@@ -810,49 +794,16 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token, "token");
 		}
 
+		String string = Readerz.getRemaining(token.input, BUFFER_SIZE, BUFFER_SIZE).trim();
+
 		Class klass = token.klazz.getKlass();
 
-		if (!Number.class.isAssignableFrom(klass))
-			if (klass.isAssignableFrom(Number.class))
-				klass = Number.class;
-			else throw new IllegalArgumentException(token.klazz + " can't be satisfied with a number");
-
-		int l = DEFAULT_VALUE_LENGTH;
-		String string = Readerz.getRemaining(token.input, l, l).trim().toUpperCase();
-		char suffix = string.charAt(string.length() - 1);
-		String number = Character.isDigit(suffix) ? string : string.substring(0, string.length() - 1);
-
-		//use the type that have been presented in the input
-		if (klass == Number.class) {
-			switch (suffix) {
-				case 'B':
-					token.output = Byte.valueOf(number);
-					return;
-				case 'D':
-					token.output = Double.valueOf(number);
-					return;
-				case 'F':
-					token.output = Float.valueOf(number);
-					return;
-				case 'L':
-					token.output = Long.valueOf(number);
-					return;
-				case 'S':
-					token.output = Short.valueOf(number);
-					return;
-				default:
-					token.output = Integer.valueOf(number);
-			}
-		} else {
-			//int, float, etc... => Integer, Float, etc...
-			Class klassObjective = Reflection.asObjectClass(klass);
-			try {
-				//Using 'valueOf' method
-				token.output = (Number) klassObjective.getMethod("valueOf", String.class).invoke(null, number);
-			} catch (ReflectiveOperationException e) {
-				//Using constructor
-				token.output = (Number) klassObjective.getConstructor(String.class).newInstance(number);
-			}
+		if (klass.isAssignableFrom(BigDecimal.class)) {
+			token.output = new BigDecimal(string);
+		} else try {
+			token.output = (Number) klass.getConstructor(String.class).newInstance(string);
+		} catch (NoSuchMethodException | SecurityException e) {
+			token.output = (Number) klass.getMethod("valueOf", String.class).invoke(null, string);
 		}
 	}
 
@@ -873,19 +824,19 @@ public class JSON extends AbstractFormat {
 
 		//setup the output
 		if (!token.klazz.isInstance(token.output))
-			token.output = token.klazz.isAssignableFrom(Map.class) ?
-						   new HashMap() : token.klazz.getKlass().getConstructor().newInstance();
+			token.output = token.klazz.isAssignableFrom(HashMap.class) ? new HashMap() :
+						   token.klazz.getKlass().getConstructor().newInstance();
 
 		//reject more elements
 		boolean closed = false;
 		//comment mode
 		boolean comment = false;
 		//syntax manager
-		SyntaxTracker tracker = new SyntaxTracker(SYNTAX_NESTABLE, SYNTAX_LITERAL);
+		SyntaxTracker tracker = new SyntaxTracker(NESTABLE, LITERAL);
 		//content reading buffer (for key and value)
-		StringBuilder builder = new StringBuilder(DEFAULT_VALUE_LENGTH);
+		StringBuilder builder = new StringBuilder(BUFFER_SIZE);
 		//short backtrace
-		StringBuilder backtrace = new StringBuilder(DEFAULT_VALUE_LENGTH);
+		StringBuilder backtrace = new StringBuilder(BUFFER_SIZE);
 
 		//the keys in the input
 		Set keys = new HashSet();
@@ -893,7 +844,7 @@ public class JSON extends AbstractFormat {
 		StringBuilder keyBuilder = null;
 
 		//first read
-		if (Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.OBJECT_START) != 0)
+		if (Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.FENCE_OBJECT[0]) != 0)
 			throw new ParseException("Object not started");
 
 		for (int i; (i = token.input.read()) != -1; ) {
@@ -909,7 +860,7 @@ public class JSON extends AbstractFormat {
 				//the short past string
 				String past = backtrace.append(point).toString();
 
-				if (past.endsWith(SYNTAX.DECLARATION) || past.endsWith(SYNTAX.EQUATION)) {
+				if (Stringz.endsWith(past, SYNTAX.OPERATOR_DECLARATION) != null) {
 					//key reading mode is over| value reading mode
 					if (keyBuilder != null)
 						throw new ParseException("Two equation symbol");
@@ -917,10 +868,10 @@ public class JSON extends AbstractFormat {
 					//switch reading destination address
 					keyBuilder = builder;
 
-					builder = new StringBuilder(DEFAULT_VALUE_LENGTH);
-					backtrace = new StringBuilder(DEFAULT_VALUE_LENGTH);
+					builder = new StringBuilder(BUFFER_SIZE);
+					backtrace = new StringBuilder(BUFFER_SIZE);
 					continue;
-				} else if ((closed = past.endsWith(SYNTAX.OBJECT_END)) || past.endsWith(SYNTAX.MEMBER_END)) {
+				} else if ((closed = past.endsWith(SYNTAX.FENCE_OBJECT[1])) || Stringz.endsWith(past, SYNTAX.OPERATOR_SEPARATOR) != null) {
 					//if the last element spot is empty. Then don't parse.
 					if (closed && keyBuilder == null)
 						continue;
@@ -952,23 +903,23 @@ public class JSON extends AbstractFormat {
 
 					//new builders
 					keyBuilder = null;
-					builder = new StringBuilder(DEFAULT_VALUE_LENGTH);
-					backtrace = new StringBuilder(DEFAULT_VALUE_LENGTH);
+					builder = new StringBuilder(BUFFER_SIZE);
+					backtrace = new StringBuilder(BUFFER_SIZE);
 					continue;
 				}
 			} else if (backtrace.length() != 0) {
 				//reset short backtrace
-				backtrace = new StringBuilder(DEFAULT_VALUE_LENGTH);
+				backtrace = new StringBuilder(BUFFER_SIZE);
 			}
 
 			//notify syntax manager
 			tracker.append(point);
 
-			if (this.SYNTAX_COMMENT.containsValue(tracker.getUnwrap())) {
+			if (this.SYNTAX.FENCE_COMMENT.containsValue(tracker.fenceEnd())) {
 				//currently in comment mode
 				if (!comment) {
 					//delete the comment open symbol
-					builder.deleteCharAt(builder.length() - 1);
+					builder.delete(builder.length() - tracker.fenceStart().length() + 1, builder.length());
 					comment = true;
 				}
 			} else if (comment) {
@@ -1002,62 +953,38 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token, "token");
 		}
 
-		Class klass = token.klazz.getKlass();
+		String string = Readerz.getRemaining(token.input, BUFFER_SIZE, BUFFER_SIZE).trim();
+		String value = string.substring(SYNTAX.FENCE_STRING[0].length(), string.length() - SYNTAX.FENCE_STRING[1].length());
 
-		int l = DEFAULT_VALUE_LENGTH;
-		String string = Readerz.getRemaining(token.input, l, l).trim();
-		String value = string.substring(SYNTAX.STRING_START.length(), string.length() - SYNTAX.STRING_END.length());
-
-		for (Map.Entry<String, String> escapable : STRING_ESCAPABLES.entrySet())
+		for (Map.Entry<String, String> escapable : SYNTAX.ESCAPABLES.entrySet())
 			value.replace(escapable.getValue(), escapable.getKey());
 
-		if (klass == String.class)
+		Class klass = token.klazz.getKlass();
+		if (klass.isAssignableFrom(String.class)) {
 			token.output = value;
-		else if (CharSequence.class.isAssignableFrom(klass))
-			//if we can construct a new of that clazz
-			try {
-				token.output = (CharSequence) klass.getMethod("valueOf", String.class).invoke(null, value);
-			} catch (ReflectiveOperationException e) {
-				token.output = (CharSequence) klass.getConstructor(String.class).newInstance(value);
-			}
-		else if (klass.isAssignableFrom(CharSequence.class))
-			//if the results can satisfied the clazz
-			token.output = value;
-		else throw new IllegalArgumentException(klass + " can't be satisfied with a string");
+		} else try {
+			token.output = (CharSequence) klass.getMethod("valueOf", String.class).invoke(null, value);
+		} catch (NoSuchMethodException | SecurityException e) {
+			token.output = (CharSequence) klass.getConstructor(String.class).newInstance(value);
+		}
 	}
 
 	/**
 	 * Set the default values of JSON for this json format.
 	 *
+	 * @param syntax the syntax to be set
 	 * @return this
 	 */
-	protected JSON setDefaults() {
-		this.DEFAULT_MEMBERS_COUNT = 10;
-		this.DEFAULT_NESTING_DEPTH = 5;
-		this.DEFAULT_VALUE_LENGTH = 20;
-		this.DEFAULT_WHITE_SPACE_LENGTH = 20;
+	protected JSON setDefaults(Syntax syntax) {
+		SYNTAX = syntax;
+		BUFFER_SIZE = 20;
+		MARK_LENGTH = 20;
 
-		this.STRING_ESCAPABLES = new HashMap<>();
-		this.STRING_ESCAPABLES.put("\\", "\\\\");
-		this.STRING_ESCAPABLES.put("\"", "\\\"");
-		this.STRING_ESCAPABLES.put("\n", "\\\n");
-		this.STRING_ESCAPABLES.put("\r", "\\\r");
-		this.STRING_ESCAPABLES.put("\t", "\\\t");
+		NESTABLE.put(SYNTAX.FENCE_OBJECT[0], SYNTAX.FENCE_OBJECT[1]);
+		NESTABLE.put(SYNTAX.FENCE_ARRAY[0], SYNTAX.FENCE_ARRAY[1]);
 
-		this.SYNTAX = new Syntax();
-
-		this.SYNTAX_NESTABLE = new HashMap<>();
-		this.SYNTAX_NESTABLE.put(this.SYNTAX.OBJECT_START, this.SYNTAX.OBJECT_END);
-		this.SYNTAX_NESTABLE.put(this.SYNTAX.ARRAY_START, this.SYNTAX.ARRAY_END);
-
-		this.SYNTAX_LITERAL = new HashMap<>();
-		this.SYNTAX_LITERAL.put(this.SYNTAX.STRING_START, this.SYNTAX.STRING_END);
-		this.SYNTAX_LITERAL.put(this.SYNTAX.COMMENT_START, this.SYNTAX.COMMENT_END);
-		this.SYNTAX_LITERAL.put(this.SYNTAX.COMMENT_LINE_START, this.SYNTAX.COMMENT_LINE_END);
-
-		this.SYNTAX_COMMENT = new HashMap<>();
-		this.SYNTAX_COMMENT.put(this.SYNTAX.COMMENT_START, this.SYNTAX.COMMENT_END);
-		this.SYNTAX_COMMENT.put(this.SYNTAX.COMMENT_LINE_START, this.SYNTAX.COMMENT_LINE_END);
+		LITERAL.putAll(SYNTAX.FENCE_COMMENT);
+		LITERAL.put(SYNTAX.FENCE_STRING[0], SYNTAX.FENCE_STRING[1]);
 
 		return this;
 	}
@@ -1067,76 +994,123 @@ public class JSON extends AbstractFormat {
 	 */
 	public static class Syntax {
 		/**
+		 * The relationships between strings and theirs escapes.
+		 * <pre>
+		 *     key = string
+		 *     value = text
+		 * </pre>
+		 */
+		public Map<String, String> ESCAPABLES = new HashMap<>();
+		/**
 		 * Array end char on JSON.
+		 * <pre>
+		 *     [0] = start
+		 *     [1] = end
+		 * </pre>
 		 */
-		public String ARRAY_END = "]";
+		public String[] FENCE_ARRAY;
 		/**
-		 * Array start char on JSON.
+		 * The comment symbols.
+		 * <pre>
+		 *     key = start
+		 *     value = end
+		 * </pre>
 		 */
-		public String ARRAY_START = "[";
+		public Map<String, String> FENCE_COMMENT = new HashMap<>();
 		/**
-		 * Declare that the comment ended.
+		 * Object end char on JSON.
+		 * <pre>
+		 *     [0] = start
+		 *     [1] = end
+		 * </pre>
 		 */
-		public String COMMENT_END = "*/";
+		public String[] FENCE_OBJECT;
 		/**
-		 * Declare that the line comment ended.
+		 * String start char on JSON.
+		 * <pre>
+		 *     [0] = start
+		 *     [1] = end
+		 * </pre>
 		 */
-		public String COMMENT_LINE_END = "\n";
-		/**
-		 * Declare that the next characters are commented. Until the {@link #COMMENT_LINE_END} cancel it.
-		 */
-		public String COMMENT_LINE_START = "//";
-		/**
-		 * Declare that further characters are commented. Until the {@link #COMMENT_END} cancel it.
-		 */
-		public String COMMENT_START = "/*";
-		/**
-		 * Pair mapping char on JSON.
-		 */
-		public String DECLARATION = ":";
+		public String[] FENCE_STRING;
+
 		/**
 		 * Pair equation char on other JSON like formats.
+		 * <pre>
+		 *     [0] = primary
+		 *     [>0] = alternative
+		 * </pre>
 		 */
-		public String EQUATION = "=";
+		public String[] OPERATOR_DECLARATION;
+		/**
+		 * Members separator char on JSON.
+		 * <pre>
+		 *     [0] = primary
+		 *     [>0] = alternative
+		 * </pre>
+		 */
+		public String[] OPERATOR_SEPARATOR;
+
 		/**
 		 * The value false of the type boolean on JSON.
+		 * <pre>
+		 *     [0] = true
+		 *     [1] = false
+		 * </pre>
 		 */
-		public String FALSE = "false";
+		public String[] VALUE_BOOLEAN;
 		/**
-		 * Member end char on JSON.
+		 * The value null on JSON.
+		 * <pre>
+		 *     [0] = primary
+		 *     [>0] = alternative
+		 * </pre>
 		 */
-		public String MEMBER_END = ",";
+		public String[] VALUE_NULL;
+		/**
+		 * What json will identify as a part of a number.
+		 */
+		public String[] VALUE_NUMBER;
+
 		/**
 		 * A symbol used to shows a line. To make the code more readable.
 		 */
-		public String NEW_LINE = "\n";
-		/**
-		 * The value null on JSON.
-		 */
-		public String NULL = "null";
-		/**
-		 * Object end char on JSON.
-		 */
-		public String OBJECT_END = "}";
-		/**
-		 * Object start char on JSON.
-		 */
-		public String OBJECT_START = "{";
-		/**
-		 * String start char on JSON.
-		 */
-		public String STRING_END = "\"";
-		/**
-		 * String end char on JSON.
-		 */
-		public String STRING_START = "\"";
+		public String WS_LN = "\n";
 		/**
 		 * A symbol used to show a gap between characters. TO make the code more readable.
 		 */
-		public String TAB = "\t";
+		public String WS_TAB = "\t";
+
 		/**
-		 * The value true of the type boolean on JSON.
+		 * Set the defaults of this syntax.
+		 *
+		 * @return this
 		 */
-		public String TRUE = "true";
+		public Syntax setDefaults() {
+			ESCAPABLES.put("\\", "\\\\");
+			ESCAPABLES.put("\"", "\\\"");
+			ESCAPABLES.put("\n", "\\\n");
+			ESCAPABLES.put("\r", "\\\r");
+			ESCAPABLES.put("\t", "\\\t");
+
+			FENCE_COMMENT.put("/*", "*/");
+			FENCE_COMMENT.put("//", "\n");
+
+			FENCE_ARRAY = new String[]{"[", "]"};
+			FENCE_OBJECT = new String[]{"{", "}"};
+			FENCE_STRING = new String[]{"\"", "\""};
+
+			OPERATOR_DECLARATION = new String[]{":", "="};
+			OPERATOR_SEPARATOR = new String[]{","};
+
+			VALUE_BOOLEAN = new String[]{"true", "false"};
+			VALUE_NULL = new String[]{"null"};
+			VALUE_NUMBER = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-"};
+
+			WS_LN = "\n";
+			WS_TAB = "\t";
+
+			return this;
+		}
 	}
 }

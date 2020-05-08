@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.*;
 
 @SuppressWarnings({"JavaDoc", "SpellCheckingInspection"})
@@ -34,12 +35,12 @@ public class JSONTest {
 		List<Object> list = JSON.global.cparse(source);
 
 		Assert.assertEquals("Wrong size", 3, list.size());
-		Assert.assertEquals("Wrong 1st element", 3, list.get(0));
-		Assert.assertEquals("Wrong 2nd element", 5, list.get(1));
+		Assert.assertEquals("Wrong 1st element", new BigDecimal(3), list.get(0));
+		Assert.assertEquals("Wrong 2nd element", new BigDecimal(5), list.get(1));
 
 		Map<Object, Object> map = (Map<Object, Object>) list.get(2);
 
-		Assert.assertEquals("Wrong element in the key 9", "abc", map.get(9));
+		Assert.assertEquals("Wrong element in the key 9", "abc", map.get(new BigDecimal(9)));
 	}
 
 	@Test
@@ -51,8 +52,8 @@ public class JSONTest {
 		JSON.global.cparse(new StringReader(source), map);
 
 		Assert.assertEquals("Unexpected length", 2, map.size());
-		Assert.assertEquals("the key 'a' stores unexpected value", 3, map.get("a"));
-		Assert.assertEquals("the key 'b' stores unexpected value", 4, map.get("b"));
+		Assert.assertEquals("the key 'a' stores unexpected value", new BigDecimal(3), map.get("a"));
+		Assert.assertEquals("the key 'b' stores unexpected value", new BigDecimal(4), map.get("b"));
 	}
 
 	@Test
@@ -68,8 +69,8 @@ public class JSONTest {
 
 		Assert.assertEquals("expected singleton collection!", 1, collection.size());
 		Assert.assertEquals("expected singleton map!", 1, map.size());
-		Assert.assertEquals("wrong member value", 0, collection.iterator().next());
-		Assert.assertEquals("wrong member value", 0, map.get(0));
+		Assert.assertEquals("wrong member value", new BigDecimal(0), collection.iterator().next());
+		Assert.assertEquals("wrong member value", new BigDecimal(0), map.get(new BigDecimal(0)));
 
 		try {
 			JSON.global.cparse("{,}");
@@ -93,14 +94,14 @@ public class JSONTest {
 		Map<Object, Object> base = new HashMap<>(3);
 		Map<Object, Object> map = new HashMap<>(3);
 		base.put("map", map);
-		map.put("number", Arrays.asList(9L, 3L, 5L));
+		map.put("number", Arrays.asList(9, 3, 5));
 
 		String expected = "{\n" +
 						  "\t\"map\":{\n" +
 						  "\t\t\"number\":[\n" +
-						  "\t\t\t9L,\n" +
-						  "\t\t\t3L,\n" +
-						  "\t\t\t5L\n" +
+						  "\t\t\t9,\n" +
+						  "\t\t\t3,\n" +
+						  "\t\t\t5\n" +
 						  "\t\t]\n" +
 						  "\t}\n" +
 						  "}";
@@ -145,12 +146,12 @@ public class JSONTest {
 
 		Assert.assertSame("Instance not overwritten", nestedOver, nestedOverAfter);
 		Assert.assertEquals("Wrong member value", "def", list.get(1));
-		Assert.assertEquals("Wrong member value", new ArrayList<>(Collections.singletonList(0)), list.get(2));
+		Assert.assertEquals("Wrong member value", new ArrayList<>(Collections.singletonList(new BigDecimal(0))), list.get(2));
 
 		Assert.assertEquals("Wrong over size", 2, nestedOverAfter.size());
 
 		Assert.assertEquals("Wrong member value", "def", nestedOverAfter.get(0));
-		Assert.assertEquals("Wrong member value", new ArrayList<>(Collections.singletonList(0)), nestedOverAfter.get(1));
+		Assert.assertEquals("Wrong member value", new ArrayList<>(Collections.singletonList(new BigDecimal(0))), nestedOverAfter.get(1));
 
 		source = "[[\"jhi\"]]";
 
@@ -169,11 +170,11 @@ public class JSONTest {
 
 	@Test
 	public void parse_object_array_nested() {
-		Map<String, Map<String, List<Number>>> val = JSON.global.cparse("{\"map\":{\"number\":[9, 3, 5]}}");
-		Map<String, List<Number>> map = val.get("map");
-		List<Number> number = map.get("number");
-		Assert.assertEquals("first number not detected", 9L, number.get(0).longValue());
-		Assert.assertEquals("second number not detected", 3L, number.get(1).longValue());
-		Assert.assertEquals("third number not detected", 5L, number.get(2).longValue());
+		Map<String, Map<String, List>> val = JSON.global.cparse("{\"map\":{\"number\":[9, 3, 5]}}");
+		Map<String, List> map = val.get("map");
+		List number = map.get("number");
+		Assert.assertEquals("first number not detected", new BigDecimal(9), number.get(0));
+		Assert.assertEquals("second number not detected", new BigDecimal(3), number.get(1));
+		Assert.assertEquals("third number not detected", new BigDecimal(5), number.get(2));
 	}
 }
