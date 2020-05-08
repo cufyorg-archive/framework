@@ -79,6 +79,56 @@ final public class Stringz {
 	}
 
 	/**
+	 * Determine if the given string ends with any of the given sequences.
+	 *
+	 * @param string    to check
+	 * @param sequences to chek for
+	 * @return the first sequence that the string ended with, or null if the string does not end with any of the given sequences
+	 * @throws NullPointerException if the given 'string' or 'sequences' is null
+	 */
+	public static CharSequence endsWith(String string, CharSequence... sequences) {
+		Objects.requireNonNull(string, "string");
+		Objects.requireNonNull(sequences, "sequences");
+
+		for (CharSequence sequence : sequences)
+			if (string.endsWith(sequence.toString()))
+				return sequence;
+
+		return null;
+	}
+
+	/**
+	 * Get given string repeated many times as given.
+	 * <br><br><b>example</b>
+	 * <pre>
+	 * repeat("abc_", 3) == "abc_abc_abc_"
+	 * </pre>
+	 *
+	 * @param string to repeat from
+	 * @param times  to repeat
+	 * @return new string created from repeated given string
+	 * @throws NullPointerException     if the given string or delimiter is null
+	 * @throws IllegalArgumentException if the given 'times' is negative
+	 */
+	public static String repeat(String string, int times) {
+		Objects.requireNonNull(string, "string");
+		if (times < 0)
+			throw new IllegalArgumentException("times is negative");
+
+		if (times == 0)
+			return "";
+
+		final int sl = string.length();
+		final int length = sl * times;
+
+		char[] chars = new char[length];
+		for (int i = 0; i < length; i += sl)
+			string.getChars(0, sl, chars, i);
+
+		return new String(chars);
+	}
+
+	/**
 	 * Get given string repeated many times as given.
 	 * <br><br><b>example</b>
 	 * <pre>
@@ -121,33 +171,21 @@ final public class Stringz {
 	}
 
 	/**
-	 * Get given string repeated many times as given.
-	 * <br><br><b>example</b>
-	 * <pre>
-	 * repeat("abc_", 3) == "abc_abc_abc_"
-	 * </pre>
+	 * Determine if the given string starts with any of the given sequences.
 	 *
-	 * @param string to repeat from
-	 * @param times  to repeat
-	 * @return new string created from repeated given string
-	 * @throws NullPointerException     if the given string or delimiter is null
-	 * @throws IllegalArgumentException if the given 'times' is negative
+	 * @param string    to check
+	 * @param sequences to chek for
+	 * @return the first sequence that the string started with, or null if the string does not start with any of the given sequences
+	 * @throws NullPointerException if the given 'string' or 'sequences' is null
 	 */
-	public static String repeat(String string, int times) {
+	public static CharSequence startsWith(String string, CharSequence... sequences) {
 		Objects.requireNonNull(string, "string");
-		if (times < 0)
-			throw new IllegalArgumentException("times is negative");
+		Objects.requireNonNull(sequences, "sequences");
 
-		if (times == 0)
-			return "";
+		for (CharSequence sequence : sequences)
+			if (string.startsWith(sequence.toString()))
+				return sequence;
 
-		final int sl = string.length();
-		final int length = sl * times;
-
-		char[] chars = new char[length];
-		for (int i = 0; i < length; i += sl)
-			string.getChars(0, sl, chars, i);
-
-		return new String(chars);
+		return null;
 	}
 }
