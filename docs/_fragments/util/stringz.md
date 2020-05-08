@@ -12,7 +12,7 @@ description: Utilities for strings
 - `all(String, CharSequence...)` returns the first missing queries from the
 provided queries in the provided string. 
 <br><br>
-```java
+```java 
     String string = "abcd";
     
     CharSequence query = Stringz.all(string, "bc", "x", "ab", "r");
@@ -29,7 +29,7 @@ provided queries in the provided string.
 <br>
 
 - `any(String, CharSequence...)` returns the first query from the 
-provided query in the provided string.
+provided queries found in the provided string.
 <br><br>
 ```java 
     String string = "abcd";
@@ -38,7 +38,7 @@ provided query in the provided string.
 
     assert query.equals("ab");
 ```
-```java
+```java 
     String string = "abcd";
     
     CharSequence query = Stringz.any(string, "x", "y", "z");
@@ -47,17 +47,55 @@ provided query in the provided string.
 ```
 <br>
 
+- `endsWith(String, CharSequence)` returns the first sequence from
+the provided sequences that the provided string ends with.
+<br><br>
+```java 
+    String string = "abcd";
+
+    CharSequence sequence = Stringz.endsWith(string, "c", "d", "cd");
+
+    assert sequence.equals("d");
+```
+```java 
+    String string = "abcd";
+
+    CharSequence sequence = Stringz.endsWith(string, "c", "a");
+
+    assert sequence == null;
+```
+<br>
+
+- `startsWith(String, CharSequence)` returns the first sequence from
+the provided sequences that the provided string starts with.
+<br><br>
+```java 
+    String string = "abcd";
+
+    CharSequence sequence = Stringz.startsWith(string, "c", "a", "ab");
+
+    assert sequence.equals("a");
+```
+```java 
+    String string = "abcd";
+
+    CharSequence sequence = Stringz.startsWith(string, "c", "d");
+
+    assert sequence == null;
+```
+<br>
+
 - `repeat(...)` construct a string from repeating the provided string
 the provided times and append between them the delimiter (if provided).
 <br><br>
-```java
+```java 
     String string = "a";
 
     String repeated = Stringz.repeat(string, /*times*/ 3);
 
     assert repeated.equals("aaa");
 ```
-```java
+```java 
     String string = "a";
     String delimiter = "|";
 
