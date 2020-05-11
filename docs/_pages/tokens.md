@@ -1,5 +1,4 @@
 ---
-beta: true
 index: 3
 name: tokens
 layout: page
