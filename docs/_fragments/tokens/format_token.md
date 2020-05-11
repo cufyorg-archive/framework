@@ -6,7 +6,7 @@ title: Format Token
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/FormatToken.java
     Javadoc: https://framework.cufy.org/javadoc/cufy/text/FormatToken.html
-description:
+description: >-
     The Format Token is a token for a formatting operation witch is writing
     a text that represents a value of a java object to be stored or
     transferred. The token holds the output writer to be written on, the

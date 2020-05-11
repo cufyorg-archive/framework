@@ -6,7 +6,7 @@ title: Classify Token
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/ClassifyToken.java
     Javadoc: https://framework.cufy.org/javadoc/cufy/text/ClassifyToken.html
-description:
+description: >-
     The Classify Token is a token for a classification operation witch is
     determining the way to parse a text and the type of the result from
     parsing the text. The token holds the reader that its text should be

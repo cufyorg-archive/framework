@@ -6,7 +6,7 @@ title: Parse Token
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/ParseToken.java
     Javadoc: https://framework.cufy.org/javadoc/cufy/text/ParseToken.html
-description:
+description: >-
     The Parse Token is a token for a parsing operation witch is storing the
     value of a text in a java object so it could accessed more easier.
     The token holds the reader that its text should be parsed, the result

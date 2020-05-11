@@ -7,7 +7,7 @@ title: Convert Token
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/convert/ConvertToken.java
     Javadoc: https://framework.cufy.org/javadoc/cufy/convert/ConvertToken.html
-description:
+description: >-
     The Convert Token is a token for object converting operation witch
     is converting the value of an object from a class to a different
     class. The token holds the input object, the output object, the
