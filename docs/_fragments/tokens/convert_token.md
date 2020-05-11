@@ -36,7 +36,7 @@ description: >-
     //if th product given is null or not valid
     Clazz outClz = //...;
 
-    ConvertToken token = new ConvertToken(parent, in, out, inClz, outClz);
+    ConvertToken token = new ConvertToken(parent,in,out,inClz,outClz);
     //if no parent: new ConvertToken(in, out, inClz, outClz);
 
     assert token.parent == parent;

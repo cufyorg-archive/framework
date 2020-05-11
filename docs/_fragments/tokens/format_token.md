@@ -29,7 +29,7 @@ description: >-
     //the clazz's klass is used to annotate it as the class in the text
     Clazz klazz = //...;
     
-    FormatToken token = new FormatToken(parent, instance, writer, klazz);
+    FormatToken token = new FormatToken(parent,instance,writer,klazz);
     //if no parent: new FormatToken(instance, writer, klazz);
     
     assert token.parent == parent;

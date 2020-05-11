@@ -12,8 +12,8 @@ description: >-
 ---
 
 ```java 
-    //this is clazz of an ArrayList that should be treated as a Set an its 
-    //component type is String
+    //this is clazz of an ArrayList that should be treated
+    //as a Set an its component type is String
     @Type(
         value = ArrayList.class,
         family = Set.class,

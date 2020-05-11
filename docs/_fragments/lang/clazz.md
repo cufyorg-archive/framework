@@ -21,10 +21,15 @@ returned clazz should represent (for example, used for constructing a new
 instance). And accepts the component types of the clazz that should be respected.
 <br><br>
 ```java 
-    //the clazz below should be treated as if it was a Set. and if a new instance
-    //needed it should be a new instance of ArrayList. And anyone should really
-    //respect that this clazz only allow String elements. 
-    Clazz klazz = Clazz.of(Set.class, ArrayList.class, Clazz.of(String.class));
+    //the clazz below should be treated as if it was a Set. and if
+    //a new instance needed it should be a new instance of ArrayList.
+    //And anyone should really respect that this clazz only allow
+    //String elements. 
+    Clazz klazz = Clazz.of(
+        Set.class,
+        ArrayList.class,
+        Clazz.of(String.class)
+    );
 ```
 <br>
 
