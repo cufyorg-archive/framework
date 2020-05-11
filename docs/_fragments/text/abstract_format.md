@@ -1,6 +1,6 @@
 ---
 beta: true
-index: 5
+index: 4
 layout: fragment
 parent: text
 title: AbstractFormat

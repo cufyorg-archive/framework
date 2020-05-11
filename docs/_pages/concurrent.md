@@ -1,6 +1,6 @@
 ---
 beta: true
-index: 7
+index: 8
 name: concurrent
 layout: page
 title: Concurrent

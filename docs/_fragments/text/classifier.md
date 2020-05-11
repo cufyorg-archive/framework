@@ -1,6 +1,6 @@
 ---
 beta: true
-index: 1
+index: 0
 layout: fragment
 parent: text
 title: Classifier

@@ -1,6 +1,6 @@
 ---
 beta: true
-index: 4
+index: 5
 name: text
 layout: page
 title: Text

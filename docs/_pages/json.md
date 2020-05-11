@@ -1,6 +1,6 @@
 ---
 beta: true
-index: 5
+index: 6
 name: json
 layout: page
 title: JSON

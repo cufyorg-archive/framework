@@ -1,6 +1,6 @@
 ---
 beta: true
-index: 8
+index: 9
 name: io
 layout: page
 title: IO

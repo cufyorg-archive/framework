@@ -1,6 +1,6 @@
 ---
 beta: true
-index: 6
+index: 5
 layout: fragment
 parent: text
 title: SyntaxTracker

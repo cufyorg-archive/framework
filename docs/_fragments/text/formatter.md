@@ -1,6 +1,6 @@
 ---
 beta: true
-index: 3
+index: 2
 layout: fragment
 parent: text
 title: Formatter

@@ -1,5 +1,5 @@
 ---
-index: 6
+index: 7
 name: beans
 layout: page
 title: Beans

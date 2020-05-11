@@ -1,6 +1,6 @@
 ---
 beta: true
-index: 4
+index: 3
 layout: fragment
 parent: text
 title: Format
