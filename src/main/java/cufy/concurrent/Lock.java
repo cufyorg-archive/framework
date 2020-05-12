@@ -86,6 +86,9 @@ public class Lock<T> extends Thread implements Closeable {
 	public void close() {
 		this.assertMasterThread();
 		synchronized (this.state) {
+			if (this.state.get() == CLOSE)
+				//already closed
+				return;
 			try {
 				//change the state
 				this.state.set(CLOSE);
