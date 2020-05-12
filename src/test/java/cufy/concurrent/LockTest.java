@@ -32,6 +32,7 @@ public class LockTest {
 
 		//release the lock
 		lock.unlock();
+		Thread.sleep(50);//let it take some time to change the value
 		Assert.assertNotEquals("Lock not released", 0, integer.get());
 
 		lock.lock();
