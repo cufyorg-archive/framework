@@ -68,6 +68,11 @@
 
         <!-- links -->
         <div class="lollipop" id="links">
+            <!-- navigation -->
+            {% for navigation in layout.navigations %}
+            <a class="candy" href="{{ navigation[1] }}">{{ navigation[0] }}</a>
+            {% endfor %}
+            <!-- external -->
             {% for link in page.links %}
             <a class="candy" href="{{ link[1] }}">{{ link[0] }}</a>
             {% endfor %}
