@@ -498,7 +498,11 @@ public abstract class Loop<I, P> {
 					//wait until the caller thread invokes 'wait()'
 					synchronized (state) {
 						if (state.get()) {
+							//execute the action
 							action.accept(loop);
+							//prevent the post to be executed more than one
+							state.set(false);
+							//notify the caller thread
 							state.notify();
 						}
 					}
@@ -510,11 +514,9 @@ public abstract class Loop<I, P> {
 				//until ether interrupted or notified
 				state.wait();
 			} catch (InterruptedException e) {
-				//catch below
+				//the action ended/canceled
+				state.set(false);
 			}
-
-			//the action ended/canceled
-			state.set(false);
 		}
 		return this;
 	}
