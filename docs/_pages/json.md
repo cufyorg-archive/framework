@@ -1,5 +1,4 @@
 ---
-beta: true
 index: 6
 name: json
 layout: page
