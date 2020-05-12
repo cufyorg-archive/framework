@@ -1,7 +1,6 @@
 ---
-layout: default
+layout: home
 links:
-    Cufy: https://cufy.org/
     GitHub: https://github.com/cufyorg/framework
     Javadoc: https://framework.cufy.org/javadoc
     YouTube: https://youtube.com/playlist?list=PL4GvMdlkZJ6Y1SkrorANkRHArohilF2Ye
