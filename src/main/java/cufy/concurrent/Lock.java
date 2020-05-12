@@ -65,7 +65,6 @@ public class Lock<T> extends Thread implements Closeable {
 	 */
 	public Lock(T lock) {
 		Objects.requireNonNull(lock, "lock");
-		this.setDaemon(true);
 		this.lock = lock;
 		this.master = Thread.currentThread();
 	}
@@ -74,7 +73,6 @@ public class Lock<T> extends Thread implements Closeable {
 	 * Initialise a new lock. Locking on itself.
 	 */
 	public Lock() {
-		this.setDaemon(true);
 		this.lock = (T) this;
 		this.master = Thread.currentThread();
 	}
