@@ -34,15 +34,15 @@ public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * The lock holder should end it's thread.
 	 */
-	final static protected int CLOSED = -1;
+	final static protected int CLOSE = -1;
 	/**
 	 * The lock holder should gain it's targeted lock.
 	 */
-	final static protected int LOCKED = 1;
+	final static protected int LOCK = 1;
 	/**
 	 * The lock holder should release it's targeted lock.
 	 */
-	final static protected int UNLOCKED = 0;
+	final static protected int UNLOCK = 0;
 
 	/**
 	 * The targeted lock.
@@ -55,7 +55,7 @@ public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * The reference to communicate with the lock holder thread. Representing the state integer code.
 	 */
-	final protected AtomicInteger state = new AtomicInteger(CLOSED);
+	final protected AtomicInteger state = new AtomicInteger(UNLOCK);
 
 	/**
 	 * Initialize a new lock holder.
@@ -88,12 +88,17 @@ public class Lock<T> extends Thread implements Closeable {
 	public void close() {
 		this.assertMasterThread();
 		synchronized (this.state) {
-			this.state.set(CLOSED);
-			this.state.notify();
-		}
-		try {
-			this.join();
-		} catch (InterruptedException ignored) {
+			try {
+				//change the state
+				this.state.set(CLOSE);
+				//notify the thread
+				this.state.notify();
+				//wait for the thread to do its job
+				this.state.wait();
+				//wait for the thread to die
+				this.join();
+			} catch (InterruptedException ignored) {
+			}
 		}
 	}
 
@@ -108,13 +113,13 @@ public class Lock<T> extends Thread implements Closeable {
 		while (true) {
 			synchronized (this.state) {
 				switch (this.state.get()) {
-					case UNLOCKED:
-						this.release0();
+					case UNLOCK:
+						this.unlock0();
 						break;
-					case LOCKED:
+					case LOCK:
 						this.lock0();
 						break;
-					case CLOSED:
+					case CLOSE:
 						this.close0();
 						return;
 					default:
@@ -136,8 +141,11 @@ public class Lock<T> extends Thread implements Closeable {
 			if (!this.isAlive())
 				this.start();
 			try {
-				this.state.set(LOCKED);
+				//change the state
+				this.state.set(LOCK);
+				//notify the thread
 				this.state.notify();
+				//wait for the thread to do its job
 				this.state.wait();
 			} catch (InterruptedException ignored) {
 			}
@@ -155,8 +163,11 @@ public class Lock<T> extends Thread implements Closeable {
 			if (!this.isAlive())
 				return;
 			try {
-				this.state.set(UNLOCKED);
+				//change the state
+				this.state.set(UNLOCK);
+				//notify the thread
 				this.state.notify();
+				//wait for the thread to do its job
 				this.state.wait();
 			} catch (InterruptedException ignored) {
 			}
@@ -171,6 +182,7 @@ public class Lock<T> extends Thread implements Closeable {
 	protected void close0() {
 		this.assertThisThread();
 		synchronized (this.state) {
+			//notify the caller
 			this.state.notify();
 		}
 	}
@@ -185,7 +197,9 @@ public class Lock<T> extends Thread implements Closeable {
 		synchronized (this.state) {
 			synchronized (this.lock) {
 				try {
+					//notify the caller
 					this.state.notify();
+					//wait until the state changes
 					this.state.wait();
 				} catch (InterruptedException ignored) {
 				}
@@ -198,11 +212,13 @@ public class Lock<T> extends Thread implements Closeable {
 	 *
 	 * @throws IllegalThreadException if the caller thread isn't this thread
 	 */
-	protected void release0() {
+	protected void unlock0() {
 		this.assertThisThread();
 		synchronized (this.state) {
 			try {
+				//notify the caller
 				this.state.notify();
+				//wait until the state changes
 				this.state.wait();
 			} catch (InterruptedException ignored) {
 			}

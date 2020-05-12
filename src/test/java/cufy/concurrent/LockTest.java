@@ -7,39 +7,43 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("JavaDoc")
 public class LockTest {
-	@Test(timeout = 50)
+	@Test(timeout = 5000)
 	public void lock_release_close() throws InterruptedException {
+		//a thing to lock
 		AtomicInteger integer = new AtomicInteger(0);
+		//the lock to be tested
 		Lock<Object> lock = new Lock<>(integer);
 
-		Forever parallel = new Forever(loop -> {
+		//a thread competing on the lock
+		Forever forever = new Forever(loop -> {
 			synchronized (integer) {
 				integer.addAndGet(1);
 			}
 		});
 
-		parallel.thread();
-		parallel.pair();
+		//gain the lock
+		lock.lock();
+		//start the thread
+		forever.thread();
+		Assert.assertEquals("Lock not locked: after thread()", 0, integer.get());
+		//even after sometime
+		forever.synchronously(l -> {}, l -> {}, 50);
+		Assert.assertEquals("Lock not locked: after pair()", 0, integer.get());
+
+		//release the lock
+		lock.unlock();
+		Assert.assertNotEquals("Lock not released", 0, integer.get());
 
 		lock.lock();
+		int i = integer.get();
 
-		int current = integer.get();
+		Thread.sleep(50);
 
-		Thread.sleep(5);
+		Assert.assertEquals("Lock not locked", i, integer.get());
 
-		Assert.assertEquals("Lock not locked", current, integer.get());
-
-		lock.unlock();
-
-		Thread.sleep(5);
-
-		synchronized (integer) {
-			Assert.assertNotEquals("Lock not released", current, integer.get());
-		}
-
-		parallel.notify(Loop.BREAK);
-		parallel.join();
+		//first close the lock to be able to notify the loop
 		lock.close();
+		forever.notify(Loop.BREAK).join();
 
 		Assert.assertFalse("Lock not closed", lock.isAlive());
 
@@ -50,7 +54,7 @@ public class LockTest {
 		}
 	}
 
-	@Test(timeout = 50)
+	@Test
 	public void wrong_caller() throws InterruptedException {
 		Lock[] lock = new Lock[1];
 
