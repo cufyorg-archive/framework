@@ -139,6 +139,9 @@ public class Lock<T> extends Thread implements Closeable {
 	public void lock() {
 		this.assertMasterThread();
 		synchronized (this.state) {
+			if (this.state.get() == LOCK)
+				//if already locked
+				return;
 			if (!this.isAlive())
 				this.start();
 			try {
@@ -161,7 +164,9 @@ public class Lock<T> extends Thread implements Closeable {
 	public void unlock() {
 		this.assertMasterThread();
 		synchronized (this.state) {
-			if (!this.isAlive())
+			int s = this.state.get();
+			if (s == UNLOCK || s == CLOSE || !this.isAlive())
+				//if already released
 				return;
 			try {
 				//change the state
