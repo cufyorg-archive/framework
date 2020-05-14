@@ -38,33 +38,29 @@ import java.util.Objects;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Filter {
 	/**
-	 * Classes in range (subclasses NOT included).
-	 *
-	 * @return absolute classes in range
-	 */
-	Class<?>[] include() default {};
-
-	/**
 	 * Classes not in range (subclasses NOT included).
 	 *
 	 * @return absolute classes not in range
 	 */
 	Class<?>[] exclude() default {};
-
-	/**
-	 * Classes in range (subclasses included).
-	 *
-	 * @return super classes in range
-	 */
-	Class<?>[] includeAll() default {};
-
 	/**
 	 * Classes not in range (subclasses included).
 	 *
 	 * @return super classes not in range
 	 */
 	Class<?>[] excludeAll() default {};
-
+	/**
+	 * Classes in range (subclasses NOT included).
+	 *
+	 * @return absolute classes in range
+	 */
+	Class<?>[] include() default {};
+	/**
+	 * Classes in range (subclasses included).
+	 *
+	 * @return super classes in range
+	 */
+	Class<?>[] includeAll() default {};
 	/**
 	 * Classes in range (subclasses NOT included).
 	 *

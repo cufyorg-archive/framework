@@ -36,6 +36,10 @@ public class ParseToken<T> {
 	 */
 	final public Map data = new HashMap();
 	/**
+	 * The depth of this token form the first parent.
+	 */
+	final public int depth;
+	/**
 	 * The reader to read the input from.
 	 */
 	final public Reader input;
@@ -51,10 +55,6 @@ public class ParseToken<T> {
 	 * A table of data globally shared across this token and it's sub-tokens.
 	 */
 	final public Map tree;
-	/**
-	 * The depth of this token form the first parent.
-	 */
-	final public int depth;
 	/**
 	 * The class that the output should have.
 	 */
