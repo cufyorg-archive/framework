@@ -1,5 +1,4 @@
 ---
-beta: true
 index: 9
 name: io
 layout: page

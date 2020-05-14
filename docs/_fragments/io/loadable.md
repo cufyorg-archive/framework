@@ -1,5 +1,4 @@
 ---
-beta: true
 index: 0
 layout: fragment
 parent: io
@@ -14,13 +13,15 @@ description: >-
     be transferred, as long as the data will be transferred successfully.
 ---
 
-- `getInputStream(...)` `getReader(...)` TODO
+- `getInputStream(...)` `getReader(...)` returns a buffered input-stream/reader to get
+data from the data-source of the loadable.
 <br>
 
-- `getOutputStream(...)` `getWriter(...)` TODO
+- `getOutputStream(...)` `getWriter(...)` returns an output-stream/writer to save data
+on the data-source of the loadable. 
 <br>
 
-- `load(...)` TODO
+- `load(...)` makes the loadable load data from its data-source to itself.
 <br>
 
-- `save(...)` TODO
+- `save(...)` makes the loadable save data from itself to its data-source.
