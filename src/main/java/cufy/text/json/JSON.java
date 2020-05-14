@@ -1038,7 +1038,7 @@ public class JSON extends AbstractFormat {
 		 * Pair equation char on other JSON like formats.
 		 * <pre>
 		 *     [0] = primary
-		 *     [>0] = alternative
+		 *     [&gt;0] = alternative
 		 * </pre>
 		 */
 		public String[] OPERATOR_DECLARATION;
@@ -1046,7 +1046,7 @@ public class JSON extends AbstractFormat {
 		 * Members separator char on JSON.
 		 * <pre>
 		 *     [0] = primary
-		 *     [>0] = alternative
+		 *     [&gt;0] = alternative
 		 * </pre>
 		 */
 		public String[] OPERATOR_SEPARATOR;
@@ -1063,7 +1063,7 @@ public class JSON extends AbstractFormat {
 		 * The value null on JSON.
 		 * <pre>
 		 *     [0] = primary
-		 *     [>0] = alternative
+		 *     [&gt;0] = alternative
 		 * </pre>
 		 */
 		public String[] VALUE_NULL;
