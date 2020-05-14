@@ -69,7 +69,7 @@ public class JSONConverter extends BaseConverter {
 			output = @Filter(
 					in = String.class
 			))
-	protected void object_string(ConvertToken<Object, String> token) {
+	protected void objectToString(ConvertToken<Object, String> token) {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 		}
@@ -108,7 +108,7 @@ public class JSONConverter extends BaseConverter {
 						  long.class,
 						  short.class
 					}))
-	protected void string_object(ConvertToken<String, Object> token) {
+	protected void stringToObject(ConvertToken<String, Object> token) {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 		}

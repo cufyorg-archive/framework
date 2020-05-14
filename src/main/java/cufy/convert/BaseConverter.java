@@ -33,34 +33,35 @@ import java.util.*;
  *     <li>
  *         <b>Collections</b>
  *         <ul>
- *             <li>{@link #collection_array}</li>
- *             <li>{@link #collection_collection}</li>
- *             <li>{@link #collection_list}</li>
+ *             <li>{@link #collectionToArray}</li>
+ *             <li>{@link #collectionToCollection}</li>
+ *             <li>{@link #collectionToList}</li>
  *         </ul>
  *     </li>
  *     <li>
  *         <b>Maps</b>
  *         <ul>
- *             <li>{@link #map_map}</li>
+ *             <li>{@link #mapToMap}</li>
  *         </ul>
  *     </li>
  *     <li>
  *         <b>Numbers</b>
  *         <ul>
- *             <li>{@link #number_byte}</li>
- *             <li>{@link #number_double}</li>
- *             <li>{@link #number_float}</li>
- *             <li>{@link #number_integer}</li>
- *             <li>{@link #number_long}</li>
- *             <li>{@link #number_short}</li>
+ *             <li>{@link #numberToNumber}</li>
  *         </ul>
  *     </li>
  *     <li>
- *         <b>Objects</b>
+ *         <b>Strings</b>
  *         <ul>
- *             <li>{@link #object_string}</li>
- *             <li>{@link #string_object}</li>
- *             <li>{@link #dejaVu_object}</li>
+ *             <li>{@link #objectToString}</li>
+ *             <li>{@link #stringToObject}</li>
+ *         </ul>
+ *     </li>
+ *     <li>
+ *         <b>Situations</b>
+ *         <ul>
+ *             <li>{@link #dejaVu}</li>
+ *             <li>{@link #recurse}</li>
  *         </ul>
  *     </li>
  * </ul>
@@ -145,7 +146,7 @@ public class BaseConverter extends AbstractConverter {
 						  long[].class,
 						  short[].class
 					}))
-	protected void collection_array(ConvertToken<Collection, Object> token) {
+	protected void collectionToArray(ConvertToken<Collection, Object> token) {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 			Objects.requireNonNull(token.input, "token.input");
@@ -208,7 +209,7 @@ public class BaseConverter extends AbstractConverter {
 					subIn = Collection.class,
 					subOut = List.class
 			))
-	protected void collection_collection(ConvertToken<Collection, Collection> token) throws ReflectiveOperationException {
+	protected void collectionToCollection(ConvertToken<Collection, Collection> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 			Objects.requireNonNull(token.input, "token.input");
@@ -272,7 +273,7 @@ public class BaseConverter extends AbstractConverter {
 			),
 			output = @Filter(subIn = List.class)
 	)
-	protected void collection_list(ConvertToken<Collection, List> token) throws ReflectiveOperationException {
+	protected void collectionToList(ConvertToken<Collection, List> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 			Objects.requireNonNull(token.input, "token.input");
@@ -340,7 +341,7 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}))
-	protected void dejaVu_object(ConvertToken<DejaVu, Object> token) {
+	protected void dejaVu(ConvertToken<DejaVu, Object> token) {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 		}
@@ -367,7 +368,7 @@ public class BaseConverter extends AbstractConverter {
 			output = @Filter(
 					subIn = Map.class
 			))
-	protected void map_map(ConvertToken<Map, Map> token) throws ReflectiveOperationException {
+	protected void mapToMap(ConvertToken<Map, Map> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 			Objects.requireNonNull(token.input, "token.input");
@@ -402,7 +403,7 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Set the {@link ConvertToken#output} with a new {@link Byte} that holds the value of the given {@link ConvertToken#input}.
+	 * Set the {@link ConvertToken#output} with a new {@link Number} that holds the value of the given {@link ConvertToken#input}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
 	 * @throws NullPointerException if the given 'token' or 'token.input' is null
@@ -416,163 +417,53 @@ public class BaseConverter extends AbstractConverter {
 						  int.class,
 						  long.class,
 						  short.class
-					}),
+					}
+			),
 			output = @Filter(
 					in = {Byte.class,
-						  byte.class
-					}))
-	protected void number_byte(ConvertToken<Number, Byte> token) {
-		if (DEBUGGING) {
-			Objects.requireNonNull(token, "token");
-			Objects.requireNonNull(token.input, "token.input");
-		}
-
-		token.output = token.input.byteValue();
-	}
-
-	/**
-	 * Set the {@link ConvertToken#output} with a new {@link Double} that holds the value of the given {@link ConvertToken#input}.
-	 *
-	 * @param token the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException if the given 'token' or 'token.input' is null
-	 */
-	@ConvertMethod(
-			input = @Filter(
-					subIn = Number.class,
-					in = {byte.class,
+						  Double.class,
+						  Float.class,
+						  Integer.class,
+						  Long.class,
+						  Short.class,
+						  byte.class,
 						  double.class,
 						  float.class,
 						  int.class,
 						  long.class,
 						  short.class
-					}),
-			output = @Filter(
-					in = {Double.class,
-						  double.class
-					}))
-	protected void number_double(ConvertToken<Number, Double> token) {
+					}
+			)
+	)
+	protected void numberToNumber(ConvertToken<Number, Number> token) {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		token.output = token.input.doubleValue();
-	}
+		Class klass = token.outputClazz.getKlass();
 
-	/**
-	 * Set the {@link ConvertToken#output} with a new {@link Float} that holds the value of the given {@link ConvertToken#input}.
-	 *
-	 * @param token the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException if the given 'token' or 'token.input' is null
-	 */
-	@ConvertMethod(
-			input = @Filter(
-					subIn = Number.class,
-					in = {byte.class,
-						  double.class,
-						  float.class,
-						  int.class,
-						  long.class,
-						  short.class
-					}),
-			output = @Filter(
-					in = {Float.class,
-						  float.class
-					}))
-	protected void number_float(ConvertToken<Number, Float> token) {
-		if (DEBUGGING) {
-			Objects.requireNonNull(token, "token");
-			Objects.requireNonNull(token.input, "token.input");
+		if (klass == byte.class || klass == Byte.class) {
+			//BYTE
+			token.output = token.input.intValue();
+		} else if (klass == double.class || klass == Double.class) {
+			//DOUBLE
+			token.output = token.input.doubleValue();
+		} else if (klass == float.class || klass == Float.class) {
+			//FLOAT
+			token.output = token.input.floatValue();
+		} else if (klass == int.class || klass == Integer.class) {
+			//INTEGER
+			token.output = token.input.intValue();
+		} else if (klass == long.class || klass == Long.class) {
+			//LONG
+			token.output = token.input.longValue();
+		} else if (klass == short.class || klass == Short.class) {
+			//SHORT
+			token.output = token.input.shortValue();
+		} else {
+			throw new ConvertException("can't convert " + token.inputClazz + " to " + token.outputClazz);
 		}
-
-		token.output = token.input.floatValue();
-	}
-
-	/**
-	 * Set the {@link ConvertToken#output} with a new {@link Integer} that holds the value of the given {@link ConvertToken#input}.
-	 *
-	 * @param token the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException if the given 'token' or 'token.input' is null
-	 */
-	@ConvertMethod(
-			input = @Filter(
-					subIn = Number.class,
-					in = {byte.class,
-						  double.class,
-						  float.class,
-						  int.class,
-						  long.class,
-						  short.class
-					}),
-			output = @Filter(
-					in = {Integer.class,
-						  int.class
-					}))
-	protected void number_integer(ConvertToken<Number, Integer> token) {
-		if (DEBUGGING) {
-			Objects.requireNonNull(token, "token");
-			Objects.requireNonNull(token.input, "token.input");
-		}
-
-		token.output = token.input.intValue();
-	}
-
-	/**
-	 * Set the {@link ConvertToken#output} with a new {@link Long} that holds the value of the given {@link ConvertToken#input}.
-	 *
-	 * @param token the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException if the given 'token' or 'token.input' is null
-	 */
-	@ConvertMethod(
-			input = @Filter(
-					subIn = Number.class,
-					in = {byte.class,
-						  double.class,
-						  float.class,
-						  int.class,
-						  long.class,
-						  short.class
-					}),
-			output = @Filter(
-					in = {Long.class,
-						  long.class
-					}))
-	protected void number_long(ConvertToken<Number, Long> token) {
-		if (DEBUGGING) {
-			Objects.requireNonNull(token, "token");
-			Objects.requireNonNull(token.input, "token.input");
-		}
-
-		token.output = token.input.longValue();
-	}
-
-	/**
-	 * Set the {@link ConvertToken#output} with a new {@link Short} that holds the value of the given {@link ConvertToken#input}.
-	 *
-	 * @param token the conversion instance that holds the variables of this conversion
-	 * @throws NullPointerException if the given 'token' or 'token.input' is null
-	 */
-	@ConvertMethod(
-			input = @Filter(
-					subIn = Number.class,
-					in = {byte.class,
-						  double.class,
-						  float.class,
-						  int.class,
-						  long.class,
-						  short.class
-					}),
-			output = @Filter(
-					in = {Short.class,
-						  short.class
-					}))
-	protected void number_short(ConvertToken<Number, Short> token) {
-		if (DEBUGGING) {
-			Objects.requireNonNull(token, "token");
-			Objects.requireNonNull(token.input, "token.input");
-		}
-
-		token.output = token.input.shortValue();
 	}
 
 	/**
@@ -596,7 +487,7 @@ public class BaseConverter extends AbstractConverter {
 			output = @Filter(
 					in = String.class
 			))
-	protected void object_string(ConvertToken<Object, String> token) {
+	protected void objectToString(ConvertToken<Object, String> token) {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 		}
@@ -625,7 +516,7 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}))
-	protected void recurs_object(ConvertToken<Recurse, Object> token) {
+	protected void recurse(ConvertToken<Recurse, Object> token) {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 		}
@@ -660,7 +551,7 @@ public class BaseConverter extends AbstractConverter {
 						  long.class,
 						  short.class
 					}))
-	protected void string_object(ConvertToken<String, Object> token) throws ReflectiveOperationException {
+	protected void stringToObject(ConvertToken<String, Object> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 			Objects.requireNonNull(token.input, "token.input");
