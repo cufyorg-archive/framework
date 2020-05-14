@@ -15,7 +15,10 @@
  */
 package cufy.concurrent;
 
+import cufy.util.Arrayz;
+
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
@@ -47,6 +50,94 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 	/**
 	 * Initialize this.
 	 *
+	 * @param array of items to be looped foreach
+	 * @throws NullPointerException if the given array is null
+	 */
+	public Foreach(boolean[] array) {
+		Objects.requireNonNull(array, "array");
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @throws NullPointerException if the given array is null
+	 */
+	public Foreach(byte[] array) {
+		Objects.requireNonNull(array, "array");
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @throws NullPointerException if the given array is null
+	 */
+	public Foreach(char[] array) {
+		Objects.requireNonNull(array, "array");
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @throws NullPointerException if the given array is null
+	 */
+	public Foreach(double[] array) {
+		Objects.requireNonNull(array, "array");
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @throws NullPointerException if the given array is null
+	 */
+	public Foreach(float[] array) {
+		Objects.requireNonNull(array, "array");
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @throws NullPointerException if the given array is null
+	 */
+	public Foreach(int[] array) {
+		Objects.requireNonNull(array, "array");
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @throws NullPointerException if the given array is null
+	 */
+	public Foreach(long[] array) {
+		Objects.requireNonNull(array, "array");
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @throws NullPointerException if the given array is null
+	 */
+	public Foreach(short[] array) {
+		Objects.requireNonNull(array, "array");
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
 	 * @param iterable of items to be looped foreach
 	 * @throws NullPointerException if the given iterable is null
 	 */
@@ -67,6 +158,118 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 		Objects.requireNonNull(code, "code");
 		this.append(code);
 		this.iterable = Arrays.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @param code  first looping code
+	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 */
+	public Foreach(boolean[] array, BiConsumer<Foreach<Boolean>, Boolean> code) {
+		Objects.requireNonNull(array, "array");
+		Objects.requireNonNull(code, "code");
+		this.append((BiConsumer) code);
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @param code  first looping code
+	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 */
+	public Foreach(byte[] array, BiConsumer<Foreach<Byte>, Byte> code) {
+		Objects.requireNonNull(array, "array");
+		Objects.requireNonNull(code, "code");
+		this.append((BiConsumer) code);
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @param code  first looping code
+	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 */
+	public Foreach(char[] array, BiConsumer<Foreach<Character>, Character> code) {
+		Objects.requireNonNull(array, "array");
+		Objects.requireNonNull(code, "code");
+		this.append((BiConsumer) code);
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @param code  first looping code
+	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 */
+	public Foreach(double[] array, BiConsumer<Foreach<Double>, Double> code) {
+		Objects.requireNonNull(array, "array");
+		Objects.requireNonNull(code, "code");
+		this.append((BiConsumer) code);
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @param code  first looping code
+	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 */
+	public Foreach(float[] array, BiConsumer<Foreach<Float>, Float> code) {
+		Objects.requireNonNull(array, "array");
+		Objects.requireNonNull(code, "code");
+		this.append((BiConsumer) code);
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @param code  first looping code
+	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 */
+	public Foreach(int[] array, BiConsumer<Foreach<Integer>, Integer> code) {
+		Objects.requireNonNull(array, "array");
+		Objects.requireNonNull(code, "code");
+		this.append((BiConsumer) code);
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @param code  first looping code
+	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 */
+	public Foreach(long[] array, BiConsumer<Foreach<Long>, Long> code) {
+		Objects.requireNonNull(array, "array");
+		Objects.requireNonNull(code, "code");
+		this.append((BiConsumer) code);
+		this.iterable = (List) Arrayz.asList(array);
+	}
+
+	/**
+	 * Initialize this.
+	 *
+	 * @param array of items to be looped foreach
+	 * @param code  first looping code
+	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 */
+	public Foreach(short[] array, BiConsumer<Foreach<Short>, Short> code) {
+		Objects.requireNonNull(array, "array");
+		Objects.requireNonNull(code, "code");
+		this.append((BiConsumer) code);
+		this.iterable = (List) Arrayz.asList(array);
 	}
 
 	/**
