@@ -1,5 +1,4 @@
 ---
-beta: true
 index: 1
 layout: fragment
 parent: convert
@@ -18,7 +17,19 @@ The methods annotated with this method will be used by the super-class based on 
 given to the annotation.
 <br><br>
 ```java 
-    TODO
+    @ConvertMethod(
+        input = @Filter(
+            //here is the classes that is allowed for input
+            includeAll = TypeA.class
+        ),
+        output = @Filter(
+            //here is the classes that is allowed for output
+            includeAll = TypeA.class
+        )
+    )
+    protected void typeAToTypeB(ConvertToken<TypeA, TypeB> token) {
+        //here is the code that converts the input to the output
+    }
 ```
 <br>
 
@@ -26,28 +37,49 @@ given to the annotation.
 control over what should happen before converting.
 <br><br>
 ```java 
-    TODO
+    @Override
+    protected boolean convertPre(ConvertToken token) {
+        //this is just an example
+
+        //perform the superclass's pre-operations
+        if(!super.convertPre(token)) {
+            //obey the super class's respond
+            return false;
+        } else if (token.input == null) {
+            //refuse to convert null
+            throw new NullPointerException();
+        } else if (token.outputClazz.isInstance(token.input)) {
+            //take a shortcut
+            token.output = token.input;
+            //tell not to continue converting
+            return false; 
+        } else {
+            //tell to continue converting
+            return true;
+        }
+    }
 ```
 <br>
 
 - `convert0(Method, ConvertToken)` is the invoker of the converting methods.
 It manages what arguments to pass to the method, how to extract the exceptions,
-and what method is illegal.
-<br><br>
-```java 
-    TODO 
-```
+and what method is illegal and what not.
 <br>
 
 - `convertElse(ConvertToken)` gets invoked when no method found matching the requirements of the token.
 <br><br>
 ```java 
-    TODO
+    @Override
+    protected convertElse(ConvertToken token) {
+        //this is just an example
+
+        if (token.input == null) {
+            token.output = null;
+        } else {
+            throw new ConvertException();
+        }
+    }
 ```
 <br>
 
 - `getConvertMethod(Class, Class)` search for a method that matches the requirements of the token.
-<br><br>
-```java 
-    TODO
-```

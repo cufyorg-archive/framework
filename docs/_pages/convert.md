@@ -1,5 +1,4 @@
 ---
-beta: true
 index: 4
 name: convert
 layout: page

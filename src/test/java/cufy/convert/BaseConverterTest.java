@@ -9,6 +9,18 @@ import java.util.*;
 @SuppressWarnings("JavaDoc")
 public class BaseConverterTest {
 	@Test
+	public void applyTest() {
+		Object[] arr = {0, 1};
+
+		BaseConverter.global.apply(arr, Clazz.of(Object[].class, Clazz.of(Long.class)));
+
+		Assert.assertSame("wrong type", arr[0].getClass(), Long.class);
+		Assert.assertEquals("wrong value", arr[0], 0L);
+		Assert.assertSame("wrong type", arr[1].getClass(), Long.class);
+		Assert.assertEquals("wrong value", arr[1], 1L);
+	}
+
+	@Test
 	public void array_array() {
 		//deep conversion
 		{
@@ -103,5 +115,50 @@ public class BaseConverterTest {
 
 			Assert.assertSame("recursion not converted", output, output.get(0));
 		}
+	}
+
+	@Test
+	public void cloneTest() {
+		int[][] arr = {{0, 1}, {2, 3}};
+
+		int[][] clone = BaseConverter.global.clone(arr);
+
+		//the arrays are different
+		Assert.assertNotSame("Not cloning", arr, clone);
+		Assert.assertNotSame("Not cloning", arr[0], clone[0]);
+		Assert.assertNotSame("Not cloning", arr[1], clone[1]);
+
+		//but the values are the same
+		Assert.assertSame("wrong value", arr[0][0], clone[0][0]);
+		Assert.assertSame("wrong value", arr[0][1], clone[0][1]);
+		Assert.assertSame("wrong value", arr[1][0], clone[1][0]);
+		Assert.assertSame("wrong value", arr[1][1], clone[1][1]);
+	}
+
+	@Test
+	public void transTest() {
+		int[][] arr = {{0, 1}, {2, 3}};
+		long[][] lng = new long[2][2];
+
+		BaseConverter.global.convert(arr, lng);
+
+		Assert.assertSame("wrong value", (int) lng[0][0], arr[0][0]);
+		Assert.assertSame("wrong value", (int) lng[0][1], arr[0][1]);
+		Assert.assertSame("wrong value", (int) lng[1][0], arr[1][0]);
+		Assert.assertSame("wrong value", (int) lng[1][1], arr[1][1]);
+	}
+
+	@Test
+	public void condTransTest() {
+		int[] arr = {0, 1};
+		Object[] objs = new Object[2];
+
+		BaseConverter.global.convert(arr, objs, Clazz.of(Object[].class, Clazz.of(Long.class)));
+
+		Assert.assertSame("Wrong type", objs[0].getClass(), Long.class);
+		Assert.assertSame("Wrong type", objs[1].getClass(), Long.class);
+
+		Assert.assertEquals("Wrong value", objs[0], 0L);
+		Assert.assertEquals("Wrong value", objs[1], 1L);
 	}
 }
