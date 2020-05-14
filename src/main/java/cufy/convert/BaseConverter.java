@@ -123,28 +123,28 @@ public class BaseConverter extends AbstractConverter {
 	 */
 	@ConvertMethod(
 			input = @Filter(
-					subIn = {Collection.class,
-							 Object[].class,
+					includeAll = {Collection.class,
+								  Object[].class,
 					},
-					in = {boolean[].class,
-						  byte[].class,
-						  char[].class,
-						  double[].class,
-						  float[].class,
-						  int[].class,
-						  long[].class,
-						  short[].class
+					include = {boolean[].class,
+							   byte[].class,
+							   char[].class,
+							   double[].class,
+							   float[].class,
+							   int[].class,
+							   long[].class,
+							   short[].class
 					}),
 			output = @Filter(
-					subIn = Object[].class,
-					in = {boolean[].class,
-						  byte[].class,
-						  char[].class,
-						  double[].class,
-						  float[].class,
-						  int[].class,
-						  long[].class,
-						  short[].class
+					includeAll = Object[].class,
+					include = {boolean[].class,
+							   byte[].class,
+							   char[].class,
+							   double[].class,
+							   float[].class,
+							   int[].class,
+							   long[].class,
+							   short[].class
 					}))
 	protected void collectionToArray(ConvertToken<Collection, Object> token) {
 		if (DEBUGGING) {
@@ -193,21 +193,21 @@ public class BaseConverter extends AbstractConverter {
 	 */
 	@ConvertMethod(
 			input = @Filter(
-					subIn = {Collection.class,
-							 Object[].class
+					includeAll = {Collection.class,
+								  Object[].class
 					},
-					in = {boolean[].class,
-						  byte[].class,
-						  char[].class,
-						  double[].class,
-						  int[].class,
-						  float[].class,
-						  long[].class,
-						  short[].class,
+					include = {boolean[].class,
+							   byte[].class,
+							   char[].class,
+							   double[].class,
+							   int[].class,
+							   float[].class,
+							   long[].class,
+							   short[].class,
 					}),
 			output = @Filter(
-					subIn = Collection.class,
-					subOut = List.class
+					includeAll = Collection.class,
+					excludeAll = List.class
 			))
 	protected void collectionToCollection(ConvertToken<Collection, Collection> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {
@@ -258,20 +258,20 @@ public class BaseConverter extends AbstractConverter {
 	 */
 	@ConvertMethod(
 			input = @Filter(
-					subIn = {Collection.class,
-							 Object[].class
+					includeAll = {Collection.class,
+								  Object[].class
 					},
-					in = {boolean[].class,
-						  byte[].class,
-						  char[].class,
-						  double[].class,
-						  int[].class,
-						  float[].class,
-						  long[].class,
-						  short[].class
+					include = {boolean[].class,
+							   byte[].class,
+							   char[].class,
+							   double[].class,
+							   int[].class,
+							   float[].class,
+							   long[].class,
+							   short[].class
 					}
 			),
-			output = @Filter(subIn = List.class)
+			output = @Filter(includeAll = List.class)
 	)
 	protected void collectionToList(ConvertToken<Collection, List> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {
@@ -331,15 +331,15 @@ public class BaseConverter extends AbstractConverter {
 	@ConvertMethod(
 			input = @Filter(DejaVu.class),
 			output = @Filter(
-					subIn = Object.class,
-					in = {boolean.class,
-						  byte.class,
-						  char.class,
-						  double.class,
-						  float.class,
-						  int.class,
-						  long.class,
-						  short.class
+					includeAll = Object.class,
+					include = {boolean.class,
+							   byte.class,
+							   char.class,
+							   double.class,
+							   float.class,
+							   int.class,
+							   long.class,
+							   short.class
 					}))
 	protected void dejaVu(ConvertToken<DejaVu, Object> token) {
 		if (DEBUGGING) {
@@ -363,10 +363,10 @@ public class BaseConverter extends AbstractConverter {
 	 */
 	@ConvertMethod(
 			input = @Filter(
-					subIn = Map.class
+					includeAll = Map.class
 			),
 			output = @Filter(
-					subIn = Map.class
+					includeAll = Map.class
 			))
 	protected void mapToMap(ConvertToken<Map, Map> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {
@@ -410,28 +410,28 @@ public class BaseConverter extends AbstractConverter {
 	 */
 	@ConvertMethod(
 			input = @Filter(
-					subIn = Number.class,
-					in = {byte.class,
-						  double.class,
-						  float.class,
-						  int.class,
-						  long.class,
-						  short.class
+					includeAll = Number.class,
+					include = {byte.class,
+							   double.class,
+							   float.class,
+							   int.class,
+							   long.class,
+							   short.class
 					}
 			),
 			output = @Filter(
-					in = {Byte.class,
-						  Double.class,
-						  Float.class,
-						  Integer.class,
-						  Long.class,
-						  Short.class,
-						  byte.class,
-						  double.class,
-						  float.class,
-						  int.class,
-						  long.class,
-						  short.class
+					include = {Byte.class,
+							   Double.class,
+							   Float.class,
+							   Integer.class,
+							   Long.class,
+							   Short.class,
+							   byte.class,
+							   double.class,
+							   float.class,
+							   int.class,
+							   long.class,
+							   short.class
 					}
 			)
 	)
@@ -474,18 +474,18 @@ public class BaseConverter extends AbstractConverter {
 	 */
 	@ConvertMethod(
 			input = @Filter(
-					subIn = Object.class,
-					in = {byte.class,
-						  boolean.class,
-						  char.class,
-						  double.class,
-						  float.class,
-						  int.class,
-						  long.class,
-						  short.class
+					includeAll = Object.class,
+					include = {byte.class,
+							   boolean.class,
+							   char.class,
+							   double.class,
+							   float.class,
+							   int.class,
+							   long.class,
+							   short.class
 					}),
 			output = @Filter(
-					in = String.class
+					include = String.class
 			))
 	protected void objectToString(ConvertToken<Object, String> token) {
 		if (DEBUGGING) {
@@ -506,15 +506,15 @@ public class BaseConverter extends AbstractConverter {
 	@ConvertMethod(
 			input = @Filter(Recurse.class),
 			output = @Filter(
-					subIn = Object.class,
-					in = {boolean.class,
-						  byte.class,
-						  char.class,
-						  double.class,
-						  float.class,
-						  int.class,
-						  long.class,
-						  short.class
+					includeAll = Object.class,
+					include = {boolean.class,
+							   byte.class,
+							   char.class,
+							   double.class,
+							   float.class,
+							   int.class,
+							   long.class,
+							   short.class
 					}))
 	protected void recurse(ConvertToken<Recurse, Object> token) {
 		if (DEBUGGING) {
@@ -538,18 +538,18 @@ public class BaseConverter extends AbstractConverter {
 	 */
 	@ConvertMethod(
 			input = @Filter(
-					subIn = String.class
+					includeAll = String.class
 			),
 			output = @Filter(
-					subIn = Object.class,
-					in = {boolean.class,
-						  byte.class,
-						  char.class,
-						  double.class,
-						  float.class,
-						  int.class,
-						  long.class,
-						  short.class
+					includeAll = Object.class,
+					include = {boolean.class,
+							   byte.class,
+							   char.class,
+							   double.class,
+							   float.class,
+							   int.class,
+							   long.class,
+							   short.class
 					}))
 	protected void stringToObject(ConvertToken<String, Object> token) throws ReflectiveOperationException {
 		if (DEBUGGING) {

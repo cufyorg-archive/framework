@@ -24,11 +24,11 @@ import java.util.Objects;
  * <p>
  * The levels of Overriding:
  * <ul>
- *     <li>{@link #out()}</li>
- *     <li>{@link #in()}</li>
+ *     <li>{@link #exclude()}</li>
+ *     <li>{@link #include()}</li>
  *     <li>{@link #value()}</li>
- *     <li>{@link #subOut()}</li>
- *     <li>{@link #subIn()}</li>
+ *     <li>{@link #excludeAll()}</li>
+ *     <li>{@link #includeAll()}</li>
  * </ul>
  *
  * @author lsafer
@@ -42,28 +42,28 @@ public @interface Filter {
 	 *
 	 * @return absolute classes in range
 	 */
-	Class<?>[] in() default {};
+	Class<?>[] include() default {};
 
 	/**
 	 * Classes not in range (subclasses NOT included).
 	 *
 	 * @return absolute classes not in range
 	 */
-	Class<?>[] out() default {};
+	Class<?>[] exclude() default {};
 
 	/**
 	 * Classes in range (subclasses included).
 	 *
 	 * @return super classes in range
 	 */
-	Class<?>[] subIn() default {};
+	Class<?>[] includeAll() default {};
 
 	/**
 	 * Classes not in range (subclasses included).
 	 *
 	 * @return super classes not in range
 	 */
-	Class<?>[] subOut() default {};
+	Class<?>[] excludeAll() default {};
 
 	/**
 	 * Classes in range (subclasses NOT included).
@@ -97,11 +97,11 @@ public @interface Filter {
 			Objects.requireNonNull(family, "family");
 			Objects.requireNonNull(klass, "klass");
 
-			for (Class<?> exclude : family.out())
+			for (Class<?> exclude : family.exclude())
 				if (exclude == klass)
 					return false;
 
-			for (Class<?> include : family.in())
+			for (Class<?> include : family.include())
 				if (include == klass)
 					return true;
 
@@ -109,11 +109,11 @@ public @interface Filter {
 				if (include == klass)
 					return true;
 
-			for (Class<?> exclude : family.subOut())
+			for (Class<?> exclude : family.excludeAll())
 				if (exclude.isAssignableFrom(klass))
 					return false;
 
-			for (Class<?> include : family.subIn())
+			for (Class<?> include : family.includeAll())
 				if (include.isAssignableFrom(klass))
 					return true;
 

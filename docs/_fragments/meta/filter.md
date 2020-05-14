@@ -17,9 +17,9 @@ description: >-
     //this filter will include String.class, any Collection, 
     //but not any class extends List.class or the class HashSet
     @Filter(
-        in = String.class,
-        out = HashSet.class,
-        subIn = Collection.class,
-        subOut = List.class
+        include = String.class,
+        exclude = HashSet.class,
+        includeAll = Collection.class,
+        excludeAll = List.class
     )
 ```

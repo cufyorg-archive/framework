@@ -9,10 +9,10 @@ import java.util.*;
 public class FilterTest {
 	@Test
 	@Filter(
-			in = String.class,
-			out = HashSet.class,
-			subIn = Collection.class,
-			subOut = List.class
+			include = String.class,
+			exclude = HashSet.class,
+			includeAll = Collection.class,
+			excludeAll = List.class
 	)
 	public void docs() {
 		//this filter will include String.class, any Collection,
@@ -21,10 +21,10 @@ public class FilterTest {
 
 	@Test(timeout = 50)
 	@Filter(
-			in = Map.class,
-			out = HashMap.class,
-			subIn = List.class,
-			subOut = CharSequence.class
+			include = Map.class,
+			exclude = HashMap.class,
+			includeAll = List.class,
+			excludeAll = CharSequence.class
 	)
 	public void test() throws NoSuchMethodException {
 		Filter type = this.getClass().getMethod("test").getAnnotation(Filter.class);

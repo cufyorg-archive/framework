@@ -56,18 +56,18 @@ public class JSONConverter extends BaseConverter {
 	 */
 	@ConvertMethod(
 			input = @Filter(
-					subIn = Object.class,
-					in = {byte.class,
-						  boolean.class,
-						  char.class,
-						  double.class,
-						  float.class,
-						  int.class,
-						  long.class,
-						  short.class
+					includeAll = Object.class,
+					include = {byte.class,
+							   boolean.class,
+							   char.class,
+							   double.class,
+							   float.class,
+							   int.class,
+							   long.class,
+							   short.class
 					}),
 			output = @Filter(
-					in = String.class
+					include = String.class
 			))
 	protected void objectToString(ConvertToken<Object, String> token) {
 		if (DEBUGGING) {
@@ -95,18 +95,18 @@ public class JSONConverter extends BaseConverter {
 	 */
 	@ConvertMethod(
 			input = @Filter(
-					subIn = String.class
+					includeAll = String.class
 			),
 			output = @Filter(
-					subIn = Object.class,
-					in = {boolean.class,
-						  byte.class,
-						  char.class,
-						  double.class,
-						  float.class,
-						  int.class,
-						  long.class,
-						  short.class
+					includeAll = Object.class,
+					include = {boolean.class,
+							   byte.class,
+							   char.class,
+							   double.class,
+							   float.class,
+							   int.class,
+							   long.class,
+							   short.class
 					}))
 	protected void stringToObject(ConvertToken<String, Object> token) {
 		if (DEBUGGING) {

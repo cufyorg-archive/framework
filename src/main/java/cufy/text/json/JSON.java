@@ -153,17 +153,17 @@ public class JSON extends AbstractFormat {
 	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
 	@FormatMethod(@Filter(
-			subIn = {Collection.class,
-					 Object[].class,
+			includeAll = {Collection.class,
+						  Object[].class,
 			},
-			in = {boolean[].class,
-				  byte[].class,
-				  char[].class,
-				  double[].class,
-				  float[].class,
-				  int[].class,
-				  long[].class,
-				  short[].class
+			include = {boolean[].class,
+					   byte[].class,
+					   char[].class,
+					   double[].class,
+					   float[].class,
+					   int[].class,
+					   long[].class,
+					   short[].class
 			}))
 	protected void formatArray(FormatToken<Collection> token) throws IOException {
 		if (DEBUGGING) {
@@ -249,8 +249,8 @@ public class JSON extends AbstractFormat {
 	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
 	@FormatMethod(@Filter(
-			subIn = Number.class,
-			in = {
+			includeAll = Number.class,
+			include = {
 					byte.class,
 					double.class,
 					float.class,
@@ -289,7 +289,7 @@ public class JSON extends AbstractFormat {
 	 * @throws IOException          when any I/O exception occurs
 	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
-	@FormatMethod(@Filter(subIn = Map.class))
+	@FormatMethod(@Filter(includeAll = Map.class))
 	protected void formatObject(FormatToken<Map> token) throws IOException {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
@@ -345,7 +345,7 @@ public class JSON extends AbstractFormat {
 	 * @throws IOException          when any I/O exception occurs
 	 * @throws NullPointerException if the given 'token' or 'token.input' is null
 	 */
-	@FormatMethod(@Filter(subIn = CharSequence.class))
+	@FormatMethod(@Filter(includeAll = CharSequence.class))
 	protected void formatString(FormatToken<CharSequence> token) throws IOException {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
@@ -577,18 +577,18 @@ public class JSON extends AbstractFormat {
 	 * @throws ReflectiveOperationException if any exception occurred while trying to construct from the clazz given
 	 */
 	@ParseMethod(@Filter(
-			subIn = {
+			includeAll = {
 					Collection.class,
 					Object[].class
 			},
-			in = {boolean[].class,
-				  byte[].class,
-				  char[].class,
-				  double[].class,
-				  float[].class,
-				  int[].class,
-				  long[].class,
-				  short[].class
+			include = {boolean[].class,
+					   byte[].class,
+					   char[].class,
+					   double[].class,
+					   float[].class,
+					   int[].class,
+					   long[].class,
+					   short[].class
 			}))
 	protected void parseArray(ParseToken<Collection> token) throws IOException, ReflectiveOperationException {
 		if (DEBUGGING) {
@@ -780,8 +780,8 @@ public class JSON extends AbstractFormat {
 	 * @throws ReflectiveOperationException if any exception occurred while trying to construct the number
 	 */
 	@ParseMethod(@Filter(
-			subIn = Number.class,
-			in = {
+			includeAll = Number.class,
+			include = {
 					byte.class,
 					double.class,
 					float.class,
@@ -816,7 +816,7 @@ public class JSON extends AbstractFormat {
 	 * @throws NullPointerException         if the given 'token' is null
 	 * @throws ReflectiveOperationException if any exception occurs while trying to construct the map
 	 */
-	@ParseMethod(@Filter(subIn = Map.class))
+	@ParseMethod(@Filter(includeAll = Map.class))
 	protected void parseObject(ParseToken<Map> token) throws IOException, ReflectiveOperationException {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
@@ -947,7 +947,7 @@ public class JSON extends AbstractFormat {
 	 * @throws NullPointerException         if the given 'token' is null
 	 * @throws ReflectiveOperationException if any exception occurred while trying to construct the char-sequence
 	 */
-	@ParseMethod(@Filter(subIn = CharSequence.class))
+	@ParseMethod(@Filter(includeAll = CharSequence.class))
 	protected void parseString(ParseToken<CharSequence> token) throws IOException, ReflectiveOperationException {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
