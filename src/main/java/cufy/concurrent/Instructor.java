@@ -286,7 +286,7 @@ public class Instructor {
 				}
 			}
 		}
-		alter.accept(this);
+		new Thread(()-> alter.accept(this)).start();
 		return this;
 	}
 
