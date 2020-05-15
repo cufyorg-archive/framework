@@ -8,13 +8,27 @@ links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/Formatter.java
     Javadoc: https://framework.cufy.org/javadoc/cufy/text/Formatter.html
 description: >-
-    TODO
+    An abstraction of how formatters should be. The class is based on
+    tokens concept. Each formatting operation should have a token that
+    have all the variables of that operation.
 ---
 
 - `format(Object)` TODO
+<br><br>
+```java 
+    TODO
+```
 <br>
 
 - `format(Object, Writer)` TODO
+<br><br>
+```java 
+    TODO
+```
 <br>
 
 - `format(FormatToken)` TODO
+<br><br>
+```java 
+    TODO
+```
