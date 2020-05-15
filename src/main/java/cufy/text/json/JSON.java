@@ -112,13 +112,17 @@ public class JSON extends AbstractFormat {
 	@Where
 	final public static JSON global = new JSON().setDefaults(new Syntax().setDefaults());
 	/**
+	 * A list of strings to be skipped when seen in a literal fence.
+	 */
+	final protected List<String> ESCAPABLE = new ArrayList<>();
+	/**
 	 * The literal symbols relationships for the syntax tracker.
 	 */
-	public Map<String, String> LITERAL = new HashMap<>();
+	final protected Map<String, String> LITERAL = new HashMap<>();
 	/**
 	 * The nestable symbols relationships for the syntax tracker.
 	 */
-	public Map<String, String> NESTABLE = new HashMap<>();
+	final protected Map<String, String> NESTABLE = new HashMap<>();
 	/**
 	 * The number of characters expected for values.
 	 */
@@ -612,7 +616,7 @@ public class JSON extends AbstractFormat {
 		//comment mode
 		boolean comment = false;
 		//syntax manager
-		SyntaxTracker tracker = new SyntaxTracker(NESTABLE, LITERAL);
+		SyntaxTracker tracker = new SyntaxTracker(NESTABLE, LITERAL, ESCAPABLE);
 		//content reading buffer (for members)
 		StringBuilder builder = new StringBuilder(BUFFER_SIZE);
 		//short backtrace
@@ -832,7 +836,7 @@ public class JSON extends AbstractFormat {
 		//comment mode
 		boolean comment = false;
 		//syntax manager
-		SyntaxTracker tracker = new SyntaxTracker(NESTABLE, LITERAL);
+		SyntaxTracker tracker = new SyntaxTracker(NESTABLE, LITERAL, ESCAPABLE);
 		//content reading buffer (for key and value)
 		StringBuilder builder = new StringBuilder(BUFFER_SIZE);
 		//short backtrace
@@ -957,7 +961,7 @@ public class JSON extends AbstractFormat {
 		String value = string.substring(SYNTAX.FENCE_STRING[0].length(), string.length() - SYNTAX.FENCE_STRING[1].length());
 
 		for (Map.Entry<String, String> escapable : SYNTAX.ESCAPABLES.entrySet())
-			value.replace(escapable.getValue(), escapable.getKey());
+			value = value.replace(escapable.getValue(), escapable.getKey());
 
 		Class klass = token.klazz.getKlass();
 		if (klass.isAssignableFrom(String.class)) {
@@ -985,6 +989,8 @@ public class JSON extends AbstractFormat {
 
 		LITERAL.putAll(SYNTAX.FENCE_COMMENT);
 		LITERAL.put(SYNTAX.FENCE_STRING[0], SYNTAX.FENCE_STRING[1]);
+
+		ESCAPABLE.addAll(SYNTAX.ESCAPABLES.values());
 
 		return this;
 	}
