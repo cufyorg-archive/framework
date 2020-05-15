@@ -1,5 +1,4 @@
 ---
-beta: true
 index: 8
 name: concurrent
 layout: page

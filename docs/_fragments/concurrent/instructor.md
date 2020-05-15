@@ -1,5 +1,4 @@
 ---
-beta: true
 index: 1
 layout: fragment
 parent: concurrent
@@ -90,7 +89,35 @@ Since the instructor itself don't have it's own thread.
 The first thread that calls tick() will execute that code.
 <br><br>
 ```java 
-    TODO
+    instructor.post((i, l)-> {
+        //`i` is the instructor for easy access
+        //`l` is the caller loop (maybe null)
+        return false; //to remove the post
+        //return true; to not remove the post
+    });
+```
+```java 
+    instructor.post((i, l)-> {
+        //get executed by the first thread calling tick()
+        //get executed only if there is currently a loop running
+        //in the instructor
+        return true;
+    }, i -> {
+        //get executed by a new thread
+        //get executed only if there is no loop running
+        //in the instructor
+    });
+```
+```java 
+    instructor.post((i, l)-> {
+        //get executed by the first thread calling tick()
+        //start executing only within the timeout specified
+        return true;
+    }, i-> {
+        //get executed by a new thread
+        //get executed only if the timeout passed and no
+        //thread started executing the post
+    }, 100 /*the timeout (in millis)*/);
 ```
 <br>
 
@@ -99,7 +126,31 @@ And make the caller thread wait until the first thread that calls tick()
 finishes executing that block of code.
 <br><br>
 ```java 
-    TODO
+    instructor.synchronously((i, l)-> {
+        //`i` is the instructor for easy access
+        //`l` is the caller loop (maybe null)
+    });
+```
+```java 
+    instructor.synchronously((i, l)-> {
+        //get executed by the first thread calling tick()
+        //get executed only if there is currently a loop running
+        //in the instructor
+    }, i -> {
+        //get executed by the caller thread
+        //get executed only if there is no loop running
+        //in the instructor
+    });
+```
+```java 
+    instructor.synchronously((i, l)-> {
+        //get executed by the first thread calling tick()
+        //start executing only within the timeout specified
+    }, i-> {
+        //get executed by the caller thread
+        //get executed only if the timeout passed and no
+        //thread started executing the post
+    }, 100 /*the timeout (in millis)*/);
 ```
 <br>
 

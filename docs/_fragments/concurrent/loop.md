@@ -1,5 +1,4 @@
 ---
-beta: true
 index: 0
 layout: fragment
 parent: concurrent
@@ -8,7 +7,9 @@ links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/concurrent/Loop.java
     Javadoc: https://framework.cufy.org/javadoc/cufy/concurrent/Loop.html
 description: >-
-    TODO
+    The loop instance is a way to pass executable code and control its
+    execution and edit it concurrently. There is a loop version of almost
+    every java code type (while, for, etc...).
 ---
 
 - `While` is the Loop version of the java keyword 'while'.
@@ -47,7 +48,7 @@ description: >-
     }
 ```
 ```java 
-    new For<>(new int[3], (l, i)-> {
+    new Foreach<>(new int[3], (l, i)-> {
         doSomething(i);
     }).start();
 ```
@@ -88,7 +89,7 @@ description: >-
 <br>
 
 - `pair()` make the caller and the thread running in the loop touch.
-This used to make sure the thread of the loop is running.
+This used to make sure the loop is running.
 <br>
 
 - `notify(String)` changes the state of the loop.
@@ -107,13 +108,72 @@ This used to make sure the thread of the loop is running.
 ```
 <br>
 
-- `append(...)` TODO
+- `append(...)` adds a code-block to the code-list of the loop. So the
+loop execute it each time it loops. you can take full control of the code
+using `getCode()` or `getCode(Consumer)`.
 <br>
 
-- `post(...)` TODO
+- `post(...)` adds a block of code for the loop to execute.
+The thread of the loop will execute that code when it calls `tick()`.
+<br><br>
+```java 
+    loop.post(l-> {
+        //`l` is the loop for easy access
+        return false; //to remove the post
+        //return true; to not remove the post
+    });
+```
+```java 
+    loop.post(l -> {
+        //get executed by the thread of the loop
+        //get executed only if the loop currently alive
+        return true;
+    }, l -> {
+        //get executed by a new thread
+        //get executed only if the loop currently not alive
+    });
+```
+```java 
+    loop.post(l -> {
+        //get executed by the thread of the loop
+        //start executing only within the timeout specified
+        return true;
+    }, i-> {
+        //get executed by a new thread
+        //get executed only if the timeout passed and
+        //the loop didn't start executing the post
+    }, 100 /*the timeout (in millis)*/);
+```
 <br>
 
-- `synchronously(...)` TODO
+- `synchronously(...)` adds a block of code for the loop to execute.
+And make the caller thread wait until the thread of the loop calls tick()
+and finishes executing that block of code.
+<br><br>
+```java 
+    loop.synchronously(l -> {
+        //`l` is the loop for easy access
+    });
+```
+```java 
+    loop.synchronously(l -> {
+        //get executed by the thread of the loop
+        //get executed only if the loop currently alive
+    }, i -> {
+        //get executed by the caller thread
+        //get executed only if the loop currently not alive
+    });
+```
+```java 
+    instructor.synchronously((i, l)-> {
+        //get executed by the thread of the loop
+        //start executing only within the timeout specified
+    }, i-> {
+        //get executed by the caller thread
+        //get executed only if the timeout passed and
+        //the loop didn't start executing the post
+    }, 100 /*the timeout (in millis)*/);
+```
 <br>
 
 - `isCurrentThread()` determine if the caller thread is the current running thread in the loop.
