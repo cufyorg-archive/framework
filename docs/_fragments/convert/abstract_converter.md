@@ -8,15 +8,15 @@ links:
     Javadoc: https://framework.cufy.org/javadoc/cufy/convert/AbstractConverter.html
 description: >-
     An abstract that manages and organize the methods of the class
-    inheriting it. The sub-class had to just focus on creating
+    inheriting it. The sub-class had to just focus on providing
     converting-methods and this class will manage everything else
     using reflection.
 ---
 
-- `ConvertMethod` is an annotation to be annotated to every
-converting-method in the sub-class. The methods annotated with this
-method will be used by the super-class based on the parameters given
-to the annotation.
+- `ConvertMethod` is an annotation to be annotated to every converting
+method in the sub-class. The methods annotated with this annotation
+will be used by the super-class based on the parameters given to the
+annotation.
 <br><br>
 ```java 
     @ConvertMethod(
