@@ -7,7 +7,7 @@ links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/convert/Converter.java
     Javadoc: https://framework.cufy.org/javadoc/cufy/convert/Converter.html
 description: >-
-    Am abstract of how converters should be. The class is based on
+    An abstract of how converters should be. The class is based on
     tokens concept. Each converting operation should have a token that
     have all the variables of that operation. 
 ---
