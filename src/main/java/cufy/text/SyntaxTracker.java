@@ -17,6 +17,7 @@ package cufy.text;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -28,6 +29,10 @@ import java.util.Objects;
  * @since 21-Nov-2019
  */
 public class SyntaxTracker implements Appendable {
+	/**
+	 * A list of strings to be skipped when seen in a literal fence.
+	 */
+	final protected List<String> ESCAPABLE;
 	/**
 	 * The map for literal syntax. Such syntax shouldn't contain any meaningful syntax inside it.
 	 */
@@ -57,12 +62,14 @@ public class SyntaxTracker implements Appendable {
 	/**
 	 * Initialize a new syntax tracker.
 	 *
-	 * @param nestable the syntax that can have a syntax inside it
-	 * @param literal  the syntax that can not have a syntax inside it
+	 * @param nestable  the syntax that can have a syntax inside it
+	 * @param literal   the syntax that can not have a syntax inside it
+	 * @param escapable a list of strings to be skipped when seen in a literal fence.
 	 */
-	public SyntaxTracker(Map<String, String> nestable, Map<String, String> literal) {
+	public SyntaxTracker(Map<String, String> nestable, Map<String, String> literal, List<String> escapable) {
 		this.NESTABLE = nestable;
 		this.LITERAL = literal;
+		this.ESCAPABLE = escapable;
 	}
 
 	@Override
@@ -95,6 +102,14 @@ public class SyntaxTracker implements Appendable {
 	@Override
 	public Appendable append(char c) throws IOException {
 		this.past += c;
+
+		if (this.literal) {
+			for (String escapable : this.ESCAPABLE)
+				if (this.past.endsWith(escapable)) {
+					this.past = "";
+					return this;
+				}
+		}
 
 		if (this.fence != null && this.past.endsWith(this.fence.getValue())) {
 			//if there is a fence applied and the past string read ends with the closer string of the current fence
