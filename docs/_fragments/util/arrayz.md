@@ -7,9 +7,10 @@ links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/util/Arrayz.java
     Javadoc: https://framework.cufy.org/javadoc/cufy/util/Arrayz.html
 description: >-
-    It has a common array utils and nothing new. The special thing is the
-    reflection support. It can accept 'object' as arrays. All the methods have 
-    '0' version of it. The '0' version accept object as array parameter.
+    It has a common array utils and nothing new. The special thing is
+    the reflection support. It can accept 'object' as arrays. All the
+    methods have '0' version of it. The '0' version accept object as
+    array parameter.
 ---
 
 - `all(...)` checks if an array contains all the given elements.
@@ -46,7 +47,8 @@ description: >-
 ```
 <br>
 
-- `copfyOf(...)` `copyOfRange(...)` copies the specified range of the specified array into a new array.
+- `copfyOf(...)` `copyOfRange(...)` copies the specified range of the
+specified array into a new array.
 <br><br>
 ```java 
     int[] array = {0, 1, 2};
@@ -59,8 +61,9 @@ description: >-
 ```
 <br>
 
-- `hardcopy(Object, int, Object, int, int)` copies elements on the second array from the first array
-basic for loop. This method skips type checks and uses primitive-cast.
+- `hardcopy(Object, int, Object, int, int)` copies elements on the
+second array from the first array basic for loop. This method skips
+type checks and uses primitive-cast.
 <br><br>
 ```java 
     Integer[] integers = {0, 1, 2};
@@ -88,7 +91,8 @@ basic for loop. This method skips type checks and uses primitive-cast.
 ```
 <br>
 
-- `sum(...)` get the result of applying a function while iterating the items of the provided arrays.
+- `sum(...)` get the result of applying a function while iterating
+the items of the provided arrays.
 <br><br>
 ```java 
     int[] array = {0, 1, 2, 3};

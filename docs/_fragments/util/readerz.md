@@ -10,7 +10,8 @@ description: >-
     Common utilities for readers.
 ---
 
-- `getRemaining(Reader, int, int)` construct a string from reading the reader provided until reaching the end of the reader.
+- `getRemaining(Reader, int, int)` construct a string from reading the
+reader provided until reaching the end of the reader.
 <br><br>
 ```java 
     Reader rdr = new StringReader("Value");
@@ -29,7 +30,8 @@ description: >-
 ```
 <br>
 
-- `getRemaining(Reader, int)` construct a string from reading the reader provided until reaching the provided string-length limit.
+- `getRemaining(Reader, int)` construct a string from reading the
+reader provided until reaching the provided string-length limit.
 <br><br>
 ```java 
     Reader rdr = new StringReader("Value");
@@ -46,7 +48,8 @@ description: >-
 ```
 <br>
 
-- `isRemainingEquals(...)` check if the next characters in the reader equals to one of the strings provided.
+- `isRemainingEquals(...)` check if the next characters in the reader
+equals to one of the strings provided.
 <br><br>
 ```java 
     StringReader rdr = new StringReader("Value");

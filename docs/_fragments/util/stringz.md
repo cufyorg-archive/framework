@@ -10,8 +10,8 @@ description: >-
     Utilities for strings
 ---
 
-- `all(String, CharSequence...)` returns the first missing queries from the
-provided queries in the provided string. 
+- `all(String, CharSequence...)` returns the first missing queries
+from the provided queries in the provided string. 
 <br><br>
 ```java 
     String string = "abcd";

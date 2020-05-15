@@ -10,8 +10,9 @@ description: >-
     The base bean class. An abstract for the behavior of any bean.
 ---
 
-- `inheritance` this interface is ready to be use with no need to override anything.
-Annotate any field in the bean to declare it as a property.
+- `inheritance` this interface is ready to be use with no need to
+override anything. Annotate any field in the bean to declare it as a
+property.
 <br><br>
 ```java 
     class MyBean extends Bean {
@@ -21,9 +22,9 @@ Annotate any field in the bean to declare it as a property.
 ```
 <br>
 
-- `forInstance(Object)` creates an abstract-bean that reads and writes to the given object as if it is a bean.
+- `forInstance(Object)` creates an abstract-bean that reads and writes
+to the given object as if it is a bean.
 <br><br>
 ```java 
     Bean.forInstance(theInstance);
 ```
-<br>

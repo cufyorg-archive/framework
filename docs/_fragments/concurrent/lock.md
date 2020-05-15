@@ -8,20 +8,20 @@ links:
     Javadoc: https://framework.cufy.org/javadoc/cufy/concurrent/Lock.html
 description: >-
     Locking object synchronization is must be in order and sometimes
-    gets confusing. And when getting into undefined synchronization order.
-    It starts to be impossible to manage it. This class creates a thread
-    that locks the object that needed to be lock. And release it
-    as needed. And can be controlled concurrently with simple method.
-    The downside of this is it uses a whole thread and can't rely on it
-    that much since creating useless threads is not good. Also if the 
-    instance of the lock is not accessible to any control thread, the 
-    thread will stay forever locking the object and the thread will not
-    stop.
+    gets confusing. And when getting into undefined synchronization
+    order. It starts to be impossible to manage it. This class creates
+    a thread that locks the object that needed to be lock. And release
+    it as needed. And can be controlled concurrently with simple
+    method. The downside of this is it uses a whole thread and can't
+    rely on it that much since creating useless threads is not good.
+    Also if the instance of the lock is not accessible to any control
+    thread, the thread will stay forever locking the object and the
+    thread will not stop.
 ---
 
 - `start()` starts the thread of the lock. It just starts the thread 
-and don't lock the object. Calling the method twice or calling it while
-the thread have been started before will throw an exception.
+and don't lock the object. Calling the method twice or calling it
+while the thread have been started before will throw an exception.
 <br>
 
 - `lock()` starts the thread of the lock if not started. Then, waits

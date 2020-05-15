@@ -19,8 +19,9 @@ description: >-
 ```
 <br>
 
-- `asObjectClass(Class)` returns the object class of the class provided if it is primitive (or an array of primitive). and returns the provided
-class if the provided class is not primitive.
+- `asObjectClass(Class)` returns the object class of the class 
+provided if it is primitive (or an array of primitive). and returns
+the provided class if the provided class is not primitive.
 <br><br>
 ```java 
     assert Reflection.asObjectClass(int.class) == Integer.class;
@@ -29,8 +30,9 @@ class if the provided class is not primitive.
 ```
 <br>
 
-- `asPrimitiveClass(Class)` return the primitive class of the class provided if it have a primitive class. and returns the provided class if the
-provided class is not primitive.
+- `asPrimitiveClass(Class)` return the primitive class of the class
+provided if it have a primitive class. and returns the provided class
+if the provided class is not primitive.
 <br><br>
 ```java 
     assert Reflection.asPrimitive(Integer.class) == int.class;
@@ -39,7 +41,8 @@ provided class is not primitive.
 ```
 <br>
 
-- `getAllFields(Class)` returns every field in the provided class, and the classes it extends. 
+- `getAllFields(Class)` returns every field in the provided class, and
+the classes it extends. 
 <br><br>
 ```java 
     class A {
@@ -57,7 +60,8 @@ provided class is not primitive.
 ```
 <br>
 
-- `getAllMethods(Class)` returns every method in the provided class (overridden methods not included).
+- `getAllMethods(Class)` returns every method in the provided class
+(overridden methods not included).
 <br><br>
 ```java 
     class A {
@@ -76,7 +80,8 @@ provided class is not primitive.
 ```
 <br>
 
-- `ignite(Throwable)` throws any type of throwable without the need to catch it.
+- `ignite(Throwable)` throws any type of throwable without the need
+to catch it.
 <br><br>
 ```java 
     //no need for catch block
@@ -86,7 +91,8 @@ provided class is not primitive.
 ```
 <br>
 
-- `overrides(Method, Method)` check if the second method overrides the first method.
+- `overrides(Method, Method)` check if the second method overrides the
+first method.
 <br><br>
 ```java 
     class A {
@@ -119,7 +125,8 @@ provided class is not primitive.
 ```
 <br>
 
-- `primitiveCast(Class, Object)` casts the object to the class using the primitive casting.
+- `primitiveCast(Class, Object)` casts the object to the class using
+the primitive casting.
 <br><br>
 ```java 
     //a primitive casting example

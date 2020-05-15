@@ -7,13 +7,14 @@ links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/json/JSON.java
     Javadoc: https://framework.cufy.org/javadoc/cufy/text/json/JSON.html
 description: >-
-    The Format class for JSON. This class have the parsing, formatting and
-    classifying methods that is required to deal with JSON.
+    The Format class for JSON. This class have the parsing, formatting
+    and classifying methods that is required to deal with JSON.
 ---
 
-- `format(...)` is a method that formats the object presented to it. And
-writes the formatted text directly to a writer. And this method require to
-specify the clazz of the object (the type of the formatting).
+- `format(...)` is a method that formats the object presented to it.
+And writes the formatted text directly to a writer. And this method
+require to specify the clazz of the object (the type of the
+formatting).
 <br><br>
 ```java 
     Object obj = ...; //the object to format
@@ -35,7 +36,8 @@ specify the clazz of the object (the type of the formatting).
 ```
 <br>
 
-- `classify(...)` is a method that predict the type of the text presented to it.
+- `classify(...)` is a method that predict the type of the text
+presented to it.
 <br><br>
 ```java 
     Reader rdr = ...; //the reader
@@ -51,9 +53,10 @@ specify the clazz of the object (the type of the formatting).
 ```
 <br>
 
-- `parse(...)` is a method that parses the text presented to it. And this
-method require to specify the clazz of the text (the type of the output).
-Also, you can pass the output instance, so the method parses directly to it.
+- `parse(...)` is a method that parses the text presented to it. And
+this method require to specify the clazz of the text (the type of the
+output). Also, you can pass the output instance, so the method parses
+directly to it.
 <br><br>
 ```java 
     Reader rdr = ...; //the reader
@@ -76,8 +79,8 @@ Also, you can pass the output instance, so the method parses directly to it.
 ```
 <br>
 
-- `cparse(...)` is a method that classify then parse the object dynamically.
-It is like a shortcut.
+- `cparse(...)` is a method that classify then parse the object
+dynamically. It is like a shortcut.
 <br><br>
 ```java 
     String str = ...; //the json string

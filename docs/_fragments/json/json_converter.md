@@ -7,13 +7,14 @@ links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/json/JSONConverter.java
     Javadoc: https://framework.cufy.org/javadoc/cufy/text/json/JSONConverter.html
 description: >-
-    A converter version of the JSON. This converter extends the `BaseConverter`
-    and converts the Strings to Objects (and the opposite) using JSON.
+    A converter version of the JSON. This converter extends the
+    `BaseConverter` and converts the Strings to Objects (and the
+    opposite) using JSON.
 ---
 
-- `obejct_string(ConvertToken)` uses JSON to convert the object given into string
-with respect to the clazzes specified.
+- `obejct_string(ConvertToken)` uses JSON to convert the object given
+into string with respect to the clazzes specified.
 <br>
 
-- `string_object(ConvertToken` uses JSON to convert the string given into an object
-with respect to the clazzes specified.
+- `string_object(ConvertToken` uses JSON to convert the string given
+into an object with respect to the clazzes specified.

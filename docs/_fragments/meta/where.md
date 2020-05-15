@@ -7,8 +7,9 @@ links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/meta/Where.java
     Javadoc: https://framework.cufy.org/javadoc/cufy/meta/Where.html
 description: >-
-    Navigating to a field in annotations seems a bit hard. So the annotation 
-    where is like the path-map to where a specific field located at.
+    Navigating to a field in annotations seems a bit hard. So the
+    annotation  where is like the path-map to where a specific field
+    located at.
 ---
 
 ```java 

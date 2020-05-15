@@ -10,10 +10,11 @@ description: >-
     A manger that helps maneging a list of loops concurrently.
 ---
 
-- `start(Loop)` starts the loop provided to it on the caller thread and `thread(Loop)` starts
-it in a new thread. The instructor will add the loop to the loops list of it to be later 
-removed after the loop finishes. both methods will tick the instructor
-after finishing the loop.  
+- `start(Loop)` starts the loop provided to it on the caller thread
+and `thread(Loop)` starts it in a new thread. The instructor will add
+the loop to the loops list of it to be later removed after the loop
+finishes. both methods will tick the instructor after finishing the
+loop.  
 <br><br>
 ```java 
     Loop loop = //... a loop
@@ -34,9 +35,11 @@ after finishing the loop.
 ```
 <br>
 
-- `pair()` makes a touch between the caller thread, and the first thread that ticks the instructor.
-It might been used to make sure both threads are at a specific point to do some operation that requires that.
-Such as waiting for a sub-thread to start running so the main thread continue its work.
+- `pair()` makes a touch between the caller thread, and the first
+thread that ticks the instructor. It might been used to make sure both
+threads are at a specific point to do some operation that requires
+that. Such as waiting for a sub-thread to start running so the main
+thread continue its work.
 <br><br>
 ```java 
     Instructor instructor = new Instructor();
@@ -53,8 +56,9 @@ Such as waiting for a sub-thread to start running so the main thread continue it
 ```
 <br>
 
-- `notify(String)` changes the status of the current loops started by the
-instructor, and the next loops that will be started by the instructor in the future.
+- `notify(String)` changes the status of the current loops started by
+the instructor, and the next loops that will be started by the
+instructor in the future.
 <br><br>
 ```java 
     //an instructor that have a running loops
@@ -70,8 +74,8 @@ instructor, and the next loops that will be started by the instructor in the fut
 <br>
 
 - `tick(...)` it designed to be used by the members of the instructor.
-It makes the caller do the jobs that have been posted to the instructor.
-Since the instructor itself don't have it's own thread.
+It makes the caller do the jobs that have been posted to the
+instructor. Since the instructor itself don't have it's own thread.
 <br><br>
 ```java 
     //an instructor that have some jobs posted to it
@@ -85,8 +89,8 @@ Since the instructor itself don't have it's own thread.
 ```    
 <br>
 
-- `post(...)` adds a block of code for the instructor to execute.
-The first thread that calls tick() will execute that code.
+- `post(...)` adds a block of code for the instructor to execute. The
+first thread that calls tick() will execute that code.
 <br><br>
 ```java 
     instructor.post((i, l)-> {
@@ -121,9 +125,9 @@ The first thread that calls tick() will execute that code.
 ```
 <br>
 
-- `synchronously(...)` adds a block of code for the instructor to execute.
-And make the caller thread wait until the first thread that calls tick()
-finishes executing that block of code.
+- `synchronously(...)` adds a block of code for the instructor to
+execute. And make the caller thread wait until the first thread that
+calls tick() finishes executing that block of code.
 <br><br>
 ```java 
     instructor.synchronously((i, l)-> {
@@ -172,7 +176,8 @@ finishes executing that block of code.
 ```
 <br>
 
-- `join(...)` waits until all the loops in started by the instructor to die.
+- `join(...)` waits until all the loops in started by the instructor
+to die.
 <br><br>
 ```java 
     //an instructor with some loops running in

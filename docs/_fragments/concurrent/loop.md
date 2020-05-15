@@ -8,8 +8,8 @@ links:
     Javadoc: https://framework.cufy.org/javadoc/cufy/concurrent/Loop.html
 description: >-
     The loop instance is a way to pass executable code and control its
-    execution and edit it concurrently. There is a loop version of almost
-    every java code type (while, for, etc...).
+    execution and edit it concurrently. There is a loop version of
+    almost every java code type (while, for, etc...).
 ---
 
 - `While` is the Loop version of the java keyword 'while'.
@@ -109,12 +109,12 @@ This used to make sure the loop is running.
 <br>
 
 - `append(...)` adds a code-block to the code-list of the loop. So the
-loop execute it each time it loops. you can take full control of the code
-using `getCode()` or `getCode(Consumer)`.
+loop execute it each time it loops. you can take full control of the
+code using `getCode()` or `getCode(Consumer)`.
 <br>
 
-- `post(...)` adds a block of code for the loop to execute.
-The thread of the loop will execute that code when it calls `tick()`.
+- `post(...)` adds a block of code for the loop to execute. The thread
+of the loop will execute that code when it calls `tick()`.
 <br><br>
 ```java 
     loop.post(l-> {
@@ -147,8 +147,8 @@ The thread of the loop will execute that code when it calls `tick()`.
 <br>
 
 - `synchronously(...)` adds a block of code for the loop to execute.
-And make the caller thread wait until the thread of the loop calls tick()
-and finishes executing that block of code.
+And make the caller thread wait until the thread of the loop calls
+tick() and finishes executing that block of code.
 <br><br>
 ```java 
     loop.synchronously(l -> {
@@ -176,10 +176,13 @@ and finishes executing that block of code.
 ```
 <br>
 
-- `isCurrentThread()` determine if the caller thread is the current running thread in the loop.
+- `isCurrentThread()` determine if the caller thread is the current
+running thread in the loop.
 <br>
 
-- `isAlive()` determines if there is a thread currently running in the loop.
+- `isAlive()` determines if there is a thread currently running in the
+loop.
 <br>
 
-- `join(...)` make the caller thread wait until the current thread running in the loop finishes the loop.
+- `join(...)` make the caller thread wait until the current thread
+running in the loop finishes the loop.
