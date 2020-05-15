@@ -5,7 +5,7 @@ parent: lang
 title: Clazz
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/lang/Clazz.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/lang/Clazz.html
+    Javadoc: /javadoc/cufy/lang/Clazz.html
 description: >-
     The class instance is a main data source when it comes to
     reflection. But it is constant, and the user can't specify what he

@@ -5,7 +5,7 @@ parent: meta
 title: Filter
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/meta/Filter.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/meta/Filter.html
+    Javadoc: /javadoc/cufy/meta/Filter.html
 description: >-
     You may have a method that can accept number of classes, meanwhile
     those classes aren't related. You may specify those classes one by

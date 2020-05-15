@@ -5,7 +5,7 @@ parent: io
 title: Buffers
 links:
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/io
-    Javadoc: https://framework.cufy.org/javadoc/cufy/io/package-summary.html
+    Javadoc: /javadoc/cufy/io/package-summary.html
 description: >-
     We needed to build our own Buffer, BufferedReader, and
     BufferedInputStream. So, here we go.

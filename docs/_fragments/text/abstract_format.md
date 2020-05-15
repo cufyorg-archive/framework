@@ -5,7 +5,7 @@ parent: text
 title: AbstractFormat
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/AbstractFormat.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/text/AbstractFormat.html
+    Javadoc: /javadoc/cufy/text/AbstractFormat.html
 description: >-
     An abstract that manages and organize the methods of the class
     inheriting it. The sub-class had to just focus on providing

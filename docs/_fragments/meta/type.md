@@ -5,7 +5,7 @@ parent: meta
 title: Type
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/meta/Type.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/meta/Type.html
+    Javadoc: /javadoc/cufy/meta/Type.html
 description: >-
     As we can't construct objects. We can't construct clazzes. So this
     annotation is the replacement of the class Clazz.

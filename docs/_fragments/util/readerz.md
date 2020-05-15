@@ -5,7 +5,7 @@ parent: util
 title: Readerz
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/util/Readerz.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/util/Readerz.html
+    Javadoc: /javadoc/cufy/util/Readerz.html
 description: >-
     Common utilities for readers.
 ---

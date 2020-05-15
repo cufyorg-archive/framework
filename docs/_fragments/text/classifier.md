@@ -6,7 +6,7 @@ parent: text
 title: Classifier
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/Classifier.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/text/Classifier.html
+    Javadoc: /javadoc/cufy/text/Classifier.html
 description: >-
     An abstract of how classifiers should be. The class is based on
     tokens concept. Each classifying operation should have a token

@@ -6,7 +6,7 @@ title: Tokens
 permalink: tokens
 links:
     GitHub: https://github.com/cufyorg
-    Javadoc: https://framework.cufy.org/javadoc/index.html
+    Javadoc: /javadoc/
 description: >-
     The tokens are instances that holds information about an
     operation. Such as the type of the operation, the type of

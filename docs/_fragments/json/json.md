@@ -5,7 +5,7 @@ parent: json
 title: JSON
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/json/JSON.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/text/json/JSON.html
+    Javadoc: /javadoc/cufy/text/json/JSON.html
 description: >-
     The Format class for JSON. This class have the parsing, formatting
     and classifying methods that is required to deal with JSON.

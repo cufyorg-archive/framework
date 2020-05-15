@@ -5,7 +5,7 @@ parent: json
 title: JSONConverter
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/json/JSONConverter.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/text/json/JSONConverter.html
+    Javadoc: /javadoc/cufy/text/json/JSONConverter.html
 description: >-
     A converter version of the JSON. This converter extends the
     `BaseConverter` and converts the Strings to Objects (and the

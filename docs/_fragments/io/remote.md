@@ -5,7 +5,7 @@ parent: io
 title: Remote
 links:
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/io
-    Javadoc: https://framework.cufy.org/javadoc/cufy/io/package-summary.html
+    Javadoc: /javadoc/cufy/io/package-summary.html
 description: >-
     One of the solutions to control an input-stream, output-stream,
     reader, or a writer concurrently is to wrap it with a control

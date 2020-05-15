@@ -5,7 +5,7 @@ parent: convert
 title: AbstractConverter
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/convert/AbstractConverter.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/convert/AbstractConverter.html
+    Javadoc: /javadoc/cufy/convert/AbstractConverter.html
 description: >-
     An abstract that manages and organize the methods of the class
     inheriting it. The sub-class had to just focus on providing

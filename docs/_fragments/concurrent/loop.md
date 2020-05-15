@@ -5,7 +5,7 @@ parent: concurrent
 title: Loop
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/concurrent/Loop.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/concurrent/Loop.html
+    Javadoc: /javadoc/cufy/concurrent/Loop.html
 description: >-
     The loop instance is a way to pass executable code and control its
     execution and edit it concurrently. There is a loop version of

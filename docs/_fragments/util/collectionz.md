@@ -5,7 +5,7 @@ parent: util
 title: Collectionz
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/util/Collectionz.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/util/Collectionz.html
+    Javadoc: /javadoc/cufy/util/Collectionz.html
 description: >-
     The class collection is an utils for collections and maps (and
     anything from changing things to collections or changing

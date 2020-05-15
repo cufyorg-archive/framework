@@ -6,7 +6,7 @@ title: Beans
 permalink: beans
 links:
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/beans
-    Javadoc: https://framework.cufy.org/javadoc/cufy/beans/package-summary.html
+    Javadoc: /javadoc/cufy/beans/package-summary.html
 description: >-
     Objects have fields, but the fields can't be accessed easily when the class of
     the object unknown (without reflection). The bean standards bypass that by treating

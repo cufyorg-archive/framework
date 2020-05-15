@@ -6,7 +6,7 @@ parent: text
 title: Formatter
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/Formatter.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/text/Formatter.html
+    Javadoc: /javadoc/cufy/text/Formatter.html
 description: >-
     An abstraction of how formatters should be. The class is based on
     tokens concept. Each formatting operation should have a token that

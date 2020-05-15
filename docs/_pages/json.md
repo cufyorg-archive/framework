@@ -6,7 +6,7 @@ title: JSON
 permalink: json
 links:
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/text/json
-    Javadoc: https://framework.cufy.org/javadoc/cufy/text/json/package-summary.html
+    Javadoc: /javadoc/cufy/text/json/package-summary.html
 description: >-
     JSON is a lightweight data-interchange format. It is easy for humans to read 
     and write. It is easy for machines to parse and generate. And this package

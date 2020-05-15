@@ -5,7 +5,7 @@ parent: util
 title: Reflection
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/util/Reflection.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/util/Reflection.html
+    Javadoc: /javadoc/cufy/util/Reflection.html
 description: >-
     Utilities helps to deal with reflection and reflection operations.
 ---

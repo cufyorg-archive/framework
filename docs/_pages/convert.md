@@ -6,7 +6,7 @@ title: Convert
 permalink: convert
 links:
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/convert
-    Javadoc: https://framework.cufy.org/javadoc/cufy/convert/package-summary.html
+    Javadoc: /javadoc/cufy/convert/package-summary.html
 description: >-
     Java is a type sensitive language. In complex projects, Sometimes you 
     don't want that sensitivity and sometimes you want to pass a value, and you

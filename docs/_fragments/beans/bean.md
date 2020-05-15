@@ -5,7 +5,7 @@ parent: beans
 title: Bean
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/beans/Bean.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/beans/Bean.html
+    Javadoc: /javadoc/cufy/beans/Bean.html
 description: >-
     The base bean class. An abstract for the behavior of any bean.
 ---

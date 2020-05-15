@@ -5,7 +5,7 @@ parent: convert
 title: Converter
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/convert/Converter.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/convert/Converter.html
+    Javadoc: /javadoc/cufy/convert/Converter.html
 description: >-
     An abstract of how converters should be. The class is based on
     tokens concept. Each converting operation should have a token that

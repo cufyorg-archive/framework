@@ -5,7 +5,7 @@ parent: convert
 title: BaseConverter
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/convert/BaseConverter.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/convert/BaseConverter.html
+    Javadoc: /javadoc/cufy/convert/BaseConverter.html
 description: >-
     An implementation of the `AbstractConverter` with the basic
     conversions.

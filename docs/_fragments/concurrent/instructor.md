@@ -5,7 +5,7 @@ parent: concurrent
 title: Instructor
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/concurrent/Instructor.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/concurrent/Instructor.html
+    Javadoc: /javadoc/cufy/concurrent/Instructor.html
 description: >-
     A manger that helps maneging a list of loops concurrently.
 ---

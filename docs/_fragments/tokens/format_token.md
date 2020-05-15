@@ -5,7 +5,7 @@ parent: tokens
 title: Format Token
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/text/FormatToken.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/text/FormatToken.html
+    Javadoc: /javadoc/cufy/text/FormatToken.html
 description: >-
     The Format Token is a token for a formatting operation witch is
     writing a text that represents a value of a java object to be

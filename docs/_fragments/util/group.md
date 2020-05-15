@@ -5,7 +5,7 @@ parent: util
 title: Group
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/util/Group.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/util/Group.html
+    Javadoc: /javadoc/cufy/util/Group.html
 description: >-
     Collections are a base thing on programming. But it is hard to
     make a collection foreach category a main collection. So it is

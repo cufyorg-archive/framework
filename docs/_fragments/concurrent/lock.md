@@ -5,7 +5,7 @@ parent: concurrent
 title: Lock
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/concurrent/Lock.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/concurrent/Lock.html
+    Javadoc: /javadoc/cufy/concurrent/Lock.html
 description: >-
     Locking object synchronization is must be in order and sometimes
     gets confusing. And when getting into undefined synchronization

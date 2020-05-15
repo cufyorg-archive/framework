@@ -5,7 +5,7 @@ parent: util
 title: Arrayz
 links:
     GitHub: https://github.com/cufyorg/framework/blob/master/src/main/java/cufy/util/Arrayz.java
-    Javadoc: https://framework.cufy.org/javadoc/cufy/util/Arrayz.html
+    Javadoc: /javadoc/cufy/util/Arrayz.html
 description: >-
     It has a common array utils and nothing new. The special thing is
     the reflection support. It can accept 'object' as arrays. All the

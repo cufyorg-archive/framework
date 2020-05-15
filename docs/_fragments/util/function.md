@@ -5,7 +5,7 @@ parent: util
 title: Function
 links:
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/util/function
-    Javadoc: https://framework.cufy.org/javadoc/cufy/util/function/package-summary.html
+    Javadoc: /javadoc/cufy/util/function/package-summary.html
 description: >-
     There is always that position. When you want to pass a simple
     runnable or consumer to some method. And that method will invoke
