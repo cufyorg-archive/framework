@@ -365,7 +365,7 @@ public abstract class Loop<I, P> {
 				}
 			}
 		}
-		alter.accept(this);
+		new Thread(()-> alter.accept(this)).start();
 		return this;
 	}
 
