@@ -639,7 +639,7 @@ public class JSON extends AbstractFormat {
 				if (Character.isWhitespace(i))
 					continue;
 				else throw new ParseException("array closed before text end");
-			if (tracker.length() == 0) {
+			if (tracker.depth() == 0) {
 				//the short past string
 				String past = backtrace.append(point).toString();
 
@@ -860,7 +860,7 @@ public class JSON extends AbstractFormat {
 				if (Character.isWhitespace(i))
 					continue;
 				else throw new ParseException("Object closed before text end");
-			if (tracker.length() == 0) {
+			if (tracker.depth() == 0) {
 				//the short past string
 				String past = backtrace.append(point).toString();
 

@@ -150,7 +150,7 @@ public class SyntaxTracker implements Appendable {
 	 *
 	 * @return the size of the wraps list
 	 */
-	public int length() {
+	public int depth() {
 		return this.fences.size();
 	}
 
