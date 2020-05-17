@@ -1,5 +1,4 @@
 ---
-beta: true
 index: 5
 name: text
 layout: page
