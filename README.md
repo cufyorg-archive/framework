@@ -22,6 +22,9 @@
     <a href="https://app.codacy.com/gh/cufyorg/framework?utm_source=github.com&utm_medium=referral&utm_content=cufyorg/framework&utm_campaign=Badge_Grade_Dashboard">
         <img alt="Codacy Badge" src="https://api.codacy.com/project/badge/Grade/e5e5c7c27cc74d47ac74baee3bce8af9">
     </a>
+    <a href="https://github.com/cufyorg/framework/actions?query=workflow%3A%22Java+CI+with+Gradle%22">
+        <img alt="test" src="https://github.com/cufyorg/framework/workflows/Java%20CI%20with%20Gradle/badge.svg"/>
+    </a>
 </p>
 
 -   ### About
