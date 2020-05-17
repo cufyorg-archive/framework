@@ -20,7 +20,7 @@ description: >-
         "apple",
         "orange"
     ));
-    
+
     Group healthy = food.subGroup("healthy", f -> !f.equals("pizza"));
     Group h = food.subGroup("healthy");
 

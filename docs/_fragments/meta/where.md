@@ -18,7 +18,7 @@ description: >-
         @Where(id = "here")
         public int myField;
     }
-    
+
     //this will give us the location of the field above
     @Where(
         value = SomeWhere.class,

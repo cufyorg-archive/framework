@@ -18,7 +18,7 @@ classification.
 ```java 
     CharSequence sequence = //the sequence
     //Reader reader = //the reader, as a replacement of 'sequence'
-    
+
     //the returned object is the result from c-parsing the text
     Object instance = format.cparse(sequence);
 ```

@@ -42,13 +42,13 @@ maintaining the utilities of the maps.
     class Test {
         public String key = "value";
     }
-    
+
     Test instance = new Test();
     Map map = Collectionz.asMap(instance);
-    
+
     assert map.size() == 1;
     assert map.get("key").equals("value");
-    
+
     map.put("key", "another");
     assert instance.key.equals("another");
     instnace.key = "different";

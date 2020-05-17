@@ -18,7 +18,7 @@ text provided.
 ```java 
     CharSequence sequence = //the sequence
     //Reader reader = //the reader, as a replacement of 'sequence'
-    
+
     //the returned clazz is the result from classifying the text
     Clazz klazz = classifier.classify(sequence);
 ```

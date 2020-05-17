@@ -15,9 +15,9 @@ reader provided until reaching the end of the reader.
 <br><br>
 ```java 
     Reader rdr = new StringReader("Value");
-    
+
     rdr.read();
-    
+
     //buffer capacity: 1 ~ maximum array size
     //builder capacity: 1 ~ max array size 
     String remaining = Readerz.getRemaining(
@@ -25,7 +25,7 @@ reader provided until reaching the end of the reader.
         /*buffer capacity*/ 100,
         /*builder capacity*/ 500
     );
-    
+
     assert remaining.equals("alue");
 ```
 <br>
@@ -35,15 +35,15 @@ reader provided until reaching the provided string-length limit.
 <br><br>
 ```java 
     Reader rdr = new StringReader("Value");
-    
+
     rdr.read();
-    
+
     //read limit: 0 ~ max array size
     String remaining = Readerz.getRemaining(
         rdr, 
         /*read limit*/ 3
     );
-    
+
     assert remaining.equals("alu");
 ```
 <br>
@@ -53,7 +53,7 @@ equals to one of the strings provided.
 <br><br>
 ```java 
     StringReader rdr = new StringReader("Value");
-    
+
     //- if trim is true, the whitespaces before
     //and after the sequence will be ignored
     //- if fullRead is true, the strings should

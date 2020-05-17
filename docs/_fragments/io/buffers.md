@@ -15,4 +15,4 @@ description: >-
 <br>
 
 - `BufferredInputStream` `BufferedReader` is the same as java's
-version of this but uses the buffer we built
+version of this but uses the buffer we built.

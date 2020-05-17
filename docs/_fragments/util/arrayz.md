@@ -27,7 +27,7 @@ description: >-
 <br><br>
 ```java 
     char[] chars = {'a', 'b', 'c', 'd', 'e'};
-    
+
     assert Arrayz.any(chars, 'x', 'r', 'd', 'm');
     assert !Arrayz.any(chars, 'n', 'm', 'f');
 ```
@@ -38,10 +38,10 @@ description: >-
 ```java 
     int[] array = {};
     Object object = array;
-    
+
     //if the array's type is defined
     List<Integer> arrayAsList = Arrayz.asList(array);
-    
+
     //if the array's type is not defined 
     List objectAsList = Arrayz.asList0(object);
 ```
@@ -52,9 +52,9 @@ specified array into a new array.
 <br><br>
 ```java 
     int[] array = {0, 1, 2};
-    
+
     Object[] objects = Arrayz.copyOf(i, 2, Object[].class);
-    
+
     assert objects.length == 2;
     assert objects[0] == 0;
     assert objects[1] == 1;
@@ -68,9 +68,9 @@ type checks and uses primitive-cast.
 ```java 
     Integer[] integers = {0, 1, 2};
     short[] shorts = new short[3];
-    
+
     Arrayz.hardcopy(integers, 0, shorts, 0, integers.length);
-    
+
     assert shorts[0] == 0;
     assert shorts[1] == 1;
     assert shorts[2] == 2;
@@ -81,9 +81,9 @@ type checks and uses primitive-cast.
 <br><br>
 ```java 
     int[][] arrays = { {0, 1}, {2}, {3, 4} };
-    
+
     int[] merged = Arrayz.merge(arrays);
-    
+
     assert merged.length == 5;
     assert merged[0] == 0;
     assert merged[2] == 2;
@@ -96,8 +96,8 @@ the items of the provided arrays.
 <br><br>
 ```java 
     int[] array = {0, 1, 2, 3};
-    
+
     int sum = Arrayz.sum(array, /*initial value*/ 0, Integer::sum);
-    
+
     assert sum == 6;
 ```

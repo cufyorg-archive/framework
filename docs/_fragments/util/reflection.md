@@ -73,9 +73,9 @@ the classes it extends.
         void a() {}
         void c() {}
     }
-    
+
     List<Method> methods = Reflection.getAllMethod(B.class);
-    
+
     assert methods.size() == 3;
 ```
 <br>
@@ -105,21 +105,21 @@ first method.
         @Override
         void a() {}
     }
-    
+
     Method a = A.class.getMethod("a");
     Method b = B.class.getMethod("a");
     Method c = C.class.getMethod("a");
-    
+
     //any method does override itself
     assert Reflection.overrides(a, a);
-    
+
     //same signature, but in a class that does
     //not override the class of the first method
     assert !Reflection.overrides(a, b);
-    
+
     //a valid override
     assert Reflection.overrides(a, c);
-    
+
     //a super-method do not override a sub-method
     assert !Reflection.overrides(c, a);
 ```

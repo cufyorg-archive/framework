@@ -30,7 +30,7 @@ until the thread gain the lock. And `unlock()` releases the lock.
 ```java 
     //an object to be locked
     Object object = //...;
-    
+
     //this thread will be the only thread that can control the below lock
     Lock lock = new Lock(object);
 
@@ -49,11 +49,11 @@ and the lock will not be usable again.
     Lock lock = //...;
 
     lock.close();
-    
+
     //the methods below will throw exceptions
     lock.start();
     lock.lock();
-    
+
     //the methods below will do nothing
     lock.unlock();
     lock.close();

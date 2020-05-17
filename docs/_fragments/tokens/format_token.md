@@ -17,26 +17,26 @@ description: >-
 ```java 
     //the parent token.
     FormatToken parent = //...;
-    
+
     //the object to be written as text
     Object instance = //...;
-    
+
     //the writer to write the formatting results on
     Writer writer = //...;
-    
+
     //the clazz of how to format the instance as
     //the clazz's family is used to pick the method
     //the clazz's klass is used to annotate it as the class in the text
     Clazz klazz = //...;
-    
+
     FormatToken token = new FormatToken(parent,instance,writer,klazz);
     //if no parent: new FormatToken(instance, writer, klazz);
-    
+
     assert token.parent == parent;
     assert token.input == instance;
     assert token.output == writer;
     assert token.klazz == klazz;
-    
+
     //now you can pass it to any formatter
     formatter.format(token);
 ```

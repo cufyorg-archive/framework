@@ -43,14 +43,14 @@ thread continue its work.
 <br><br>
 ```java 
     Instructor instructor = new Instructor();
-    
+
     instructor.thread(new Forever(instructor::tick));
-    
+
     //now the result maybe 0 and maybe 1
     int loops = instructor.getLoops().size();
-    
+
     instructor.pair();
-    
+
     //now the result is 1
     loops = instructor.getLoops().size();
 ```
@@ -63,7 +63,7 @@ instructor in the future.
 ```java 
     //an instructor that have a running loops
     Instructor instructor = //...;
-    
+
     //with this all the running loops in the instructor will
     //have the `SLEEP` status
     instructor.notify(Loop.SLEEP);
@@ -80,10 +80,10 @@ instructor. Since the instructor itself don't have it's own thread.
 ```java 
     //an instructor that have some jobs posted to it
     Instructor instructor = //...;
-    
+
     //this thread will do the jobs of the instructor
     instructor.tick();
-    
+
     //now unless the instructor have repeating posts or another work
     //posted to it, the instructor have no pending work.
 ```    
@@ -162,7 +162,7 @@ calls tick() finishes executing that block of code.
 <br><br>
 ```java 
     Instructor instructor = new Instructor();
-    
+
     //empty instructor always not alive
     assert instructor.isAlive() == false;
 
@@ -183,7 +183,7 @@ to die.
     //an instructor with some loops running in
     //different threads than the current
     Instructor instructor = //...;
- 
+
     //let's say that the instructor have running loops
     assert instructor.getLoops().size() != 0;
 
