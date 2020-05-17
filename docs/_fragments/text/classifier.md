@@ -1,5 +1,4 @@
 ---
-beta: true
 index: 0
 layout: fragment
 parent: text
@@ -13,22 +12,25 @@ description: >-
     that have all the variables of that operations.
 ---
 
-- `classify(CharSequence)` TODO
+- `classify(CharSequence)` `classify(Reader)` returns the clazz of the
+text provided.
 <br><br>
 ```java 
-    TODO
+    CharSequence sequence = //the sequence
+    //Reader reader = //the reader, as a replacement of 'sequence'
+    
+    //the returned clazz is the result from classifying the text
+    Clazz klazz = classifier.classify(sequence);
 ```
 <br>
 
-- `classify(Reader)` TODO
+- `classify(ClassifyToken)` performs the classifying operation of the
+token given.
 <br><br>
 ```java 
-    TODO
-```
-<br>
+    ClassifyToken token = //a token with the classifying parameters
 
-- `classify(ClassifyToken)` TODO
-<br><br>
-```java 
-    TODO
+    classifier.classify(token);
+
+    //now token.output has the result of the classification
 ```

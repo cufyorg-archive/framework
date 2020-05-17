@@ -1,5 +1,4 @@
 ---
-beta: true
 index: 1
 layout: fragment
 parent: text
@@ -13,22 +12,31 @@ description: >-
     the variables of that operation.
 ---
 
-- `parse(CharSequence, Object)` TODO
+- `parse(CharSequence, Object)` `parse(Reader, Object)` parses the
+provided text to the object given.
 <br><br>
 ```java 
-    TODO
+    CharSequence sequence = //the sequence
+    //Reader reader = //the reader, as a replacement of 'sequence'
+    Object instance = //the object to output to
+
+    Object out = parser.parse(sequence, instance);
+
+    //now, if 'instance' is valid, then 'out' will be 'instance'
+    //and 'instance' have the value from parsing 'sequence'.
+    //otherwise, 'out' will not be 'instance' and 'instance'
+    //have not been changed meanwhile 'out' will have the value from
+    //parsing 'sequence'
 ```
 <br>
 
-- `parse(Reader, Object)` TODO
+- `parse(ParseToken)` performs the parsing operation of the token
+given.
 <br><br>
 ```java 
-    TODO 
-```
-<br>
+    ParseToken token = //a token with the parsing parameters
 
-- `parse(ParseToken)` TODO
-<br><br>
-```java 
-    TODO
+    parser.parse(token);
+
+    //now token.output has the result of the parsing
 ```
