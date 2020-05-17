@@ -33,15 +33,15 @@ description: >-
     //the clazz's klass is used to construct new instance of the value
     //if the value given is null or not valid
     Clazz klazz = //...;
-    
+
     ParseToken token = new ParseToken(parent, reader, instance, klazz);
     //if no parent: new ParseToken(reader, instance, klazz);
-    
+
     assert token.parent == parent;
     assert token.input == reader;
     assert token.output == instance;
     assert token.klazz == klazz;
-    
+
     //now you can pass it to any parser
     parser.parse(token);
 ```

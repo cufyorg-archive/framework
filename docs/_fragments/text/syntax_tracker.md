@@ -34,7 +34,7 @@ sequences to be skipped when seen in a literal fence.
     literals.put("\"", "\"");
 
     List escapable = new ArrayList();
-    
+
     //backslash is an escaping character and when followed with quote
     //it means that the quote should be treated as a plain text
     //the string should contain the escaped string
@@ -66,4 +66,3 @@ the tracker.
 
 - `fenceStart()` `fenceEnd()` returns the syntax that started the last
 applied fence and the syntax that will end it.
-<br>

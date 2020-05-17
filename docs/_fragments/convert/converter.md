@@ -28,7 +28,7 @@ but with the same members (exact instance) of the old object.
             Clazz.of(Long.class)
         )
     );
-    
+
     assert array[0].getClass() == Long.class;
     assert array[0].equals(0L);
     assert array[1].getClass() == Long.class;
@@ -108,5 +108,5 @@ token given.
 
     converter.convert(token);
 
-    //now token.output has the result of converting
+    //now token.output has the result of the converting
 ```

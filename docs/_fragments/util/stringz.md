@@ -15,9 +15,9 @@ from the provided queries in the provided string.
 <br><br>
 ```java 
     String string = "abcd";
-    
+
     CharSequence query = Stringz.all(string, "bc", "x", "ab", "r");
-    
+
     assert query.equals("x");
 ```
 ```java 
@@ -41,7 +41,7 @@ provided queries found in the provided string.
 ```
 ```java 
     String string = "abcd";
-    
+
     CharSequence query = Stringz.any(string, "x", "y", "z");
 
     assert query == null;

@@ -8,8 +8,9 @@ links:
     GitHub: https://github.com/cufyorg/framework/tree/master/src/main/java/cufy/concurrent
     Javadoc: /javadoc/cufy/concurrent/package-summary.html
 description: >-
-    When it comes to concurrent actions. Complexity is all over the place. Using instances
-    that manages those concurrent actions is the solution. Those utils helps to deal with
-    concurrent actions and infinite loops and many other concurrent actions. The whole package
-    depends on the logic rather than the timing.
+    When it comes to concurrent actions. Complexity is all over the
+    place. Using instances that manages those concurrent actions is
+    the solution. Those utils helps to deal with concurrent actions
+    and infinite loops and many other concurrent actions. The whole
+    package depends on the logic rather than the timing.
 ---
