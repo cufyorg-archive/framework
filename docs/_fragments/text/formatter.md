@@ -13,7 +13,7 @@ description: >-
     have all the variables of that operation.
 ---
 
-- `format(Object)` TODO ~
+- `format(Object)` TODO
 <br><br>
 ```java 
     TODO
