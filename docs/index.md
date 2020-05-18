@@ -2,6 +2,7 @@
 layout: home
 links:
     GitHub: https://github.com/cufyorg/framework
+    Jitpack: https://jitpack.io/#org.cufy/framework
     Javadoc: javadoc
     YouTube: https://youtube.com/playlist?list=PL4GvMdlkZJ6Y1SkrorANkRHArohilF2Ye
 ---
