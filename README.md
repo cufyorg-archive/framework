@@ -25,6 +25,9 @@
     <a href="https://github.com/cufyorg/framework/actions?query=workflow%3A%22Java+CI+with+Gradle%22">
         <img alt="test" src="https://github.com/cufyorg/framework/workflows/Java%20CI%20with%20Gradle/badge.svg"/>
     </a>
+    <a href="https://jitci.com/gh/cufyorg/framework">
+        <img alt="jitci" src="https://jitci.com/gh/cufyorg/framework/svg">
+    </a>
 </p>
 
 -   ### About
