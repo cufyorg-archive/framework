@@ -21,7 +21,7 @@
  * of that is possible with the convert package.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.4
  * @see <a href="https://framework.cufy.org/site/convert">framework.cufy.org/site/convert</a>
  * @since 31-Aug-2019
  */

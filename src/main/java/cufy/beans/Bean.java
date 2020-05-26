@@ -44,7 +44,7 @@ import java.util.*;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.4
  * @since 11-Jun-2019
  */
 public interface Bean<K, V> extends Map<K, V> {

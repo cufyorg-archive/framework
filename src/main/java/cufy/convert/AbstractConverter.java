@@ -30,7 +30,7 @@ import java.util.Objects;
  * parameters/output mismatches.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.4
  * @since 31-Aug-2019
  */
 public abstract class AbstractConverter implements Converter {

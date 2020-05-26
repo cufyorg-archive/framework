@@ -19,7 +19,7 @@ package cufy.convert;
  * Thrown to indicate that the code has attempted to clone an object which it can't be cloned.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.4
  * @since 26-May-2020
  */
 public class CloneException extends ConvertException {

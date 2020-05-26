@@ -20,7 +20,7 @@
  * as utils for arrays, collections, readers and also reflection and many more.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.4
  * @see <a href="https://framework.cufy.org/site/util">cufy.util</a>
  * @since 11-Jun-2019
  */

@@ -36,7 +36,7 @@
  * </ul>
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.4
  * @see <a href="https://framework.cufy.org">framework.cufy.org</a>
  * @since 18 May 2019
  */

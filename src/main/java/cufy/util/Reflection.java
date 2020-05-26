@@ -27,7 +27,7 @@ import java.util.Objects;
  * Utils for dealing with java reflection.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.4
  * @since 11-Jun-2019
  */
 final public class Reflection {

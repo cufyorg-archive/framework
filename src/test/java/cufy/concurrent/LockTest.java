@@ -27,7 +27,9 @@ public class LockTest {
 		forever.thread();
 		Assert.assertEquals("Lock not locked: after thread()", 0, integer.get());
 		//even after sometime
-		forever.synchronously(l -> {}, l -> {}, 50);
+		forever.synchronously(l -> {
+		}, l -> {
+		}, 50);
 		Assert.assertEquals("Lock not locked: after pair()", 0, integer.get());
 
 		//release the lock

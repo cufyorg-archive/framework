@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * Navigate the {@link AbstractConverter} class that the annotated method is a converting method.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.4
  * @since 31-Aug-2019
  */
 @Retention(RetentionPolicy.RUNTIME)

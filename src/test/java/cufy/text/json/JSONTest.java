@@ -90,6 +90,16 @@ public class JSONTest {
 	}
 
 	@Test
+	public void escape() {
+		String str = "{\"\\\"} is a way to destroy\": \"hi\"}";
+
+		HashMap map = JSON.global.parse(str, new HashMap());
+
+		assert map.size() == 1;
+		assert map.get("\"} is a way to destroy").equals("hi");
+	}
+
+	@Test
 	public void format_object_array_nested() {
 		Map<Object, Object> base = new HashMap<>(3);
 		Map<Object, Object> map = new HashMap<>(3);
@@ -176,15 +186,5 @@ public class JSONTest {
 		Assert.assertEquals("first number not detected", new BigDecimal(9), number.get(0));
 		Assert.assertEquals("second number not detected", new BigDecimal(3), number.get(1));
 		Assert.assertEquals("third number not detected", new BigDecimal(5), number.get(2));
-	}
-
-	@Test
-	public void escape() {
-		String str = "{\"\\\"} is a way to destroy\": \"hi\"}";
-
-		HashMap map = JSON.global.parse(str, new HashMap());
-
-		assert map.size() == 1;
-		assert map.get("\"} is a way to destroy").equals("hi");
 	}
 }
