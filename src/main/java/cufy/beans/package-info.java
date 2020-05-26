@@ -20,7 +20,7 @@
  * the entries of the map. keeping the reflection part hidden from the user.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.4
  * @see <a href="https://framework.cufy.org/site/beans">framework.cufy.org/site/beans</a>
  * @since 11-Jun-2019
  */
