@@ -514,7 +514,9 @@ public interface Bean<K, V> extends Map<K, V> {
 		 */
 		private static <V> V setValue(Field field, Object instance, V value, Converter converter, Clazz<V> type) {
 			try {
-				value = converter.convert(new ConvertToken<>(value, value, Clazz.ofi(value), type));
+				if (!type.isInstance(value))
+					//apply formula
+					value = converter.convert(new ConvertToken<>(value, value, Clazz.ofi(value), type));
 
 				field.setAccessible(true);
 				V old = (V) field.get(instance);
