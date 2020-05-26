@@ -16,8 +16,7 @@
 package cufy.convert;
 
 /**
- * Thrown to indicate that the code has attempted to convert an object to a class of which it can't be converted to. For example, the following code
- * generates a ClassConvertException:
+ * Thrown to indicate that the code has attempted to convert an object to a class of which it can't be converted to.
  *
  * @author lsafer
  * @version 0.1.3
