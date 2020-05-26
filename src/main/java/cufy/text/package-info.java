@@ -22,7 +22,7 @@
  * such as JSON.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.4
  * @see <a href="https://framework.cufy.org/site/text">framework.cufy.org/site/text</a>
  * @since 09-Jul-2019
  */

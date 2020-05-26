@@ -26,12 +26,21 @@ import java.lang.annotation.Target;
  * Navigate the {@link AbstractFormat} class that the annotated method is a stringing method.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.4
  * @since 30-Mar-2020
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface FormatMethod {
+	/**
+	 * The order of this method. If two (or more) methods are compatible with the formatting parameters,
+	 * The method with the lower order will be invoked.
+	 * The order can be negative and the default order is 0.
+	 *
+	 * @return the order of this method
+	 */
+	int order() default 0;
+
 	/**
 	 * Classes that the annotated method dose support as a parameter.
 	 *

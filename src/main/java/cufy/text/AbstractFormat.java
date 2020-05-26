@@ -44,7 +44,7 @@ import java.util.Objects;
  * </ul>
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.4
  * @since 28-Sep-2019
  */
 public abstract class AbstractFormat implements Format {
@@ -255,8 +255,25 @@ public abstract class AbstractFormat implements Format {
 				.subGroup(FormatMethod.class, m -> m.isAnnotationPresent(FormatMethod.class))
 				.subGroup(klass, m -> Filter.util.test(m.getAnnotation(FormatMethod.class).value(), klass));
 
-		Iterator<Method> i = valid.iterator();
-		return i.hasNext() ? i.next() : null;
+		if (valid.size() == 0) {
+			return null;
+		} else {
+			Iterator<Method> i = valid.iterator();
+			Method max = i.next();
+			int mOrder = max.getAnnotation(FormatMethod.class).order();
+
+			while (i.hasNext()) {
+				Method next = i.next();
+				int nOrder = next.getAnnotation(FormatMethod.class).order();
+
+				if (nOrder < mOrder) {
+					max = next;
+					mOrder = nOrder;
+				}
+			}
+
+			return max;
+		}
 	}
 
 	/**
@@ -273,8 +290,25 @@ public abstract class AbstractFormat implements Format {
 				.subGroup(ParseMethod.class, m -> m.isAnnotationPresent(ParseMethod.class))
 				.subGroup(klass, m -> Filter.util.test(m.getAnnotation(ParseMethod.class).value(), klass));
 
-		Iterator<Method> i = valid.iterator();
-		return i.hasNext() ? i.next() : null;
+		if (valid.size() == 0) {
+			return null;
+		} else {
+			Iterator<Method> i = valid.iterator();
+			Method max = i.next();
+			int mOrder = max.getAnnotation(ParseMethod.class).order();
+
+			while (i.hasNext()) {
+				Method next = i.next();
+				int nOrder = next.getAnnotation(ParseMethod.class).order();
+
+				if (nOrder < mOrder) {
+					max = next;
+					mOrder = nOrder;
+				}
+			}
+
+			return max;
+		}
 	}
 
 	/**
