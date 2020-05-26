@@ -61,6 +61,17 @@ public abstract class AbstractConverter implements Converter {
 	}
 
 	/**
+	 * Get invoked if no conversion method is found for the given token.
+	 * Meanwhile the input is instance of the outputClazz and the inputClazz
+	 * is the outputClazz.
+	 *
+	 * @param token the conversion instance that holds the variables of this conversion
+	 */
+	protected void cloneElse(ConvertToken token) {
+			throw new CloneException("Can't clone " + token.outputClazz);
+	}
+
+	/**
 	 * Invoke the given {@link ConvertMethod} with the given parameters.
 	 *
 	 * @param method to be invoked
@@ -107,12 +118,13 @@ public abstract class AbstractConverter implements Converter {
 			token.output = null;
 		} else if (token.outputClazz.isInstance(token.input)) {
 			//if the value is the wanted. Then we should duplicated to remove the link between the input and the output.
-			if (token.inputClazz == token.outputClazz)
-				//if we have a method to duplicate it, this method wouldn't be called!
-				throw new ConvertException("Can't clone " + token.outputClazz);
-
-			//this is the cloning formula :)
-			token.output = this.convert(new ConvertToken<>(token.input, null, token.inputClazz, token.inputClazz));
+			if (token.inputClazz == token.outputClazz) {
+				//give it to the subclass if it can handle it. because if we have a method to duplicate it, this method wouldn't be called!
+				this.cloneElse(token);
+			} else {
+				//this is the cloning formula :)
+				token.output = this.convert(new ConvertToken<>(token.input, null, token.inputClazz, token.inputClazz));
+			}
 		} else {
 			throw new ConvertException("Cannot convert " + token.inputClazz.getFamily() + " to " + token.outputClazz.getFamily());
 		}
