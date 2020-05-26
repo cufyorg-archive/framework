@@ -175,6 +175,26 @@ final public class Reflection {
 	}
 
 	/**
+	 * Check if the given class is or has a primitive class or not.
+	 *
+	 * @param klass to check
+	 * @return whether the given class is or has a primitive class or not
+	 * @throws NullPointerException if the given 'klass' is null
+	 */
+	public static boolean hasPrimitiveClass(Class<?> klass) {
+		Objects.requireNonNull(klass, "klass");
+		return klass.isPrimitive() ||
+			   klass == Boolean.class ||
+			   klass == Byte.class ||
+			   klass == Character.class ||
+			   klass == Double.class ||
+			   klass == Float.class ||
+			   klass == Integer.class ||
+			   klass == Long.class ||
+			   klass == Short.class;
+	}
+
+	/**
 	 * A java syntax glitch to throw any throwable without the need to catch it.
 	 *
 	 * @param throwable to be ignite
