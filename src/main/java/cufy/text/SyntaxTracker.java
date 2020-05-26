@@ -128,6 +128,15 @@ public class SyntaxTracker implements Appendable {
 	}
 
 	/**
+	 * Get the size of wrapping applied to this.
+	 *
+	 * @return the size of the wraps list
+	 */
+	public int depth() {
+		return this.fences.size();
+	}
+
+	/**
 	 * Returns the end string of the current fence.
 	 *
 	 * @return the end string of the current fence
@@ -143,15 +152,6 @@ public class SyntaxTracker implements Appendable {
 	 */
 	public String fenceStart() {
 		return this.fence == null ? null : this.fence.getKey();
-	}
-
-	/**
-	 * Get the size of wrapping applied to this.
-	 *
-	 * @return the size of the wraps list
-	 */
-	public int depth() {
-		return this.fences.size();
 	}
 
 	/**
