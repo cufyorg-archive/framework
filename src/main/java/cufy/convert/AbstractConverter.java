@@ -68,7 +68,14 @@ public abstract class AbstractConverter implements Converter {
 	 * @param token the conversion instance that holds the variables of this conversion
 	 */
 	protected void cloneElse(ConvertToken token) {
+		//by default: at this point `inputClazz` and `outputClazz` are the same
+		if (Reflection.hasPrimitiveClass(token.outputClazz.getFamily())) {
+			//when the class is one of the essential types, it can't be cloned by default
+			token.output = token.input;
+		} else {
+			//we have a contract to remove any link between the 'input' and the 'output'
 			throw new CloneException("Can't clone " + token.outputClazz);
+		}
 	}
 
 	/**
