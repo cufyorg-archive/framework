@@ -132,7 +132,7 @@ public abstract class AbstractConverter implements Converter {
 				//this is the cloning formula :)
 				token.output = this.convert(new ConvertToken<>(token.input, null, token.inputClazz, token.inputClazz));
 			}
-		} else if (token.outputClazz.getClass().isPrimitive()) {
+		} else if (Reflection.hasPrimitiveClass(token.outputClazz.getClass())) {
 			//primitive classes should be treated differently
 			if (Reflection.asObjectClass(token.outputClazz.getClass()).isInstance(token.input))
 				token.output = token.input;
