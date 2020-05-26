@@ -153,7 +153,24 @@ public abstract class AbstractConverter implements Converter {
 						   Filter.util.test(ann.output(), outputClass);
 				});
 
-		Iterator<Method> i = valid.iterator();
-		return i.hasNext() ? i.next() : null;
+		if (valid.size() == 0) {
+			return null;
+		} else {
+			Iterator<Method> i = valid.iterator();
+			Method max = i.next();
+			int mOrder = max.getAnnotation(ConvertMethod.class).order();
+
+			while (i.hasNext()) {
+				Method next = i.next();
+				int nOrder = next.getAnnotation(ConvertMethod.class).order();
+
+				if (nOrder < mOrder) {
+					max = next;
+					mOrder = nOrder;
+				}
+			}
+
+			return max;
+		}
 	}
 }
