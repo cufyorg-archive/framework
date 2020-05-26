@@ -118,6 +118,25 @@ public class BaseConverterTest {
 	}
 
 	@Test
+	public void clonePrimitive() {
+		{
+			int i = 5;
+			int x = BaseConverter.global.clone(i);
+			assert i == x;
+		}
+		{
+			boolean b = true;
+			boolean x = BaseConverter.global.clone(b);
+			assert b == x;
+		}
+		{
+			char c = 'e';
+			char x = BaseConverter.global.clone(c);
+			assert c == x;
+		}
+	}
+
+	@Test
 	public void cloneTest() {
 		int[][] arr = {{0, 1}, {2, 3}};
 
@@ -136,19 +155,6 @@ public class BaseConverterTest {
 	}
 
 	@Test
-	public void transTest() {
-		int[][] arr = {{0, 1}, {2, 3}};
-		long[][] lng = new long[2][2];
-
-		BaseConverter.global.convert(arr, lng);
-
-		Assert.assertSame("wrong value", (int) lng[0][0], arr[0][0]);
-		Assert.assertSame("wrong value", (int) lng[0][1], arr[0][1]);
-		Assert.assertSame("wrong value", (int) lng[1][0], arr[1][0]);
-		Assert.assertSame("wrong value", (int) lng[1][1], arr[1][1]);
-	}
-
-	@Test
 	public void condTransTest() {
 		int[] arr = {0, 1};
 		Object[] objs = new Object[2];
@@ -160,5 +166,34 @@ public class BaseConverterTest {
 
 		Assert.assertEquals("Wrong value", objs[0], 0L);
 		Assert.assertEquals("Wrong value", objs[1], 1L);
+	}
+
+	@Test
+	public void objToSame() {
+		class Test {
+		}
+
+		Test t = new Test();
+		ConvertToken token = new ConvertToken(t, null, Clazz.of(Test.class), Clazz.of(Test.class));
+
+		try {
+			BaseConverter.global.convert(token);
+			Assert.fail("The conversion should attempt cloning and fail");
+		} catch (CloneException ignored) {
+			Assert.assertNull("The conversion should have no results", token.output);
+		}
+	}
+
+	@Test
+	public void transTest() {
+		int[][] arr = {{0, 1}, {2, 3}};
+		long[][] lng = new long[2][2];
+
+		BaseConverter.global.convert(arr, lng);
+
+		Assert.assertSame("wrong value", (int) lng[0][0], arr[0][0]);
+		Assert.assertSame("wrong value", (int) lng[0][1], arr[0][1]);
+		Assert.assertSame("wrong value", (int) lng[1][0], arr[1][0]);
+		Assert.assertSame("wrong value", (int) lng[1][1], arr[1][1]);
 	}
 }
