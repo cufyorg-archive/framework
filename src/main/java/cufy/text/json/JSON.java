@@ -175,7 +175,7 @@ public class JSON extends AbstractFormat {
 			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		Iterator it = token.input instanceof Collection ? ((Collection) token.input).iterator() : Arrayz.asList(token.input).iterator();
+		Iterator it = token.input instanceof Collection ? ((Collection) token.input).iterator() : Arrayz.asList0(token.input).iterator();
 
 		String TAB = Stringz.repeat(SYNTAX.WS_TAB, token.depth);
 		String SHIFT = TAB + SYNTAX.WS_TAB;
