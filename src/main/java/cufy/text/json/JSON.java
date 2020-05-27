@@ -803,14 +803,17 @@ public class JSON extends AbstractFormat {
 
 		String string = Readerz.getRemaining(token.input, BUFFER_SIZE, BUFFER_SIZE).trim();
 
-		Class klass = token.klazz.getKlass();
-
-		if (klass.isAssignableFrom(BigDecimal.class)) {
+		if (token.klazz.isAssignableFrom(BigDecimal.class)) {
 			token.output = new BigDecimal(string);
-		} else try {
-			token.output = (Number) klass.getConstructor(String.class).newInstance(string);
-		} catch (NoSuchMethodException | SecurityException e) {
-			token.output = (Number) klass.getMethod("valueOf", String.class).invoke(null, string);
+		} else {
+			//make sure not using a primitive class on a reflective operation
+			Class klass = token.klazz.toObjectClazz().getKlass();
+
+			try {
+				token.output = (Number) klass.getConstructor(String.class).newInstance(string);
+			} catch (NoSuchMethodException | SecurityException e) {
+				token.output = (Number) klass.getMethod("valueOf", String.class).invoke(null, string);
+			}
 		}
 	}
 
