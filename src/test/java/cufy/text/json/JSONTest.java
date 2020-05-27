@@ -1,5 +1,6 @@
 package cufy.text.json;
 
+import cufy.beans.Bean;
 import cufy.text.ParseException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,6 +12,32 @@ import java.util.*;
 
 @SuppressWarnings({"JavaDoc", "SpellCheckingInspection"})
 public class JSONTest {
+	@Test
+	public void ao() {
+		class B implements Bean {
+			@Property
+			public X[] beans = new X[]{
+					new X(0),
+					new X(1),
+					new X(2),
+					new X(3)
+			};
+
+			class X implements Bean {
+				@Property
+				public int x;
+
+				X(int x) {
+					this.x = x;
+				}
+			}
+		}
+
+		B b = new B();
+
+		JSON.global.format(b);
+	}
+
 	@Test
 	public void commentTest() {
 		String s = "{\n" +
