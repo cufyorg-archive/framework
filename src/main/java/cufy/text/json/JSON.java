@@ -609,7 +609,7 @@ public class JSON extends AbstractFormat {
 
 		//setup the output
 		if (token.klazz.isArray())
-			token.output = token.output.getClass().isArray() ? new ArrayList(Arrayz.asList(origin)) : new ArrayList();
+			token.output = token.output != null && token.output.getClass().isArray() ? new ArrayList(Arrayz.asList(origin)) : new ArrayList();
 		else if (!token.klazz.isInstance(token.output))
 			token.output = token.klazz.isAssignableFrom(ArrayList.class) ? new ArrayList() :
 						   token.klazz.getConstructor().newInstance();
