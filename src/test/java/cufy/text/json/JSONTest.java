@@ -187,4 +187,15 @@ public class JSONTest {
 		Assert.assertEquals("second number not detected", new BigDecimal(3), number.get(1));
 		Assert.assertEquals("third number not detected", new BigDecimal(5), number.get(2));
 	}
+
+	@Test
+	public void primitiveArray() {
+		String s = "[0, 1, 2, 3, 4, 5]";
+		int[] array = new int[6];
+
+		JSON.global.parse(s, array);
+
+		for (int i = 0; i < array.length; i++)
+			Assert.assertSame("Wrong value", i, array[i]);
+	}
 }
