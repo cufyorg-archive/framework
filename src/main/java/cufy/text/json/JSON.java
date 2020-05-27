@@ -607,7 +607,7 @@ public class JSON extends AbstractFormat {
 			token.output = token.klazz.isInstance(token.output) ? new ArrayList(Arrayz.asList(array)) : new ArrayList();
 		else if (!token.klazz.isInstance(token.output))
 			token.output = token.klazz.isAssignableFrom(ArrayList.class) ? new ArrayList() :
-						   token.klazz.getKlass().getConstructor().newInstance();
+						   token.klazz.getConstructor().newInstance();
 		else if (!(token.output instanceof List))
 			token.output.clear();
 
@@ -829,7 +829,7 @@ public class JSON extends AbstractFormat {
 		//setup the output
 		if (!token.klazz.isInstance(token.output))
 			token.output = token.klazz.isAssignableFrom(HashMap.class) ? new HashMap() :
-						   token.klazz.getKlass().getConstructor().newInstance();
+						   token.klazz.getConstructor().newInstance();
 
 		//reject more elements
 		boolean closed = false;

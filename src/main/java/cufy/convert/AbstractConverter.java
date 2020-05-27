@@ -30,7 +30,7 @@ import java.util.Objects;
  * parameters/output mismatches.
  *
  * @author lsafer
- * @version 0.1.4
+ * @version 0.1.5
  * @since 31-Aug-2019
  */
 public abstract class AbstractConverter implements Converter {
@@ -132,9 +132,9 @@ public abstract class AbstractConverter implements Converter {
 				//this is the cloning formula :)
 				token.output = this.convert(new ConvertToken<>(token.input, null, token.inputClazz, token.inputClazz));
 			}
-		} else if (Reflection.hasPrimitiveClass(token.outputClazz.getKlass())) {
+		} else if (token.outputClazz.hasPrimitive()) {
 			//primitive classes should be treated differently
-			if (Reflection.asObjectClass(token.outputClazz.getKlass()).isInstance(token.input))
+			if (token.outputClazz.toObjectClazz().isInstance(token.input))
 				token.output = token.input;
 		} else {
 			throw new ConvertException("Cannot convert " + token.inputClazz.getFamily() + " to " + token.outputClazz.getFamily());

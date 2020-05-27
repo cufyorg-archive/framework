@@ -67,7 +67,7 @@ import java.util.*;
  * </ul>
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 31-Aug-2019
  */
 public class BaseConverter extends AbstractConverter {
@@ -221,7 +221,7 @@ public class BaseConverter extends AbstractConverter {
 		//declare the output
 		if (!token.outputClazz.isInstance(token.output)) {
 			//output presented is not valid
-			token.output = token.outputClazz.getKlass().getConstructor().newInstance();
+			token.output = token.outputClazz.getConstructor().newInstance();
 		} else { //fresh start
 			token.output.clear();
 		}
@@ -285,7 +285,7 @@ public class BaseConverter extends AbstractConverter {
 		//declare the output
 		if (!token.outputClazz.isInstance(token.output)) {
 			//output presented is not valid
-			token.output = token.outputClazz.getKlass().getConstructor().newInstance();
+			token.output = token.outputClazz.getConstructor().newInstance();
 		} else {
 			int inputSize = input.size();
 			int outputSize = token.output.size();
@@ -377,7 +377,7 @@ public class BaseConverter extends AbstractConverter {
 		//declare output
 		if (!token.outputClazz.isInstance(token.output)) {
 			//output presented is not valid
-			token.output = token.outputClazz.getKlass().getConstructor().newInstance();
+			token.output = token.outputClazz.getConstructor().newInstance();
 		} else {
 			//remove unwanted keys
 			token.output.keySet().retainAll(token.input.keySet());
@@ -560,12 +560,12 @@ public class BaseConverter extends AbstractConverter {
 		if (token.input.equals("null")) {
 			token.output = null;
 		} else try {
-			token.output = token.outputClazz.getKlass().getMethod("valueOf", String.class).invoke(null, token.input);
+			token.output = token.outputClazz.getMethod("valueOf", String.class).invoke(null, token.input);
 		} catch (NoSuchMethodException ignored) {
 			try {
-				token.output = token.outputClazz.getKlass().getConstructor(String.class).newInstance(token.input);
+				token.output = token.outputClazz.getConstructor(String.class).newInstance(token.input);
 			} catch (NoSuchMethodException ignored1) {
-				throw new IllegalArgumentException(token.outputClazz.getKlass() + " don't 'valueOf(String)' nor constructor(String) method");
+				throw new IllegalArgumentException(token.outputClazz + " don't 'valueOf(String)' nor constructor(String) method");
 			}
 		}
 	}
