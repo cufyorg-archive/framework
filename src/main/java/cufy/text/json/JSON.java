@@ -101,7 +101,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * </ul>
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @see <a href="https://www.json.org/">json.org</a>
  * @since 09-Jul-2019
  */
@@ -169,13 +169,13 @@ public class JSON extends AbstractFormat {
 					   long[].class,
 					   short[].class
 			}))
-	protected void formatArray(FormatToken<Collection> token) throws IOException {
+	protected void formatArray(FormatToken token) throws IOException {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		Iterator it = token.input instanceof Collection ? token.input.iterator() : Arrayz.asList(token.input).iterator();
+		Iterator it = token.input instanceof Collection ? ((Collection) token.input).iterator() : Arrayz.asList(token.input).iterator();
 
 		String TAB = Stringz.repeat(SYNTAX.WS_TAB, token.depth);
 		String SHIFT = TAB + SYNTAX.WS_TAB;
@@ -594,22 +594,27 @@ public class JSON extends AbstractFormat {
 					   long[].class,
 					   short[].class
 			}))
-	protected void parseArray(ParseToken<Collection> token) throws IOException, ReflectiveOperationException {
+	protected void parseArray(ParseToken token) throws IOException, ReflectiveOperationException {
+		//sorry about the type mess, I am trying to dynamically deal with
+		//three types (Collection, List, and Object[] or primitive[])
+		//meanwhile listening to what the user wants
+		//trying to apply any generics to the token might cause ClassCastException on the runtime
+		//because the compiler might cast `token.output` to the generic applied
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 		}
 
 		//If the requested type is array
-		Object array = token.output;
+		Object origin = token.output;
 
 		//setup the output
 		if (token.klazz.isArray())
-			token.output = token.klazz.isInstance(token.output) ? new ArrayList(Arrayz.asList(array)) : new ArrayList();
+			token.output = token.klazz.isInstance(token.output) ? new ArrayList(Arrayz.asList(origin)) : new ArrayList();
 		else if (!token.klazz.isInstance(token.output))
 			token.output = token.klazz.isAssignableFrom(ArrayList.class) ? new ArrayList() :
 						   token.klazz.getConstructor().newInstance();
 		else if (!(token.output instanceof List))
-			token.output.clear();
+			((Collection) token.output).clear();
 
 		//reject more elements
 		boolean closed = false;
@@ -625,7 +630,7 @@ public class JSON extends AbstractFormat {
 		//last overwritten index
 		int index = 0;
 		//overwrite an existing element at the current index
-		boolean overwrite = token.output.size() > index;
+		boolean overwrite = ((Collection) token.output).size() > index;
 
 		//first run
 		if (Readerz.isRemainingEquals(token.input, true, false, false, SYNTAX.FENCE_ARRAY[0]) != 0)
@@ -665,10 +670,10 @@ public class JSON extends AbstractFormat {
 						//replace the existing member with the new value
 						((List) token.output).set(index, element);
 						//update the overwrite position
-						overwrite = token.output.size() > (++index);
+						overwrite = ((Collection) token.output).size() > (++index);
 					} else {
 						//direct add
-						token.output.add(element);
+						((Collection) token.output).add(element);
 					}
 
 					//new builders
@@ -705,24 +710,22 @@ public class JSON extends AbstractFormat {
 
 		//delete unreached indexes, if it's a list and didn't reach it's limit
 		if (overwrite)
-			((List) token.output).subList(index, token.output.size()).clear();
+			((List) token.output).subList(index, ((List) token.output).size()).clear();
 
 		//convert to array
 		if (token.klazz.isArray()) {
-			if (array == null || token.output.size() != Array.getLength(array))
+			if (origin == null || ((List) token.output).size() != Array.getLength(origin))
 				//construct new
-				array = Array.newInstance(token.klazz.getComponentType(), token.output.size());
-
+				origin = Array.newInstance(token.klazz.getComponentType(), ((List) token.output).size());
 			//primitive arrays have to be treated in another way
-			if (array instanceof Object[]) {
-				token.output.toArray((Object[]) array);
+			if (origin instanceof Object[]) {
+				((List) token.output).toArray((Object[]) origin);
 			} else {
-				Object[] output = token.output.toArray();
-				Arrayz.hardcopy(output, 0, array, 0, output.length);
+				Object[] output = ((List) token.output).toArray();
+				Arrayz.hardcopy(output, 0, origin, 0, output.length);
 			}
 
-			//noinspection RedundantCast
-			((ParseToken) token).output = array;
+			token.output = origin;
 		}
 	}
 
