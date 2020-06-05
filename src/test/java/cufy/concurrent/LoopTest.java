@@ -52,7 +52,7 @@ public class LoopTest {
 		Assert.assertFalse("The loop not started", forever.isAlive());
 	}
 
-	@Test(timeout = 500)
+	@Test(timeout = 700)
 	public void post() throws InterruptedException {
 		Boolean[] results = new Boolean[7];
 		Forever forever = (Forever) new Forever().thread().pair();
@@ -99,8 +99,8 @@ public class LoopTest {
 			return false;
 		}));
 
-		//wait for the timed posts to be finished
-		Thread.sleep(100);
+		//wait for the timed posts to be finished, wait yeah wait
+		Thread.sleep(300);
 
 		Assert.assertTrue("A loop should be alive when threaded then paired", results[0]);
 		Assert.assertTrue("A loop should execute posts with its running thread", results[1]);
