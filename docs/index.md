@@ -10,6 +10,8 @@ links:
 {{ site.description }}
 
 <br>
+NOTE: this site is for older version of the framework, some classes and futures changed in the newer version
+<br>
 
 {% assign pages = site.pages | sort: 'index' %}
 {% for sub in pages%}
