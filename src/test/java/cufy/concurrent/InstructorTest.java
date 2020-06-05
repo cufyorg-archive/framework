@@ -5,48 +5,55 @@ import org.junit.Test;
 
 @SuppressWarnings("JavaDoc")
 public class InstructorTest {
-	@Test(timeout = 50)
+	@Test(timeout = 100)
 	public void join() {
-		Instructor group = new Instructor();
-		Forever loop0 = new Forever(group::tick);
-		Forever loop1 = new Forever(group::tick);
+		Instructor instructor = new Instructor();
+		Forever loop0 = new Forever(instructor::tick);
+		Forever loop1 = new Forever(instructor::tick);
 
-		group.thread(loop0);
-		group.thread(loop1);
+		instructor.thread(loop0);
+		instructor.thread(loop1);
 
-		group.pair();
+		instructor.pair();
 
-		Assert.assertTrue("haven't paired correctly!", group.getLoops().size() != 0);
+		Assert.assertTrue("haven't paired correctly!", instructor.getLoops().size() != 0);
 
 		loop0.pair();
 		loop1.pair();
 
 		Assert.assertTrue("Loops should be alive", loop0.isAlive() & loop1.isAlive());
 
-		group.notify(Loop.BREAK);
+		instructor.notify(Loop.BREAK);
 
-		group.join();
+		instructor.join();
 
-		Assert.assertEquals("Group still have loops", 0, group.getLoops().size());
+		Assert.assertEquals("Group still have loops", 0, instructor.getLoops().size());
 		Assert.assertFalse("Loops should be dead", loop0.isAlive() | loop1.isAlive());
 	}
 
-	@Test(timeout = 20)
+	@Test(timeout = 100)
 	public void synchronously() {
-		Instructor group = new Instructor();
-		Forever parallel = new Forever(group::tick);
-		boolean[] w = {false};
+		Instructor instructor = new Instructor();
+		Forever forever = new Forever(instructor::tick);
+		boolean[] results = new boolean[3];
 
-		group.thread(parallel);
-		group.pair();
+		instructor.thread(forever).pair();
 
-		Assert.assertEquals("Group should have 1 loop", 1, group.getLoops().size());
-		Assert.assertTrue("loop should be alive", parallel.isAlive());
+		//an instructor that did thread a loop should have a loops' size be more than 1
+		results[0] = instructor.getLoops().size() == 1;
+		//a loop threaded by an instructor then got paired should be alive
+		results[1] = forever.isAlive();
 
-		group.synchronously((g, loop) -> w[0] = true);
+		instructor.synchronously((ins, loop, loopingThread) -> {
+			//an instructor with a working and ticking loop should be able to do its posts
+			results[2] = true;
+		});
 
-		Assert.assertTrue("Value not changed synchronously", w[0]);
+		Assert.assertTrue("An instructor that did thread a loop should have a loops' size be more than 1", results[0]);
+		Assert.assertTrue("A loop threaded by an instructor then got paired should be alive", results[1]);
+		Assert.assertTrue("An instructor with a working and ticking loop should be able to do its posts", results[2]);
 
-		group.notify(Loop.BREAK);
+		//release resources
+		instructor.notify(Loop.BREAK).join();
 	}
 }

@@ -7,13 +7,12 @@ import org.junit.Test;
 public class LoopTest {
 	@Test(timeout = 700)
 	public void join() {
-		Boolean[] results = new Boolean[3];
-		Forever parallel = new Forever();
-		parallel.thread();
-		parallel.pair();
+		Boolean[] results = new Boolean[4];
+		Forever forever = (Forever) new Forever().thread().pair();
 
-		parallel.post(loop -> {
+		forever.post((loop, loopingThread) -> {
 			try {
+				//a working loop should do its posts
 				results[0] = true;
 				Thread.sleep(300);
 				loop.notify(Loop.BREAK);
@@ -22,108 +21,120 @@ public class LoopTest {
 			return false;
 		});
 
-		parallel.join(loop -> results[1] = true, 100);
-		parallel.join(loop -> results[2] = false, 500);
+		//a 300millis sleeping loop should be sleeping, even after 100millis
+		forever.join(loop -> results[1] = true, 100);
+		//a 300millis sleeping loop should be done sleeping after 600millis
+		forever.join(loop -> results[2] = false, 500);
 
-		Assert.assertEquals("State not changed. Not joined the loop", Loop.BREAK, parallel.getState().get());
+		//a successfully joined loop should be dead
+		results[3] = !forever.isAlive();
 
-		Assert.assertTrue("The loop not started", results[0]);
-		Assert.assertTrue("The 1st join 'alter' not invoked while it should", results[1]);
-		Assert.assertNull("The 2nd join 'alter' got invoked while it shouldn't", results[2]);
+		Assert.assertTrue("A working loop should do its posts", results[0]);
+		Assert.assertTrue("A 300millis sleeping loop should be sleeping, even after 100millis", results[1]);
+		Assert.assertNull("A 300millis sleeping loop should be done sleeping after 600millis", results[2]);
+		Assert.assertTrue("A successfully joined loop should be dead", results[3]);
 	}
 
 	@Test(timeout = 5000)
 	public void lifecycle() {
-		Forever parallel = new Forever(loop -> {/*looping code*/});
+		Forever forever = new Forever();
 		//there is a loop
-		Assert.assertFalse("The loop started while it shouldn't be", parallel.isAlive());
-		parallel.thread();
+		Assert.assertFalse("The loop started while it shouldn't be", forever.isAlive());
+		forever.thread();
 		//there is maybe a running loop
-		parallel.pair();
+		forever.pair();
 		//sure there is a running loop
-		Assert.assertTrue("The loop not started while it should be", parallel.isAlive());
-		parallel.notify(Loop.BREAK);
+		Assert.assertTrue("The loop not started while it should be", forever.isAlive());
+		forever.notify(Loop.BREAK);
 		//there is maybe a running loop
-		parallel.join();
+		forever.join();
 		//sure there is no running loop
-		Assert.assertFalse("The loop not started", parallel.isAlive());
+		Assert.assertFalse("The loop not started", forever.isAlive());
 	}
 
 	@Test(timeout = 500)
 	public void post() throws InterruptedException {
-		Boolean[] results = new Boolean[6];
-		Forever parallel = new Forever();
-		parallel.thread();
-		parallel.pair();
+		Boolean[] results = new Boolean[7];
+		Forever forever = (Forever) new Forever().thread().pair();
 
-		results[0] = parallel.isAlive();
+		//a loop should be alive when threaded then paired
+		results[0] = forever.isAlive();
 
-		Thread thread = parallel.getThread().get();
+		Thread thread = forever.getThread().get();
 
-		parallel.post(loop1 -> {
-			Assert.assertEquals("Wrong thread", thread, Thread.currentThread());
+		forever.post((loop, loopingThread) -> {
+			//a loop should execute posts with its running thread
+			results[1] = thread == Thread.currentThread();
 			return false;
 		});
 
-		parallel.notify(Loop.BREAK);
-		parallel.join();
+		forever.notify(Loop.BREAK).join();
 
-		results[1] = parallel.isAlive();
+		//the loop should be dead when broke then joined
+		results[2] = !forever.isAlive();
 
-		parallel.thread(Loop.CONTINUE).pair();
+		forever.thread(Loop.CONTINUE).pair();
 
-		parallel.post(loop -> {
-			results[2] = true;
-			return false;
-		}, loop -> Assert.fail("shouldn't be invoked"), 100);
-		parallel.post(loop -> {
+		forever.postIfAlive((loop, loopingThread) -> {
+			//a working loop should execute its posts and not ignore them
 			results[3] = true;
 			return false;
-		}, loop -> Assert.fail("shouldn't be invoked"));
-
-		parallel.notify(Loop.BREAK);
-		parallel.join();
-
-		parallel.post(loop -> {
-			Assert.fail("shouldn't be invoked");
+		});
+		forever.postWithin(100, (loop, loopingThread) -> {
+			//an empty healthy loop should execute any post within 100millis
+			results[4] = loopingThread;
 			return false;
-		}, loop -> results[4] = true, 100);
-		parallel.post(loop -> {
-			Assert.fail("shouldn't be invoked");
+		});
+
+		forever.notify(Loop.BREAK).join();
+
+		forever.postIfAlive((loop, loopingThread) -> {
+			//a dead loop should reject any post
+			results[5] = !loopingThread;
 			return false;
-		}, loop -> results[5] = true);
+		});
+		forever.postWithin(100, ((loop, loopingThread) -> {
+			//a dead loop should not execute timeout-posts even if infinite amount of seconds passed
+			results[6] = false;
+			return false;
+		}));
 
-		Thread.sleep(300);
-
-		Assert.assertTrue("The loop not started", results[0]);
-		Assert.assertFalse("The loop should be dead", results[1]);
-		Assert.assertTrue("1st post's 'alter' not invoked", results[2]);
-		Assert.assertTrue("2nd post's 'alter' not invoked", results[3]);
-		Assert.assertTrue("3nd post's 'alter' not invoked while it should", results[4]);
-		Assert.assertTrue("4th post's 'alter' not invoked while it should", results[5]);
+		Assert.assertTrue("A loop should be alive when threaded then paired", results[0]);
+		Assert.assertTrue("A loop should execute posts with its running thread", results[1]);
+		Assert.assertTrue("A loop should be dead when broke then joined", results[2]);
+		Assert.assertTrue("A working loop should execute its posts and not ignore them", results[3]);
+		Assert.assertTrue("An empty healthy loop should execute any post within 100millis", results[4]);
+		Assert.assertTrue("A dead loop should reject any post", results[5]);
+		Assert.assertNull("A dead loop should not execute timeout-posts even if infinite amount of seconds passed", results[6]);
 	}
 
 	@Test(timeout = 400)
 	public void synchronously() throws InterruptedException {
 		Boolean[] results = new Boolean[3];
-		Forever parallel = new Forever();
-		parallel.thread();
-		parallel.pair();
+		Forever forever = (Forever) new Forever().thread().pair();
 
-		parallel.synchronously(loop -> results[0] = true);
+		forever.synchronously((loop, loopingThread) -> {
+			//a threaded then joined loop should be able to do its posts
+			results[0] = true;
+		});
 
-		Assert.assertTrue("The post not invoked'", results[0]);
-
-		parallel.notify(Loop.SLEEP);
+		forever.notify(Loop.SLEEP);
 		Thread.sleep(100);
 
-		parallel.synchronously(loop -> Assert.fail("Shouldn't be invoked"), loop -> results[1] = true, 100);
-		Assert.assertTrue("The 'alter' not invoked", results[1]);
+		forever.synchronouslyWithin(100, ((loop, loopingThread) -> {
+			//a sleeping loop shouldn't be able to do its posts before it wakes up
+			results[1] = !loopingThread;
+		}));
 
-		parallel.notify(Loop.BREAK).join();
+		forever.notify(Loop.BREAK).join();
 
-		parallel.synchronously(loop -> Assert.fail("shouldn't be invoked"), loop -> results[2] = true);
+		forever.synchronouslyIfAlive(((loop, loopingThread) -> {
+			//a broken then joined loop shouldn't be able to do its posts
+			results[2] = !loopingThread;
+		}));
 
-		Assert.assertTrue("The 'alter' not invoked", results[2]);
+		Assert.assertTrue("A threaded then joined loop should be able to do its posts'", results[0]);
+		Assert.assertTrue("A sleeping loop shouldn't be able to do its posts before it wakes up", results[1]);
+		Assert.assertTrue("A broken then joined loop shouldn't be able to do its posts", results[2]);
 	}
 }

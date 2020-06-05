@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("JavaDoc")
 public class LockTest {
-	@Test(timeout = 5000)
+	@Test(timeout = 500)
 	public void lock_release_close() throws InterruptedException {
 		//a thing to lock
 		AtomicInteger integer = new AtomicInteger(0);
@@ -27,9 +27,7 @@ public class LockTest {
 		forever.thread();
 		Assert.assertEquals("Lock not locked: after thread()", 0, integer.get());
 		//even after sometime
-		forever.synchronously(l -> {
-		}, l -> {
-		}, 50);
+		forever.synchronouslyWithin(50, (l, loopingThread) -> Assert.assertFalse("The loop should be stuck trying to gain the lock", loopingThread));
 		Assert.assertEquals("Lock not locked: after pair()", 0, integer.get());
 
 		//release the lock
