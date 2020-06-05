@@ -94,10 +94,13 @@ public class LoopTest {
 			return false;
 		});
 		forever.postWithin(100, ((loop, loopingThread) -> {
-			//a dead loop should not execute timeout-posts even if infinite amount of seconds passed
-			results[6] = false;
+			//a dead loop should not be able to execute timeout-posts even if infinite amount of seconds passed
+			results[6] = !loopingThread;
 			return false;
 		}));
+
+		//wait for the timed posts to be finished
+		Thread.sleep(100);
 
 		Assert.assertTrue("A loop should be alive when threaded then paired", results[0]);
 		Assert.assertTrue("A loop should execute posts with its running thread", results[1]);
@@ -105,7 +108,7 @@ public class LoopTest {
 		Assert.assertTrue("A working loop should execute its posts and not ignore them", results[3]);
 		Assert.assertTrue("An empty healthy loop should execute any post within 100millis", results[4]);
 		Assert.assertTrue("A dead loop should reject any post", results[5]);
-		Assert.assertNull("A dead loop should not execute timeout-posts even if infinite amount of seconds passed", results[6]);
+		Assert.assertTrue("A dead loop should not be able to execute timeout-posts even if infinite amount of seconds passed", results[6]);
 	}
 
 	@Test(timeout = 400)
