@@ -16,7 +16,6 @@
 package cufy.concurrent;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * Looping until get broken manually.
@@ -25,7 +24,7 @@ import java.util.function.Consumer;
  * @version 0.1.3
  * @since 07-Dec-2019
  */
-public class Forever extends Loop<Consumer<Forever>, Object> {
+public class Forever extends Loop<Forever.Code> {
 	/**
 	 * Construct a new forever loop.
 	 */
@@ -38,19 +37,33 @@ public class Forever extends Loop<Consumer<Forever>, Object> {
 	 * @param code the first looping code
 	 * @throws NullPointerException if the given code is null
 	 */
-	public Forever(Consumer<Forever> code) {
+	public Forever(Code code) {
 		Objects.requireNonNull(code, "code");
 		this.append(code);
 	}
 
 	@Override
-	public Forever append(Consumer<Forever> code) {
-		Objects.requireNonNull(code, "code");
-		return (Forever) this.append0(param -> code.accept(this));
-	}
-
-	@Override
 	protected void loop() {
 		while (this.next(null)) ;
+	}
+
+	/**
+	 * A loop-code for {@code Forever} loops.
+	 */
+	@FunctionalInterface
+	public interface Code extends Loop.Code<Forever> {
+		@Override
+		default void run(Forever loop, Object item) {
+			this.onRun(loop);
+		}
+
+		/**
+		 * Perform this {@code Forever} loop-code with the given item. Get called when a {@code Forever} loop is executing its code
+		 * and this code is added to its code.
+		 *
+		 * @param loop the loop that executed this code
+		 * @throws NullPointerException if the given 'loop' is null
+		 */
+		void onRun(Forever loop);
 	}
 }

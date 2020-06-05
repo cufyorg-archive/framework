@@ -24,18 +24,16 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Controllable loop. The concept is to do a block. Check if shall continue or not, do the posts. Then do the next block and so on.
  *
- * @param <I> the functional interface for the looping code
- * @param <P> the parameter type for invoking {@link #next(Object)}
+ * @param <C> the code type
  * @author lsafer
  * @version 0.1.3
  * @since 18 May 2019
  */
-public abstract class Loop<I, P> {
+public abstract class Loop<C extends Loop.Code> {
 	/**
 	 * A position for loops. Tells that the loop shall be stopped.
 	 */
@@ -52,11 +50,11 @@ public abstract class Loop<I, P> {
 	/**
 	 * The code to loop.
 	 */
-	final protected List<Consumer<P>> code = new ArrayList<>(10);
+	final protected List<Code> code = new ArrayList<>(10);
 	/**
 	 * All undone posts of this loop.
 	 */
-	final protected List<Function<Loop<I, P>, Boolean>> posts = new ArrayList<>(10);
+	final protected List<Post> posts = new ArrayList<>(10);
 	/**
 	 * The state of this loop.
 	 */
@@ -74,21 +72,8 @@ public abstract class Loop<I, P> {
 	 * @param code to be appended
 	 * @return this
 	 * @throws NullPointerException if the given code is null
-	 * @throws ClassCastException   if the given code isn't instance of {@link Consumer}{@literal <}{@link P}{@literal >}
 	 */
-	public Loop<I, P> append(I code) {
-		Objects.requireNonNull(code, "code");
-		return this.append0((Consumer<P>) code);
-	}
-
-	/**
-	 * Append the given code to the end of the looping code of this.
-	 *
-	 * @param code to be appended
-	 * @return this
-	 * @throws NullPointerException if the given code is null
-	 */
-	public Loop<I, P> append0(Consumer<P> code) {
+	public Loop<C> append(C code) {
 		Objects.requireNonNull(code, "code");
 
 		synchronized (this.code) {
@@ -103,7 +88,7 @@ public abstract class Loop<I, P> {
 	 * @return the code list of this
 	 * @see #getCode(Consumer)
 	 */
-	public List<Consumer<P>> getCode() {
+	public List<Code> getCode() {
 		return this.code;
 	}
 
@@ -115,7 +100,7 @@ public abstract class Loop<I, P> {
 	 * @throws NullPointerException if the given action is null
 	 * @see #getCode()
 	 */
-	public Loop<I, P> getCode(Consumer<List<Consumer<P>>> action) {
+	public Loop<C> getCode(Consumer<List<Code>> action) {
 		Objects.requireNonNull(action, "action");
 
 		synchronized (this.code) {
@@ -130,7 +115,7 @@ public abstract class Loop<I, P> {
 	 * @return the posts list of this
 	 * @see #getPosts(Consumer)
 	 */
-	public List<Function<Loop<I, P>, Boolean>> getPosts() {
+	public List<Post> getPosts() {
 		return this.posts;
 	}
 
@@ -142,7 +127,7 @@ public abstract class Loop<I, P> {
 	 * @throws NullPointerException if the given action is null
 	 * @see #getPosts()
 	 */
-	public Loop<I, P> getPosts(Consumer<List<Function<Loop<I, P>, Boolean>>> action) {
+	public Loop<C> getPosts(Consumer<List<Post>> action) {
 		Objects.requireNonNull(action, "action");
 
 		synchronized (this.posts) {
@@ -169,7 +154,7 @@ public abstract class Loop<I, P> {
 	 * @throws NullPointerException if the given action is null
 	 * @see #getState()
 	 */
-	public Loop<I, P> getState(Consumer<String> action) {
+	public Loop<C> getState(Consumer<String> action) {
 		Objects.requireNonNull(action, "action");
 
 		synchronized (this.state) {
@@ -198,7 +183,7 @@ public abstract class Loop<I, P> {
 	 * @throws NullPointerException if the given action is null
 	 * @see #getThread()
 	 */
-	public Loop<I, P> getThread(Consumer<Thread> action) {
+	public Loop<C> getThread(Consumer<Thread> action) {
 		Objects.requireNonNull(action, "action");
 
 		synchronized (this.thread) {
@@ -241,7 +226,7 @@ public abstract class Loop<I, P> {
 	 * @return this
 	 * @throws IllegalThreadException if the caller thread is the current thread of this loop
 	 */
-	public Loop<I, P> join() {
+	public Loop<C> join() {
 		this.assertNotRecursiveThreadCall();
 		synchronized (this) {
 			return this;
@@ -260,7 +245,7 @@ public abstract class Loop<I, P> {
 	 * @throws NullPointerException     if the given alter is null
 	 * @throws IllegalThreadException   if the caller thread is the current thread of this loop
 	 */
-	public Loop<I, P> join(Consumer<Loop<I, P>> alter, long millis) {
+	public Loop<C> join(Consumer<Loop<C>> alter, long millis) {
 		this.assertNotRecursiveThreadCall();
 		Objects.requireNonNull(alter, "alter");
 		if (millis < 0)
@@ -299,7 +284,7 @@ public abstract class Loop<I, P> {
 	 * @return this
 	 * @throws NullPointerException if the given state is null
 	 */
-	public Loop<I, P> notify(String state) {
+	public Loop<C> notify(String state) {
 		Objects.requireNonNull(state, "state");
 
 		//always gain the code lock before the state lock!
@@ -318,73 +303,67 @@ public abstract class Loop<I, P> {
 	 *
 	 * @return this
 	 */
-	public Loop<I, P> pair() {
-		return this.synchronously(loop -> {
+	public Loop<C> pair() {
+		return this.synchronously((loop, loopingThread) -> {
 		});
 	}
 
 	/**
-	 * Make this loop (specifically the current thread looping) do the action given. Then remove that action if the action returns false.
+	 * Make this loop (specifically the current thread looping) do the post given. Then remove that post if the post returns false.
 	 *
-	 * @param action to be done by this loop (return false to remove the action)
+	 * @param post to be done by this loop (return false to remove the post)
 	 * @return this
-	 * @throws NullPointerException if the given action is null
+	 * @throws NullPointerException if the given post is null
 	 */
-	public Loop<I, P> post(Function<Loop<I, P>, Boolean> action) {
-		Objects.requireNonNull(action, "action");
+	public Loop<C> post(Post<Loop<C>> post) {
+		Objects.requireNonNull(post, "post");
 
 		synchronized (this.posts) {
-			this.posts.add(action);
+			this.posts.add(post);
 		}
 		return this;
 	}
 
 	/**
-	 * Make this loop (specifically the current thread looping) do the function given. Then remove that action if the action returns false. Or if this
-	 * loop don't have a running thread.
-	 * <p>
-	 * Note: no matter what. One (AND JUST ONE) of the given actions will be invoked.
-	 * <p>
-	 * Note: action SHOULDN'T be synchronously invoked on ANY non-local object
+	 * Post the given 'post' to this loop if this loop is alive. And make this loop (specifically the current thread looping) do the post given. If
+	 * the loop is not running then the post will be invoked in a new thread with the argument 'loopingThread' set to false.
+	 * <br>
+	 * Note: no matter what, the post given should be ether added or invoked.
 	 *
-	 * @param action to be done by this loop (return false to remove the action)
-	 * @param alter  the action to be done if this loop don't have a running thread
+	 * @param post the post to be posted
 	 * @return this
-	 * @throws NullPointerException if ether the given 'action' or the given 'alter' is null
+	 * @throws NullPointerException if the given 'post' is null
 	 */
-	public Loop<I, P> post(Function<Loop<I, P>, Boolean> action, Consumer<Loop<I, P>> alter) {
-		Objects.requireNonNull(action, "action");
-		Objects.requireNonNull(alter, "alter");
+	public Loop<C> postIfAlive(Post<Loop<C>> post) {
+		Objects.requireNonNull(post, "post");
 
 		//stop the loop from finishing/starting
 		synchronized (this.thread) {
 			synchronized (this.posts) {
 				if (this.isAlive()) {
-					this.posts.add(action);
+					this.posts.add(post);
 					return this;
 				}
 			}
 		}
-		new Thread(() -> alter.accept(this)).start();
+		new Thread(() -> post.post(this, false)).start();
 		return this;
 	}
 
 	/**
-	 * Make this loop (specifically the current thread looping) do the function given. Then remove that action if the action returns false. Or the
-	 * given timeout ended.
+	 * Post the given 'post' to this loop and remove it if the loop didn't execute it within the timeout given. If the timeout ended before executing
+	 * it, the post will be invoked in a new thread with the argument 'loopingThread' set to false.
 	 * <p>
-	 * Note: no matter what. One (AND JUST ONE) of the given actions should be invoked.
+	 * Note: no matter what, the post given should be invoked.
 	 *
-	 * @param action  to be done by this loop (return false to remove the action)
-	 * @param alter   to do when timeout and the action has not been done
 	 * @param timeout the timeout (in milli seconds)
+	 * @param post    the post to be posted
 	 * @return this
-	 * @throws NullPointerException     if ether the given 'action' or 'alter' is null
+	 * @throws NullPointerException     if ether the given 'post' is null
 	 * @throws IllegalArgumentException if ether the given 'timeout' is negative
 	 */
-	public Loop<I, P> post(Function<Loop<I, P>, Boolean> action, Consumer<Loop<I, P>> alter, long timeout) {
-		Objects.requireNonNull(action, "action");
-		Objects.requireNonNull(alter, "alter");
+	public Loop<C> postWithin(long timeout, Post<Loop<C>> post) {
+		Objects.requireNonNull(post, "post");
 		if (timeout < 0)
 			throw new IllegalArgumentException("timeout value is negative");
 
@@ -396,15 +375,15 @@ public abstract class Loop<I, P> {
 		//nothing starts until this block ends
 		synchronized (state) {
 			synchronized (this.posts) {
-				this.posts.add(loop -> {
+				this.posts.add((loop, loopingThread) -> {
 					//if previously have been applied
 					if (applied.get())
-						return action.apply(loop);
+						return post.post(loop, loopingThread);
 					//wait for the sub thread start
 					synchronized (state) {
 						//check if the timout ended or not
 						if (state.get()) {
-							boolean w = action.apply(loop);
+							boolean w = post.post(loop, loopingThread);
 							//tell the sub thread that the post have been posted
 							state.set(false);
 							state.notify();
@@ -428,7 +407,7 @@ public abstract class Loop<I, P> {
 							if (state.get()) {
 								//tell the post that the timeout ended
 								state.set(false);
-								alter.accept(this);
+								post.post(this, false);
 							}
 						}
 					}
@@ -445,7 +424,7 @@ public abstract class Loop<I, P> {
 	 * @return this
 	 * @throws IllegalStateException if this loop still alive
 	 */
-	public synchronized Loop<I, P> start() {
+	public synchronized Loop<C> start() {
 		synchronized (this.thread) {
 			if (this.isAlive())
 				throw new AssertionError("loop still alive");
@@ -469,52 +448,49 @@ public abstract class Loop<I, P> {
 	 * @throws IllegalStateException if this loop still alive
 	 * @throws NullPointerException  if the given state is null
 	 */
-	public synchronized Loop<I, P> start(String state) {
+	public synchronized Loop<C> start(String state) {
 		Objects.requireNonNull(state, "state");
 		this.getState().set(state);
 		return this.start();
 	}
 
 	/**
-	 * Make this loop (specifically the current thread looping) do the function given. And WAIT for the loop to do it; If the CALLER thread get
-	 * interrupted while it's waiting on this method. Then the action will be canceled.
+	 * Make this loop (specifically the current thread looping) do the post given. And WAIT for the loop to do it.
 	 *
-	 * @param action to be done by this loop
+	 * @param post to be done by this loop
 	 * @return this
-	 * @throws NullPointerException   if the given 'action' is null
+	 * @throws NullPointerException   if the given 'post' is null
 	 * @throws IllegalThreadException if the caller thread is the current thread of this loop
 	 */
-	public Loop<I, P> synchronously(Consumer<Loop<I, P>> action) {
+	public Loop<C> synchronously(SynchronizedPost<Loop<C>> post) {
 		this.assertNotRecursiveThreadCall();
-		Objects.requireNonNull(action, "action");
+		Objects.requireNonNull(post, "post");
 
-		//true => the action should be done | false => the action shouldn't be done
+		//true => the post should be done | false => the post shouldn't be done
 		AtomicBoolean state = new AtomicBoolean(true);
 
 		//prevent lock leakage
 		synchronized (state) {
 			synchronized (this.posts) {
-				this.posts.add(loop -> {
+				this.posts.add((SynchronizedPost) (loop, loopingThread) -> {
 					//wait until the caller thread invokes 'wait()'
 					synchronized (state) {
 						if (state.get()) {
-							//execute the action
-							action.accept(loop);
+							//execute the post
+							post.post(loop, loopingThread);
 							//prevent the post to be executed more than one
 							state.set(false);
 							//notify the caller thread
 							state.notify();
 						}
 					}
-					//remove the action
-					return false;
 				});
 			}
 			try {
 				//until ether interrupted or notified
 				state.wait();
 			} catch (InterruptedException e) {
-				//the action ended/canceled
+				//the post ended/canceled
 				state.set(false);
 			}
 		}
@@ -522,27 +498,23 @@ public abstract class Loop<I, P> {
 	}
 
 	/**
-	 * Make this loop (specifically the current thread looping) do the function given. And WAIT for the loop to do it. Or if this loop don't have a
-	 * running thread (currently).
-	 * <p>
+	 * Make this loop (specifically the current thread looping) do the post given If this loop is alive. And WAIT for the loop to do it. If this loop
+	 * isn't alive then the given 'post' will be invoked in the caller thread with 'loopingThread' argument set to false.
+	 * <br>
 	 * Note: this may not be useful if this loop rapidly starts and finishes
-	 * <p>
-	 * Note: no matter what. One (AND JUST ONE) of the given actions will be invoked once (also, JUST ONCE).
-	 * <p>
-	 * Note:  action SHOULDN'T be synchronously invoked on ANY non-local object
+	 * <br>
+	 * Note: no matter what. The given post will be invoked.
 	 *
-	 * @param action to be done by this loop
-	 * @param alter  the action to be done if this loop don't have a running thread or if the action is canceled
+	 * @param post to be done by this loop
 	 * @return this
-	 * @throws NullPointerException   if ether the given 'action' or the given 'alter' is null
+	 * @throws NullPointerException   if the given 'post' is null
 	 * @throws IllegalThreadException if the caller thread is the current thread of this loop
 	 */
-	public Loop<I, P> synchronously(Consumer<Loop<I, P>> action, Consumer<Loop<I, P>> alter) {
+	public Loop<C> synchronouslyIfAlive(SynchronizedPost<Loop<C>> post) {
 		this.assertNotRecursiveThreadCall();
-		Objects.requireNonNull(action, "action");
-		Objects.requireNonNull(alter, "alter");
+		Objects.requireNonNull(post, "post");
 
-		//true => an action should be done | false => no action should be done
+		//true => an post should be done | false => no post should be done
 		AtomicBoolean state = new AtomicBoolean(true);
 
 		//prevent lock leakage
@@ -552,79 +524,74 @@ public abstract class Loop<I, P> {
 			synchronized (this.thread) {
 				synchronized (this.posts) {
 					if (w = this.isAlive()) {
-						this.posts.add(loop -> {
+						this.posts.add((SynchronizedPost) (loop, loopingThread) -> {
 							//wait until the caller thread invokes 'wait()'
 							synchronized (state) {
 								//if the thread not interrupted
 								if (state.get()) {
-									action.accept(this);
-									//tell the post that we have finished the action
+									post.post(loop, loopingThread);
+									//tell the post that we have finished the post
 									state.set(false);
 									state.notify();
 								}
 							}
-							//remove the action
-							return false;
 						});
 					}
 				}
 			}
 			if (w) {
 				try {
-					//wait for the action to be posted
+					//wait for the post to be posted
 					state.wait();
 				} catch (InterruptedException e) {
-					//catch below
+					//catch below, note that the respond to this exception is not defined, so dont rely on that
 				}
 			}
 			//if no thread or if this thread got interrupted
 			if (state.get()) {
 				state.set(false);
-				alter.accept(this);
+				post.post(this, false);
 			}
 		}
 		return this;
 	}
 
 	/**
-	 * Make this loop (specifically the current thread looping) do the function given. And WAIT until the loop invokes it. Or the given timeout
-	 * ended.
-	 * <p>
-	 * Note: no matter what. One (AND JUST ONE) of the given actions should be invoked.
+	 * Make this loop (specifically the current thread looping) do the post given and WAIT for the loop to do it. If the loop didn't execute the given
+	 * post within the given timeout, the post will be removed from this loop and invoked by the caller thread with 'loopingThread' argument set to
+	 * false.
+	 * <br>
+	 * Note: no matter what, the given 'post' should be invoked.
 	 *
-	 * @param action  to do with the looping thread
-	 * @param alter   to do when the time is out before the action done
-	 * @param timeout to wait for the action to be invoked (milli seconds)
+	 * @param timeout to wait for the post to be invoked (milli seconds)
+	 * @param post    to do with the looping thread
 	 * @return this
-	 * @throws NullPointerException     if ether the given 'action' or 'alter' is null
+	 * @throws NullPointerException     if the given 'post' is null
 	 * @throws IllegalArgumentException if the given 'timeout' is negative
 	 * @throws IllegalThreadException   if the caller thread is the current thread of this loop
 	 */
-	public Loop<I, P> synchronously(Consumer<Loop<I, P>> action, Consumer<Loop<I, P>> alter, long timeout) {
+	public Loop<C> synchronouslyWithin(long timeout, SynchronizedPost<Loop<C>> post) {
 		this.assertNotRecursiveThreadCall();
-		Objects.requireNonNull(action, "action");
-		Objects.requireNonNull(alter, "alter");
+		Objects.requireNonNull(post, "post");
 		if (timeout < 0)
 			throw new IllegalArgumentException("timeout value is negative");
 
-		//true => the action should be done | false => the alter action shouldn't be done
+		//true => the post should be done | false => the alter post shouldn't be done
 		AtomicBoolean state = new AtomicBoolean(true);
 
 		//prevent lock leakage
 		synchronized (state) {
 			synchronized (this.posts) {
-				this.posts.add(loop -> {
+				this.posts.add((SynchronizedPost) (loop, loopingThread) -> {
 					//Waiting for the caller thread invokes 'wait()'
 					synchronized (state) {
 						//Checking if the thread still waiting
 						if (state.get()) {
-							action.accept(this);
+							post.post(loop, loopingThread);
 							//tell the caller thread that the post have been posted
 							state.set(false);
 							state.notify();
 						}
-						//remove the action
-						return false;
 					}
 				});
 			}
@@ -632,13 +599,13 @@ public abstract class Loop<I, P> {
 				//Waiting to the looping thread to interrupt us
 				state.wait(timeout);
 			} catch (InterruptedException e) {
-				//catch below
+				//catch below, note that the respond to this exception is not defined, so dont rely on that
 			}
 			//if the post still not posted
 			if (state.get()) {
 				//Telling the looping thread that we are leaving :(
 				state.set(false);
-				alter.accept(this);
+				post.post(this, false);
 			}
 		}
 		return this;
@@ -649,7 +616,7 @@ public abstract class Loop<I, P> {
 	 *
 	 * @return this
 	 */
-	public Loop<I, P> thread() {
+	public Loop<C> thread() {
 		new Thread(this::start).start();
 		return this;
 	}
@@ -661,7 +628,7 @@ public abstract class Loop<I, P> {
 	 * @return this
 	 * @throws NullPointerException if the given state is null
 	 */
-	public Loop<I, P> thread(String state) {
+	public Loop<C> thread(String state) {
 		Objects.requireNonNull(state, "state");
 		new Thread(() -> this.start(state)).start();
 		return this;
@@ -670,14 +637,15 @@ public abstract class Loop<I, P> {
 	/**
 	 * Invoke all codes of this loop (ONCE each). While calling {@link #tick()} before and after each code.
 	 *
-	 * @param params to pass it to the next code
+	 * @param item to pass it to the next code
 	 * @return whether allowed to continue the loop or not
 	 */
-	protected boolean next(P params) {
+	protected boolean next(Object item) {
 		synchronized (this.code) {
-			Iterator<Consumer<P>> iterator = this.code.iterator();
+			Iterator<Code> iterator = this.code.iterator();
 			while (this.tick() && iterator.hasNext())
-				iterator.next().accept(params);
+				iterator.next().run(this, item);
+			//invoker.invoke(iterator.next());, but, yeah, it will make a lot of type mismatches
 		}
 		return this.tick();
 	}
@@ -693,7 +661,7 @@ public abstract class Loop<I, P> {
 		synchronized (this.posts) {
 			if (posts.size() != 0)
 				//do the posts
-				this.posts.removeIf(post -> !post.apply(this));
+				this.posts.removeIf(post -> !post.post(this, true));
 		}
 
 		//get the lock of the state reference
@@ -735,4 +703,65 @@ public abstract class Loop<I, P> {
 	 * The looping cod. call {@link #next(Object)} inside the loop to invoke the code of this loop. Break the loop if it returned false.
 	 */
 	protected abstract void loop();
+
+	/**
+	 * A functional interface for creating a code for a loop.
+	 *
+	 * @param <L> the type of the loop this code is targeting
+	 */
+	@FunctionalInterface
+	public interface Code<L extends Loop> {
+		/**
+		 * Perform this loop-code with the given item. Get called when a loop is executing its code and this code is added to its code.
+		 *
+		 * @param loop the loop executing this code
+		 * @param item the item that the loop is iterating (maybe null)
+		 * @throws NullPointerException if the given 'loop' is null
+		 */
+		void run(L loop, Object item);
+	}
+
+	/**
+	 * A functional interface for creating a one-time execute code for a loop.
+	 *
+	 * @param <L> the type of the loop this post is targeting
+	 */
+	@FunctionalInterface
+	public interface Post<L extends Loop> {
+		/**
+		 * Perform this post. Get called when this post is posted at a loop and that loop executed this post.
+		 *
+		 * @param loop          the loop executing this code
+		 * @param loopingThread true, if this post is executed by the thread of a loop this post is posted at, false otherwise
+		 * @return true, to not remove the post from the loop after it get executed.
+		 * @throws NullPointerException if the given 'loop' is null and 'loopingThread' set to true
+		 */
+		boolean post(L loop, boolean loopingThread);
+	}
+
+	/**
+	 * A post that should be invoked synchronously between the requester-thread and the loop-thread.
+	 * <br>
+	 * note: the synchronization stuff is depends on the loop not the post. This is just an interface to categorize the types of posts.
+	 *
+	 * @param <L> the type of the loop that will execute this post
+	 */
+	@FunctionalInterface
+	public interface SynchronizedPost<L extends Loop> extends Post<L> {
+		@Override
+		default boolean post(L loop, boolean loopingThread) {
+			this.onPost(loop, loopingThread);
+			return false;
+		}
+
+		/**
+		 * Perform this post. It should be invoked synchronously between the requester-thread and the loop-thread. Get called when this post is posted
+		 * at a loop and that loop start executing this post.
+		 *
+		 * @param loop          the loop executing this code
+		 * @param loopingThread true, if this post is executed by the thread of a loop this post is posted at, false otherwise
+		 * @throws NullPointerException if the given 'loop' is null and 'loopingThread' set to true
+		 */
+		void onPost(L loop, boolean loopingThread);
+	}
 }

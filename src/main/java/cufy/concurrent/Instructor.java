@@ -22,10 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Used to be the communication method between 2 (or more) threads (loops). Used as a tasks list for unknown count unknown state loops.
@@ -40,13 +37,13 @@ public class Instructor {
 	 * <p>
 	 * Note: synchronized use only.
 	 */
-	final protected List<Loop<?, ?>> loops = new ArrayList<>(10);
+	final protected List<Loop> loops = new ArrayList<>(10);
 	/**
 	 * All undone posts of this group.
 	 * <p>
 	 * Note: synchronized use only.
 	 */
-	final protected List<BiFunction<Instructor, Loop<?, ?>, Boolean>> posts = new ArrayList<>(10);
+	final protected List<Post> posts = new ArrayList<>(10);
 	/**
 	 * The first position of any further loop get started by this.
 	 * <p>
@@ -60,7 +57,7 @@ public class Instructor {
 	 * @return the loops list of this group
 	 * @see #getLoops(Consumer)
 	 */
-	public List<Loop<?, ?>> getLoops() {
+	public List<Loop> getLoops() {
 		return this.loops;
 	}
 
@@ -74,7 +71,7 @@ public class Instructor {
 	 * @throws NullPointerException if the given 'action' is null
 	 * @see #getLoops()
 	 */
-	public Instructor getLoops(Consumer<List<Loop<?, ?>>> action) {
+	public Instructor getLoops(Consumer<List<Loop>> action) {
 		Objects.requireNonNull(action, "action");
 
 		synchronized (this.loops) {
@@ -89,7 +86,7 @@ public class Instructor {
 	 * @return the posts list of this group
 	 * @see #getPosts(Consumer)
 	 */
-	public List<BiFunction<Instructor, Loop<?, ?>, Boolean>> getPosts() {
+	public List<Post> getPosts() {
 		return this.posts;
 	}
 
@@ -101,7 +98,7 @@ public class Instructor {
 	 * @throws NullPointerException if the given 'action' is null
 	 * @see #getPosts()
 	 */
-	public Instructor getPosts(Consumer<List<BiFunction<Instructor, Loop<?, ?>, Boolean>>> action) {
+	public Instructor getPosts(Consumer<List<Post>> action) {
 		Objects.requireNonNull(action, "action");
 
 		synchronized (this.posts) {
@@ -195,7 +192,7 @@ public class Instructor {
 		long deadline = System.currentTimeMillis() + millis;
 		synchronized (this.loops) {
 			//foreach loop
-			for (Loop<?, ?> loop : this.loops) {
+			for (Loop loop : this.loops) {
 				//time to wait on the next loop
 				long wait = deadline - System.currentTimeMillis();
 
@@ -206,7 +203,7 @@ public class Instructor {
 				}
 
 				//join the next loop within the allowed wait millis
-				loop.join(ignored -> {
+				loop.join(l -> {
 				}, wait);
 			}
 		}
@@ -242,70 +239,68 @@ public class Instructor {
 	 * @see Loop#pair()
 	 */
 	public Instructor pair() {
-		return this.synchronously((group, loop) -> {
+		return this.synchronously((instructor, loop, loopingThread) -> {
 		});
 	}
 
 	/**
-	 * Make a loop of this group do the given action. Then remove that action if the action returns false.
+	 * Make a loop of this instructor do the given post.
 	 *
-	 * @param action to be done by a loop of this group (return false to remove the action)
+	 * @param post to be done by a loop of this instructor
 	 * @return this
-	 * @throws NullPointerException if the given action is null
-	 * @see Loop#post(Function)
+	 * @throws NullPointerException if the given 'post' is null
+	 * @see Loop#post(Loop.Post)
 	 */
-	public Instructor post(BiFunction<Instructor, Loop<?, ?>, Boolean> action) {
-		Objects.requireNonNull(action, "action");
+	public Instructor post(Post post) {
+		Objects.requireNonNull(post, "post");
 
 		synchronized (this.posts) {
-			this.posts.add(action);
+			this.posts.add(post);
 		}
 		return this;
 	}
 
 	/**
-	 * Make a loop of this group do the given action. hen remove that action if the action returns false. Or if this group don't have a running loop.
-	 * <p>
-	 * Note: no matter what. One (AND JUST ONE) of the given actions should be invoked.
+	 * Post the given 'post' to this instructor if this instructor has any alive loop. And make that loop (specifically the current thread looping) do
+	 * the post given. If there is no running then the post will be invoked in a new thread with the argument 'loopingThread' set to false.
+	 * <br>
+	 * Note: no matter what, the post given should be ether added or invoked.
 	 *
-	 * @param action to be done by a loop of this (return false to remove the action)
-	 * @param alter  the action to be done if this group don't have a running loop
+	 * @param post to be done by a loop of this instructor
 	 * @return this
-	 * @throws NullPointerException if ether the given 'action' or the given 'alter' is null
-	 * @see Loop#post(Function, Consumer)
+	 * @throws NullPointerException if the given 'post' is null
+	 * @see Loop#postIfAlive(Loop.Post)
 	 */
-	public Instructor post(BiFunction<Instructor, Loop<?, ?>, Boolean> action, Consumer<Instructor> alter) {
-		Objects.requireNonNull(action, "action");
-		Objects.requireNonNull(alter, "alter");
+	public Instructor postIfAlive(Post post) {
+		Objects.requireNonNull(post, "post");
 
 		synchronized (this.loops) {
 			synchronized (this.posts) {
 				if (this.isAlive()) {
-					this.posts.add(action);
+					this.posts.add(post);
 					return this;
 				}
 			}
 		}
-		new Thread(() -> alter.accept(this)).start();
+		new Thread(() -> post.post(this, null, false)).start();
 		return this;
 	}
 
 	/**
-	 * Make a loop of this group do the given action. Then remove that action if the action returns false. Or the given timeout ended.
+	 * Post the given 'post' to this instructor and remove it if no loop executed it within the timeout given. If the timeout ended before executing
+	 * it, the post will be invoked in a new thread with the argument 'loopingThread' set to false.
 	 * <p>
-	 * Note: no matter what. One (AND JUST ONE) of the given actions should be invoked.
+	 * Note: no matter what, the post given should be invoked.
 	 *
-	 * @param action  to be done by a loop of this group
-	 * @param alter   to do when timeout and the action has not been done
 	 * @param timeout the timeout (in milli seconds)
+	 * @param post    to be done by a loop of this instructor
 	 * @return this
-	 * @throws NullPointerException     if ether the given 'action' or 'alter' is null
+	 * @throws NullPointerException     if ether the given 'post' or 'alter' is null
 	 * @throws IllegalArgumentException if ether the given 'timeout' is negative
-	 * @see Loop#post(Function, Consumer, long)
+	 * @see Loop#postWithin(long, Loop.Post)
 	 */
-	public Instructor post(BiFunction<Instructor, Loop<?, ?>, Boolean> action, Consumer<Instructor> alter, long timeout) {
-		Objects.requireNonNull(action, "action");
-		Objects.requireNonNull(alter, "alter");
+	public Instructor postWithin(long timeout, Post post) {
+		Objects.requireNonNull(post, "post");
 		if (timeout < 0)
 			throw new IllegalArgumentException("timeout value is negative");
 
@@ -314,12 +309,12 @@ public class Instructor {
 
 		synchronized (state) {
 			synchronized (this.posts) {
-				this.posts.add((group, loop) -> {
+				this.posts.add((instructor, loop, loopingThread) -> {
 					if (applied.get())
-						return action.apply(group, loop);
+						return post.post(instructor, loop, loopingThread);
 					synchronized (state) {
 						if (state.get()) {
-							boolean w = action.apply(group, loop);
+							boolean w = post.post(instructor, loop, loopingThread);
 							state.set(false);
 							state.notify();
 							applied.set(true);
@@ -337,7 +332,7 @@ public class Instructor {
 							}
 							if (state.get()) {
 								state.set(false);
-								alter.accept(this);
+								post.post(this, null, false);
 							}
 						}
 					}
@@ -355,7 +350,7 @@ public class Instructor {
 	 * @throws NullPointerException if the given loop is null
 	 * @see Loop#start()
 	 */
-	public Instructor start(Loop<?, ?> loop) {
+	public Instructor start(Loop loop) {
 		Objects.requireNonNull(loop, "loop");
 
 		synchronized (this.loops) {
@@ -371,28 +366,26 @@ public class Instructor {
 	}
 
 	/**
-	 * Make a loop of this group do the given action. And WAIT for that loop to do it; If the CALLER thread get interrupted while it's waiting on this
-	 * method. Then the action will be canceled.
+	 * Make a loop of this instructor do the given post. And WAIT for that loop to do it.
 	 *
-	 * @param action to be done by a loop of this group
+	 * @param post to be done by a loop of this instructor
 	 * @return this
-	 * @throws NullPointerException if the given 'action' is null
-	 * @see Loop#synchronously(Consumer)
+	 * @throws NullPointerException if the given 'post' is null
+	 * @see Loop#synchronously(Loop.SynchronizedPost)
 	 */
-	public Instructor synchronously(BiConsumer<Instructor, Loop<?, ?>> action) {
-		Objects.requireNonNull(action, "action");
+	public Instructor synchronously(SynchronizedPost post) {
+		Objects.requireNonNull(post, "post");
 
 		AtomicBoolean state = new AtomicBoolean(true);
 
 		synchronized (state) {
 			synchronized (this.posts) {
-				this.posts.add((group, loop) -> {
+				this.posts.add((SynchronizedPost) (instructor, loop, loopingThread) -> {
 					synchronized (state) {
 						if (state.get()) {
-							action.accept(group, loop);
+							post.post(instructor, loop, loopingThread);
 							state.notify();
 						}
-						return false;
 					}
 				});
 			}
@@ -407,23 +400,20 @@ public class Instructor {
 	}
 
 	/**
-	 * Make a loop of this group do the given action. And WAIT for that loop to do. Or if this group don't have a running loop (currently).
-	 * <p>
-	 * Note: this may not be useful if this group rapidly starts and finishes loops
-	 * <p>
-	 * Note: no matter what. One (AND JUST ONE) of the given actions should be invoked once (also, JUST ONCE).
-	 * <p>
-	 * Note: action SHOULDN'T be synchronously invoked on ANY non-local object
+	 * Make a loop in this instructor do the post given If there is loop alive in this instructor. And WAIT for the loop to do it. If there is no loop
+	 * in this instructor then the given 'post' will be invoked in the caller thread with the argument 'loopingThread' set to false.
+	 * <br>
+	 * Note: this may not be useful if loops rapidly starts and finishes in this instructor
+	 * <br>
+	 * Note: no matter what. The given post will be invoked.
 	 *
-	 * @param action to be done by a loop of this group
-	 * @param alter  to be done if there is no loop on this group (currently)
+	 * @param post to be done by a loop of this instructor
 	 * @return this
-	 * @throws NullPointerException if ether the given 'action' or 'alter' is null
-	 * @see Loop#synchronously(Consumer, Consumer)
+	 * @throws NullPointerException if the given 'post' is null
+	 * @see Loop#synchronouslyIfAlive(Loop.SynchronizedPost)
 	 */
-	public Instructor synchronously(BiConsumer<Instructor, Loop<?, ?>> action, Consumer<Instructor> alter) {
-		Objects.requireNonNull(action, "action");
-		Objects.requireNonNull(alter, "alter");
+	public Instructor synchronouslyIfAlive(SynchronizedPost post) {
+		Objects.requireNonNull(post, "post");
 
 		AtomicBoolean state = new AtomicBoolean();
 
@@ -432,15 +422,14 @@ public class Instructor {
 			synchronized (this.loops) {
 				synchronized (this.posts) {
 					if (w = this.isAlive())
-						this.posts.add((group, loop) -> {
+						this.posts.add((SynchronizedPost) (instructor, loop, loopingThread) -> {
 							synchronized (state) {
 								if (state.get()) {
-									action.accept(group, loop);
+									post.post(instructor, loop, loopingThread);
 									state.set(false);
 									state.notify();
 								}
 							}
-							return false;
 						});
 				}
 				if (w)
@@ -450,7 +439,7 @@ public class Instructor {
 					}
 				if (state.get()) {
 					state.set(false);
-					alter.accept(this);
+					post.post(this, null, false);
 				}
 			}
 		}
@@ -458,21 +447,20 @@ public class Instructor {
 	}
 
 	/**
-	 * Make a loop of this group do the given action. And WAIT until that loop invokes it. Or the given timeout ended.
-	 * <p>
-	 * Note: no matter what. One (AND JUST ONE) of the given actions should be invoked once (also, JUST ONCE).
+	 * Make a loop in this instructor do the post given and WAIT for the loop to do it. If no loop executed the given post within the given timeout,
+	 * the post will be removed from this instructor and invoked by the caller thread with the argument 'loopingThread' set to false.
+	 * <br>
+	 * Note: no matter what, the given 'post' should be invoked.
 	 *
-	 * @param action  to be done by a loop of this group
-	 * @param alter   to be done if the timeout ended
-	 * @param timeout to wait for the action to be invoked (milli seconds)
+	 * @param timeout to wait for the post to be invoked (milli seconds)
+	 * @param post    to be done by a loop of this instructor
 	 * @return this
-	 * @throws NullPointerException     if ether the given 'action' or 'alter' is null
+	 * @throws NullPointerException     if ether the given 'post' is null
 	 * @throws IllegalArgumentException if the given 'timeout' is negative
-	 * @see Loop#synchronously(Consumer, Consumer, long)
+	 * @see Loop#synchronouslyWithin(long, Loop.SynchronizedPost)
 	 */
-	public Instructor synchronously(BiConsumer<Instructor, Loop<?, ?>> action, Consumer<Instructor> alter, long timeout) {
-		Objects.requireNonNull(action, "action");
-		Objects.requireNonNull(alter, "alter");
+	public Instructor synchronouslyWithin(long timeout, SynchronizedPost post) {
+		Objects.requireNonNull(post, "post");
 		if (timeout < 0)
 			throw new IllegalArgumentException("timeout value is negative");
 
@@ -480,15 +468,14 @@ public class Instructor {
 
 		synchronized (state) {
 			synchronized (this.posts) {
-				this.posts.add((group, loop) -> {
+				this.posts.add((SynchronizedPost) (instructor, loop, loopingThread) -> {
 					synchronized (state) {
 						if (state.get()) {
-							action.accept(group, loop);
+							post.post(instructor, loop, loopingThread);
 							state.set(false);
 							state.notify();
 						}
 					}
-					return false;
 				});
 			}
 			try {
@@ -497,7 +484,7 @@ public class Instructor {
 			}
 			if (state.get()) {
 				state.set(false);
-				alter.accept(this);
+				post.post(this, null, false);
 			}
 		}
 		return this;
@@ -511,38 +498,72 @@ public class Instructor {
 	 * @throws NullPointerException if the given loop is null
 	 * @see Loop#thread()
 	 */
-	public Instructor thread(Loop<?, ?> loop) {
+	public Instructor thread(Loop loop) {
 		Objects.requireNonNull(loop, "loop");
 		new Thread(() -> this.start(loop)).start();
 		return this;
 	}
 
 	/**
-	 * Do the posts posted on this group. With no caller.
-	 * <p>
-	 * Note: this designed to be called by a loop of this instructor
+	 * Do the posts posted on this group. With the loop param of the given loop.
 	 *
+	 * @param loop the loop loop
 	 * @return this
-	 * @throws NullPointerException when a post tris doing anything to the caller without doing a null check
+	 * @throws NullPointerException   if the given 'loop' is null
+	 * @throws IllegalThreadException if the given 'loop' is not in this instructor or the caller thread isn't its thread
 	 */
-	public Instructor tick() {
-		return this.tick(null);
+	public Instructor tick(Loop loop) {
+		Objects.requireNonNull(loop, "loop");
+		if (!this.loops.contains(loop))
+			throw new IllegalThreadException("loop is not in this instructor");
+		if (!loop.isCurrentThread())
+			throw new IllegalThreadException("loop thread isn't the thread of the given loop");
+
+		synchronized (this.posts) {
+			this.posts.removeIf(post -> !post.post(this, loop, true));
+		}
+		return this;
 	}
 
 	/**
-	 * Do the posts posted on this group. With the caller param of the given loop.
-	 *
-	 * @param caller the caller loop
-	 * @return this
-	 * @throws NullPointerException   when the 'caller' is null and a post tris doing anything to the caller without doing a null check
-	 * @throws IllegalThreadException if the 'caller' isn't null and the caller thread ins't the thread of the given loop
+	 * A post that can be executed from a loop in an instructor.
 	 */
-	public Instructor tick(Loop<?, ?> caller) {
-		if (caller != null && caller.isAlive() && !caller.isCurrentThread())
-			throw new IllegalThreadException("caller thread isn't the thread of the given loop");
-		synchronized (this.posts) {
-			this.posts.removeIf(post -> !post.apply(this, caller));
+	@FunctionalInterface
+	public interface Post {
+		/**
+		 * Perform this post. Get called when this post is posted at an instructor and one of that instructor's loops start executing this post.
+		 *
+		 * @param instructor    that this post have been posted at
+		 * @param loop          the loop executing this code
+		 * @param loopingThread true, if this post is executed by the thread of a loop this post is posted at, false otherwise
+		 * @return true, to not remove the post from the instructor after it get executed.
+		 * @throws NullPointerException if the given 'instructor' or 'loop' is null and 'loopingThread' is set to true
+		 */
+		boolean post(Instructor instructor, Loop loop, boolean loopingThread);
+	}
+
+	/**
+	 * A post that should be invoked synchronously between the requester-thread and the loop-thread.
+	 * <br>
+	 * note: the synchronization stuff is depends on the instructor not the post. This is just an interface to categorize the types of posts.
+	 */
+	@FunctionalInterface
+	public interface SynchronizedPost extends Post {
+		@Override
+		default boolean post(Instructor instructor, Loop loop, boolean loopingThread) {
+			this.onPost(instructor, loop, loopingThread);
+			return false;
 		}
-		return this;
+
+		/**
+		 * Perform this post. It should be invoked synchronously between the requester-thread and the loop-thread. Get called when this post is posted
+		 * at an instructor one of that instructor's loops start executing this post.
+		 *
+		 * @param instructor    that this post have been posted at
+		 * @param loop          the loop executing this code
+		 * @param loopingThread true, if this post is executed by the thread of a loop this post is posted at, false otherwise
+		 * @throws NullPointerException if the given 'instructor' or 'loop' is null and 'loopingThread' is set to true
+		 */
+		void onPost(Instructor instructor, Loop loop, boolean loopingThread);
 	}
 }

@@ -16,7 +16,6 @@
 package cufy.concurrent;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * A loop to do code just one time.
@@ -25,7 +24,7 @@ import java.util.function.Consumer;
  * @version 0.1.3
  * @since 13-Feb-2020
  */
-public class Once extends Loop<Consumer<Once>, Object> {
+public class Once extends Loop<Once.Code> {
 	/**
 	 * Construct a new 'do' loop.
 	 */
@@ -38,7 +37,7 @@ public class Once extends Loop<Consumer<Once>, Object> {
 	 * @param code the first looping code
 	 * @throws NullPointerException if the given code is null
 	 */
-	public Once(Consumer<Once> code) {
+	public Once(Code code) {
 		Objects.requireNonNull(code, "code");
 		this.append(code);
 	}
@@ -46,5 +45,25 @@ public class Once extends Loop<Consumer<Once>, Object> {
 	@Override
 	protected void loop() {
 		this.next(null);
+	}
+
+	/**
+	 * A loop-code for {@code Once} loops.
+	 */
+	@FunctionalInterface
+	public interface Code extends Loop.Code<Once> {
+		@Override
+		default void run(Once loop, Object item) {
+			this.onRun(loop);
+		}
+
+		/**
+		 * Perform this {@code Once} loop-code with the given item. Get called when a {@code Once} loop is executing its code
+		 * and this code is added to its code.
+		 *
+		 * @param loop the loop that executed this code
+		 * @throws NullPointerException if the given 'loop' is null
+		 */
+		void onRun(Once loop);
 	}
 }

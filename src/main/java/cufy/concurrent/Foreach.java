@@ -20,7 +20,6 @@ import cufy.util.Arrayz;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 /**
  * Loop for each item of a list.
@@ -30,7 +29,7 @@ import java.util.function.BiConsumer;
  * @version 0.1.3
  * @since 07-Dec-2019
  */
-public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
+public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	/**
 	 * List of items to loop.
 	 */
@@ -153,7 +152,7 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 	 * @param code  first looping code
 	 * @throws NullPointerException if the given 'array' or 'code' is null
 	 */
-	public Foreach(I[] array, BiConsumer<Foreach<I>, I> code) {
+	public Foreach(I[] array, Code<I> code) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
 		this.append(code);
@@ -167,10 +166,10 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 	 * @param code  first looping code
 	 * @throws NullPointerException if the given 'array' or 'code' is null
 	 */
-	public Foreach(boolean[] array, BiConsumer<Foreach<Boolean>, Boolean> code) {
+	public Foreach(boolean[] array, Code<Boolean> code) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
-		this.append((BiConsumer) code);
+		this.append((Code) code);
 		this.iterable = (List) Arrayz.asList(array);
 	}
 
@@ -181,10 +180,10 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 	 * @param code  first looping code
 	 * @throws NullPointerException if the given 'array' or 'code' is null
 	 */
-	public Foreach(byte[] array, BiConsumer<Foreach<Byte>, Byte> code) {
+	public Foreach(byte[] array, Code<Byte> code) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
-		this.append((BiConsumer) code);
+		this.append((Code) code);
 		this.iterable = (List) Arrayz.asList(array);
 	}
 
@@ -195,10 +194,10 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 	 * @param code  first looping code
 	 * @throws NullPointerException if the given 'array' or 'code' is null
 	 */
-	public Foreach(char[] array, BiConsumer<Foreach<Character>, Character> code) {
+	public Foreach(char[] array, Code<Character> code) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
-		this.append((BiConsumer) code);
+		this.append((Code) code);
 		this.iterable = (List) Arrayz.asList(array);
 	}
 
@@ -209,10 +208,10 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 	 * @param code  first looping code
 	 * @throws NullPointerException if the given 'array' or 'code' is null
 	 */
-	public Foreach(double[] array, BiConsumer<Foreach<Double>, Double> code) {
+	public Foreach(double[] array, Code<Double> code) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
-		this.append((BiConsumer) code);
+		this.append((Code) code);
 		this.iterable = (List) Arrayz.asList(array);
 	}
 
@@ -223,10 +222,10 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 	 * @param code  first looping code
 	 * @throws NullPointerException if the given 'array' or 'code' is null
 	 */
-	public Foreach(float[] array, BiConsumer<Foreach<Float>, Float> code) {
+	public Foreach(float[] array, Code<Float> code) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
-		this.append((BiConsumer) code);
+		this.append((Code) code);
 		this.iterable = (List) Arrayz.asList(array);
 	}
 
@@ -237,10 +236,10 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 	 * @param code  first looping code
 	 * @throws NullPointerException if the given 'array' or 'code' is null
 	 */
-	public Foreach(int[] array, BiConsumer<Foreach<Integer>, Integer> code) {
+	public Foreach(int[] array, Code<Integer> code) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
-		this.append((BiConsumer) code);
+		this.append((Code) code);
 		this.iterable = (List) Arrayz.asList(array);
 	}
 
@@ -251,10 +250,10 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 	 * @param code  first looping code
 	 * @throws NullPointerException if the given 'array' or 'code' is null
 	 */
-	public Foreach(long[] array, BiConsumer<Foreach<Long>, Long> code) {
+	public Foreach(long[] array, Code<Long> code) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
-		this.append((BiConsumer) code);
+		this.append((Code) code);
 		this.iterable = (List) Arrayz.asList(array);
 	}
 
@@ -265,10 +264,10 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 	 * @param code  first looping code
 	 * @throws NullPointerException if the given 'array' or 'code' is null
 	 */
-	public Foreach(short[] array, BiConsumer<Foreach<Short>, Short> code) {
+	public Foreach(short[] array, Code<Short> code) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
-		this.append((BiConsumer) code);
+		this.append((Code) code);
 		this.iterable = (List) Arrayz.asList(array);
 	}
 
@@ -279,7 +278,7 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 	 * @param code     first looping code
 	 * @throws NullPointerException if the given 'iterable' or 'code' is null
 	 */
-	public Foreach(Iterable<I> iterable, BiConsumer<Foreach<I>, I> code) {
+	public Foreach(Iterable<I> iterable, Code<I> code) {
 		Objects.requireNonNull(iterable, "iterable");
 		Objects.requireNonNull(code, "code");
 		this.append(code);
@@ -287,15 +286,32 @@ public class Foreach<I> extends Loop<BiConsumer<Foreach<I>, I>, I> {
 	}
 
 	@Override
-	public Foreach<I> append(BiConsumer<Foreach<I>, I> code) {
-		Objects.requireNonNull(code, "code");
-		return (Foreach<I>) this.append0(param -> code.accept(this, param));
-	}
-
-	@Override
 	protected void loop() {
 		for (I t : this.iterable)
 			if (!this.next(t))
 				break;
+	}
+
+	/**
+	 * A loop-code for {@code Foreach} loops.
+	 *
+	 * @param <I> the type of iterating items
+	 */
+	@FunctionalInterface
+	public interface Code<I> extends Loop.Code<Foreach> {
+		@Override
+		default void run(Foreach loop, Object item) {
+			this.onRun(loop, (I) item);
+		}
+
+		/**
+		 * Perform this {@code Foreach} loop-code with the given item. Get called when a {@code Foreach} loop is executing its code
+		 * and this code is added to its code.
+		 *
+		 * @param loop the loop that executed this code
+		 * @param item the current item in the foreach-iteration
+		 * @throws NullPointerException if the given 'loop' is null
+		 */
+		void onRun(Foreach<I> loop, I item);
 	}
 }
