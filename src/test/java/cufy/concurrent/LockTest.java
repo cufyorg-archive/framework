@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("JavaDoc")
 public class LockTest {
-	@Test(timeout = 500)
+	@Test(timeout = 700)
 	public void lock_release_close() throws InterruptedException {
 		//a thing to lock
 		AtomicInteger integer = new AtomicInteger(0);
@@ -32,7 +32,8 @@ public class LockTest {
 
 		//release the lock
 		lock.unlock();
-		Thread.sleep(50);//let it take some time to change the value
+		//wait yeah wait
+		Thread.sleep(300);//let it take some time to change the value
 		Assert.assertNotEquals("Lock not released", 0, integer.get());
 
 		lock.lock();
