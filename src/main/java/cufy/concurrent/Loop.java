@@ -433,8 +433,6 @@ public abstract class Loop<C extends Loop.Code> {
 		this.loop();
 		synchronized (this.thread) {
 			this.thread.set(null);
-			//do last tick
-			this.tick();
 		}
 		return this;
 	}

@@ -359,8 +359,6 @@ public class Instructor {
 		loop.start(this.state.get());
 		synchronized (this.loops) {
 			this.loops.remove(loop);
-			//last tick
-			this.tick(loop);
 		}
 		return this;
 	}
