@@ -32,10 +32,9 @@ import java.util.Objects;
 /**
  * An abstract class for formatter classes. Used to simplify the formatting processes and make it more inheritable. Also making the inheriting for
  * adding some futures more easier. Methods in this class will be invoked using the dynamic method grouping algorithm. In order to add a method on a
- * dynamic method group. The method should be annotated with that group annotation. Also the method should match the conditions of that group to
- * avoid parameters/output mismatches.
+ * dynamic method group. The method should be annotated with that group annotation. Also the method should match the conditions of that group to avoid
+ * parameters/output mismatches.
  * <p>
- *
  * The method groups list in this abstract:
  * <ul>
  *     <li>{@link FormatMethod} methods that can format a value to a string then write it to the provided writer.</li>
@@ -253,7 +252,7 @@ public abstract class AbstractFormat implements Format {
 
 		Group<Method> valid = this.methods
 				.subGroup(FormatMethod.class, m -> m.isAnnotationPresent(FormatMethod.class))
-				.subGroup(klass, m -> Filter.util.test(m.getAnnotation(FormatMethod.class).value(), klass));
+				.subGroup(klass, m -> Filter.Util.test(m.getAnnotation(FormatMethod.class).value(), klass));
 
 		if (valid.size() == 0) {
 			return null;
@@ -288,7 +287,7 @@ public abstract class AbstractFormat implements Format {
 
 		Group<Method> valid = this.methods
 				.subGroup(ParseMethod.class, m -> m.isAnnotationPresent(ParseMethod.class))
-				.subGroup(klass, m -> Filter.util.test(m.getAnnotation(ParseMethod.class).value(), klass));
+				.subGroup(klass, m -> Filter.Util.test(m.getAnnotation(ParseMethod.class).value(), klass));
 
 		if (valid.size() == 0) {
 			return null;

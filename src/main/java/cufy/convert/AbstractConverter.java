@@ -172,8 +172,8 @@ public abstract class AbstractConverter implements Converter {
 				.subGroup(ConvertMethod.class, m -> m.isAnnotationPresent(ConvertMethod.class))
 				.subGroup(Arrayz.asList(inputClass, outputClass), m -> {
 					ConvertMethod ann = m.getAnnotation(ConvertMethod.class);
-					return Filter.util.test(ann.input(), inputClass) &&
-						   Filter.util.test(ann.output(), outputClass);
+					return Filter.Util.test(ann.input(), inputClass) &&
+						   Filter.Util.test(ann.output(), outputClass);
 				});
 
 		if (valid.size() == 0) {

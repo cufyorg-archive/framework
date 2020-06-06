@@ -71,13 +71,13 @@ public @interface Filter {
 	/**
 	 * Utilities for this annotation. Since static methods are illegal in annotations.
 	 */
-	final class util {
+	final class Util {
 		/**
 		 * This is a util class. And shall not be instanced as an object.
 		 *
 		 * @throws AssertionError when called
 		 */
-		private util() {
+		private Util() {
 			throw new AssertionError("No instance for you!");
 		}
 
@@ -94,15 +94,15 @@ public @interface Filter {
 			Objects.requireNonNull(klass, "klass");
 
 			for (Class<?> exclude : family.exclude())
-				if (exclude == klass)
+				if (exclude.equals(klass))
 					return false;
 
 			for (Class<?> include : family.include())
-				if (include == klass)
+				if (include.equals(klass))
 					return true;
 
 			for (Class<?> include : family.value())
-				if (include == klass)
+				if (include.equals(klass))
 					return true;
 
 			for (Class<?> exclude : family.excludeAll())

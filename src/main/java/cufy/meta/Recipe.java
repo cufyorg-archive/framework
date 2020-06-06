@@ -58,13 +58,13 @@ public @interface Recipe {
 	/**
 	 * Utilities for this annotation. Since static methods are illegal in annotations.
 	 */
-	final class util {
+	final class Util {
 		/**
 		 * This is a util class. And shall not be instanced as an object.
 		 *
 		 * @throws AssertionError when called
 		 */
-		private util() {
+		private Util() {
 			throw new AssertionError("No instance for you!");
 		}
 
@@ -80,8 +80,8 @@ public @interface Recipe {
 		public static <O> O get(Recipe recipe) {
 			Objects.requireNonNull(recipe, "recipe");
 
-			Converter converter = Where.util.getValue(recipe.converter());
-			Clazz<O> type = Type.util.get(recipe.type());
+			Converter converter = Where.Util.getValue(recipe.converter());
+			Clazz<O> type = Type.Util.get(recipe.type());
 			String value = recipe.value();
 
 			try {

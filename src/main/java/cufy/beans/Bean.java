@@ -363,7 +363,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			this.key = getKey(field);
 			this.type = getType(field);
 			this.meta = field.getAnnotation(Property.class);
-			this.converter = Where.util.getValue(meta.converter());
+			this.converter = Where.Util.getValue(meta.converter());
 		}
 
 		/**
@@ -386,7 +386,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			this.key = key;
 			this.type = getType(field);
 			this.meta = field.getAnnotation(Property.class);
-			this.converter = Where.util.getValue(meta.converter());
+			this.converter = Where.Util.getValue(meta.converter());
 		}
 
 		/**
@@ -426,7 +426,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				throw new IllegalArgumentException(field + " is not annotated with " + Bean.Property.class);
 
 			Recipe key = field.getAnnotation(Property.class).key();
-			return key.converter().value() == Where.util.class ? (K) field.getName() : Recipe.util.get(key);
+			return key.converter().value() == Where.Util.class ? (K) field.getName() : Recipe.Util.get(key);
 		}
 
 		/**
@@ -445,10 +445,10 @@ public interface Bean<K, V> extends Map<K, V> {
 
 			Type type = field.getAnnotation(Property.class).type();
 
-			if (type.family() == Type.util.class && type.value() == Object.class) {
+			if (type.family() == Type.Util.class && type.value() == Object.class) {
 				return (Clazz<V>) Clazz.of(field.getType());
 			} else {
-				return Type.util.get(type);
+				return Type.Util.get(type);
 			}
 		}
 
@@ -493,7 +493,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			if (!field.isAnnotationPresent(Bean.Property.class))
 				throw new IllegalArgumentException(field + " is not annotated with " + Bean.Property.class);
 
-			Converter converter = Where.util.getValue(field.getAnnotation(Property.class).converter());
+			Converter converter = Where.Util.getValue(field.getAnnotation(Property.class).converter());
 			Clazz<V> type = getType(field);
 
 			return setValue(field, instance, value, converter, type);

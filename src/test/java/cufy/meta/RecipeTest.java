@@ -23,7 +23,7 @@ public class RecipeTest {
 	)
 	public void get() throws NoSuchMethodException {
 		Recipe object = this.getClass().getMethod("get").getAnnotation(Recipe.class);
-		int i = Recipe.util.get(object);
+		int i = Recipe.Util.get(object);
 
 		Assert.assertEquals("Wrong value", 3, i, 0);
 	}

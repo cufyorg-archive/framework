@@ -42,7 +42,7 @@ public @interface Where {
 	 *
 	 * @return the class that the targeted field is at
 	 */
-	Class value() default util.class;
+	Class value() default Util.class;
 
 	/**
 	 * Array of meta-reference.
@@ -60,13 +60,13 @@ public @interface Where {
 	/**
 	 * Utilities for this annotation. Since static methods are illegal in annotations.
 	 */
-	final class util {
+	final class Util {
 		/**
 		 * This is a util class. And shall not be instanced as an object.
 		 *
 		 * @throws AssertionError when called
 		 */
-		private util() {
+		private Util() {
 			throw new AssertionError("No instance for you!");
 		}
 

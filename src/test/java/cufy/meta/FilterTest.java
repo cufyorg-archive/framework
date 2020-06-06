@@ -30,15 +30,15 @@ public class FilterTest {
 		Filter type = this.getClass().getMethod("test").getAnnotation(Filter.class);
 
 		//in
-		Assert.assertTrue("Map is absolute included", Filter.util.test(type, Map.class));
-		Assert.assertFalse("Number is not included anywhere", Filter.util.test(type, Number.class));
+		Assert.assertTrue("Map is absolute included", Filter.Util.test(type, Map.class));
+		Assert.assertFalse("Number is not included anywhere", Filter.Util.test(type, Number.class));
 		//out
-		Assert.assertFalse("HashMap is absolute excluded", Filter.util.test(type, HashMap.class));
+		Assert.assertFalse("HashMap is absolute excluded", Filter.Util.test(type, HashMap.class));
 		//subIn
-		Assert.assertTrue("List is absolute included", Filter.util.test(type, List.class));
-		Assert.assertTrue("ArrayList is a sub included", Filter.util.test(type, ArrayList.class));
+		Assert.assertTrue("List is absolute included", Filter.Util.test(type, List.class));
+		Assert.assertTrue("ArrayList is a sub included", Filter.Util.test(type, ArrayList.class));
 		//subOut
-		Assert.assertFalse("CharSequence is absolute excluded", Filter.util.test(type, CharSequence.class));
-		Assert.assertFalse("String is sub excluded", Filter.util.test(type, String.class));
+		Assert.assertFalse("CharSequence is absolute excluded", Filter.Util.test(type, CharSequence.class));
+		Assert.assertFalse("String is sub excluded", Filter.Util.test(type, String.class));
 	}
 }

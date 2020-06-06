@@ -43,7 +43,7 @@ public @interface Type {
 	 * @return the family of this clazz. How this clazz should be treated.
 	 * @see Clazz#family
 	 */
-	Class family() default util.class;
+	Class family() default Util.class;
 	/**
 	 * The class represented by this clazz.
 	 *
@@ -55,13 +55,13 @@ public @interface Type {
 	/**
 	 * Utilities for this annotation. Since static methods are illegal in annotations.
 	 */
-	final class util {
+	final class Util {
 		/**
 		 * This is a util class. And shall not be instanced as an object.
 		 *
 		 * @throws AssertionError when called
 		 */
-		private util() {
+		private Util() {
 			throw new AssertionError("No instance for you!");
 		}
 
@@ -80,7 +80,7 @@ public @interface Type {
 			Class family = klazz.family();
 			Class<T> klass = klazz.value();
 
-			if (family == util.class)
+			if (family == Util.class)
 				family = klass;
 
 			Clazz[] componentTypez = new Clazz[componentTypes.length];
