@@ -58,6 +58,10 @@ public class ConvertToken<I, O> {
 	 */
 	final public Map data = new HashMap();
 	/**
+	 * The depth of this token form the first parent.
+	 */
+	final public int depth;
+	/**
 	 * The input object.
 	 */
 	final public I input;
@@ -73,10 +77,6 @@ public class ConvertToken<I, O> {
 	 * A table of data globally shared across this token and it's sub-tokens.
 	 */
 	final public Map tree;
-	/**
-	 * The depth of this token form the first parent.
-	 */
-	final int depth;
 	/**
 	 * The class that the input do have.
 	 */

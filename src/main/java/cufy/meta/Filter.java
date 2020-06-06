@@ -32,7 +32,7 @@ import java.util.Objects;
  * </ul>
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 21-Nov-2019
  */
 @Retention(RetentionPolicy.RUNTIME)

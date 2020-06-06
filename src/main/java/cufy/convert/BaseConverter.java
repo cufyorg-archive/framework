@@ -113,10 +113,9 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
-	 * the output is null, or have a type different than the class at {@link ConvertToken#outputClazz}. Or have length other than the length of
-	 * the {@link ConvertToken#input}. Then the output will be replaced with a new output with the class of {@link
-	 * ConvertToken#outputClazz}.
+	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If the output is
+	 * null, or have a type different than the class at {@link ConvertToken#outputClazz}. Or have length other than the length of the {@link
+	 * ConvertToken#input}. Then the output will be replaced with a new output with the class of {@link ConvertToken#outputClazz}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
 	 * @throws NullPointerException if the given 'token' or 'token.input' is null
@@ -183,9 +182,9 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
-	 * the output is null, or have a type different than the class at {@link ConvertToken#outputClazz}. Then the output will be replaced with a
-	 * new output with the class of {@link ConvertToken#outputClazz}.
+	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If the output is
+	 * null, or have a type different than the class at {@link ConvertToken#outputClazz}. Then the output will be replaced with a new output with the
+	 * class of {@link ConvertToken#outputClazz}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
 	 * @throws NullPointerException         if the given 'token' or 'token.input' is null
@@ -248,9 +247,9 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
-	 * the output is null, or have a type different than the class at {@link ConvertToken#outputClazz}. Then the output will be replaced with a
-	 * new output with the class of {@link ConvertToken#outputClazz}.
+	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If the output is
+	 * null, or have a type different than the class at {@link ConvertToken#outputClazz}. Then the output will be replaced with a new output with the
+	 * class of {@link ConvertToken#outputClazz}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
 	 * @throws NullPointerException         if the given 'token' or 'token.input' is null
@@ -353,9 +352,9 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If
-	 * the output is null, or have a type different than the class at {@link ConvertToken#outputClazz}. Then the output will be replaced with a
-	 * new output with the class of {@link ConvertToken#outputClazz}.
+	 * Replace the elements on the {@link ConvertToken#output} from the given token. All from the given {@link ConvertToken#input}. If the output is
+	 * null, or have a type different than the class at {@link ConvertToken#outputClazz}. Then the output will be replaced with a new output with the
+	 * class of {@link ConvertToken#outputClazz}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
 	 * @throws NullPointerException         if the given 'token' or 'token.input' is null
@@ -528,8 +527,8 @@ public class BaseConverter extends AbstractConverter {
 	}
 
 	/**
-	 * Try to construct a new object of the value of the given {@link ConvertToken#input} with type of the {@link ConvertToken#outputClazz}.
-	 * Using ether a method with a signature equals to 'valueOf(String)'. Or a constructor with a signature equals to '(String)'.
+	 * Try to construct a new object of the value of the given {@link ConvertToken#input} with type of the {@link ConvertToken#outputClazz}. Using
+	 * ether a method with a signature equals to 'valueOf(String)'. Or a constructor with a signature equals to '(String)'.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
 	 * @throws NullPointerException         if the given 'token' or 'input' is null
@@ -557,7 +556,7 @@ public class BaseConverter extends AbstractConverter {
 			Objects.requireNonNull(token.input, "token.input");
 		}
 
-		if (token.input.equals("null")) {
+		if ("null".equals(token.input)) {
 			token.output = null;
 		} else try {
 			token.output = token.outputClazz.getMethod("valueOf", String.class).invoke(null, token.input);

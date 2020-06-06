@@ -85,7 +85,8 @@ public abstract class AbstractBean<K, V> implements FullBean<K, V>, Serializable
 
 			while (true) {
 				Entry<K, V> entry = entries.next();
-				Object key = entry.getKey(), value = entry.getValue();
+				Object key = entry.getKey();
+				Object value = entry.getValue();
 
 				builder.append(key == this ? "(this Bean)" : key)
 						.append('=')

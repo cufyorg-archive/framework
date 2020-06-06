@@ -21,7 +21,7 @@ import java.util.Objects;
  * A loop to do code just one time.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 13-Feb-2020
  */
 public class Once extends Loop<Once.Code> {
@@ -58,8 +58,8 @@ public class Once extends Loop<Once.Code> {
 		}
 
 		/**
-		 * Perform this {@code Once} loop-code with the given item. Get called when a {@code Once} loop is executing its code
-		 * and this code is added to its code.
+		 * Perform this {@code Once} loop-code with the given item. Get called when a {@code Once} loop is executing its code and this code is added
+		 * to its code.
 		 *
 		 * @param loop the loop that executed this code
 		 * @throws NullPointerException if the given 'loop' is null

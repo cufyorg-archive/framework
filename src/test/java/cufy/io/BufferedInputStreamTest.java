@@ -10,6 +10,13 @@ import java.io.StringReader;
 
 @SuppressWarnings("JavaDoc")
 public class BufferedInputStreamTest {
+	private static byte[] toByteArray(char[] c) {
+		byte[] b = new byte[c.length];
+		for (int i = 0; i < c.length; i++)
+			b[i] = (byte) c[i];
+		return b;
+	}
+
 	@SuppressWarnings("StringConcatenationInLoop")
 	@Test(timeout = 200)
 	public void mark_remark() throws IOException {
@@ -127,12 +134,5 @@ public class BufferedInputStreamTest {
 		//reader & mask CURSOR before 'U'
 
 		Assert.assertEquals("Followup maybe not working", "QRST", str_followup);
-	}
-
-	private static byte[] toByteArray(char[] c) {
-		byte[] b = new byte[c.length];
-		for (int i = 0; i < c.length; i++)
-			b[i] = (byte) c[i];
-		return b;
 	}
 }

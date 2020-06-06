@@ -47,8 +47,8 @@ public class JSONConverter extends BaseConverter {
 	final public static JSONConverter global = new JSONConverter();
 
 	/**
-	 * Set the {@link ConvertToken#output} with a new {@link String} that holds the value of the given {@link ConvertToken#input}. Using
-	 * {@link JSON}.
+	 * Set the {@link ConvertToken#output} with a new {@link String} that holds the value of the given {@link ConvertToken#input}. Using {@link
+	 * JSON}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
 	 * @throws NullPointerException     if the given 'token' is null
@@ -86,8 +86,8 @@ public class JSONConverter extends BaseConverter {
 	}
 
 	/**
-	 * Try to construct a new object of the value of the given {@link ConvertToken#input} with type of the {@link ConvertToken#outputClazz}.
-	 * Using {@link JSON}.
+	 * Try to construct a new object of the value of the given {@link ConvertToken#input} with type of the {@link ConvertToken#outputClazz}. Using
+	 * {@link JSON}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
 	 * @throws NullPointerException     if the given 'token' or 'input' is null

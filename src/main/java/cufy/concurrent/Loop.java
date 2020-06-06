@@ -30,7 +30,7 @@ import java.util.function.Consumer;
  *
  * @param <C> the code type
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 18 May 2019
  */
 public abstract class Loop<C extends Loop.Code> {

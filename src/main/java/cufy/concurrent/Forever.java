@@ -21,7 +21,7 @@ import java.util.Objects;
  * Looping until get broken manually.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 07-Dec-2019
  */
 public class Forever extends Loop<Forever.Code> {
@@ -58,8 +58,8 @@ public class Forever extends Loop<Forever.Code> {
 		}
 
 		/**
-		 * Perform this {@code Forever} loop-code with the given item. Get called when a {@code Forever} loop is executing its code
-		 * and this code is added to its code.
+		 * Perform this {@code Forever} loop-code with the given item. Get called when a {@code Forever} loop is executing its code and this code is
+		 * added to its code.
 		 *
 		 * @param loop the loop that executed this code
 		 * @throws NullPointerException if the given 'loop' is null

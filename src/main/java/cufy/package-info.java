@@ -15,9 +15,8 @@
  */
 /**
  * <h1><b>Cufy Framework</b></h1>
- * The cufy framework is focused on to be more inheritable and more reflection friendly. Making it less efficient (minor) but more fun and reliable
- * in big complex projects.
- *
+ * The cufy framework is focused on to be more inheritable and more reflection friendly. Making it less efficient (minor) but more fun and reliable in
+ * big complex projects.
  * <ul>
  *     <b>Featuring:</b>
  *     <ol>
@@ -36,7 +35,7 @@
  * </ul>
  *
  * @author lsafer
- * @version 0.1.4
+ * @version 0.1.5
  * @see <a href="https://framework.cufy.org">framework.cufy.org</a>
  * @since 18 May 2019
  */

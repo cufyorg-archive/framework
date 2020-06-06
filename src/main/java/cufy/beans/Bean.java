@@ -44,7 +44,7 @@ import java.util.*;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  * @author lsafer
- * @version 0.1.4
+ * @version 0.1.5
  * @since 11-Jun-2019
  */
 public interface Bean<K, V> extends Map<K, V> {
@@ -131,9 +131,9 @@ public interface Bean<K, V> extends Map<K, V> {
 		Set<K> keys = new HashSet<>();
 
 		for (Field field : Reflection.getAllFields(this.getClass()))
-			if (field.isAnnotationPresent(Property.class) && keys.add(FieldEntry.getKey(field)))
-				if (Objects.equals(value, FieldEntry.getValue(field, this)))
-					return true;
+			if (field.isAnnotationPresent(Property.class) && keys.add(FieldEntry.getKey(field)) &&
+				Objects.equals(value, FieldEntry.getValue(field, this)))
+				return true;
 
 		return false;
 	}
@@ -514,13 +514,15 @@ public interface Bean<K, V> extends Map<K, V> {
 		 */
 		private static <V> V setValue(Field field, Object instance, V value, Converter converter, Clazz<V> type) {
 			try {
+				Object toBeSet = value;
+
 				if (!type.isInstance(value))
 					//apply formula
-					value = converter.convert(new ConvertToken<>(value, value, Clazz.ofi(value), type));
+					toBeSet = converter.convert(new ConvertToken<>(value, value, Clazz.ofi(value), type));
 
 				field.setAccessible(true);
 				V old = (V) field.get(instance);
-				field.set(instance, value);
+				field.set(instance, toBeSet);
 				return old;
 			} catch (IllegalAccessException e) {
 				throw (IllegalAccessError) new IllegalAccessError().initCause(e);

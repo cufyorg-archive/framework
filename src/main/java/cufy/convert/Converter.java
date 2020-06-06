@@ -93,8 +93,8 @@ public interface Converter {
 	}
 
 	/**
-	 * Set the {@link ConvertToken#output} on the given token to a value of the {@link ConvertToken#input}, but as the class specified
-	 * as in the {@link ConvertToken#outputClazz}.
+	 * Set the {@link ConvertToken#output} on the given token to a value of the {@link ConvertToken#input}, but as the class specified as in the
+	 * {@link ConvertToken#outputClazz}.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
 	 * @param <O>   the {@link ConvertToken#output} of the given token after the converting process

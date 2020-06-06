@@ -23,7 +23,7 @@ import java.util.Objects;
  * A boxing for readers as a workaround to support the methods {@link #mark} and {@link #reset()}. Using a {@link CharBuffer}.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 10-Jan-2020
  */
 public class BufferedReader extends Reader {
@@ -114,19 +114,22 @@ public class BufferedReader extends Reader {
 
 			//REWIND
 			int rewind = 0;
+			int start = off;
+			int stop = len;
+
 			if (this.buffer != null && this.buffer.hasNext()) {
-				rewind = this.buffer.read(cbuf, off, len);
+				rewind = this.buffer.read(cbuf, start, stop);
 
 				//rewind is enough
-				if (rewind == len)
+				if (rewind == stop)
 					return rewind;
 
-				len = len - rewind;
-				off = len + rewind;
+				stop = len - rewind;
+				start = len;
 			}
 
 			//NEW DATA
-			int read = this.reader.read(cbuf, off, len);
+			int read = this.reader.read(cbuf, start, stop);
 
 			//the end
 			if (read == -1)
@@ -134,7 +137,7 @@ public class BufferedReader extends Reader {
 
 			//sneak copy
 			if (this.buffer != null)
-				this.buffer.write(cbuf, off, read);
+				this.buffer.write(cbuf, start, read);
 
 			return rewind + read;
 		}

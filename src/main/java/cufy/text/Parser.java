@@ -67,8 +67,8 @@ public interface Parser {
 	}
 
 	/**
-	 * Parse the text read from the {@link ParseToken#input} to an object with the type of {@link ParseToken#klazz} and store it at
-	 * {@link ParseToken#output}.
+	 * Parse the text read from the {@link ParseToken#input} to an object with the type of {@link ParseToken#klazz} and store it at {@link
+	 * ParseToken#output}.
 	 *
 	 * @param token the parsing instance that holds the variables of this parsing
 	 * @param <T>   the type of the parsed object

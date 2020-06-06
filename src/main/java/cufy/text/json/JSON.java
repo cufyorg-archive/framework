@@ -594,7 +594,7 @@ public class JSON extends AbstractFormat {
 					   long[].class,
 					   short[].class
 			}))
-	protected void parseArray(ParseToken token) throws IOException, ReflectiveOperationException {
+	protected void parseArray(ParseToken token) throws Exception {
 		//sorry about the type mess, I am trying to dynamically deal with
 		//three types (Collection, List, and Object[] or primitive[])
 		//meanwhile listening to what the user wants
@@ -722,6 +722,7 @@ public class JSON extends AbstractFormat {
 				((List) token.output).toArray((Object[]) origin);
 			} else {
 				Object[] output = ((List) token.output).toArray();
+				//can't System.arraycopy on a primitive-type array
 				Arrayz.hardcopy(output, 0, origin, 0, output.length);
 			}
 
@@ -796,7 +797,7 @@ public class JSON extends AbstractFormat {
 					long.class,
 					short.class
 			}))
-	protected void parseNumber(ParseToken<Number> token) throws IOException, ReflectiveOperationException {
+	protected void parseNumber(ParseToken<Number> token) throws Exception {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 		}
@@ -827,7 +828,7 @@ public class JSON extends AbstractFormat {
 	 * @throws ReflectiveOperationException if any exception occurs while trying to construct the map
 	 */
 	@ParseMethod(@Filter(includeAll = Map.class))
-	protected void parseObject(ParseToken<Map> token) throws IOException, ReflectiveOperationException {
+	protected void parseObject(ParseToken<Map> token) throws Exception {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 		}
@@ -958,7 +959,7 @@ public class JSON extends AbstractFormat {
 	 * @throws ReflectiveOperationException if any exception occurred while trying to construct the char-sequence
 	 */
 	@ParseMethod(@Filter(includeAll = CharSequence.class))
-	protected void parseString(ParseToken<CharSequence> token) throws IOException, ReflectiveOperationException {
+	protected void parseString(ParseToken<CharSequence> token) throws Exception {
 		if (DEBUGGING) {
 			Objects.requireNonNull(token, "token");
 		}

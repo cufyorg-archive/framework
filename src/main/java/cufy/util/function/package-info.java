@@ -14,10 +14,8 @@
  *	limitations under the License.
  */
 /**
- * There is always that position. When you want to pass a simple runnable or
- * consumer to some method. And that method will invoke it on the same thread.
- * And you don't need to catch exceptions. Since there is a try-catch covering
- * the calling context. So Throw Lambdas will be the saver.
+ * There is always that position. When you want to pass a simple runnable or consumer to some method. And that method will invoke it on the same
+ * thread. And you don't need to catch exceptions. Since there is a try-catch covering the calling context. So Throw Lambdas will be the saver.
  *
  * @author lsafer
  * @version 0.1.3

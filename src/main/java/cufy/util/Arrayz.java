@@ -24,8 +24,8 @@ import java.util.function.BiFunction;
 /**
  * Useful methods for Arrays.
  *
- * @author LSafer
- * @version 0.1.3
+ * @author lsafer
+ * @version 0.1.5
  * @since 11 Jun 2019
  */
 final public class Arrayz {
@@ -563,9 +563,7 @@ final public class Arrayz {
 				if (length < array.length) {
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
 				} else {
-					if (a.getClass().isAssignableFrom(array.getClass()))
-						System.arraycopy(array, 0, a, 0, array.length);
-					else hardcopy(array, 0, a, 0, array.length);
+					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
 					if (length > array.length) {
 						a[array.length] = null;
@@ -619,9 +617,7 @@ final public class Arrayz {
 				if (length < array.length) {
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
 				} else {
-					if (a.getClass().isAssignableFrom(array.getClass()))
-						System.arraycopy(array, 0, a, 0, array.length);
-					else hardcopy(array, 0, a, 0, array.length);
+					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
 					if (length > array.length) {
 						a[array.length] = null;
@@ -675,9 +671,7 @@ final public class Arrayz {
 				if (length < array.length) {
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
 				} else {
-					if (a.getClass().isAssignableFrom(array.getClass()))
-						System.arraycopy(array, 0, a, 0, array.length);
-					else hardcopy(array, 0, a, 0, array.length);
+					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
 					if (length > array.length) {
 						a[array.length] = null;
@@ -731,9 +725,7 @@ final public class Arrayz {
 				if (length < array.length) {
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
 				} else {
-					if (a.getClass().isAssignableFrom(array.getClass()))
-						System.arraycopy(array, 0, a, 0, array.length);
-					else hardcopy(array, 0, a, 0, array.length);
+					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
 					if (length > array.length) {
 						a[array.length] = null;
@@ -787,9 +779,7 @@ final public class Arrayz {
 				if (length < array.length) {
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
 				} else {
-					if (a.getClass().isAssignableFrom(array.getClass()))
-						System.arraycopy(array, 0, a, 0, array.length);
-					else hardcopy(array, 0, a, 0, array.length);
+					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
 					if (length > array.length) {
 						a[array.length] = null;
@@ -843,9 +833,7 @@ final public class Arrayz {
 				if (length < array.length) {
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
 				} else {
-					if (a.getClass().isAssignableFrom(array.getClass()))
-						System.arraycopy(array, 0, a, 0, array.length);
-					else hardcopy(array, 0, a, 0, array.length);
+					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
 					if (length > array.length) {
 						a[array.length] = null;
@@ -899,9 +887,7 @@ final public class Arrayz {
 				if (length < array.length) {
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
 				} else {
-					if (a.getClass().isAssignableFrom(array.getClass()))
-						System.arraycopy(array, 0, a, 0, array.length);
-					else hardcopy(array, 0, a, 0, array.length);
+					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
 					if (length > array.length) {
 						a[array.length] = null;
@@ -955,9 +941,7 @@ final public class Arrayz {
 				if (length < array.length) {
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
 				} else {
-					if (a.getClass().isAssignableFrom(array.getClass()))
-						System.arraycopy(array, 0, a, 0, array.length);
-					else hardcopy(array, 0, a, 0, array.length);
+					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
 					if (length > array.length) {
 						a[array.length] = null;
@@ -1011,9 +995,7 @@ final public class Arrayz {
 				if (length < array.length) {
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
 				} else {
-					if (a.getClass().isAssignableFrom(array.getClass()))
-						System.arraycopy(array, 0, a, 0, array.length);
-					else hardcopy(array, 0, a, 0, array.length);
+					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
 					if (length > array.length) {
 						a[array.length] = null;
@@ -1070,9 +1052,7 @@ final public class Arrayz {
 				if (length < size) {
 					return (Object[]) Arrayz.copyOf0(array, size, a.getClass());
 				} else {
-					if (a.getClass().isAssignableFrom(array.getClass()))
-						System.arraycopy(array, 0, a, 0, size);
-					else hardcopy(array, 0, a, 0, size);
+					Arrayz.hardcopy(array, 0, a, 0, size);
 
 					if (length > size) {
 						a[size] = null;
@@ -1348,9 +1328,7 @@ final public class Arrayz {
 
 		Object copy = Array.newInstance(klass.getComponentType(), length);
 
-		if (klass.isAssignableFrom(array.getClass()))
-			System.arraycopy(array, 0, copy, 0, Math.min(Array.getLength(array), length));
-		else hardcopy(array, 0, copy, 0, Math.min(Array.getLength(array), length));
+		Arrayz.hardcopy(array, 0, copy, 0, Math.min(Array.getLength(array), length));
 
 		return copy;
 	}
@@ -1839,17 +1817,17 @@ final public class Arrayz {
 	public static void hardcopy(Object src, int srcPos, Object dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-
-		//actually no need for this method
-		if (src == dest || dest.getClass().isAssignableFrom(src.getClass())) {
-			System.arraycopy(src, srcPos, dest, destPos, length);
-			return;
-		}
-
 		if (!src.getClass().isArray())
 			throw new ArrayStoreException("src is not an array");
 		if (!dest.getClass().isArray())
 			throw new ArrayStoreException("dest is not an array");
+
+		if (src == dest || dest.getClass().isAssignableFrom(src.getClass())) {
+			//if we can use System.arraycopy, then it is better to do so,
+			//considering it has the same behavior of this method
+			System.arraycopy(src, srcPos, dest, destPos, length);
+			return;
+		}
 
 		int srcLength = Array.getLength(src);
 		int destLength = Array.getLength(dest);
@@ -1865,10 +1843,9 @@ final public class Arrayz {
 		if (destPos + length > destLength)
 			throw new IndexOutOfBoundsException("destPos+length is greater than dest.length");
 
-		Class<?> type = dest.getClass().getComponentType();
-		for (int i = 0; i < length; i++)
+		for (int i = 0, s = srcPos, d = destPos; i < length; i++, s++, d++)
 			try {
-				Array.set(dest, destPos++, Reflection.primitiveCast(type, Array.get(src, srcPos++)));
+				Array.set(dest, d, Array.get(src, s));
 			} catch (IllegalArgumentException e) {
 				throw (ArrayStoreException) new ArrayStoreException(e.getMessage()).initCause(e);
 			}
@@ -2166,9 +2143,7 @@ final public class Arrayz {
 			int length = Array.getLength(array);
 
 			//if the types don't match. Then System.arraycopy() will not work
-			if (klass.isAssignableFrom(array.getClass()))
-				System.arraycopy(array, 0, product, i, length);
-			else hardcopy(array, 0, product, i, length);
+			Arrayz.hardcopy(array, 0, product, i, length);
 
 			i += length;
 		}
@@ -2182,19 +2157,20 @@ final public class Arrayz {
 	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
 	 * together.
 	 *
-	 * @param array    to sum their elements
-	 * @param sum      the initial sum
-	 * @param function the function to get the value of each element
-	 * @param <T>      the type of the sum
-	 * @param <U>      the type of the elements on the given array
+	 * @param array      to sum their elements
+	 * @param initialSum the initial sum
+	 * @param function   the function to get the value of each element
+	 * @param <T>        the type of the sum
+	 * @param <U>        the type of the elements on the given array
 	 * @return the total sum of the given arrays
 	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
 	 * @throws IllegalArgumentException if any of the given array isn't actually an array
 	 */
-	public static <T, U> T sum(U[] array, T sum, BiFunction<T, U, T> function) {
+	public static <T, U> T sum(U[] array, T initialSum, BiFunction<T, U, T> function) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(function, "function");
 
+		T sum = initialSum;
 		for (U value : array)
 			sum = function.apply(sum, value);
 
@@ -2205,18 +2181,19 @@ final public class Arrayz {
 	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
 	 * together.
 	 *
-	 * @param array    to sum their elements
-	 * @param sum      the initial sum
-	 * @param function the function to get the value of each element
-	 * @param <T>      the type of the sum
+	 * @param array      to sum their elements
+	 * @param initialSum the initial sum
+	 * @param function   the function to get the value of each element
+	 * @param <T>        the type of the sum
 	 * @return the total sum of the given arrays
 	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
 	 * @throws IllegalArgumentException if any of the given array isn't actually an array
 	 */
-	public static <T> T sum(boolean[] array, T sum, BiFunction<T, Boolean, T> function) {
+	public static <T> T sum(boolean[] array, T initialSum, BiFunction<T, Boolean, T> function) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(function, "function");
 
+		T sum = initialSum;
 		for (boolean value : array)
 			sum = function.apply(sum, value);
 
@@ -2227,18 +2204,19 @@ final public class Arrayz {
 	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
 	 * together.
 	 *
-	 * @param array    to sum their elements
-	 * @param sum      the initial sum
-	 * @param function the function to get the value of each element
-	 * @param <T>      the type of the sum
+	 * @param array      to sum their elements
+	 * @param initialSum the initial sum
+	 * @param function   the function to get the value of each element
+	 * @param <T>        the type of the sum
 	 * @return the total sum of the given arrays
 	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
 	 * @throws IllegalArgumentException if any of the given array isn't actually an array
 	 */
-	public static <T> T sum(byte[] array, T sum, BiFunction<T, Byte, T> function) {
+	public static <T> T sum(byte[] array, T initialSum, BiFunction<T, Byte, T> function) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(function, "function");
 
+		T sum = initialSum;
 		for (byte value : array)
 			sum = function.apply(sum, value);
 
@@ -2249,18 +2227,19 @@ final public class Arrayz {
 	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
 	 * together.
 	 *
-	 * @param array    to sum their elements
-	 * @param sum      the initial sum
-	 * @param function the function to get the value of each element
-	 * @param <T>      the type of the sum
+	 * @param array      to sum their elements
+	 * @param initialSum the initial sum
+	 * @param function   the function to get the value of each element
+	 * @param <T>        the type of the sum
 	 * @return the total sum of the given arrays
 	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
 	 * @throws IllegalArgumentException if any of the given array isn't actually an array
 	 */
-	public static <T> T sum(char[] array, T sum, BiFunction<T, Character, T> function) {
+	public static <T> T sum(char[] array, T initialSum, BiFunction<T, Character, T> function) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(function, "function");
 
+		T sum = initialSum;
 		for (char value : array)
 			sum = function.apply(sum, value);
 
@@ -2271,18 +2250,19 @@ final public class Arrayz {
 	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
 	 * together.
 	 *
-	 * @param array    to sum their elements
-	 * @param sum      the initial sum
-	 * @param function the function to get the value of each element
-	 * @param <T>      the type of the sum
+	 * @param array      to sum their elements
+	 * @param initialSum the initial sum
+	 * @param function   the function to get the value of each element
+	 * @param <T>        the type of the sum
 	 * @return the total sum of the given arrays
 	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
 	 * @throws IllegalArgumentException if any of the given array isn't actually an array
 	 */
-	public static <T> T sum(double[] array, T sum, BiFunction<T, Double, T> function) {
+	public static <T> T sum(double[] array, T initialSum, BiFunction<T, Double, T> function) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(function, "function");
 
+		T sum = initialSum;
 		for (double value : array)
 			sum = function.apply(sum, value);
 
@@ -2293,18 +2273,19 @@ final public class Arrayz {
 	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
 	 * together.
 	 *
-	 * @param array    to sum their elements
-	 * @param sum      the initial sum
-	 * @param function the function to get the value of each element
-	 * @param <T>      the type of the sum
+	 * @param array      to sum their elements
+	 * @param initialSum the initial sum
+	 * @param function   the function to get the value of each element
+	 * @param <T>        the type of the sum
 	 * @return the total sum of the given arrays
 	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
 	 * @throws IllegalArgumentException if any of the given array isn't actually an array
 	 */
-	public static <T> T sum(float[] array, T sum, BiFunction<T, Float, T> function) {
+	public static <T> T sum(float[] array, T initialSum, BiFunction<T, Float, T> function) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(function, "function");
 
+		T sum = initialSum;
 		for (float value : array)
 			sum = function.apply(sum, value);
 
@@ -2315,18 +2296,19 @@ final public class Arrayz {
 	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
 	 * together.
 	 *
-	 * @param array    to sum their elements
-	 * @param sum      the initial sum
-	 * @param function the function to get the value of each element
-	 * @param <T>      the type of the sum
+	 * @param array      to sum their elements
+	 * @param initialSum the initial sum
+	 * @param function   the function to get the value of each element
+	 * @param <T>        the type of the sum
 	 * @return the total sum of the given arrays
 	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
 	 * @throws IllegalArgumentException if any of the given array isn't actually an array
 	 */
-	public static <T> T sum(int[] array, T sum, BiFunction<T, Integer, T> function) {
+	public static <T> T sum(int[] array, T initialSum, BiFunction<T, Integer, T> function) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(function, "function");
 
+		T sum = initialSum;
 		for (int value : array)
 			sum = function.apply(sum, value);
 
@@ -2337,18 +2319,19 @@ final public class Arrayz {
 	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
 	 * together.
 	 *
-	 * @param array    to sum their elements
-	 * @param sum      the initial sum
-	 * @param function the function to get the value of each element
-	 * @param <T>      the type of the sum
+	 * @param array      to sum their elements
+	 * @param initialSum the initial sum
+	 * @param function   the function to get the value of each element
+	 * @param <T>        the type of the sum
 	 * @return the total sum of the given arrays
 	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
 	 * @throws IllegalArgumentException if any of the given array isn't actually an array
 	 */
-	public static <T> T sum(long[] array, T sum, BiFunction<T, Long, T> function) {
+	public static <T> T sum(long[] array, T initialSum, BiFunction<T, Long, T> function) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(function, "function");
 
+		T sum = initialSum;
 		for (long value : array)
 			sum = function.apply(sum, value);
 
@@ -2359,18 +2342,19 @@ final public class Arrayz {
 	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
 	 * together.
 	 *
-	 * @param array    to sum their elements
-	 * @param sum      the initial sum
-	 * @param function the function to get the value of each element
-	 * @param <T>      the type of the sum
+	 * @param array      to sum their elements
+	 * @param initialSum the initial sum
+	 * @param function   the function to get the value of each element
+	 * @param <T>        the type of the sum
 	 * @return the total sum of the given arrays
 	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
 	 * @throws IllegalArgumentException if any of the given array isn't actually an array
 	 */
-	public static <T> T sum(short[] array, T sum, BiFunction<T, Short, T> function) {
+	public static <T> T sum(short[] array, T initialSum, BiFunction<T, Short, T> function) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(function, "function");
 
+		T sum = initialSum;
 		for (short value : array)
 			sum = function.apply(sum, value);
 
@@ -2381,20 +2365,21 @@ final public class Arrayz {
 	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
 	 * together.
 	 *
-	 * @param array    to sum their elements
-	 * @param sum      the initial sum
-	 * @param function the function to get the value of each element
-	 * @param <T>      the type of the sum
+	 * @param array      to sum their elements
+	 * @param initialSum the initial sum
+	 * @param function   the function to get the value of each element
+	 * @param <T>        the type of the sum
 	 * @return the total sum of the given arrays
 	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
 	 * @throws IllegalArgumentException if any of the given array isn't actually an array
 	 */
-	public static <T> T sum0(Object array, T sum, BiFunction<T, Object, T> function) {
+	public static <T> T sum0(Object array, T initialSum, BiFunction<T, Object, T> function) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(function, "function");
 		if (!array.getClass().isArray())
 			throw new IllegalArgumentException(array + " isn't an array");
 
+		T sum = initialSum;
 		int length = Array.getLength(array);
 		for (int i = 0; i < length; i++)
 			sum = function.apply(sum, Array.get(array, i));

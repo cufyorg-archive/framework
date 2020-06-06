@@ -25,7 +25,7 @@ import java.util.Objects;
  * A reference to a static field with a specific type. That field should have {@link Where} annotated to it.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 31-Mar-2020
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -85,9 +85,9 @@ public @interface Where {
 						if (where1.id().equals(where.id()))
 							return field;
 					}
-				else if (field.isAnnotationPresent(Where.class))
-					if (field.getAnnotation(Where.class).id().equals(where.id()))
-						return field;
+				else if (field.isAnnotationPresent(Where.class) &&
+						 field.getAnnotation(Where.class).id().equals(where.id()))
+					return field;
 
 			throw new IllegalMetaException("No such field at " + where);
 		}

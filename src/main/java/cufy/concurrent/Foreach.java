@@ -26,7 +26,7 @@ import java.util.Objects;
  *
  * @param <I> items Type
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 07-Dec-2019
  */
 public class Foreach<I> extends Loop<Foreach.Code<I>> {
@@ -305,8 +305,8 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 		}
 
 		/**
-		 * Perform this {@code Foreach} loop-code with the given item. Get called when a {@code Foreach} loop is executing its code
-		 * and this code is added to its code.
+		 * Perform this {@code Foreach} loop-code with the given item. Get called when a {@code Foreach} loop is executing its code and this code is
+		 * added to its code.
 		 *
 		 * @param loop the loop that executed this code
 		 * @param item the current item in the foreach-iteration

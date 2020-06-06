@@ -27,8 +27,7 @@ import java.util.Objects;
  * An alternative representation for {@link Class classes}. This provides more data about the targeted type. About the component types and the family
  * of that class. The family is how the class should be treated.
  * <p>
- * Note: the class {@link Void} is the class of null
- * Note: some of the documentations in this class are the same as from the class {@link Class}
+ * Note: the class {@link Void} is the class of null Note: some of the documentations in this class are the same as from the class {@link Class}
  *
  * @param <C> the "klass" this clazz is holding
  * @author lsafer
@@ -114,7 +113,6 @@ final public class Clazz<C> {
 
 	/**
 	 * Get the clazz that represents the given instance with the given component types.
-	 *
 	 * <pre>
 	 *     This is a shortcut for:
 	 *     Clazz.of(instance == null ? Void.class : instance.getClass, componentTypes);
@@ -132,7 +130,6 @@ final public class Clazz<C> {
 
 	/**
 	 * Get the clazz that represents the given instance with the given component types.
-	 *
 	 * <pre>
 	 *     This is a shortcut for:
 	 *     Clazz.of(family, instance == null ? Void.class : instance.getClass, componentTypes);
@@ -151,7 +148,6 @@ final public class Clazz<C> {
 
 	/**
 	 * Get the clazz that represents the class of for the given name with the given componentTypes.
-	 *
 	 * <pre>
 	 *     This is a shortcut for:
 	 *     Clazz.of(Class.forName(name), componentTypes);
@@ -172,7 +168,6 @@ final public class Clazz<C> {
 
 	/**
 	 * Get the clazz that represents the class of for the given name with the given componentTypes.
-	 *
 	 * <pre>
 	 *     This is a shortcut for:
 	 *     Clazz.of(family, Class.forName(name), componentTypes);
@@ -194,7 +189,6 @@ final public class Clazz<C> {
 
 	/**
 	 * Get the clazz that represents the class of for the given name with the given componentTypes.
-	 *
 	 * <pre>
 	 *     This is a shortcut for:
 	 *     Clazz.of(Class.forName(name, initialize, loader), componentTypes);
@@ -219,7 +213,6 @@ final public class Clazz<C> {
 
 	/**
 	 * Get the clazz that represents the class of for the given name with the given componentTypes.
-	 *
 	 * <pre>
 	 *     This is a shortcut for:
 	 *     Clazz.of(family, Class.forName(name, initialize, loader), componentTypes);
@@ -245,7 +238,6 @@ final public class Clazz<C> {
 
 	/**
 	 * Get a clazz that is the same `class` and family as the given clazz. but different parameters.
-	 *
 	 * <pre>
 	 *     This is a shortcut for:
 	 *     Clazz.of(klazz.getFamily(), klazz.getKlass(), componentTypes);
@@ -263,7 +255,6 @@ final public class Clazz<C> {
 
 	/**
 	 * Get a clazz that is the same `class` as the given clazz. but different parameters.
-	 *
 	 * <pre>
 	 *     This is a shortcut for:
 	 *     Clazz.of(family, klazz.getKlass(), componentTypes);
@@ -282,7 +273,6 @@ final public class Clazz<C> {
 
 	/**
 	 * Get a clazz that is the same `class` as the given clazz. but different parameters.
-	 *
 	 * <pre>
 	 *     This is a shortcut for:
 	 *     Clazz.of(family, klazz.getKlass(), klazz.getComponentTypes());
@@ -405,82 +395,51 @@ final public class Clazz<C> {
 	}
 
 	/**
-	 * Returns a {@code Constructor} object that reflects the specified
-	 * public constructor of the class represented by this {@code Clazz}
-	 * object. The {@code parameterTypes} parameter is an array of
-	 * {@code Class} objects that identify the constructor's formal
-	 * parameter types, in declared order.
-	 *
-	 * If this {@code Clazz} object represents an inner class
-	 * declared in a non-static context, the formal parameter types
-	 * include the explicit enclosing instance as the first parameter.
-	 *
+	 * Returns a {@code Constructor} object that reflects the specified public constructor of the class represented by this {@code Clazz} object. The
+	 * {@code parameterTypes} parameter is an array of {@code Class} objects that identify the constructor's formal parameter types, in declared
+	 * order. If this {@code Clazz} object represents an inner class declared in a non-static context, the formal parameter types include the explicit
+	 * enclosing instance as the first parameter.
 	 * <p> The constructor to reflect is the public constructor of the class
-	 * represented by this {@code Clazz} object whose formal parameter
-	 * types match those specified by {@code parameterTypes}.
+	 * represented by this {@code Clazz} object whose formal parameter types match those specified by {@code parameterTypes}.
 	 *
 	 * @param parameterTypes the parameter array
-	 * @return the {@code Constructor} object of the public constructor that
-	 * matches the specified {@code parameterTypes}
+	 * @return the {@code Constructor} object of the public constructor that matches the specified {@code parameterTypes}
 	 * @throws NoSuchMethodException if a matching method is not found.
-	 * @throws SecurityException     If a security manager, <i>s</i>, is present and
-	 *                               the caller's class loader is not the same as or an
-	 *                               ancestor of the class loader for the current class and
-	 *                               invocation of {@link SecurityManager#checkPackageAccess
-	 *                               s.checkPackageAccess()} denies access to the package
-	 *                               of this class.
+	 * @throws SecurityException     If a security manager, <i>s</i>, is present and the caller's class loader is not the same as or an ancestor of
+	 *                               the class loader for the current class and invocation of {@link SecurityManager#checkPackageAccess
+	 *                               s.checkPackageAccess()} denies access to the package of this class.
 	 */
 	public Constructor<C> getConstructor(Class<?>... parameterTypes) throws NoSuchMethodException {
 		return this.klass.getConstructor(parameterTypes);
 	}
 
 	/**
-	 * Returns an array containing {@code Constructor} objects reflecting
-	 * all the public constructors of the class represented by this
-	 * {@code Clazz} object.  An array of length 0 is returned if the
-	 * class has no public constructors, or if the class is an array class, or
-	 * if the class reflects a primitive type or void.
+	 * Returns an array containing {@code Constructor} objects reflecting all the public constructors of the class represented by this {@code Clazz}
+	 * object.  An array of length 0 is returned if the class has no public constructors, or if the class is an array class, or if the class reflects
+	 * a primitive type or void. Note that while this method returns an array of {@code Constructor<T>} objects (that is an array of constructors from
+	 * this class), the return type of this method is {@code Constructor<?>[]} and <em>not</em> {@code Constructor<T>[]} as might be expected.  This
+	 * less informative return type is necessary since after being returned from this method, the array could be modified to hold {@code Constructor}
+	 * objects for different classes, which would violate the type guarantees of {@code Constructor<T>[]}.
 	 *
-	 * Note that while this method returns an array of {@code
-	 * Constructor<T>} objects (that is an array of constructors from
-	 * this class), the return type of this method is {@code
-	 * Constructor<?>[]} and <em>not</em> {@code Constructor<T>[]} as
-	 * might be expected.  This less informative return type is
-	 * necessary since after being returned from this method, the
-	 * array could be modified to hold {@code Constructor} objects for
-	 * different classes, which would violate the type guarantees of
-	 * {@code Constructor<T>[]}.
-	 *
-	 * @return the array of {@code Constructor} objects representing the
-	 * public constructors of this class
-	 * @throws SecurityException If a security manager, <i>s</i>, is present and
-	 *                           the caller's class loader is not the same as or an
-	 *                           ancestor of the class loader for the current class and
-	 *                           invocation of {@link SecurityManager#checkPackageAccess
-	 *                           s.checkPackageAccess()} denies access to the package
-	 *                           of this class.
+	 * @return the array of {@code Constructor} objects representing the public constructors of this class
+	 * @throws SecurityException If a security manager, <i>s</i>, is present and the caller's class loader is not the same as or an ancestor of the
+	 *                           class loader for the current class and invocation of {@link SecurityManager#checkPackageAccess
+	 *                           s.checkPackageAccess()} denies access to the package of this class.
 	 */
 	public Constructor<?>[] getConstructors() {
 		return this.klass.getConstructors();
 	}
 
 	/**
-	 * Returns a {@code Constructor} object that reflects the specified
-	 * constructor of the class or interface represented by this
-	 * {@code Clazz} object.  The {@code parameterTypes} parameter is
-	 * an array of {@code Class} objects that identify the constructor's
-	 * formal parameter types, in declared order.
-	 *
-	 * If this {@code Clazz} object represents an inner class
-	 * declared in a non-static context, the formal parameter types
-	 * include the explicit enclosing instance as the first parameter.
+	 * Returns a {@code Constructor} object that reflects the specified constructor of the class or interface represented by this {@code Clazz}
+	 * object.  The {@code parameterTypes} parameter is an array of {@code Class} objects that identify the constructor's formal parameter types, in
+	 * declared order. If this {@code Clazz} object represents an inner class declared in a non-static context, the formal parameter types include the
+	 * explicit enclosing instance as the first parameter.
 	 *
 	 * @param parameterTypes the parameter array
-	 * @return The {@code Constructor} object for the constructor with the
-	 * specified parameter list
+	 * @return The {@code Constructor} object for the constructor with the specified parameter list
 	 * @throws NoSuchMethodException if a matching method is not found.
-	 * @throws SecurityException     If a security manager, <i>s</i>, is present and any of the
-	 *                               following conditions is met:
+	 * @throws SecurityException     If a security manager, <i>s</i>, is present and any of the following conditions is met:
 	 *                               <ul>
 	 *                               <li> the caller's class loader is not the same as the
 	 *                               class loader of this class and invocation of
@@ -499,22 +458,14 @@ final public class Clazz<C> {
 	}
 
 	/**
-	 * Returns an array of {@code Constructor} objects reflecting all the
-	 * constructors declared by the class represented by this
-	 * {@code Clazz} object. These are public, protected, default
-	 * (package) access, and private constructors.  The elements in the array
-	 * returned are not sorted and are not in any particular order.  If the
-	 * class has a default constructor, it is included in the returned array.
-	 * This method returns an array of length 0 if this {@code Clazz}
-	 * object represents an interface, a primitive type, an array class, or
-	 * void.
-	 *
+	 * Returns an array of {@code Constructor} objects reflecting all the constructors declared by the class represented by this {@code Clazz} object.
+	 * These are public, protected, default (package) access, and private constructors.  The elements in the array returned are not sorted and are not
+	 * in any particular order.  If the class has a default constructor, it is included in the returned array. This method returns an array of length
+	 * 0 if this {@code Clazz} object represents an interface, a primitive type, an array class, or void.
 	 * <p> See <em>The Java Language Specification</em>, section 8.2.
 	 *
-	 * @return the array of {@code Constructor} objects representing all the
-	 * declared constructors of this class
-	 * @throws SecurityException If a security manager, <i>s</i>, is present and any of the
-	 *                           following conditions is met:
+	 * @return the array of {@code Constructor} objects representing all the declared constructors of this class
+	 * @throws SecurityException If a security manager, <i>s</i>, is present and any of the following conditions is met:
 	 *                           <ul>
 	 *                           <li> the caller's class loader is not the same as the
 	 *                           class loader of this class and invocation of
@@ -533,19 +484,13 @@ final public class Clazz<C> {
 	}
 
 	/**
-	 * If this {@code Class} object represents a local or anonymous
-	 * class within a constructor, returns a {@link
-	 * java.lang.reflect.Constructor Constructor} object representing
-	 * the immediately enclosing constructor of the underlying
-	 * class. Returns {@code null} otherwise.  In particular, this
-	 * method returns {@code null} if the underlying class is a local
-	 * or anonymous class immediately enclosed by a type declaration,
-	 * instance initializer or static initializer.
+	 * If this {@code Class} object represents a local or anonymous class within a constructor, returns a {@link java.lang.reflect.Constructor
+	 * Constructor} object representing the immediately enclosing constructor of the underlying class. Returns {@code null} otherwise.  In particular,
+	 * this method returns {@code null} if the underlying class is a local or anonymous class immediately enclosed by a type declaration, instance
+	 * initializer or static initializer.
 	 *
-	 * @return the immediately enclosing constructor of the underlying class, if
-	 * that class is a local or anonymous class; otherwise {@code null}.
-	 * @throws SecurityException If a security manager, <i>s</i>, is present and any of the
-	 *                           following conditions is met:
+	 * @return the immediately enclosing constructor of the underlying class, if that class is a local or anonymous class; otherwise {@code null}.
+	 * @throws SecurityException If a security manager, <i>s</i>, is present and any of the following conditions is met:
 	 *                           <ul>
 	 *                           <li> the caller's class loader is not the same as the
 	 *                           class loader of the enclosing class and invocation of
@@ -582,19 +527,13 @@ final public class Clazz<C> {
 	}
 
 	/**
-	 * Returns a {@code Method} object that reflects the specified public
-	 * member method of the class or interface represented by this
-	 * {@code Clazz} object. The {@code name} parameter is a
-	 * {@code String} specifying the simple name of the desired method. The
-	 * {@code parameterTypes} parameter is an array of {@code Class}
-	 * objects that identify the method's formal parameter types, in declared
-	 * order. If {@code parameterTypes} is {@code null}, it is
-	 * treated as if it were an empty array.
-	 *
+	 * Returns a {@code Method} object that reflects the specified public member method of the class or interface represented by this {@code Clazz}
+	 * object. The {@code name} parameter is a {@code String} specifying the simple name of the desired method. The {@code parameterTypes} parameter
+	 * is an array of {@code Class} objects that identify the method's formal parameter types, in declared order. If {@code parameterTypes} is {@code
+	 * null}, it is treated as if it were an empty array.
 	 * <p> If the {@code name} is "{@code <init>}" or "{@code <clinit>}" a
-	 * {@code NoSuchMethodException} is raised. Otherwise, the method to
-	 * be reflected is determined by the algorithm that follows.  Let C be the
-	 * class or interface represented by this object:
+	 * {@code NoSuchMethodException} is raised. Otherwise, the method to be reflected is determined by the algorithm that follows.  Let C be the class
+	 * or interface represented by this object:
 	 * <OL>
 	 * <LI> C is searched for a <I>matching method</I>, as defined below. If a
 	 * matching method is found, it is reflected.</LI>
@@ -603,49 +542,31 @@ final public class Clazz<C> {
 	 * <LI> If C is a class other than {@code Object}, then this algorithm is
 	 * invoked recursively on the superclass of C.</LI>
 	 * <LI> If C is the class {@code Object}, or if C is an interface, then
-	 * the superinterfaces of C (if any) are searched for a matching
-	 * method. If any such method is found, it is reflected.</LI>
+	 * the superinterfaces of C (if any) are searched for a matching method. If any such method is found, it is reflected.</LI>
 	 * </OL></LI>
 	 * </OL>
-	 *
 	 * <p> To find a matching method in a class or interface C:&nbsp; If C
-	 * declares exactly one public method with the specified name and exactly
-	 * the same formal parameter types, that is the method reflected. If more
-	 * than one such method is found in C, and one of these methods has a
-	 * return type that is more specific than any of the others, that method is
+	 * declares exactly one public method with the specified name and exactly the same formal parameter types, that is the method reflected. If more
+	 * than one such method is found in C, and one of these methods has a return type that is more specific than any of the others, that method is
 	 * reflected; otherwise one of the methods is chosen arbitrarily.
-	 *
 	 * <p>Note that there may be more than one matching method in a
-	 * class because while the Java language forbids a class to
-	 * declare multiple methods with the same signature but different
-	 * return types, the Java virtual machine does not.  This
-	 * increased flexibility in the virtual machine can be used to
-	 * implement various language features.  For example, covariant
-	 * returns can be implemented with {@linkplain
-	 * java.lang.reflect.Method#isBridge bridge methods}; the bridge
-	 * method and the method being overridden would have the same
-	 * signature but different return types.
-	 *
+	 * class because while the Java language forbids a class to declare multiple methods with the same signature but different return types, the Java
+	 * virtual machine does not.  This increased flexibility in the virtual machine can be used to implement various language features.  For example,
+	 * covariant returns can be implemented with {@linkplain java.lang.reflect.Method#isBridge bridge methods}; the bridge method and the method being
+	 * overridden would have the same signature but different return types.
 	 * <p> If this {@code Clazz} object represents an array type, then this
 	 * method does not find the {@code clone()} method.
-	 *
 	 * <p> Static methods declared in superinterfaces of the class or interface
-	 * represented by this {@code Clazz} object are not considered members of
-	 * the class or interface.
+	 * represented by this {@code Clazz} object are not considered members of the class or interface.
 	 *
 	 * @param name           the name of the method
 	 * @param parameterTypes the list of parameters
-	 * @return the {@code Method} object that matches the specified
-	 * {@code name} and {@code parameterTypes}
-	 * @throws NoSuchMethodException if a matching method is not found
-	 *                               or if the name is "&lt;init&gt;"or "&lt;clinit&gt;".
+	 * @return the {@code Method} object that matches the specified {@code name} and {@code parameterTypes}
+	 * @throws NoSuchMethodException if a matching method is not found or if the name is "&lt;init&gt;"or "&lt;clinit&gt;".
 	 * @throws NullPointerException  if {@code name} is {@code null}
-	 * @throws SecurityException     If a security manager, <i>s</i>, is present and
-	 *                               the caller's class loader is not the same as or an
-	 *                               ancestor of the class loader for the current class and
-	 *                               invocation of {@link SecurityManager#checkPackageAccess
-	 *                               s.checkPackageAccess()} denies access to the package
-	 *                               of this class.
+	 * @throws SecurityException     If a security manager, <i>s</i>, is present and the caller's class loader is not the same as or an ancestor of
+	 *                               the class loader for the current class and invocation of {@link SecurityManager#checkPackageAccess
+	 *                               s.checkPackageAccess()} denies access to the package of this class.
 	 */
 	public Method getMethod(String name, Class<?>... parameterTypes) throws NoSuchMethodException {
 		return this.klass.getMethod(name, parameterTypes);
@@ -702,19 +623,12 @@ final public class Clazz<C> {
 	}
 
 	/**
-	 * Determines if the specified {@code Clazz} object represents a
-	 * primitive type.
-	 *
+	 * Determines if the specified {@code Clazz} object represents a primitive type.
 	 * <p> There are nine predefined {@code Class} objects to represent
-	 * the eight primitive types and void.  These are created by the Java
-	 * Virtual Machine, and have the same names as the primitive types that
-	 * they represent, namely {@code boolean}, {@code byte},
-	 * {@code char}, {@code short}, {@code int},
-	 * {@code long}, {@code float}, and {@code double}.
-	 *
+	 * the eight primitive types and void.  These are created by the Java Virtual Machine, and have the same names as the primitive types that they
+	 * represent, namely {@code boolean}, {@code byte}, {@code char}, {@code short}, {@code int}, {@code long}, {@code float}, and {@code double}.
 	 * <p> These objects may only be accessed via the following public static
-	 * final variables, and are the only {@code Class} objects for which
-	 * this method returns {@code true}.
+	 * final variables, and are the only {@code Class} objects for which this method returns {@code true}.
 	 *
 	 * @return true if and only if this class represents a primitive type
 	 * @see java.lang.Boolean#TYPE

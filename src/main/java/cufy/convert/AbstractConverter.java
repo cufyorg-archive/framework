@@ -61,9 +61,8 @@ public abstract class AbstractConverter implements Converter {
 	}
 
 	/**
-	 * Get invoked if no conversion method is found for the given token.
-	 * Meanwhile the input is instance of the outputClazz and the inputClazz
-	 * is the outputClazz.
+	 * Get invoked if no conversion method is found for the given token. Meanwhile the input is instance of the outputClazz and the inputClazz is the
+	 * outputClazz.
 	 *
 	 * @param token the conversion instance that holds the variables of this conversion
 	 */

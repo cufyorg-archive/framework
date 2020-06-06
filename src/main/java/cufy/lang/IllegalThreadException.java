@@ -18,7 +18,7 @@ package cufy.lang;
 /**
  * An exception thrown when a thread tries to execute a code that shouldn't be executed by it.
  *
- * @author LSafer
+ * @author lsafer
  * @version 0.1.3
  * @since 27-Dec-2019
  */

@@ -14,12 +14,11 @@
  *	limitations under the License.
  */
 /**
- * is a lightweight data-interchange format. It is easy for humans to read
- * and write. It is easy for machines to parse and generate. And this package
+ * is a lightweight data-interchange format. It is easy for humans to read and write. It is easy for machines to parse and generate. And this package
  * provides it with respect to the abstraction of the package Text.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @see <a href="https://framework.cufy.org/site/json">framework.cufy.org/site/json</a>
  * @since 09-July-2019
  */

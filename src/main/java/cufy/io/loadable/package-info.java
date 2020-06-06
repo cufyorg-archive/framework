@@ -14,10 +14,9 @@
  *	limitations under the License.
  */
 /**
- * The ways to load and save data is different from a position to another,
- * but at the end it still data and still be loaded and saved using protocols
- * and standards; Loadables in the other hand don't care about how the data will
- * be transferred, as long as the data will be transferred successfully.
+ * The ways to load and save data is different from a position to another, but at the end it still data and still be loaded and saved using protocols
+ * and standards; Loadables in the other hand don't care about how the data will be transferred, as long as the data will be transferred
+ * successfully.
  *
  * @author lsafer
  * @version 0.1.3

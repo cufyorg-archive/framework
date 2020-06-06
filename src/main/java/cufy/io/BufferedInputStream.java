@@ -23,7 +23,7 @@ import java.util.Objects;
  * A boxing for input-streams as a workaround to support the methods {@link #mark} and {@link #reset()}. Using a {@link ByteBuffer}.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 14-Feb-2020
  */
 public class BufferedInputStream extends InputStream {
@@ -78,21 +78,24 @@ public class BufferedInputStream extends InputStream {
 			return 0;
 		this.ensureOpen();
 
-		//REWIND
 		int rewind = 0;
+		int start = pos;
+		int stop = length;
+
+		//REWIND
 		if (this.buffer != null && this.buffer.hasNext()) {
-			rewind = this.buffer.read(bytes, pos, length);
+			rewind = this.buffer.read(bytes, start, stop);
 
 			//rewind is enough
-			if (rewind == length)
+			if (rewind == stop)
 				return rewind;
 
-			length = length - rewind;
-			pos = length + rewind;
+			stop = length - rewind;
+			start = length;
 		}
 
 		//NEW DATA
-		int read = this.stream.read(bytes, pos, length);
+		int read = this.stream.read(bytes, start, stop);
 
 		//the end
 		if (read == -1)
@@ -100,7 +103,7 @@ public class BufferedInputStream extends InputStream {
 
 		//sneak copy
 		if (this.buffer != null)
-			this.buffer.write(bytes, pos, read);
+			this.buffer.write(bytes, start, read);
 
 		return rewind + read;
 	}

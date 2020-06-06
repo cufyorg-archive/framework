@@ -43,7 +43,7 @@ import java.util.Objects;
  * </ul>
  *
  * @author lsafer
- * @version 0.1.4
+ * @version 0.1.5
  * @since 28-Sep-2019
  */
 public abstract class AbstractFormat implements Format {

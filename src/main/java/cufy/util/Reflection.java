@@ -61,14 +61,15 @@ final public class Reflection {
 	 * @throws NullPointerException     if the given class is null
 	 * @throws IllegalArgumentException if the given class neither object nor primitive
 	 */
-	public static Class<?> asObjectClass(Class<?> klass) {
+	public static Class asObjectClass(Class klass) {
 		Objects.requireNonNull(klass, "klass");
-		Class<?> comp1, comp = klass.getComponentType();
+		Class comp = klass.getComponentType();
 
-		if (comp != null && (comp.isPrimitive() || comp.isArray()))
+		if (comp != null && (comp.isPrimitive() || comp.isArray())) {
 			//Avoiding creating empty arrays using arrayClass()
-			return (comp1 = asObjectClass(comp)) == comp ? klass : asArrayClass(comp1);
-		else if (klass.isPrimitive())
+			Class comp1 = asObjectClass(comp);
+			return comp == comp1 ? klass : asArrayClass(comp1);
+		} else if (klass.isPrimitive()) {
 			if (klass == char.class)
 				return Character.class;
 			else if (klass == int.class)
@@ -86,6 +87,7 @@ final public class Reflection {
 			else if (klass == short.class)
 				return Short.class;
 			else throw new IllegalArgumentException(klass + " neither object nor primitive");
+		}
 
 		return klass;
 	}
@@ -98,10 +100,10 @@ final public class Reflection {
 	 * @throws IllegalArgumentException when the given class don't have a primitive type
 	 * @throws NullPointerException     if the given class is null
 	 */
-	public static Class<?> asPrimitiveClass(Class<?> klass) {
+	public static Class asPrimitiveClass(Class klass) {
 		Objects.requireNonNull(klass, "klass");
-		Class<?> comp = klass.getComponentType();
-		Class<?> comp1;
+		Class comp = klass.getComponentType();
+		Class comp1;
 
 		if (comp != null && (!comp.isPrimitive() || comp.isArray()))
 			//Avoiding creating empty arrays using arrayClass()
@@ -135,10 +137,10 @@ final public class Reflection {
 	 * @return ALL the fields that the given class have
 	 * @throws NullPointerException if the given class is null
 	 */
-	public static List<Field> getAllFields(Class<?> klass) {
+	public static List<Field> getAllFields(Class klass) {
 		List<Field> fields = new ArrayList<>(Arrays.asList(klass.getDeclaredFields()));
 
-		for (Class<?> superclass = klass.getSuperclass(); superclass != null; superclass = superclass.getSuperclass())
+		for (Class superclass = klass.getSuperclass(); superclass != null; superclass = superclass.getSuperclass())
 			fields.addAll(Arrays.asList(superclass.getDeclaredFields()));
 
 		return fields;
@@ -152,12 +154,12 @@ final public class Reflection {
 	 * @return the list of all methods that can be invoked to the given class. (no overridden methods)
 	 * @throws NullPointerException if the given class is null
 	 */
-	public static List<Method> getAllMethods(Class<?> klass) {
+	public static List<Method> getAllMethods(Class klass) {
 		Objects.requireNonNull(klass, "klass");
 		List<Method> methods = new ArrayList<>(Arrays.asList(klass.getDeclaredMethods()));
 
 		//foreach super class of the given class
-		for (Class<?> superClass = klass.getSuperclass(); superClass != null; superClass = superClass.getSuperclass()) {
+		for (Class superClass = klass.getSuperclass(); superClass != null; superClass = superClass.getSuperclass()) {
 			List<Method> superMethods = new ArrayList<>(10);
 			for0:
 			for (Method method : superClass.getDeclaredMethods()) {
@@ -181,7 +183,7 @@ final public class Reflection {
 	 * @return whether the given class is or has a primitive class or not
 	 * @throws NullPointerException if the given 'klass' is null
 	 */
-	public static boolean hasPrimitiveClass(Class<?> klass) {
+	public static boolean hasPrimitiveClass(Class klass) {
 		Objects.requireNonNull(klass, "klass");
 		return klass.isPrimitive() ||
 			   klass == Boolean.class ||
@@ -228,8 +230,8 @@ final public class Reflection {
 			!base.getReturnType().isAssignableFrom(override.getReturnType()))
 			return false;
 
-		Class<?>[] params0 = base.getParameterTypes();
-		Class<?>[] params1 = override.getParameterTypes();
+		Class[] params0 = base.getParameterTypes();
+		Class[] params1 = override.getParameterTypes();
 		for (int i = 0; i < params0.length; i++)
 			if (params0[i] != params1[i])
 				return false;
@@ -246,7 +248,7 @@ final public class Reflection {
 	 * @throws NullPointerException if the given 'klass' is null. Or if the given class is primitive and the given value is null
 	 * @throws ClassCastException   if the given value can't be casted to the given class
 	 */
-	public static Object primitiveCast(Class<?> klass, Object value) {
+	public static Object primitiveCast(Class klass, Object value) {
 		//DON'T ASK ME WHY! 🤬. This is all Java primitive type's fault.
 		//I couldn't came up with a better solution!.
 		//Send me if you have a solution you think it's better.
@@ -258,7 +260,7 @@ final public class Reflection {
 		if (klass.isInstance(value))
 			return value;
 
-		Class<?> vc = value.getClass();
+		Class vc = value.getClass();
 		if (klass == boolean.class || klass == Boolean.class) {
 			if (vc == Boolean.class)
 				return value;

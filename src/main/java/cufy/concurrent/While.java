@@ -21,7 +21,7 @@ import java.util.Objects;
  * A {@link Loop} version of the typical 'while' statement.
  *
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 07-Dec-2019
  */
 public class While extends Loop<While.Code> {
@@ -71,8 +71,8 @@ public class While extends Loop<While.Code> {
 		}
 
 		/**
-		 * Perform this {@code While} loop-code with the given item. Get called when a {@code While} loop is executing its code
-		 * and this code is added to its code.
+		 * Perform this {@code While} loop-code with the given item. Get called when a {@code While} loop is executing its code and this code is added
+		 * to its code.
 		 *
 		 * @param loop the loop that executed this code
 		 * @throws NullPointerException if the given 'loop' is null

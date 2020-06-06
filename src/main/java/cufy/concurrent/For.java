@@ -22,7 +22,7 @@ import java.util.Objects;
  *
  * @param <I> The type of the first initialized variable
  * @author lsafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 07-Dec-2019
  */
 public class For<I> extends Loop<For.Code<I>> {
@@ -93,8 +93,8 @@ public class For<I> extends Loop<For.Code<I>> {
 		}
 
 		/**
-		 * Perform this {@code For} loop-code with the given item. Get called when a {@code For} loop is executing its code
-		 * and this code is added to its code.
+		 * Perform this {@code For} loop-code with the given item. Get called when a {@code For} loop is executing its code and this code is added to
+		 * its code.
 		 *
 		 * @param loop the loop that executed this code
 		 * @param item the current item in the for-iteration
