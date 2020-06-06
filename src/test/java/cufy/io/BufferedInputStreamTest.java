@@ -115,7 +115,7 @@ public class BufferedInputStreamTest {
 
 		mask.mark(4);
 		//mask MARK before 'Q'
-		mask.getBuffer().write(str_continue_raw.toCharArray(), 0, str_continue_raw.length());
+		mask.getBuffer().write(toByteArray(str_continue_raw.toCharArray()), 0, str_continue_raw.length());
 		//reader & mask CURSOR before 'U'
 
 		mask.reset();
@@ -127,5 +127,12 @@ public class BufferedInputStreamTest {
 		//reader & mask CURSOR before 'U'
 
 		Assert.assertEquals("Followup maybe not working", "QRST", str_followup);
+	}
+
+	private static byte[] toByteArray(char[] c) {
+		byte[] b = new byte[c.length];
+		for (int i = 0; i < c.length; i++)
+			b[i] = (byte) c[i];
+		return b;
 	}
 }

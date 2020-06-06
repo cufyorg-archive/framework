@@ -15,15 +15,12 @@
  */
 package cufy.io;
 
-import cufy.util.Reflection;
-
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.CharBuffer;
 import java.util.Objects;
 
 /**
- * A boxing for readers as a workaround to support the methods {@link #mark} and {@link #reset()}. Using a {@link Buffer}.
+ * A boxing for readers as a workaround to support the methods {@link #mark} and {@link #reset()}. Using a {@link CharBuffer}.
  *
  * @author lsafer
  * @version 0.1.3
@@ -33,7 +30,7 @@ public class BufferedReader extends Reader {
 	/**
 	 * The buffer that stores the marked characters.
 	 */
-	protected Buffer<Integer> buffer;
+	protected CharBuffer buffer;
 	/**
 	 * The reader that this delegate is delegating to.
 	 */
@@ -63,7 +60,7 @@ public class BufferedReader extends Reader {
 	}
 
 	@Override
-	public int read(CharBuffer target) throws IOException {
+	public int read(java.nio.CharBuffer target) throws IOException {
 		synchronized (this.lock) {
 			Objects.requireNonNull(target, "target");
 
@@ -84,12 +81,12 @@ public class BufferedReader extends Reader {
 		synchronized (super.lock) {
 			this.ensureOpen();
 			if (this.buffer != null && this.buffer.hasNext()) {
-				return (int) Reflection.primitiveCast(int.class, this.buffer.read());
+				return this.buffer.read();
 			} else {
 				int value = this.reader.read();
 
 				if (value != -1 && this.buffer != null)
-					this.buffer.write(value);
+					this.buffer.write((char) value);
 
 				return value;
 			}
@@ -224,23 +221,11 @@ public class BufferedReader extends Reader {
 	}
 
 	/**
-	 * Make sure that this buffer is opened. Throw an IOException if it's not.
-	 *
-	 * @throws IOException if this reader is closed
-	 */
-	public void ensureOpen() throws IOException {
-		synchronized (super.lock) {
-			if (this.reader == null)
-				throw new IOException("Stream closed");
-		}
-	}
-
-	/**
-	 * Get the {@link Buffer} used CURRENTLY by this reader.
+	 * Get the {@link CharBuffer} used CURRENTLY by this reader.
 	 *
 	 * @return the buffer used currently by this reader
 	 */
-	public Buffer<Integer> getBuffer() {
+	public CharBuffer getBuffer() {
 		synchronized (super.lock) {
 			return this.buffer;
 		}
@@ -271,7 +256,10 @@ public class BufferedReader extends Reader {
 			if (chunkSize <= 0)
 				throw new IllegalArgumentException("chunkSize <= 0");
 
-			this.buffer = this.buffer == null ? new Buffer<>(readAheadLimit, chunkSize) : this.buffer.duplicate(this.buffer.getCursor(), chunkSize);
+			this.buffer = this.buffer == null ?
+						  new CharBuffer(readAheadLimit, chunkSize) :
+						  //to remove older characters meanwhile maintaining the read characters before
+						  this.buffer.duplicate(this.buffer.getCursor(), chunkSize);
 		}
 	}
 
@@ -281,6 +269,18 @@ public class BufferedReader extends Reader {
 	public void unmark() {
 		synchronized (super.lock) {
 			this.buffer = null;
+		}
+	}
+
+	/**
+	 * Make sure that this buffer is opened. Throw an IOException if it's not.
+	 *
+	 * @throws IOException if this reader is closed
+	 */
+	protected void ensureOpen() throws IOException {
+		synchronized (super.lock) {
+			if (this.reader == null)
+				throw new IOException("Stream closed");
 		}
 	}
 }

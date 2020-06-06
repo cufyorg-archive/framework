@@ -15,14 +15,12 @@
  */
 package cufy.io;
 
-import cufy.util.Reflection;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
 /**
- * A boxing for input-streams as a workaround to support the methods {@link #mark} and {@link #reset()}. Using a {@link Buffer}.
+ * A boxing for input-streams as a workaround to support the methods {@link #mark} and {@link #reset()}. Using a {@link ByteBuffer}.
  *
  * @author lsafer
  * @version 0.1.3
@@ -32,7 +30,7 @@ public class BufferedInputStream extends InputStream {
 	/**
 	 * The buffer that stores the marked characters.
 	 */
-	protected Buffer<Integer> buffer;
+	protected ByteBuffer buffer;
 	/**
 	 * The stream that this delegate is delegating to.
 	 */
@@ -53,12 +51,12 @@ public class BufferedInputStream extends InputStream {
 	public int read() throws IOException {
 		this.ensureOpen();
 		if (this.buffer != null && this.buffer.hasNext()) {
-			return (int) Reflection.primitiveCast(int.class, this.buffer.read());
+			return this.buffer.read();
 		} else {
 			int value = this.stream.read();
 
 			if (value != -1 && this.buffer != null)
-				this.buffer.write(value);
+				this.buffer.write((byte) value);
 
 			return value;
 		}
@@ -188,11 +186,11 @@ public class BufferedInputStream extends InputStream {
 	}
 
 	/**
-	 * Get the {@link Buffer} used CURRENTLY by this stream.
+	 * Get the {@link ByteBuffer} used CURRENTLY by this stream.
 	 *
 	 * @return the buffer used currently by this stream
 	 */
-	public Buffer<Integer> getBuffer() {
+	public ByteBuffer getBuffer() {
 		return this.buffer;
 	}
 
@@ -218,7 +216,10 @@ public class BufferedInputStream extends InputStream {
 		if (chunkSize <= 0)
 			throw new IllegalArgumentException("chunkSize <= 0");
 
-		this.buffer = this.buffer == null ? new Buffer<>(readAheadLimit, chunkSize) : this.buffer.duplicate(this.buffer.getCursor(), chunkSize);
+		this.buffer = this.buffer == null ?
+					  new ByteBuffer(readAheadLimit, chunkSize) :
+					  //to remove older bytes meanwhile maintaining the read bytes before
+					  this.buffer.duplicate(this.buffer.getCursor(), chunkSize);
 	}
 
 	/**
