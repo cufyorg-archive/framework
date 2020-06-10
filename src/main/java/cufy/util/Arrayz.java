@@ -1869,7 +1869,7 @@ final public class Arrayz {
 		if (arrays.length == 0)
 			return (T[]) Array.newInstance(arrays.getClass().getComponentType().getComponentType(), 0);
 
-		T[] product = (T[]) Array.newInstance(arrays[0].getClass().getComponentType(), sum(arrays, 0, (s, a) -> s + Array.getLength(a)));
+		T[] product = (T[]) Array.newInstance(arrays[0].getClass().getComponentType(), sum(arrays, 0, (s, a) -> s + a.length));
 
 		int i = 0;
 		for (T[] array : arrays) {
@@ -1895,7 +1895,7 @@ final public class Arrayz {
 	public static <T extends U, U> U[] merge(Class<U[]> klass, T[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		T[] product = (T[]) Array.newInstance(klass.getComponentType(), sum(arrays, 0, (s, a) -> s + Array.getLength(a)));
+		T[] product = (T[]) Array.newInstance(klass.getComponentType(), sum(arrays, 0, (s, a) -> s + a.length));
 
 		int i = 0;
 		for (T[] array : arrays) {
@@ -1918,7 +1918,7 @@ final public class Arrayz {
 	public static boolean[] merge(boolean[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		boolean[] product = new boolean[sum(arrays, 0, (s, a) -> s + Array.getLength(a))];
+		boolean[] product = new boolean[sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (boolean[] array : arrays) {
@@ -1941,7 +1941,7 @@ final public class Arrayz {
 	public static byte[] merge(byte[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		byte[] product = new byte[sum(arrays, 0, (s, a) -> s + Array.getLength(a))];
+		byte[] product = new byte[sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (byte[] array : arrays) {
@@ -1964,7 +1964,7 @@ final public class Arrayz {
 	public static char[] merge(char[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		char[] product = new char[sum(arrays, 0, (s, a) -> s + Array.getLength(a))];
+		char[] product = new char[sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (char[] array : arrays) {
@@ -1987,7 +1987,7 @@ final public class Arrayz {
 	public static double[] merge(double[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		double[] product = new double[sum(arrays, 0, (s, a) -> s + Array.getLength(a))];
+		double[] product = new double[sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (double[] array : arrays) {
@@ -2010,7 +2010,7 @@ final public class Arrayz {
 	public static float[] merge(float[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		float[] product = new float[sum(arrays, 0, (s, a) -> s + Array.getLength(a))];
+		float[] product = new float[sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (float[] array : arrays) {
@@ -2033,7 +2033,7 @@ final public class Arrayz {
 	public static int[] merge(int[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		int[] product = new int[sum(arrays, 0, (s, a) -> s + Array.getLength(a))];
+		int[] product = new int[sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (int[] array : arrays) {
@@ -2056,7 +2056,7 @@ final public class Arrayz {
 	public static long[] merge(long[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		long[] product = new long[sum(arrays, 0, (s, a) -> s + Array.getLength(a))];
+		long[] product = new long[sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (long[] array : arrays) {
@@ -2079,7 +2079,7 @@ final public class Arrayz {
 	public static short[] merge(short[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		short[] product = new short[sum(arrays, 0, (s, a) -> s + Array.getLength(a))];
+		short[] product = new short[sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (short[] array : arrays) {
