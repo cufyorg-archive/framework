@@ -7,7 +7,7 @@ public class WhereTest {
 	@Test
 	@Where(
 			value = SomeWhere.class,
-			id = "here"
+			name = "here"
 	)
 	public void docs() {
 		//this will give us the location of the field above
@@ -15,7 +15,7 @@ public class WhereTest {
 
 	class SomeWhere {
 		//the id tells exactly what field we are looking for
-		@Where(id = "here")
+		@Where(name = "here")
 		public int myField;
 	}
 }

@@ -15,6 +15,7 @@
  */
 package cufy.meta;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -22,39 +23,54 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
- * A reference to a static field with a specific type. That field should have {@link Where} annotated to it.
+ * A reference to a static field with a specific type. That field should have {@link Target} annotated to it.
  *
  * @author lsafer
  * @version 0.1.5
  * @since 31-Mar-2020
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(Where.Array.class)
 public @interface Where {
 	/**
 	 * The id of that field.
 	 *
 	 * @return the id of that field
 	 */
-	String id() default "";
+	String name() default "";
 	/**
 	 * The class that the targeted field is at.
 	 *
 	 * @return the class that the targeted field is at
 	 */
-	Class value() default Util.class;
+	Class value();
 
 	/**
-	 * Array of meta-reference.
+	 * A flag makes a field be a target for the annotation {@link Where}.
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
-	@interface Array {
+	@java.lang.annotation.Target(ElementType.FIELD)
+	@Repeatable(Target.Array.class)
+	@interface Target {
 		/**
-		 * The array of the meta-references.
+		 * The id of the field.
 		 *
-		 * @return the array of meta-references
+		 * @return the id of the field
 		 */
-		Where[] value();
+		String name() default "";
+
+		/**
+		 * Array of meta-reference.
+		 */
+		@java.lang.annotation.Target(ElementType.FIELD)
+		@Retention(RetentionPolicy.RUNTIME)
+		@interface Array {
+			/**
+			 * The array of the meta-references.
+			 *
+			 * @return the array of meta-references
+			 */
+			Target[] value();
+		}
 	}
 
 	/**
@@ -80,13 +96,13 @@ public @interface Where {
 			Objects.requireNonNull(where, "reference");
 
 			for (Field field : where.value().getDeclaredFields())
-				if (field.isAnnotationPresent(Array.class))
-					for (Where where1 : field.getAnnotation(Array.class).value()) {
-						if (where1.id().equals(where.id()))
+				if (field.isAnnotationPresent(Where.Target.Array.class))
+					for (Where.Target target : field.getAnnotation(Where.Target.Array.class).value()) {
+						if (target.name().equals(where.name()))
 							return field;
 					}
-				else if (field.isAnnotationPresent(Where.class) &&
-						 field.getAnnotation(Where.class).id().equals(where.id()))
+				else if (field.isAnnotationPresent(Where.Target.class) &&
+						 field.getAnnotation(Where.Target.class).name().equals(where.name()))
 					return field;
 
 			throw new IllegalMetaException("No such field at " + where);

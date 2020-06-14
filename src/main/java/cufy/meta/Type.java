@@ -31,19 +31,13 @@ import java.util.Objects;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Type {
 	/**
-	 * The component types of this clazz.
-	 *
-	 * @return the component types of this clazz
-	 * @see Clazz#componentTypes
-	 */
-	Class[] componentTypes() default {};
-	/**
 	 * The family of this clazz. How this clazz should be treated.
 	 *
 	 * @return the family of this clazz. How this clazz should be treated.
+	 * @throws IllegalMetaException if the array's length is more than 1
 	 * @see Clazz#family
 	 */
-	Class family() default Util.class;
+	Class[] family() default {};
 	/**
 	 * The class represented by this clazz.
 	 *
@@ -68,26 +62,25 @@ public @interface Type {
 		/**
 		 * Get a clazz from the given meta-clazz.
 		 *
-		 * @param klazz the meta-clazz to get a clazz from
-		 * @param <T>   the component-type of the returned clazz
+		 * @param type the meta-clazz to get a clazz from
+		 * @param <T>  the component-type of the returned clazz
 		 * @return a clazz represents the same class that the given meta-clazz is representing
-		 * @throws NullPointerException if the given 'klazz' is null
+		 * @throws NullPointerException if the given 'type' is null
 		 */
-		public static <T> Clazz<T> get(Type klazz) {
-			Objects.requireNonNull(klazz, "klazz");
+		public static <T> Clazz<T> get(Type type) {
+			Objects.requireNonNull(type, "type");
 
-			Class[] componentTypes = klazz.componentTypes();
-			Class family = klazz.family();
-			Class<T> klass = klazz.value();
+			Class<T> klass = type.value();
+			Class[] families = type.family();
+			Class family;
 
-			if (family == Util.class)
+			if (families.length == 0)
 				family = klass;
+			else if (families.length == 1)
+				family = families[0];
+			else throw new IllegalMetaException("Type.family.length > 1");
 
-			Clazz[] componentTypez = new Clazz[componentTypes.length];
-			for (int i = 0; i < componentTypes.length; i++)
-				componentTypez[i] = Clazz.of(componentTypes[i]);
-
-			return Clazz.of(family, klass, componentTypez);
+			return Clazz.of(family, klass);
 		}
 	}
 }
