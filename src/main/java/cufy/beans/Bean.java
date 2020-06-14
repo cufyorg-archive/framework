@@ -19,6 +19,7 @@ import cufy.convert.BaseConverter;
 import cufy.convert.ConvertToken;
 import cufy.convert.Converter;
 import cufy.lang.Clazz;
+import cufy.meta.IllegalMetaException;
 import cufy.meta.Recipe;
 import cufy.meta.Type;
 import cufy.meta.Where;
@@ -49,6 +50,31 @@ import java.util.*;
  */
 public interface Bean<K, V> extends Map<K, V> {
 	/**
+	 * Get a set of field-entries for the given instance.
+	 *
+	 * @param instance to get the entry set for
+	 * @param <K>      the type of the keys
+	 * @param <V>      the type of the values
+	 * @return a field-entry set for the given instance
+	 * @throws NullPointerException if the given 'instance' is null
+	 * @throws IllegalMetaException if the given 'instance' has duplicated key.
+	 */
+	static <K, V> Set<Entry<K, V>> entrySet(Object instance) {
+		Objects.requireNonNull(instance, "instance");
+		Set<Entry<K, V>> entrySet = new HashSet<>();
+		Set<K> keys = new HashSet<>();
+
+		for (Field field : Reflection.getAllFields(instance.getClass()))
+			if (field.isAnnotationPresent(Property.class))
+				for (K key : (K[]) Bean.getKeys(field))
+					if (keys.add(key))
+						entrySet.add(new FieldEntry<>(instance, field, key));
+					else throw new IllegalMetaException("Duplicated Key: " + key);
+
+		return entrySet;
+	}
+
+	/**
 	 * Get a remote bean for the instance given. The remote bean will remotely access the given instance. All the rules of {@link Bean} will be
 	 * applied. Only the fields annotated with {@link Property} will be accessed.
 	 * <p>
@@ -60,7 +86,7 @@ public interface Bean<K, V> extends Map<K, V> {
 	 * @param <K>      the type of the keys
 	 * @param <V>      the type of the values
 	 * @return a remote bean read and write from the given instance
-	 * @throws NullPointerException if the given instance is null
+	 * @throws NullPointerException if the given 'instance' is null
 	 */
 	static <K, V> Bean<K, V> forInstance(Object instance) {
 		Objects.requireNonNull(instance, "instance");
@@ -68,7 +94,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			@Override
 			public Set<Entry<K, V>> entrySet() {
 				if (this.entrySet == null) {
-					this.entrySet = FieldEntry.entrySet(instance);
+					this.entrySet = Bean.entrySet(instance);
 				}
 
 				return this.entrySet;
@@ -83,12 +109,14 @@ public interface Bean<K, V> extends Map<K, V> {
 
 				//looking for a field with removed entry
 				for (Field field : Reflection.getAllFields(instance.getClass()))
-					if (field.isAnnotationPresent(Property.class) && Objects.equals(key, FieldEntry.getKey(field))) {
-						FieldEntry<K, V> entry = new FieldEntry(instance, field);
-						this.entrySet().add(entry);
-						entry.setValue(value);
-						return null;
-					}
+					if (field.isAnnotationPresent(Property.class))
+						for (K fieldKey : (K[]) Bean.getKeys(field))
+							if (Objects.equals(key, fieldKey)) {
+								FieldEntry entry = new FieldEntry(instance, field, key);
+								entry.setValue(value);
+								this.entrySet().add(entry);
+								return null;
+							}
 
 				//create a simple entry
 				this.entrySet().add(new SimpleEntry<>(key, value));
@@ -97,15 +125,115 @@ public interface Bean<K, V> extends Map<K, V> {
 		};
 	}
 
+	/**
+	 * Get the key of the given field.
+	 *
+	 * @param field to get the key of
+	 * @param <K>   the type of the key
+	 * @return the key of the given key
+	 * @throws NullPointerException     if the given 'field' is null
+	 * @throws IllegalArgumentException if the given 'field' is not annotated with {@link Bean.Property}
+	 */
+	static <K> K[] getKeys(Field field) {
+		Objects.requireNonNull(field, "field");
+		if (!field.isAnnotationPresent(Bean.Property.class))
+			throw new IllegalArgumentException(field + " is not annotated with " + Bean.Property.class);
+
+		Recipe[] recipes = field.getAnnotation(Property.class).key();
+
+		if (recipes.length == 0) {
+			return (K[]) new Object[]{field.getName()};
+		} else {
+			K[] keys = (K[]) new Object[recipes.length];
+
+			for (int i = 0; i < recipes.length; i++)
+				keys[i] = Recipe.Util.get(recipes[i]);
+
+			return keys;
+		}
+	}
+
+	/**
+	 * Get the clazz of the given field.
+	 *
+	 * @param field to get the clazz of
+	 * @param <V>   the type of the clazz
+	 * @return the clazz of the field given
+	 * @throws NullPointerException     if the given 'field' is null
+	 * @throws IllegalArgumentException if the given field is not annotated with {@link Property}
+	 */
+	static <V> Clazz<V> getType(Field field) {
+		Objects.requireNonNull(field, "field");
+		if (!field.isAnnotationPresent(Property.class))
+			throw new IllegalArgumentException(field + " is not annotated with " + Property.class);
+
+		Type[] type = field.getAnnotation(Property.class).type();
+
+		if (type.length == 0) {
+			return (Clazz<V>) Clazz.of(field.getType());
+		} else if (type.length == 1) {
+			return (Clazz<V>) Type.Util.get(type[0]);
+		} else {
+			throw new IllegalMetaException("Bean.Property.type.length > 1");
+		}
+	}
+
+	/**
+	 * Get the value currently stored at the given field on the given instance.
+	 *
+	 * @param instance to get the value from
+	 * @param field    that holds that value
+	 * @param <V>      the type of the value
+	 * @return the value stored at the given field on the given instance
+	 * @throws NullPointerException     if the given 'field' or 'instance' is null
+	 * @throws IllegalArgumentException if the given 'field' is not annotated with {@link Bean.Property}
+	 */
+	static <V> V getValue(Field field, Object instance) {
+		Objects.requireNonNull(instance, "instance");
+		Objects.requireNonNull(field, "field");
+		if (!field.isAnnotationPresent(Bean.Property.class))
+			throw new IllegalArgumentException(field + " is not annotated with " + Bean.Property.class);
+
+		try {
+			field.setAccessible(true);
+			return (V) field.get(instance);
+		} catch (IllegalAccessException e) {
+			throw (IllegalAccessError) new IllegalAccessError().initCause(e);
+		}
+	}
+
+	/**
+	 * Set the value of the given field on the given instance to the given value.
+	 *
+	 * @param instance to set the value to
+	 * @param value    to be set
+	 * @param field    that holds the value
+	 * @param <V>      the type of the value
+	 * @return the previous value stored at that field in that instance
+	 * @throws NullPointerException     if the given 'field' or 'instance' is null
+	 * @throws IllegalArgumentException if the given 'field' is not annotated with {@link Bean.Property}
+	 */
+	static <V> V setValue(Field field, Object instance, V value) {
+		Objects.requireNonNull(instance, "instance");
+		Objects.requireNonNull(field, "field");
+		if (!field.isAnnotationPresent(Bean.Property.class))
+			throw new IllegalArgumentException(field + " is not annotated with " + Bean.Property.class);
+
+		Converter converter = Where.Util.getValue(field.getAnnotation(Property.class).converter());
+		Clazz<V> type = Bean.getType(field);
+
+		return Bean.FieldEntry.setValue(field, instance, value, converter, type);
+	}
+
 	@Override
 	default int size() {
-		Set<K> keys = new HashSet<>();
+		int size = 0;
 
 		for (Field field : Reflection.getAllFields(this.getClass()))
 			if (field.isAnnotationPresent(Property.class))
-				keys.add(FieldEntry.getKey(field));
+				size += Bean.getKeys(field).length;
 
-		return keys.size();
+		return size;
 	}
 
 	@Override
@@ -120,20 +248,20 @@ public interface Bean<K, V> extends Map<K, V> {
 	@Override
 	default boolean containsKey(Object key) {
 		for (Field field : Reflection.getAllFields(this.getClass()))
-			if (field.isAnnotationPresent(Property.class) && Objects.equals(key, FieldEntry.getKey(field)))
-				return true;
+			if (field.isAnnotationPresent(Property.class))
+				for (K fieldKey : (K[]) Bean.getKeys(field))
+					if (Objects.equals(key, fieldKey))
+						return true;
 
 		return false;
 	}
 
 	@Override
 	default boolean containsValue(Object value) {
-		Set<K> keys = new HashSet<>();
-
 		for (Field field : Reflection.getAllFields(this.getClass()))
-			if (field.isAnnotationPresent(Property.class) && keys.add(FieldEntry.getKey(field)) &&
-				Objects.equals(value, FieldEntry.getValue(field, this)))
-				return true;
+			if (field.isAnnotationPresent(Property.class))
+				if (Objects.equals(value, Bean.getValue(field, this)))
+					return true;
 
 		return false;
 	}
@@ -141,8 +269,10 @@ public interface Bean<K, V> extends Map<K, V> {
 	@Override
 	default V get(Object key) {
 		for (Field field : Reflection.getAllFields(this.getClass()))
-			if (field.isAnnotationPresent(Property.class) && Objects.equals(key, FieldEntry.getKey(field)))
-				return (V) FieldEntry.getValue(field, this);
+			if (field.isAnnotationPresent(Property.class))
+				for (K fieldKey : (K[]) Bean.getKeys(field))
+					if (Objects.equals(key, fieldKey))
+						return Bean.getValue(field, this);
 
 		return null;
 	}
@@ -150,8 +280,10 @@ public interface Bean<K, V> extends Map<K, V> {
 	@Override
 	default V put(K key, V value) {
 		for (Field field : Reflection.getAllFields(this.getClass()))
-			if (field.isAnnotationPresent(Property.class) && Objects.equals(key, FieldEntry.getKey(field)))
-				return FieldEntry.setValue(field, this, value);
+			if (field.isAnnotationPresent(Property.class))
+				for (K fieldKey : (K[]) Bean.getKeys(field))
+					if (Objects.equals(key, fieldKey))
+						return Bean.setValue(field, this, value);
 
 		throw new UnsupportedOperationException("Can't store the key: " + key);
 	}
@@ -164,14 +296,18 @@ public interface Bean<K, V> extends Map<K, V> {
 	@Override
 	default void putAll(Map<? extends K, ? extends V> map) {
 		Objects.requireNonNull(map, "map");
-		Set<K> keys = new HashSet<>();
-		K key;
+		int size = map.size();
+		int put = 0;
 
 		for (Field field : Reflection.getAllFields(this.getClass()))
-			if (field.isAnnotationPresent(Property.class) && keys.add(key = FieldEntry.getKey(field)) && map.containsKey(key))
-				FieldEntry.setValue(field, this, map.get(key));
+			if (field.isAnnotationPresent(Property.class))
+				for (K key : (K[]) Bean.getKeys(field))
+					if (map.containsKey(key)) {
+						put++;
+						Bean.setValue(field, this, map.get(key));
+					}
 
-		if (!keys.containsAll(map.keySet()))
+		if (put != size)
 			throw new UnsupportedOperationException("Can't store all the keys in: " + map);
 	}
 
@@ -277,7 +413,7 @@ public interface Bean<K, V> extends Map<K, V> {
 
 	@Override
 	default Set<Entry<K, V>> entrySet() {
-		return FieldEntry.entrySet(this);
+		return Bean.entrySet(this);
 	}
 
 	/**
@@ -292,18 +428,22 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @return the reference to the converter of the annotated field
 		 */
 		Where converter() default @Where(BaseConverter.class);
+
 		/**
 		 * The key of the annotated field. This will override the default key (the name of the field).
 		 *
 		 * @return the key of the annotated field
+		 * @throws IllegalArgumentException when a duplicate key detected (don't rely on this exception)
 		 */
-		Recipe key() default @Recipe(converter = @Where);
+		Recipe[] key() default {};
+
 		/**
 		 * The type of the annotated field. This will override the default type (The type of the field)
 		 *
 		 * @return the type of the annotated field's property
+		 * @throws cufy.meta.IllegalMetaException if the array's length is more than 1
 		 */
-		Type type() default @Type(Object.class);
+		Type[] type() default {};
 	}
 
 	/**
@@ -349,33 +489,11 @@ public interface Bean<K, V> extends Map<K, V> {
 		 *
 		 * @param instance the instance where the targeted field is
 		 * @param field    the field to be edited
-		 * @throws NullPointerException     if the given 'instance' or 'field' is null
-		 * @throws IllegalArgumentException if the given field is not annotated with {@link Property}
-		 */
-		public FieldEntry(Object instance, Field field) {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(field, "field");
-			if (!field.isAnnotationPresent(Property.class))
-				throw new IllegalArgumentException(field + " haven't annotated with " + Property.class);
-
-			this.field = field;
-			this.instance = instance;
-			this.key = getKey(field);
-			this.type = getType(field);
-			this.meta = field.getAnnotation(Property.class);
-			this.converter = Where.Util.getValue(meta.converter());
-		}
-
-		/**
-		 * Construct a new field entry.
-		 *
-		 * @param instance the instance where the targeted field is
-		 * @param field    the field to be edited
 		 * @param key      the key (directly set)
 		 * @throws NullPointerException     if the given 'instance' or 'field' is null
 		 * @throws IllegalArgumentException if the given field is not annotated with {@link Property}
 		 */
-		private FieldEntry(Object instance, Field field, K key) {
+		protected FieldEntry(Object instance, Field field, K key) {
 			Objects.requireNonNull(instance, "instance");
 			Objects.requireNonNull(field, "field");
 			if (!field.isAnnotationPresent(Property.class))
@@ -384,119 +502,9 @@ public interface Bean<K, V> extends Map<K, V> {
 			this.field = field;
 			this.instance = instance;
 			this.key = key;
-			this.type = getType(field);
+			this.type = Bean.getType(field);
 			this.meta = field.getAnnotation(Property.class);
-			this.converter = Where.Util.getValue(meta.converter());
-		}
-
-		/**
-		 * Get a set of field-entries for the given instance.
-		 *
-		 * @param instance to get the entry set for
-		 * @param <K>      the type of the keys
-		 * @param <V>      the type of the values
-		 * @return a field-entry set for the given instance
-		 * @throws NullPointerException if the given 'instance' is null
-		 */
-		public static <K, V> Set<Entry<K, V>> entrySet(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-			Set<Entry<K, V>> entrySet = new HashSet<>();
-			Set<K> keys = new HashSet<>();
-			K key;
-
-			for (Field field : Reflection.getAllFields(instance.getClass()))
-				if (field.isAnnotationPresent(Property.class) && keys.add(key = getKey(field)))
-					entrySet.add(new FieldEntry<>(instance, field, key));
-
-			return entrySet;
-		}
-
-		/**
-		 * Get the key of the given field.
-		 *
-		 * @param field to get the key of
-		 * @param <K>   the type of the key
-		 * @return the key of the given key
-		 * @throws NullPointerException     if the given 'field' is null
-		 * @throws IllegalArgumentException if the given 'field' is not annotated with {@link Bean.Property}
-		 */
-		public static <K> K getKey(Field field) {
-			Objects.requireNonNull(field, "field");
-			if (!field.isAnnotationPresent(Bean.Property.class))
-				throw new IllegalArgumentException(field + " is not annotated with " + Bean.Property.class);
-
-			Recipe key = field.getAnnotation(Property.class).key();
-			return key.converter().value() == Where.Util.class ? (K) field.getName() : Recipe.Util.get(key);
-		}
-
-		/**
-		 * Get the clazz of the given field.
-		 *
-		 * @param field to get the clazz of
-		 * @param <V>   the type of the clazz
-		 * @return the clazz of the field given
-		 * @throws NullPointerException     if the given 'field' is null
-		 * @throws IllegalArgumentException if the given field is not annotated with {@link Property}
-		 */
-		public static <V> Clazz<V> getType(Field field) {
-			Objects.requireNonNull(field, "field");
-			if (!field.isAnnotationPresent(Property.class))
-				throw new IllegalArgumentException(field + " is not annotated with " + Property.class);
-
-			Type type = field.getAnnotation(Property.class).type();
-
-			if (type.family() == Type.Util.class && type.value() == Object.class) {
-				return (Clazz<V>) Clazz.of(field.getType());
-			} else {
-				return Type.Util.get(type);
-			}
-		}
-
-		/**
-		 * Get the value currently stored at the given field on the given instance.
-		 *
-		 * @param instance to get the value from
-		 * @param field    that holds that value
-		 * @param <V>      the type of the value
-		 * @return the value stored at the given field on the given instance
-		 * @throws NullPointerException     if the given 'field' or 'instance' is null
-		 * @throws IllegalArgumentException if the given 'field' is not annotated with {@link Bean.Property}
-		 */
-		public static <V> V getValue(Field field, Object instance) {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(field, "field");
-			if (!field.isAnnotationPresent(Bean.Property.class))
-				throw new IllegalArgumentException(field + " is not annotated with " + Bean.Property.class);
-
-			try {
-				field.setAccessible(true);
-				return (V) field.get(instance);
-			} catch (IllegalAccessException e) {
-				throw (IllegalAccessError) new IllegalAccessError().initCause(e);
-			}
-		}
-
-		/**
-		 * Set the value of the given field on the given instance to the given value.
-		 *
-		 * @param instance to set the value to
-		 * @param value    to be set
-		 * @param field    that holds the value
-		 * @param <V>      the type of the value
-		 * @return the previous value stored at that field in that instance
-		 * @throws NullPointerException     if the given 'field' or 'instance' is null
-		 * @throws IllegalArgumentException if the given 'field' is not annotated with {@link Bean.Property}
-		 */
-		public static <V> V setValue(Field field, Object instance, V value) {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(field, "field");
-			if (!field.isAnnotationPresent(Bean.Property.class))
-				throw new IllegalArgumentException(field + " is not annotated with " + Bean.Property.class);
-
-			Converter converter = Where.Util.getValue(field.getAnnotation(Property.class).converter());
-			Clazz<V> type = getType(field);
-
-			return setValue(field, instance, value, converter, type);
+			this.converter = Where.Util.getValue(this.meta.converter());
 		}
 
 		/**
@@ -513,7 +521,9 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @throws IllegalArgumentException if the given 'field' is not annotated with {@link Bean.Property}
 		 */
 		private static <V> V setValue(Field field, Object instance, V value, Converter converter, Clazz<V> type) {
+			//covered by the private modifier
 			try {
+				//to increase code-quality
 				Object toBeSet = value;
 
 				if (!type.isInstance(value))
@@ -551,19 +561,14 @@ public interface Bean<K, V> extends Map<K, V> {
 
 		@Override
 		public int hashCode() {
-			return Objects.hash(this.getKey());
+			return Objects.hash(this.getKey(), this.getValue());
 		}
 
 		@Override
-		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			} else if (o instanceof Entry) {
-				Entry entry = (Entry) o;
-				return Objects.equals(this.key, entry.getKey());
-			}
-
-			return false;
+		public boolean equals(Object that) {
+			return that == this ||
+				   that instanceof Entry &&
+				   Objects.equals(((Entry) that).getKey(), this.key);
 		}
 
 		/**

@@ -20,6 +20,7 @@ import cufy.util.Reflection;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A bean designed to have a final entrySet. Since the original {@link Bean} can't have a final entrySet.
@@ -76,12 +77,14 @@ public interface FullBean<K, V> extends Bean<K, V> {
 
 		//looking for a field with removed entry
 		for (Field field : Reflection.getAllFields(this.getClass()))
-			if (field.isAnnotationPresent(Property.class) && Objects.equals(key, FieldEntry.getKey(field))) {
-				FieldEntry<K, V> entry = new FieldEntry(this, field);
-				this.entrySet().add(entry);
-				entry.setValue(value);
-				return null;
-			}
+			if (field.isAnnotationPresent(Property.class))
+				for (K filedKey : (K[]) Bean.getKeys(field))
+					if (Objects.equals(key, field)) {
+						FieldEntry entry = new FieldEntry(this, field, filedKey);
+						entry.setValue(value);
+						this.entrySet().add(entry);
+						return null;
+					}
 
 		//create a simple entry
 		this.entrySet().add(new SimpleEntry<>(key, value));
@@ -96,6 +99,7 @@ public interface FullBean<K, V> extends Bean<K, V> {
 			if (Objects.equals(entry.getKey(), key)) {
 				old = entry.getValue();
 				this.entrySet().remove(entry);
+				break;
 			}
 
 		return old;
@@ -111,6 +115,9 @@ public interface FullBean<K, V> extends Bean<K, V> {
 	default void clear() {
 		this.entrySet().clear();
 	}
+
+	@Override
+	Set<Entry<K, V>> entrySet();
 
 	/**
 	 * A simple entry that holds a final key and a changeable value.

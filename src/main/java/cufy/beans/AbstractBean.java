@@ -48,6 +48,15 @@ public abstract class AbstractBean<K, V> implements FullBean<K, V>, Serializable
 	protected transient Collection<V> values;
 
 	@Override
+	public Set<Entry<K, V>> entrySet() {
+		if (this.entrySet == null) {
+			this.entrySet = Bean.entrySet(this);
+		}
+
+		return this.entrySet;
+	}
+
+	@Override
 	public Set<K> keySet() {
 		if (this.keySet == null) {
 			this.keySet = FullBean.super.keySet();
@@ -63,15 +72,6 @@ public abstract class AbstractBean<K, V> implements FullBean<K, V>, Serializable
 		}
 
 		return this.values;
-	}
-
-	@Override
-	public Set<Entry<K, V>> entrySet() {
-		if (this.entrySet == null) {
-			this.entrySet = FullBean.super.entrySet();
-		}
-
-		return this.entrySet;
 	}
 
 	@Override
