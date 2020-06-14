@@ -74,7 +74,7 @@ public class BaseConverter extends AbstractConverter {
 	/**
 	 * The global instance to avoid unnecessary instancing.
 	 */
-	@Where
+	@Where.Target
 	final public static BaseConverter global = new BaseConverter();
 
 	/**
@@ -91,7 +91,7 @@ public class BaseConverter extends AbstractConverter {
 		//RECURSE DETECTION
 		for (Map.Entry<Object, ConvertToken> entry : linearMap.entrySet())
 			if (entry.getKey() == token.input) {
-				token.inputClazz = Clazz.ofz(Recurse.class, token.inputClazz);
+				token.inputClazz = token.inputClazz.override(Recurse.class);
 				token.data.put("recurseToken", entry.getValue());
 				token.data.put("recurse", entry.getValue().output);
 				return true;
@@ -100,7 +100,7 @@ public class BaseConverter extends AbstractConverter {
 		//DEJAVU DETECTION
 		for (Map.Entry<Object, ConvertToken> entry : treeMap.entrySet())
 			if (entry.getKey() == token.input) {
-				token.inputClazz = Clazz.ofz(DejaVu.class, token.inputClazz);
+				token.inputClazz = token.inputClazz.override(DejaVu.class);
 				token.data.put("dejavuToken", entry.getValue());
 				token.data.put("dejavu", entry.getValue().output);
 				return true;

@@ -212,9 +212,9 @@ public class ConvertToken<I, O> {
 		else if (subInputClazz != null)
 			inputClazz = inputClazz.isAssignableFrom(subInputClazz) ?
 						 //DEFAULT, DEFAULT, CLAZZ
-						 Clazz.ofz(subInputClazz, inputClazz.getComponentTypes()) :
+						 Clazz.ofz(subInputClazz, subInputClazz, inputClazz) :
 						 //DEFAULT, CLAZZ, CLAZZ
-						 Clazz.ofz(subInputClazz.getFamily(), inputClazz);
+						 Clazz.ofz(subInputClazz, inputClazz, inputClazz);
 		//CLAZZ, CLAZZ, CLAZZ
 
 		if (outputClazz == null)
@@ -226,9 +226,9 @@ public class ConvertToken<I, O> {
 		else if (subOutputClazz != null)
 			outputClazz = outputClazz.isAssignableFrom(subOutputClazz) ?
 						  //DEFAULT, DEFAULT, CLAZZ
-						  Clazz.ofz(subOutputClazz, outputClazz.getComponentTypes()) :
+						  Clazz.ofz(subOutputClazz, subOutputClazz, outputClazz) :
 						  //DEFAULT, CLAZZ, CLAZZ
-						  Clazz.ofz(subOutputClazz.getFamily(), outputClazz);
+						  Clazz.ofz(subOutputClazz, outputClazz, outputClazz);
 		//CLAZZ, CLAZZ, CLAZZ
 
 		return new ConvertToken<>(this, input, output, inputClazz, outputClazz);

@@ -179,9 +179,9 @@ public class ParseToken<T> {
 		else if (subClazz != null)
 			klazz = klazz.isAssignableFrom(subClazz) ?
 					//DEFAULT, DEFAULT, CLAZZ
-					Clazz.ofz(subClazz, klazz.getComponentTypes()) :
+					Clazz.ofz(subClazz, subClazz, klazz) :
 					//DEFAULT, CLAZZ, CLAZZ
-					Clazz.ofz(subClazz.getFamily(), klazz);
+					Clazz.ofz(subClazz, klazz, klazz);
 		//CLAZZ, CLAZZ, CLAZZ
 
 		return this.subToken(input, output, klazz);

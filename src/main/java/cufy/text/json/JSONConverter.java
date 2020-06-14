@@ -18,7 +18,6 @@ package cufy.text.json;
 import cufy.convert.BaseConverter;
 import cufy.convert.ConvertMethod;
 import cufy.convert.ConvertToken;
-import cufy.lang.Clazz;
 import cufy.meta.Filter;
 import cufy.meta.Where;
 import cufy.text.ClassifyToken;
@@ -118,7 +117,7 @@ public class JSONConverter extends BaseConverter {
 			token.output = JSON.global.parse(new ParseToken<>(
 					reader,
 					null,
-					Clazz.ofz(JSON.global.classify(new ClassifyToken<>(reader, null)).getFamily(), token.outputClazz)
+					token.outputClazz.override(JSON.global.classify(new ClassifyToken<>(reader, null)).getFamily())
 			));
 		} catch (IOException e) {
 			throw new IOError(e);
