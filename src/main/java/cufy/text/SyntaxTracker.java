@@ -31,20 +31,20 @@ public class SyntaxTracker implements Appendable {
 	/**
 	 * A list of strings to be skipped when seen in a literal fence.
 	 */
-	final protected List<String> ESCAPABLE;
+	protected final List<String> ESCAPABLE;
 	/**
 	 * The map for literal syntax. Such syntax shouldn't contain any meaningful syntax inside it.
 	 */
-	final protected Map<String, String> LITERAL;
+	protected final Map<String, String> LITERAL;
 	/**
 	 * The map for nestable syntax. Such syntax can have a nested syntax in it.
 	 */
-	final protected Map<String, String> NESTABLE;
+	protected final Map<String, String> NESTABLE;
 
 	/**
 	 * An array of the fences currently applied.
 	 */
-	final protected ArrayList<Map.Entry<String, String>> fences = new ArrayList<>();
+	protected final ArrayList<Map.Entry<String, String>> fences = new ArrayList<>();
 	/**
 	 * The current top fence.
 	 */
