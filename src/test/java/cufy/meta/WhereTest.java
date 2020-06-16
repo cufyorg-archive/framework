@@ -15,7 +15,7 @@ public class WhereTest {
 
 	class SomeWhere {
 		//the id tells exactly what field we are looking for
-		@Where(name = "here")
+		@Where.Target(name = "here")
 		public int myField;
 	}
 }

@@ -109,7 +109,7 @@ public class JSON extends AbstractFormat {
 	/**
 	 * The global instance to avoid unnecessary instancing.
 	 */
-	@Where
+	@Where.Target
 	final public static JSON global = new JSON().setDefaults(new Syntax().setDefaults());
 	/**
 	 * A list of strings to be skipped when seen in a literal fence.

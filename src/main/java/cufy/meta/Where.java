@@ -96,14 +96,9 @@ public @interface Where {
 			Objects.requireNonNull(where, "reference");
 
 			for (Field field : where.value().getDeclaredFields())
-				if (field.isAnnotationPresent(Where.Target.Array.class))
-					for (Where.Target target : field.getAnnotation(Where.Target.Array.class).value()) {
-						if (target.name().equals(where.name()))
-							return field;
-					}
-				else if (field.isAnnotationPresent(Where.Target.class) &&
-						 field.getAnnotation(Where.Target.class).name().equals(where.name()))
-					return field;
+				for (Where.Target target : field.getAnnotationsByType(Where.Target.class))
+					if (target.name().equals(where.name()))
+						return field;
 
 			throw new IllegalMetaException("No such field at " + where);
 		}

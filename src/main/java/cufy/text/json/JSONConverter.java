@@ -42,7 +42,7 @@ public class JSONConverter extends BaseConverter {
 	/**
 	 * The global instance to avoid unnecessary instancing.
 	 */
-	@Where
+	@Where.Target
 	final public static JSONConverter global = new JSONConverter();
 
 	/**
@@ -77,8 +77,8 @@ public class JSONConverter extends BaseConverter {
 			token.output = JSON.global.format(new FormatToken<>(
 					token.input,
 					new StringWriter(),
-					token.inputClazz)
-			).toString();
+					token.inputClazz
+			)).toString();
 		} catch (IOException e) {
 			throw new IOError(e);
 		}
