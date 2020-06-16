@@ -259,11 +259,11 @@ public abstract class AbstractFormat implements Format {
 		} else {
 			Iterator<Method> i = valid.iterator();
 			Method max = i.next();
-			int mOrder = max.getAnnotation(FormatMethod.class).order();
+			int mOrder = max.getAnnotation(FormatMethod.class).priority();
 
 			while (i.hasNext()) {
 				Method next = i.next();
-				int nOrder = next.getAnnotation(FormatMethod.class).order();
+				int nOrder = next.getAnnotation(FormatMethod.class).priority();
 
 				if (nOrder < mOrder) {
 					max = next;
@@ -294,11 +294,11 @@ public abstract class AbstractFormat implements Format {
 		} else {
 			Iterator<Method> i = valid.iterator();
 			Method max = i.next();
-			int mOrder = max.getAnnotation(ParseMethod.class).order();
+			int mOrder = max.getAnnotation(ParseMethod.class).priority();
 
 			while (i.hasNext()) {
 				Method next = i.next();
-				int nOrder = next.getAnnotation(ParseMethod.class).order();
+				int nOrder = next.getAnnotation(ParseMethod.class).priority();
 
 				if (nOrder < mOrder) {
 					max = next;

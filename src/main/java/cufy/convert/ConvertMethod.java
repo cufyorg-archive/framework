@@ -40,17 +40,17 @@ public @interface ConvertMethod {
 	Filter input();
 
 	/**
-	 * The order of this method. If two (or more) methods are compatible with the conversion parameters, The method with the lower order will be
-	 * invoked. The order can be negative and the default order is 0.
-	 *
-	 * @return the order of this method
-	 */
-	int order() default 0;
-
-	/**
 	 * The classes that the annotated method can return.
 	 *
 	 * @return the output type range
 	 */
 	Filter output();
+
+	/**
+	 * The priority of this method. If two (or more) methods are compatible with the conversion parameters, The method with the lower priority will be
+	 * invoked. The priority can be negative. The default priority is 0.
+	 *
+	 * @return the priority of this method
+	 */
+	int priority() default 0;
 }

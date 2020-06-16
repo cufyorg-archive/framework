@@ -33,12 +33,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface ParseMethod {
 	/**
-	 * The order of this method. If two (or more) methods are compatible with the parsing parameters, The method with the lower order will be invoked.
-	 * The order can be negative and the default order is 0.
+	 * The priority of this method. If two (or more) methods are compatible with the parsing parameters, The method with the lower priority will be
+	 * invoked. The priority can be negative. The default priority is 0.
 	 *
-	 * @return the order of this method
+	 * @return the priority of this method
 	 */
-	int order() default 0;
+	int priority() default 0;
 
 	/**
 	 * Classes that the annotated method returns.

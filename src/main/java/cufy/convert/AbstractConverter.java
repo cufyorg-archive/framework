@@ -180,11 +180,11 @@ public abstract class AbstractConverter implements Converter {
 		} else {
 			Iterator<Method> i = valid.iterator();
 			Method max = i.next();
-			int mOrder = max.getAnnotation(ConvertMethod.class).order();
+			int mOrder = max.getAnnotation(ConvertMethod.class).priority();
 
 			while (i.hasNext()) {
 				Method next = i.next();
-				int nOrder = next.getAnnotation(ConvertMethod.class).order();
+				int nOrder = next.getAnnotation(ConvertMethod.class).priority();
 
 				if (nOrder < mOrder) {
 					max = next;
