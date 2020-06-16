@@ -50,7 +50,7 @@ public abstract class AbstractFormat implements Format {
 	/**
 	 * The dynamic methods of this class.
 	 */
-	final protected Group<Method> methods = Collectionz.unmodifiableGroup(new HashGroup<>(Reflection.getAllMethods(this.getClass())));
+	protected final Group<Method> methods = Collectionz.unmodifiableGroup(new HashGroup<>(Reflection.getAllMethods(this.getClass())));
 	/**
 	 * If this class in a debugging mode or not. if this set to false all null-checks and type-checks should not be executed at runtime.
 	 */

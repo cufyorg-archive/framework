@@ -43,7 +43,7 @@ public class JSONConverter extends BaseConverter {
 	 * The global instance to avoid unnecessary instancing.
 	 */
 	@Where.Target
-	final public static JSONConverter global = new JSONConverter();
+	public static final JSONConverter global = new JSONConverter();
 
 	/**
 	 * Set the {@link ConvertToken#output} with a new {@link String} that holds the value of the given {@link ConvertToken#input}. Using {@link

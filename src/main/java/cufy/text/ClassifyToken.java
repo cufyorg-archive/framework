@@ -34,29 +34,29 @@ public class ClassifyToken<T> {
 	/**
 	 * The data of THIS token.
 	 */
-	final public Map data = new HashMap();
+	public final Map data = new HashMap();
 	/**
 	 * The depth of this token form the first parent.
 	 */
-	final public int depth;
+	public final int depth;
 	/**
 	 * The reader to read input from.
 	 * <p>
 	 * Note: return it to it's original position after using it
 	 */
-	final public Reader input;
+	public final Reader input;
 	/**
 	 * A table of data to be copied from this token to it's sub-tokens.
 	 */
-	final public Map linear;
+	public final Map linear;
 	/**
 	 * The classifying token for the formatting that required initializing this token.
 	 */
-	final public ClassifyToken parent;
+	public final ClassifyToken parent;
 	/**
 	 * A table of data globally shared across this token and it's sub-tokens.
 	 */
-	final public Map tree;
+	public final Map tree;
 	/**
 	 * The output of the classification. (could be changed several times!)
 	 */
