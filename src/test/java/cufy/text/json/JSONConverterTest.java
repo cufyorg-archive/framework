@@ -2,6 +2,7 @@ package cufy.text.json;
 
 import cufy.convert.ConvertToken;
 import cufy.lang.Clazz;
+import cufy.lang.ClazzTree;
 import cufy.util.Arrayz;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,13 +20,33 @@ public class JSONConverterTest {
 
 		int length = list.size();
 
-		String listAsSource = JSONConverter.global.convert(new ConvertToken<>(list, null, Clazz.ofi(list), Clazz.of(String.class)));
+		String listAsSource = JSONConverter.global.convert(new ConvertToken<>(
+				list,
+				null,
+				Clazz.ofi(list),
+				Clazz.of(String.class)
+		));
 
-		HashSet<Object> set = JSONConverter.global.convert(new ConvertToken<>(listAsSource, null, Clazz.of(String.class), Clazz.of(HashSet.class, Clazz.of(List.class, Clazz.of(Long.class)))));
+		HashSet<Object> set = JSONConverter.global.convert(new ConvertToken<>(
+				listAsSource,
+				null,
+				Clazz.of(String.class),
+				Clazz.of(HashSet.class, ClazzTree.ofl(List.class, Long.class))
+		));
 
-		String setAsSource = JSONConverter.global.convert(new ConvertToken<>(set, null, Clazz.ofi(set), Clazz.of(String.class)));
+		String setAsSource = JSONConverter.global.convert(new ConvertToken<>(
+				set,
+				null,
+				Clazz.ofi(set),
+				Clazz.of(String.class)
+		));
 
-		Object[] array = JSONConverter.global.convert(new ConvertToken<>(setAsSource, null, Clazz.ofi(setAsSource), Clazz.of(Object[].class, Clazz.of(List.class, Clazz.of(Long.class)))));
+		Object[] array = JSONConverter.global.convert(new ConvertToken<>(
+				setAsSource,
+				null,
+				Clazz.ofi(setAsSource),
+				Clazz.of(Object[].class, ClazzTree.ofl(List.class, Long.class))
+		));
 
 		Assert.assertEquals("map->string->set Haven't included all items", length, set.size());
 		Assert.assertEquals("map->string->set Items don't match", new HashSet<>(list), set);

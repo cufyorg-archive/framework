@@ -1,6 +1,7 @@
 package cufy.convert;
 
 import cufy.lang.Clazz;
+import cufy.lang.ClazzTree;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,7 +13,7 @@ public class BaseConverterTest {
 	public void applyTest() {
 		Object[] arr = {0, 1};
 
-		BaseConverter.global.apply(arr, Clazz.of(Object[].class, Clazz.of(Long.class)));
+		BaseConverter.global.apply(arr, Clazz.of(Object[].class, ClazzTree.of(Long.class)));
 
 		Assert.assertSame("wrong type", arr[0].getClass(), Long.class);
 		Assert.assertEquals("wrong value", arr[0], 0L);
@@ -83,7 +84,7 @@ public class BaseConverterTest {
 			int[][] input1 = {{1, 2}, {3, 6}, {0}, {7}, {1}};
 			List output = new ArrayList(Arrays.asList(input0));
 
-			BaseConverter.global.convert(new ConvertToken<>(input1, output, Clazz.ofi(input1), Clazz.ofi(output, Clazz.of(double[].class))));
+			BaseConverter.global.convert(new ConvertToken<>(input1, output, Clazz.ofi(input1), Clazz.ofi(output, ClazzTree.of(double[].class))));
 
 			Assert.assertEquals("Value not changed", input1[0][0], input0[0][0], 0);
 			Assert.assertEquals("Value not changed", input1[0][1], input0[0][1], 0);
@@ -99,7 +100,7 @@ public class BaseConverterTest {
 
 			List output = new ArrayList();
 
-			BaseConverter.global.convert(new ConvertToken<>(input0, output, Clazz.ofi(input0), Clazz.ofi(output, Clazz.of(double[].class))));
+			BaseConverter.global.convert(new ConvertToken<>(input0, output, Clazz.ofi(input0), Clazz.ofi(output, ClazzTree.of(double[].class))));
 
 			Assert.assertNotSame("Copied by reference witch is illegal", input0[0], output.get(0));
 			Assert.assertArrayEquals("Not converted right", input0[0], (double[]) output.get(0), 0);
@@ -159,7 +160,7 @@ public class BaseConverterTest {
 		int[] arr = {0, 1};
 		Object[] objs = new Object[2];
 
-		BaseConverter.global.convert(arr, objs, Clazz.of(Object[].class, Clazz.of(Long.class)));
+		BaseConverter.global.convert(arr, objs, Clazz.of(Object[].class, ClazzTree.of(Long.class)));
 
 		Assert.assertSame("Wrong type", objs[0].getClass(), Long.class);
 		Assert.assertSame("Wrong type", objs[1].getClass(), Long.class);

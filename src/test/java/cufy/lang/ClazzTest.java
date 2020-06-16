@@ -12,6 +12,6 @@ public class ClazzTest {
 		//the clazz below should be treated as if it was a Set. and if a new instance
 		//needed it should be a new instance of ArrayList. And anyone should really
 		//respect that this clazz only allow String elements.
-		Clazz klazz = Clazz.of(Set.class, ArrayList.class, Clazz.of(String.class));
+		Clazz klazz = Clazz.of(Set.class, ArrayList.class, ClazzTree.of(String.class));
 	}
 }
