@@ -15,7 +15,6 @@
  */
 package cufy.text;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +72,7 @@ public class SyntaxTracker implements Appendable {
 	}
 
 	@Override
-	public Appendable append(CharSequence csq) throws IOException {
+	public Appendable append(CharSequence csq) {
 		Objects.requireNonNull(csq, "csq");
 
 		int length = csq.length();
@@ -85,7 +84,7 @@ public class SyntaxTracker implements Appendable {
 	}
 
 	@Override
-	public Appendable append(CharSequence csq, int start, int end) throws IOException {
+	public Appendable append(CharSequence csq, int start, int end) {
 		Objects.requireNonNull(csq, "csq");
 
 		int length = csq.length();
@@ -100,7 +99,7 @@ public class SyntaxTracker implements Appendable {
 	}
 
 	@Override
-	public Appendable append(char c) throws IOException {
+	public Appendable append(char c) {
 		this.past += c;
 
 		if (this.literal) {
