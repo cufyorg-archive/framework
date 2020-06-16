@@ -49,6 +49,8 @@ import java.util.*;
  * @since 11-Jun-2019
  */
 public interface Bean<K, V> extends Map<K, V> {
+	//TODO check for errors in multiple key properties
+
 	/**
 	 * Get a set of field-entries for the given instance.
 	 *
@@ -458,31 +460,31 @@ public interface Bean<K, V> extends Map<K, V> {
 		 *
 		 * @see Property#converter
 		 */
-		final protected Converter converter;
+		protected final Converter converter;
 		/**
 		 * The field that holds the value of this entry.
 		 */
-		final protected Field field;
+		protected final Field field;
 		/**
 		 * The instance that this entry is editing.
 		 */
-		final protected Object instance;
+		protected final Object instance;
 		/**
 		 * The key of this entry.
 		 *
 		 * @see Property#key
 		 */
-		final protected K key;
+		protected final K key;
 		/**
 		 * The meta-data of this entry.
 		 */
-		final protected Property meta;
+		protected final Property meta;
 		/**
 		 * The type of the value of this entry.
 		 *
 		 * @see Property#type
 		 */
-		final protected Clazz<V> type;
+		protected final Clazz<V> type;
 
 		/**
 		 * Construct a new field entry.
