@@ -126,7 +126,7 @@ public interface FullBean<K, V> extends Bean<K, V> {
 		/**
 		 * The key of this entry.
 		 */
-		final protected K key;
+		protected final K key;
 		/**
 		 * The value of this entry.
 		 */

@@ -22,7 +22,7 @@ package cufy.lang;
  * @version 0.1.3
  * @since 25-Nov-2019
  */
-final public class Recurse {
+public final class Recurse {
 	/**
 	 * This is a representation class and should not be instanced.
 	 *

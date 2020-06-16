@@ -22,7 +22,7 @@ package cufy.lang;
  * @version 0.1.3
  * @since 03-Mar-2020
  */
-final public class Empty {
+public final class Empty {
 	/**
 	 * This is a representation class and should not be instanced.
 	 *

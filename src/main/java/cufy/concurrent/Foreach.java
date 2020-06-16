@@ -33,7 +33,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	/**
 	 * List of items to loop.
 	 */
-	final protected Iterable<I> iterable;
+	protected final Iterable<I> iterable;
 
 	/**
 	 * Initialize this.

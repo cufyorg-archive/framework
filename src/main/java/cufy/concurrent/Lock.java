@@ -34,28 +34,28 @@ public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * The lock holder should end it's thread.
 	 */
-	final static protected int CLOSE = -1;
+	protected static final int CLOSE = -1;
 	/**
 	 * The lock holder should gain it's targeted lock.
 	 */
-	final static protected int LOCK = 1;
+	protected static final int LOCK = 1;
 	/**
 	 * The lock holder should release it's targeted lock.
 	 */
-	final static protected int UNLOCK = 0;
+	protected static final int UNLOCK = 0;
 
 	/**
 	 * The targeted lock.
 	 */
-	final protected T lock;
+	protected final T lock;
 	/**
 	 * The thread that have created this. To avoid serving other threads.
 	 */
-	final protected Thread master;
+	protected final Thread master;
 	/**
 	 * The reference to communicate with the lock holder thread. Representing the state integer code.
 	 */
-	final protected AtomicInteger state = new AtomicInteger(UNLOCK);
+	protected final AtomicInteger state = new AtomicInteger(UNLOCK);
 
 	/**
 	 * Initialize a new lock holder.

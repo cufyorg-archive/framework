@@ -29,11 +29,11 @@ public class For<I> extends Loop<For.Code<I>> {
 	/**
 	 * The function to be applied before each round on the loop to check whether the loop shall continue or break.
 	 */
-	final protected Condition<I> condition;
+	protected final Condition<I> condition;
 	/**
 	 * A function to be applied after each round on the loop. The function focus on what to do on {@link #variable}.
 	 */
-	final protected Increment<I> increment;
+	protected final Increment<I> increment;
 	/**
 	 * The variable first initialized.
 	 */

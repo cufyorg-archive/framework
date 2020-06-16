@@ -28,7 +28,7 @@ public class While extends Loop<While.Code> {
 	/**
 	 * The function to be applied before each round on the loop to check whether the loop shall continue or break.
 	 */
-	final protected Condition condition;
+	protected final Condition condition;
 
 	/**
 	 * Construct a new while loop with the given arguments.

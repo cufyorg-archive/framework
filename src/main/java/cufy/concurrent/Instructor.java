@@ -37,19 +37,19 @@ public class Instructor {
 	 * <p>
 	 * Note: synchronized use only.
 	 */
-	final protected List<Loop> loops = new ArrayList<>(10);
+	protected final List<Loop> loops = new ArrayList<>(10);
 	/**
 	 * All undone posts of this group.
 	 * <p>
 	 * Note: synchronized use only.
 	 */
-	final protected List<Post> posts = new ArrayList<>(10);
+	protected final List<Post> posts = new ArrayList<>(10);
 	/**
 	 * The first position of any further loop get started by this.
 	 * <p>
 	 * Note: synchronized use only.
 	 */
-	final protected AtomicReference<String> state = new AtomicReference<>(Loop.CONTINUE);
+	protected final AtomicReference<String> state = new AtomicReference<>(Loop.CONTINUE);
 
 	/**
 	 * Get the {@link #loops} of this loop.

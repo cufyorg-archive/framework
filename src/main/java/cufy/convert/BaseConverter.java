@@ -75,7 +75,7 @@ public class BaseConverter extends AbstractConverter {
 	 * The global instance to avoid unnecessary instancing.
 	 */
 	@Where.Target
-	final public static BaseConverter global = new BaseConverter();
+	public static final BaseConverter global = new BaseConverter();
 
 	/**
 	 * Inherit only.

@@ -37,34 +37,34 @@ public abstract class Loop<C extends Loop.Code> {
 	/**
 	 * A position for loops. Tells that the loop shall be stopped.
 	 */
-	final public static String BREAK = "break";
+	public static final String BREAK = "break";
 	/**
 	 * A position for loops. Tells that the loop shall be resumed
 	 */
-	final public static String CONTINUE = "continue";
+	public static final String CONTINUE = "continue";
 	/**
 	 * A position for loops. Tells that the loop shall be paused
 	 */
-	final public static String SLEEP = "sleep";
+	public static final String SLEEP = "sleep";
 
 	/**
 	 * The code to loop.
 	 */
-	final protected List<Code> code = new ArrayList<>(10);
+	protected final List<Code> code = new ArrayList<>(10);
 	/**
 	 * All undone posts of this loop.
 	 */
-	final protected List<Post> posts = new ArrayList<>(10);
+	protected final List<Post> posts = new ArrayList<>(10);
 	/**
 	 * The state of this loop.
 	 */
-	final protected AtomicReference<String> state = new AtomicReference<>(CONTINUE);
+	protected final AtomicReference<String> state = new AtomicReference<>(CONTINUE);
 	/**
 	 * The first caller of this loop.
 	 * <p>
 	 * Note: having more than one caller is unpredictable and ILLEGAL!.
 	 */
-	final protected AtomicReference<Thread> thread = new AtomicReference<>();
+	protected final AtomicReference<Thread> thread = new AtomicReference<>();
 
 	/**
 	 * Append the given code to the end of the looping code of this.

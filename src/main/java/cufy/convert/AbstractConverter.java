@@ -37,7 +37,7 @@ public abstract class AbstractConverter implements Converter {
 	/**
 	 * The converting methods of this class.
 	 */
-	final protected Group<Method> methods = Collectionz.unmodifiableGroup(new HashGroup<>(Reflection.getAllMethods(this.getClass())));
+	protected final Group<Method> methods = Collectionz.unmodifiableGroup(new HashGroup<>(Reflection.getAllMethods(this.getClass())));
 	/**
 	 * If this class in a debugging mode or not.
 	 * <p>
