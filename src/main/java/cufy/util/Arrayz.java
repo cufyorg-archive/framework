@@ -26,7 +26,7 @@ import java.util.function.BiFunction;
  * @version 0.1.5
  * @since 11 Jun 2019
  */
-final public class Arrayz {
+public final class Arrayz {
 	/**
 	 * This is a util class. And shall not be instanced as an object.
 	 *

@@ -30,7 +30,7 @@ import java.util.Objects;
  * @version 0.1.4
  * @since 11-Jun-2019
  */
-final public class Reflection {
+public final class Reflection {
 	/**
 	 * This is a utility class and shouldn't be instanced!.
 	 *

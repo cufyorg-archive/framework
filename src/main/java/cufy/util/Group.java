@@ -41,6 +41,7 @@ public interface Group<E> extends Collection<E> {
 	 * @throws NullPointerException if the given 'predicate' is null
 	 */
 	Group<E> subGroup(Object key, Predicate<E> predicate);
+
 	/**
 	 * Returns the group with the given key. There is no guarantee that the previously resolved subgroup will be the returned subgroup, but the
 	 * returned subgroup SHOULD effect the previously solved subgroup.

@@ -24,7 +24,7 @@ import java.util.Objects;
  * @version 0.1.3
  * @since 11 Jun 2019
  */
-final public class Stringz {
+public final class Stringz {
 	/**
 	 * This is a util class. And shall not be instanced as an object.
 	 *
