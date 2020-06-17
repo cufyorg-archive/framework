@@ -25,7 +25,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -824,48 +823,38 @@ public final class Clazz<T> implements Type, Serializable {
 	/**
 	 * Get the {@code baseClazz} of the {@code tree} of this clazz. The {@code baseClazz} of a clazz is like the {@code componentType} of a class.
 	 *
-	 * @return the {@code baseClazz} of the {@code tree} of this.
+	 * @return the {@code baseClazz} of the {@code tree} of this. Or null if the {@code tree} of this has no {@code baseClazz}.
 	 */
 	public Clazz getTreeBaseClazz() {
 		return this.tree.getBaseClazz();
 	}
 
-	//~PERFECT
-
 	/**
-	 * Return the clazz that have the given key stored at the clazz-tree of this clazz.
+	 * Get a clazz in the {@code tree} of this clazz that is associated to the given {@code key}.
 	 *
-	 * @param key of the targeted component-clazz
-	 * @return the component-clazz that have the given key in the tree of this clazz, or null if not set.
+	 * @param key the key of the returned clazz at the {@code tree} of this clazz.
+	 * @return a clazz in the {@code tree} of this clazz that is associated to the given {@code key}.
 	 */
 	public Clazz getTreeClazz(Object key) {
 		return this.tree.getTreeClazz(key);
 	}
 
 	/**
-	 * Get all tree-clazzes of the tree of this clazz.
+	 * Determine if the {@code klass} of this clazz has a primitive type.
 	 *
-	 * @return all the tree-clazzes of the tree of this clazz.
-	 */
-	public Map<Object, Clazz> getTreeClazzes() {
-		return this.tree.getTreeClazzes();
-	}
-
-	/**
-	 * Check if the class of this clazz is or has a primitive class or not.
-	 *
-	 * @return whether this class is or has a primitive class or not
+	 * @return true, if the {@code klass} of this clazz has a primitive type.
 	 */
 	public boolean hasPrimitive() {
 		return Reflection.hasPrimitiveClass(this.klass);
 	}
 
 	/**
-	 * Determine if the class represented by this clazz is a super class for the class represented by the given clazz.
+	 * Determine if the {@code klass} of this clazz is assignable from the {@code klass} of the given clazz.
 	 *
-	 * @param klazz the Clazz object to be checked
-	 * @return if this clazz is assignable from the given clazz
+	 * @param klazz the clazz to be checked if its {@code klass} is assignable from the {@code klass} of this clazz.
+	 * @return true, if the {@code klass} of this clazz is assignable from the {@code klass} of the given clazz.
 	 * @throws NullPointerException if the given {@code klazz} is null.
+	 * @see Class#isAssignableFrom(Class)
 	 */
 	public boolean isAssignableFrom(Clazz klazz) {
 		Objects.requireNonNull(klazz, "klazz");
@@ -873,21 +862,25 @@ public final class Clazz<T> implements Type, Serializable {
 	}
 
 	/**
-	 * Determine if the given object is instance of this clazz.
+	 * Determine if the given {@code instance} is an instance of the {@code klass} of this clazz.
+	 * <br>
+	 * Note: null is instance of {@link Void}.
 	 *
-	 * @param instance the object to check
-	 * @return true if obj is an instance of this clazz
+	 * @param instance the instance to be checked if it is an instance of the {@code klass} of this clazz.
+	 * @return true, if the given {@code instance} is an instance of the {@code klass} of this clazz.
 	 */
 	public boolean isInstance(Object instance) {
 		return instance == null ? this.klass == Void.class : this.klass.isInstance(instance);
 	}
 
 	/**
-	 * Get a clazz that have the same {@code klass} of this, but different {@code family}.
+	 * Get a clazz that represents the {@code klass} of this clazz, and have the given {@code tree}, and should be treated as if it was the given
+	 * {@code family}.
 	 *
 	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param tree   the tree of the clazzes specified foreach component to be held by an instances of the returned clazz.
-	 * @return a clazz that have the same {@code klass} of this, but different {@code family}.
+	 * @return a clazz that represents the {@code klass} of this clazz, and have the given {@code tree}, and should be treated as if it was the given
+	 *        {@code family}.
 	 * @throws NullPointerException if the given {@code family} or {@code tree} is null.
 	 */
 	public Clazz override(Class family, ClazzTree tree) {
@@ -897,10 +890,12 @@ public final class Clazz<T> implements Type, Serializable {
 	}
 
 	/**
-	 * Get a clazz that have the same {@code klass} and {@code tree} of this, but different {@code family}.
+	 * Get a clazz that represents the {@code klass} of this clazz, and have the {@code tree} of this clazz, and should be treated as if it was the
+	 * given {@code family}.
 	 *
 	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
-	 * @return a clazz that have the same {@code klass} and {@code tree} of this, but different {@code family}.
+	 * @return a clazz that represents the {@code klass} of this clazz, and have the {@code tree} of this clazz, and should be treated as if it was
+	 * 		the given {@code family}.
 	 * @throws NullPointerException if the given {@code family} is null.
 	 */
 	public Clazz override(Class family) {
@@ -909,10 +904,12 @@ public final class Clazz<T> implements Type, Serializable {
 	}
 
 	/**
-	 * Get a clazz that have the same {@code family} and {@code klass} of this, but different {@code tree}.
+	 * Get a clazz that represents the {@code klass} of this clazz, and have the given {@code tree}, and should be treated as if it was the {@code
+	 * family} of this clazz.
 	 *
 	 * @param tree the tree of the clazzes specified foreach component to be held by an instances of the returned clazz.
-	 * @return a clazz that have the same {@code family} and {@code klass} of this, but different {@code tree}.
+	 * @return a clazz that represents the {@code klass} of this clazz, and have the given {@code tree}, and should be treated as if it was the {@code
+	 * 		family} of this clazz.
 	 * @throws NullPointerException if the given {@code tree} is null.
 	 */
 	public Clazz override(ClazzTree tree) {
@@ -921,92 +918,48 @@ public final class Clazz<T> implements Type, Serializable {
 	}
 
 	/**
-	 * Get the clazz that its class extends Object that represent the class of this clazz.
+	 * Get a clazz that represents the {@code Object} version of the {@code klass} of this clazz, and have the {@code tree} of this clazz, and should
+	 * be treated as if it was the {@code family} of this clazz.
 	 *
-	 * @return a clazz its class extends object from the class of this clazz
+	 * @return a clazz that represents the {@code Object} version of the {@code klass} of this clazz, and have the {@code tree} of this clazz, and
+	 * 		should be treated as if it was the {@code family} of this clazz.
 	 */
 	public Clazz toObjectClazz() {
 		return Clazz.of(this.family, Reflection.asObjectClass(this.klass), this.tree);
 	}
 
 	/**
-	 * Get the clazz that its class don't extends Object from the class of this clazz.
+	 * Get a clazz that represents the primitive version of the {@code klass} of this clazz, and have the {@code tree} of this clazz, and should be
+	 * treated as if it was the {@code family} of this clazz.
 	 *
-	 * @return the non-object clazz of this clazz
-	 * @throws IllegalArgumentException if the {@code klass} of this clazz don't have a primitive type.
+	 * @return a clazz that represents the primitive version of the {@code klass} of this clazz, and have the {@code tree} of this clazz, and should
+	 * 		be treated as if it was the {@code family} of this clazz. Or null if there is no primitive class of the {@code klass} of this clazz.
 	 */
 	public Clazz toPrimitiveClazz() {
-		return Clazz.of(this.family, Reflection.asPrimitiveClass(this.klass), this.tree);
+		return !Reflection.hasPrimitiveClass(this.klass) ? null :
+			   Clazz.of(this.family, Reflection.asPrimitiveClass(this.klass), this.tree);
 	}
 
-	/**
-	 * Deserialization method.
-	 *
-	 * @param stream to initialize this using.
-	 * @throws ClassNotFoundException if the class of a serialized object could not be found.
-	 * @throws IOException            if an I/O error occurs.
-	 * @throws NullPointerException   if the given {@code stream} is null.
-	 */
+	@SuppressWarnings("JavaDoc")
 	private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
 		Objects.requireNonNull(stream, "stream");
-		switch (stream.readInt()) {
-			case 0:
-				Class klass0 = (Class) stream.readObject();
-				this.klass = klass0;
-				this.family = klass0;
-				this.tree = ClazzTree.of();
-				break;
-			case 1:
-				Class klass1 = (Class) stream.readObject();
-				Class family1 = (Class) stream.readObject();
-				this.klass = klass1;
-				this.family = family1;
-				this.tree = ClazzTree.of();
-				break;
-			case 2:
-				Class klass2 = (Class) stream.readObject();
-				Class family2 = (Class) stream.readObject();
-				ClazzTree tree2 = (ClazzTree) stream.readObject();
-				this.klass = klass2;
-				this.family = family2;
-				this.tree = tree2;
-				break;
-			default:
-				throw new IllegalArgumentException("Unexpected Mode");
+		this.family = (Class<T>) stream.readObject();
+		this.klass = (Class) stream.readObject();
+		this.tree = (ClazzTree) stream.readObject();
+		if (stream.readBoolean()) {
+			//there is more
+			System.err.println("Deserializing newer version of Clazz");
 		}
 	}
 
-	/**
-	 * Serialization method.
-	 *
-	 * @param stream to use to serialize this.
-	 * @throws IOException          if an I/O error occurs.
-	 * @throws NullPointerException if the given {@code stream} is null.
-	 */
+	@SuppressWarnings("JavaDoc")
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		Objects.requireNonNull(stream, "stream");
-
-		int mode = 0;
-		if (this.klass != this.family)
-			mode++;
-		if (this.tree.getBaseClazz() != null || this.tree.getTreeClazzes().size() != 0)
-			mode++;
-
-		stream.writeInt(mode);
-		switch (mode) {
-			case 0:
-				stream.writeObject(this.klass);
-				break;
-			case 1:
-				stream.writeObject(this.klass);
-				stream.writeObject(this.family);
-				break;
-			case 2:
-				stream.writeObject(this.klass);
-				stream.writeObject(this.family);
-				stream.writeObject(this.tree);
-				break;
-		}
+		stream.writeObject(this.family);
+		stream.writeObject(this.klass);
+		stream.writeObject(this.tree);
+		stream.writeBoolean(false);
+		//free to add more
 	}
 }
 //list of the methods that have not been added, but it is available at Class:
