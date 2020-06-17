@@ -22,8 +22,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
@@ -556,83 +555,6 @@ public final class Clazz<T> implements Type, Serializable {
 	/**
 	 * Shortcut for:
 	 * <pre>
-	 *     {@link #getKlass() getKlass()}{@link Class#getConstructor(Class[]) .getConstructor(parameterTypes)}
-	 * </pre>
-	 */
-	@SuppressWarnings("JavaDoc")
-	public final Constructor<T> getConstructor(Class... parameterTypes) throws NoSuchMethodException {
-		return this.klass.getConstructor(parameterTypes);
-	}
-
-	/**
-	 * Shortcut for:
-	 * <pre>
-	 *     {@link #getKlass() getKlass()}{@link Class#getConstructors() .getConstructors()}
-	 * </pre>
-	 */
-	@SuppressWarnings("JavaDoc")
-	public final Constructor[] getConstructors() {
-		return this.klass.getConstructors();
-	}
-
-	/**
-	 * Shortcut for:
-	 * <pre>
-	 *     {@link #getKlass() getKlass()}{@link Class#getEnumConstants() .getEnumConstants()}
-	 * </pre>
-	 */
-	@SuppressWarnings("JavaDoc")
-	public final T[] getEnumConstants() {
-		return this.klass.getEnumConstants();
-	}
-
-	/**
-	 * Shortcut for:
-	 * <pre>
-	 *     {@link #getKlass() getKlass()}{@link Class#getField(String) .getField(name)}
-	 * </pre>
-	 */
-	@SuppressWarnings("JavaDoc")
-	public final Field getField(String name) throws NoSuchFieldException {
-		return this.klass.getField(name);
-	}
-
-	/**
-	 * Shortcut for:
-	 * <pre>
-	 *     {@link #getKlass() getKlass()}{@link Class#getFields() .getFields()}
-	 * </pre>
-	 */
-	@SuppressWarnings("JavaDoc")
-	public final Field[] getFields() {
-		return this.klass.getFields();
-	}
-
-	/**
-	 * Shortcut for:
-	 * <pre>
-	 *     {@link #getKlass() getKlass()}{@link Class#getMethod(String, Class[]) .getMethod(name, parameterTypes)}
-	 * </pre>
-	 */
-	@SuppressWarnings("JavaDoc")
-	public final Method getMethod(String name, Class<?>... parameterTypes) throws NoSuchMethodException {
-		return this.klass.getMethod(name, parameterTypes);
-	}
-
-	/**
-	 * Shortcut for:
-	 * <pre>
-	 *     {@link #getKlass() getKlass()}{@link Class#getMethods() .getMethods()}
-	 * </pre>
-	 */
-	@SuppressWarnings("JavaDoc")
-	public final Method[] getMethods() {
-		return this.klass.getMethods();
-	}
-
-	/**
-	 * Shortcut for:
-	 * <pre>
 	 *     {@link #getKlass() getKlass()}{@link Class#isAnnotation() .isAnnotation()}
 	 * </pre>
 	 */
@@ -716,6 +638,27 @@ public final class Clazz<T> implements Type, Serializable {
 	@SuppressWarnings("JavaDoc")
 	public final T newInstance() throws InstantiationException, IllegalAccessException {
 		return this.klass.newInstance();
+	}
+
+	/**
+	 * Shortcut for:
+	 * <pre>
+	 *     {@link #getKlass() getKlass()}{@link Class#getConstructor(Class[]) .getConstructor(AUTO)}{@link Class#newInstance() .newInstance(parameters)}
+	 * </pre>
+	 */
+	@SuppressWarnings("JavaDoc")
+	public final T newInstance(Object... parameters) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		for0:
+		for (Constructor<T> constructor : (Constructor<T>[]) this.klass.getDeclaredConstructors()) {
+			Class[] parameterTypes = constructor.getParameterTypes();
+			for (int i = 0; i < parameterTypes.length; i++)
+				if (!parameterTypes[i].isInstance(parameters[i]))
+					continue for0;
+
+			return constructor.newInstance(parameters);
+		}
+
+		throw new NoSuchMethodException();
 	}
 
 	@Override
@@ -962,205 +905,54 @@ public final class Clazz<T> implements Type, Serializable {
 		//free to add more
 	}
 }
-//list of the methods that have not been added, but it is available at Class:
-//exclude asSubClass
-//TO-DO asSubClazz
-//exclude desiredAssertionStatus
-//exclude getAnnotatedInterfaces
-//exclude getAnnotatedSuperclass
-//exclude getAnnotation
-//exclude getAnnotations
-//exclude getAnnotationsByType
+//getSuperclazz
+//getComponentClazz
+//isAnonymousClass
+//isLocalClass
+//isMemberClass
+//asSubClazz
 //
-//exclude getCanonicalName
-//exclude getClasses
-//exclude getClassLoader
-//
-//exclude getDeclaredAnnotation
-//exclude getDeclaredAnnotations
-//exclude getDeclaredAnnotationsByType
-//exclude getDeclaredClasses
-//exclude getDeclaredConstructor
-//exclude getDeclaredConstructors
-//exclude getDeclaredField
-//exclude getDeclaredFields
-//exclude getDeclaredMethod
-//exclude getDeclaredMethods
-//exclude getDeclaringClass
-//exclude getEnclosingClass
-//exclude getEnclosingConstructor
-//exclude getEnclosingMethod
-//
-//exclude getGenericInterfaces
-//exclude getGenericClasses
-//exclude getInterfaces
-//
-//exclude getModifiers
-//exclude getName
-//exclude getPackage
-//exclude getProtectionDomain
-//exclude getResource
-//exclude getResourceAsStream
-//exclude getSigners
-//exclude getSimpleName
-//exclude getSuperclass
-//TO-DO getSuperclazz
-//exclude getTypeParameters
-//
-//to-do getComponentClazz
-//exclude isAnnotationPresent
-//TO-DO isAnonymousClass
-//
-//TO-DO isLocalClass
-//TO-DO isMemberClass
-//exclude toGenericString
-
-//
-//	/**
-//	 * Get the component type that have been associated to the given key.
-//	 *
-//	 * @param key the key of the component type.
-//	 * @return the component type that have been associated to the given key.
-//	 */
-//	public Clazz getComponentType(Object key) {
-//		return this.tree.get(key);
-//	}
-//
-//	/**
-//	 * Get how many component types this clazz does have.
-//	 *
-//	 * @return the count of the component types this clazz does have
-//	 */
-//	public int getComponentsCount() {
-//		return this.tree.size();
-//	}
-//	/**
-//	 * Shortcut for:
-//	 * <pre>
-//	 *     {@link #getKlass() getKlass()}{@link Class#getDeclaredAnnotation(Class) .getDeclaredAnnotation(annotationClass)}
-//	 * </pre>
-//	 */
-//	@SuppressWarnings("JavaDoc")
-//	public final <A extends Annotation> A getDeclaredAnnotation(Class<A> annotationClass) {
-//		return this.klass.getDeclaredAnnotation(annotationClass);
-//	}
-
-//	/**
-//	 * Shortcut for:
-//	 * <pre>
-//	 *     {@link #getKlass() getKlass()}{@link Class#getDeclaredAnnotations() .getDeclaredAnnotations()}
-//	 * </pre>
-//	 */
-//	@SuppressWarnings("JavaDoc")
-//	public final Annotation[] getDeclaredAnnotations() {
-//		return this.klass.getDeclaredAnnotations();
-//	}
-
-//	/**
-//	 * Shortcut for:
-//	 * <pre>
-//	 *     {@link #getKlass() getKlass()}{@link Class#getDeclaredAnnotationsByType(Class) .getDeclaredAnnotationsByType(annotationClass)}
-//	 * </pre>
-//	 */
-//	@SuppressWarnings("JavaDoc")
-//	public final <A extends Annotation> A[] getDeclaredAnnotationsByType(Class<A> annotationClass) {
-//		return this.klass.getDeclaredAnnotationsByType(annotationClass);
-//	}
-
-//	/**
-//	 * Shortcut for:
-//	 * <pre>
-//	 *     {@link #getKlass() getKlass()}{@link Class#getDeclaredConstructor(Class[]) .getDeclaredConstructor(parameterTypes)}
-//	 * </pre>
-//	 */
-//	@SuppressWarnings("JavaDoc")
-//	public final Constructor<C> getDeclaredConstructor(Class... parameterTypes) throws NoSuchMethodException {
-//		return this.klass.getDeclaredConstructor(parameterTypes);
-//	}
-
-//	/**
-//	 * Shortcut for:
-//	 * <pre>
-//	 *     {@link #getKlass() getKlass()}{@link Class#getDeclaredConstructors() .getDeclaredConstructors()}
-//	 * </pre>
-//	 */
-//	@SuppressWarnings("JavaDoc")
-//	public final Constructor[] getDeclaredConstructors() {
-//		return this.klass.getDeclaredConstructors();
-//	}
-
-//	/**
-//	 * Shortcut for:
-//	 * <pre>
-//	 *     {@link #getKlass() getKlass()}{@link }
-//	 * </pre>
-//	 */
-//	@SuppressWarnings("JavaDoc")
-//	public final Method getDeclaredMethod(String name, Class<?>... parameterTypes) throws NoSuchMethodException {
-//		Objects.requireNonNull(name, "name");
-//		return this.klass.getDeclaredMethod(name, parameterTypes);
-//	}
-
-//	/**
-//	 * Shortcut for:
-//	 * <pre>
-//	 *     {@link #getKlass() getKlass()}{@link }
-//	 * </pre>
-//	 */
-//	@SuppressWarnings("JavaDoc")
-//	public final Constructor getEnclosingConstructor() {
-//		return this.klass.getEnclosingConstructor();
-//	}
-//
-//	/**
-//	 * Shortcut for:
-//	 * <pre>
-//	 *     {@link #getKlass() getKlass()}{@link }
-//	 * </pre>
-//	 */
-//	@SuppressWarnings("JavaDoc")
-//	public final String toGenericString() {
-//		return this.klass.toGenericString();
-//	}
-//	/**
-//	 * Shortcut for:
-//	 * <pre>
-//	 *     {@link #getKlass() getKlass()}{@link }
-//	 * </pre>
-//	 */
-//	@SuppressWarnings("JavaDoc")
-//	public final boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
-//		return this.klass.isAnnotationPresent(annotationClass);
-//	}
-//	/**
-//	 * Shortcut for:
-//	 * <pre>
-//	 *     {@link #getKlass() getKlass()}{@link Class#getAnnotation(Class) .getAnnotation(annotationClass)}
-//	 * </pre>
-//	 */
-//	@SuppressWarnings("JavaDoc")
-//	public final <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
-//		return this.klass.getAnnotation(annotationClass);
-//	}
-
-//	/**
-//	 * Shortcut for:
-//	 * <pre>
-//	 *     {@link #getKlass() getKlass()}{@link Class#getAnnotations() .getAnnotations()}
-//	 * </pre>
-//	 */
-//	@SuppressWarnings("JavaDoc")
-//	public final Annotation[] getAnnotations() {
-//		return this.klass.getAnnotations();
-//	}
-
-//	/**
-//	 * Shortcut for:
-//	 * <pre>
-//	 *     {@link #getKlass() getKlass()}{@link Class#getAnnotationsByType(Class) .getAnnotationsByType(annotationClass)}
-//	 * </pre>
-//	 */
-//	@SuppressWarnings("JavaDoc")
-//	public final <A extends Annotation> A[] getAnnotationsByType(Class<A> annotationClass) {
-//		return this.klass.getAnnotationsByType(annotationClass);
-//	}
+//getField
+//getFields
+//getMethod
+//getMethods
+//getConstructor
+//getConstructors
+//getEnumConstants
+//asSubClass
+//desiredAssertionStatus
+//getAnnotatedInterfaces
+//getAnnotatedSuperclass
+//getAnnotation
+//getAnnotations
+//getAnnotationsByType
+//getCanonicalName
+//getClasses
+//getClassLoader
+//getDeclaredAnnotation
+//getDeclaredAnnotations
+//getDeclaredAnnotationsByType
+//getDeclaredClasses
+//getDeclaredConstructor
+//getDeclaredConstructors
+//getDeclaredField
+//getDeclaredFields
+//getDeclaredMethod
+//getDeclaredMethods
+//getDeclaringClass
+//getEnclosingClass
+//getEnclosingConstructor
+//getEnclosingMethod
+//getGenericInterfaces
+//getGenericClasses
+//getInterfaces
+//getModifiers
+//getPackage
+//getProtectionDomain
+//getResource
+//getResourceAsStream
+//getSigners
+//getSuperclass
+//getTypeParameters
+//isAnnotationPresent
+//toGenericString
