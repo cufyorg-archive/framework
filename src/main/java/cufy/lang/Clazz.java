@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -40,6 +42,18 @@ import java.util.Objects;
  */
 public final class Clazz<T> implements Type, Serializable {
 	/**
+	 * A key for a general clazz for all components to be held by an instance of a clazz.
+	 */
+	public static final Object COMPONENT_TYPE = new Object();
+	/**
+	 * A general clazz for all components to be held by an instance of this clazz. This field should be treated as final field.
+	 */
+	private Clazz componentClazz;
+	/**
+	 * A tree of the clazzes specified foreach component to be held by an instance of this clazz. This field should be treated as final field.
+	 */
+	private Map<Object, Clazz> componentClazzes;
+	/**
 	 * The class that an instance of this clazz should be treated as if it was an instance of it. This field should be treated as final field.
 	 */
 	private Class family;
@@ -50,7 +64,12 @@ public final class Clazz<T> implements Type, Serializable {
 	/**
 	 * A tree of the clazzes specified foreach component to be held by an instance of this clazz. This field should be treated as final field.
 	 */
+	@Deprecated
 	private ClazzTree tree;
+
+	private Clazz(Class<T> klass, Class family, Map<Object, Clazz> componentClazzes) {
+
+	}
 
 	/**
 	 * Construct a new clazz that represents the given {@code klass}.
@@ -60,9 +79,10 @@ public final class Clazz<T> implements Type, Serializable {
 	 */
 	private Clazz(Class<T> klass) {
 		Objects.requireNonNull(klass, "klass");
-		this.family = klass;
 		this.klass = klass;
-		this.tree = ClazzTree.of();
+		this.family = klass;
+		this.componentClazz = null;
+		this.componentClazzes = Collections.singletonMap(null, null);
 	}
 
 	/**
@@ -72,26 +92,45 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @param tree  the tree of the clazzes specified foreach component to be held by an instances of the constructed clazz.
 	 * @throws NullPointerException if the given {@code klass} or {@code tree} is null.
 	 */
+	@Deprecated
 	private Clazz(Class<T> klass, ClazzTree tree) {
 		Objects.requireNonNull(klass, "klass");
 		Objects.requireNonNull(tree, "tree");
-		this.family = klass;
 		this.klass = klass;
-		this.tree = tree;
+		this.family = klass;
+		this.componentClazz = tree.getBaseClazz();
+		this.componentClazzes = tree.getTreeClazzes();
+	}
+
+	private Clazz(Class<T> klass, Clazz componentClazz) {
+		Objects.requireNonNull(klass, "klass");
+		this.klass = klass;
+		this.family = klass;
+		this.componentClazz = componentClazz;
+		this.componentClazzes = Collections.singletonMap(null, componentClazz);
+	}
+
+	private Clazz(Class<T> klass, Map<Object, Clazz> componentClazzes) {
+		Objects.requireNonNull(klass, "klass");
+		Objects.requireNonNull(componentClazzes, "componentClazzes");
+		this.klass = klass;
+		this.family = klass;
+		this.componentClazz = componentClazzes.get(null);
+		this.componentClazzes = componentClazzes;
 	}
 
 	/**
 	 * Construct a new clazz that represents the given {@code klass}, and should be treated as if it was the given {@code family}.
 	 *
-	 * @param family the class that an instance of the constructed clazz should be treated as if it was an instance of it.
 	 * @param klass  the class to be represented by the constructed clazz.
-	 * @throws NullPointerException if the given {@code family} or {@code klass} is null.
+	 * @param family the class that an instance of the constructed clazz should be treated as if it was an instance of it.
+	 * @throws NullPointerException if the given {@code klass} or {@code family} is null.
 	 */
-	private Clazz(Class family, Class<T> klass) {
-		Objects.requireNonNull(family, "family");
+	private Clazz(Class<T> klass, Class family) {
 		Objects.requireNonNull(klass, "klass");
-		this.family = family;
+		Objects.requireNonNull(family, "family");
 		this.klass = klass;
+		this.family = family;
 		this.tree = ClazzTree.of();
 	}
 
@@ -99,29 +138,30 @@ public final class Clazz<T> implements Type, Serializable {
 	 * Construct a new clazz that represents the given {@code klass}, and have the given {@code tree}, and should be treated as if it was the given
 	 * {@code family}.
 	 *
-	 * @param family the class that an instance of the constructed clazz should be treated as if it was an instance of it.
 	 * @param klass  the class to be represented by the constructed clazz.
+	 * @param family the class that an instance of the constructed clazz should be treated as if it was an instance of it.
 	 * @param tree   the tree of the clazzes specified foreach component to be held by an instances of the constructed clazz.
-	 * @throws NullPointerException if the given {@code family} or {@code klass} or {@code tree} is null.
+	 * @throws NullPointerException if the given {@code klass} or {@code family} or {@code tree} is null.
 	 */
-	private Clazz(Class family, Class<T> klass, ClazzTree tree) {
-		Objects.requireNonNull(family, "family");
+	private Clazz(Class<T> klass, Class family, ClazzTree tree) {
 		Objects.requireNonNull(klass, "klass");
+		Objects.requireNonNull(family, "family");
 		Objects.requireNonNull(tree, "tree");
-		this.family = family;
 		this.klass = klass;
-		this.tree = tree;
+		this.family = family;
+		this.componentClazz = tree.getBaseClazz();
+		this.componentClazzes = tree.getTreeClazzes();
 	}
 
 	/**
 	 * Get a clazz that represents the given {@code klass}.
 	 *
 	 * @param klass the class to be represented by the returned clazz.
-	 * @param <C>   the type of the class represented by the returned clazz.
+	 * @param <T>   the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the given {@code klass}.
 	 * @throws NullPointerException if the given {@code klass} is null.
 	 */
-	public static <C> Clazz<C> of(Class<C> klass) {
+	public static <T> Clazz<T> of(Class<T> klass) {
 		Objects.requireNonNull(klass, "klass");
 		return new Clazz(klass);
 	}
@@ -131,11 +171,11 @@ public final class Clazz<T> implements Type, Serializable {
 	 *
 	 * @param klass the class to be represented by the returned clazz.
 	 * @param tree  the tree of the clazzes specified foreach component to be held by an instances of the returned clazz.
-	 * @param <C>   the type of the class represented by the returned clazz.
+	 * @param <T>   the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the given {@code klass}, and have the given {@code tree}.
 	 * @throws NullPointerException if the given {@code klass} or {@code tree} is null.
 	 */
-	public static <C> Clazz<C> of(Class<C> klass, ClazzTree tree) {
+	public static <T> Clazz<T> of(Class<T> klass, ClazzTree tree) {
 		Objects.requireNonNull(klass, "klass");
 		Objects.requireNonNull(tree, "tree");
 		return new Clazz(klass, tree);
@@ -144,47 +184,47 @@ public final class Clazz<T> implements Type, Serializable {
 	/**
 	 * Get a clazz that represents the given {@code klass}, and should be treated as if it was the given {@code family}.
 	 *
-	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param klass  the class to be represented by the returned clazz.
-	 * @param <C>    the type of the class represented by the returned clazz.
+	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
+	 * @param <T>    the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the given {@code klass}, and should be treated as if it was the given {@code family}.
-	 * @throws NullPointerException if the given {@code family} or {@code klass} is null.
+	 * @throws NullPointerException if the given {@code klass} or {@code family} is null.
 	 */
-	public static <C> Clazz<C> of(Class family, Class<C> klass) {
-		Objects.requireNonNull(family, "family");
+	public static <T> Clazz<T> of(Class<T> klass, Class family) {
 		Objects.requireNonNull(klass, "klass");
-		return new Clazz(family, klass);
+		Objects.requireNonNull(family, "family");
+		return new Clazz(klass, family);
 	}
 
 	/**
 	 * Get a clazz that represents the given {@code klass}, and have the given {@code tree}, and should be treated as if it was the given {@code
 	 * family}.
 	 *
-	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param klass  the class to be represented by the returned clazz.
+	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param tree   the tree of the clazzes specified foreach component to be held by an instances of the returned clazz.
-	 * @param <C>    the type of the class represented by the returned clazz.
+	 * @param <T>    the type of the class represented by the returned clazz.
 	 * @return a new clazz that represents the given {@code klass}, and have the given {@code tree}, and should be treated as if it was the given
 	 *        {@code family}.
-	 * @throws NullPointerException if the given {@code family} or {@code klass} or {@code tree} is null.
+	 * @throws NullPointerException if the given {@code klass} or {@code family} or {@code tree} is null.
 	 */
-	public static <C> Clazz<C> of(Class family, Class<C> klass, ClazzTree tree) {
-		Objects.requireNonNull(family, "family");
+	public static <T> Clazz<T> of(Class<T> klass, Class family, ClazzTree tree) {
 		Objects.requireNonNull(klass, "klass");
+		Objects.requireNonNull(family, "family");
 		Objects.requireNonNull(tree, "tree");
-		return new Clazz(family, klass, tree);
+		return new Clazz(klass, family, tree);
 	}
 
 	/**
 	 * Get a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the given array's class.
 	 *
 	 * @param klass the array class to be represented by the returned clazz.
-	 * @param <C>   the type of the class represented by the returned clazz.
+	 * @param <T>   the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the given array's class.
 	 * @throws NullPointerException     if the given {@code klass} is null.
 	 * @throws IllegalArgumentException if the given {@code klass} is not an array's clazz.
 	 */
-	public static <C> Clazz<C> ofa(Class<C> klass) {
+	public static <T> Clazz<T> ofa(Class<T> klass) {
 		Objects.requireNonNull(klass, "klass");
 		if (!klass.isArray())
 			throw new IllegalArgumentException("Not an array's class " + klass);
@@ -199,17 +239,17 @@ public final class Clazz<T> implements Type, Serializable {
 	 * Get a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the given array's class, and should be treated
 	 * as if it was the given {@code family}.
 	 *
-	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param klass  the array class to be represented by the returned clazz.
-	 * @param <C>    the type of the class represented by the returned clazz.
+	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
+	 * @param <T>    the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the given array's class, and should be
 	 * 		treated as if it was the given {@code family}.
-	 * @throws NullPointerException     if the given {@code family} or {@code klass} is null.
+	 * @throws NullPointerException     if the given {@code klass} or {@code family} is null.
 	 * @throws IllegalArgumentException if the given {@code klass} is not an array's clazz.
 	 */
-	public static <C> Clazz<C> ofa(Class family, Class<C> klass) {
-		Objects.requireNonNull(family, "family");
+	public static <T> Clazz<T> ofa(Class<T> klass, Class family) {
 		Objects.requireNonNull(klass, "klass");
+		Objects.requireNonNull(family, "family");
 		if (!klass.isArray())
 			throw new IllegalArgumentException(klass + " is not an array-class");
 
@@ -217,7 +257,7 @@ public final class Clazz<T> implements Type, Serializable {
 		Class componentFamily = family.isArray() ? family.getComponentType() : component;
 		Clazz componentClazz = component.isArray() ? Clazz.ofa(componentFamily, component) : Clazz.of(componentFamily, component);
 
-		return Clazz.of(family, klass, ClazzTree.of(componentClazz));
+		return Clazz.of(klass, family, ClazzTree.of(componentClazz));
 	}
 
 	/**
@@ -226,12 +266,12 @@ public final class Clazz<T> implements Type, Serializable {
 	 * Note: {@link Void} is the class of null.
 	 *
 	 * @param instance an instance that its class to be represented by the returned clazz.
-	 * @param <C>      the type of the class represented by the returned clazz.
+	 * @param <T>      the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the class of the given {@code instance}.
 	 * @see Object#getClass()
 	 */
-	public static <C> Clazz<C> ofi(C instance) {
-		return instance == null ? (Clazz<C>) Clazz.of(Void.class) : (Clazz<C>) Clazz.of(instance.getClass());
+	public static <T> Clazz<T> ofi(T instance) {
+		return instance == null ? (Clazz<T>) Clazz.of(Void.class) : (Clazz<T>) Clazz.of(instance.getClass());
 	}
 
 	/**
@@ -241,14 +281,14 @@ public final class Clazz<T> implements Type, Serializable {
 	 *
 	 * @param instance an instance that its class to be represented by the returned clazz.
 	 * @param tree     the tree of the clazzes specified foreach component to be held by an instances of the returned clazz.
-	 * @param <C>      the type of the class represented by the returned clazz.
+	 * @param <T>      the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the clazz of the given {@code instance}, and have the given {@code tree}.
 	 * @throws NullPointerException if the given {@code tree} is null.
 	 * @see Object#getClass()
 	 */
-	public static <C> Clazz<C> ofi(C instance, ClazzTree tree) {
+	public static <T> Clazz<T> ofi(T instance, ClazzTree tree) {
 		Objects.requireNonNull(tree, "tree");
-		return instance == null ? (Clazz<C>) Clazz.of(Void.class, tree) : (Clazz<C>) Clazz.of(instance.getClass(), tree);
+		return instance == null ? (Clazz<T>) Clazz.of(Void.class, tree) : (Clazz<T>) Clazz.of(instance.getClass(), tree);
 	}
 
 	/**
@@ -256,16 +296,16 @@ public final class Clazz<T> implements Type, Serializable {
 	 * <br>
 	 * Note: {@link Void} is the class of null.
 	 *
-	 * @param family   the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param instance an instance that its class to be represented by the returned clazz.
-	 * @param <C>      the type of the class represented by the returned clazz.
+	 * @param family   the class that an instance of the returned clazz should be treated as if it was an instance of it.
+	 * @param <T>      the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the clazz of the given {@code instance}, and should be treated as if it was the given {@code family}.
 	 * @throws NullPointerException if the given {@code family} is null.
 	 * @see Object#getClass()
 	 */
-	public static <C> Clazz<C> ofi(Class family, C instance) {
+	public static <T> Clazz<T> ofi(T instance, Class family) {
 		Objects.requireNonNull(family, "family");
-		return instance == null ? (Clazz<C>) Clazz.of(family, Void.class) : (Clazz<C>) Clazz.of(family, instance.getClass());
+		return instance == null ? (Clazz<T>) Clazz.of(Void.class, family) : (Clazz<T>) Clazz.of(instance.getClass(), family);
 	}
 
 	/**
@@ -274,19 +314,19 @@ public final class Clazz<T> implements Type, Serializable {
 	 * <br>
 	 * Note: {@link Void} is the class of null.
 	 *
-	 * @param family   the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param instance an instance that its class to be represented by the returned clazz.
+	 * @param family   the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param tree     the tree of the clazzes specified foreach component to be held by an instances of the returned clazz.
-	 * @param <C>      the type of the class represented by the returned clazz.
+	 * @param <T>      the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the clazz of the given {@code instance}, and have the given {@code tree}, and should be treated as if it was
 	 * 		the given {@code family}.
 	 * @throws NullPointerException if the given {@code family} or {@code tree} is null.
 	 * @see Object#getClass()
 	 */
-	public static <C> Clazz<C> ofi(Class family, C instance, ClazzTree tree) {
+	public static <T> Clazz<T> ofi(T instance, Class family, ClazzTree tree) {
 		Objects.requireNonNull(family, "family");
 		Objects.requireNonNull(tree, "tree");
-		return instance == null ? (Clazz<C>) Clazz.of(family, Void.class, tree) : (Clazz<C>) Clazz.of(family, instance.getClass(), tree);
+		return instance == null ? (Clazz<T>) Clazz.of(Void.class, family, tree) : (Clazz<T>) Clazz.of(instance.getClass(), family, tree);
 	}
 
 	/**
@@ -326,41 +366,41 @@ public final class Clazz<T> implements Type, Serializable {
 	/**
 	 * Get a clazz that represents the class with the given {@code name}, and should be treated as if it was the given {@code family}.
 	 *
-	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param name   the name of the class that to be represented by the returned clazz.
+	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @return a clazz that represents the class with the given {@code name}, and should be treated as if it was the given {@code family}.
 	 * @throws ClassNotFoundException      if the class cannot be located.
 	 * @throws LinkageError                if the linkage fails.
 	 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
-	 * @throws NullPointerException        if the given {@code family} or {@code name} is null.
+	 * @throws NullPointerException        if the given {@code name} or {@code family} is null.
 	 * @see Class#forName(String)
 	 */
-	public static Clazz ofn(Class family, String name) throws ClassNotFoundException {
-		Objects.requireNonNull(family, "family");
+	public static Clazz ofn(String name, Class family) throws ClassNotFoundException {
 		Objects.requireNonNull(name, "name");
-		return Clazz.of(family, Class.forName(name));
+		Objects.requireNonNull(family, "family");
+		return Clazz.of(Class.forName(name), family);
 	}
 
 	/**
 	 * Get a clazz that represents the class with the given {@code name}, and have the given {@code tree}, and should be treated as if it was the
 	 * given {@code family}.
 	 *
-	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param name   the name of the class that to be represented by the returned clazz.
+	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param tree   the tree of the clazzes specified foreach component to be held by an instances of the returned clazz.
 	 * @return a clazz that represents the class with the given {@code name}, and have the given {@code tree}, and should be treated as if it was the
 	 * 		given {@code family}.
 	 * @throws ClassNotFoundException      if the class cannot be located.
 	 * @throws LinkageError                if the linkage fails.
 	 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
-	 * @throws NullPointerException        if the given {@code family} or {@code name} or {@code tree} is null.
+	 * @throws NullPointerException        if the given {@code name} or {@code family} or {@code tree} is null.
 	 * @see Class#forName(String)
 	 */
-	public static Clazz ofn(Class family, String name, ClazzTree tree) throws ClassNotFoundException {
-		Objects.requireNonNull(family, "family");
+	public static Clazz ofn(String name, Class family, ClazzTree tree) throws ClassNotFoundException {
 		Objects.requireNonNull(name, "name");
+		Objects.requireNonNull(family, "family");
 		Objects.requireNonNull(tree, "tree");
-		return Clazz.of(family, Class.forName(name), tree);
+		return Clazz.of(Class.forName(name), family, tree);
 	}
 
 	/**
@@ -409,21 +449,21 @@ public final class Clazz<T> implements Type, Serializable {
 	 *
 	 * @param loader     class loader from which the class must be loaded.
 	 * @param initialize if true the class will be initialized. See Section 12.4 of The Java Language.
-	 * @param family     the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param name       the name of the class that to be represented by the returned clazz.
+	 * @param family     the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @return a clazz that represents the class with the given {@code name} loaded using the given {@code loader}, and should be treated as if it was
 	 * 		the given {@code family}.
 	 * @throws ClassNotFoundException      if the class cannot be located.
 	 * @throws LinkageError                if the linkage fails.
 	 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
-	 * @throws NullPointerException        if the given {@code loader} or {@code family} or {@code name} is null.
+	 * @throws NullPointerException        if the given {@code loader} or {@code name} or {@code family} is null.
 	 * @see Class#forName(String, boolean, ClassLoader)
 	 */
-	public static Clazz ofn(ClassLoader loader, boolean initialize, Class family, String name) throws ClassNotFoundException {
+	public static Clazz ofn(ClassLoader loader, boolean initialize, String name, Class family) throws ClassNotFoundException {
 		Objects.requireNonNull(loader, "loader");
-		Objects.requireNonNull(family, "family");
 		Objects.requireNonNull(name, "name");
-		return Clazz.of(family, Class.forName(name, initialize, loader));
+		Objects.requireNonNull(family, "family");
+		return Clazz.of(Class.forName(name, initialize, loader), family);
 	}
 
 	/**
@@ -432,23 +472,23 @@ public final class Clazz<T> implements Type, Serializable {
 	 *
 	 * @param loader     class loader from which the class must be loaded.
 	 * @param initialize if true the class will be initialized. See Section 12.4 of The Java Language.
-	 * @param family     the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param name       the name of the class that to be represented by the returned clazz.
+	 * @param family     the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param tree       the tree of the clazzes specified foreach component to be held by an instances of the returned clazz.
 	 * @return a clazz that represents the class with the given {@code name} loaded using the given {@code loader}, and have the given {@code tree},
 	 * 		and should be treated as if it was the given {@code family}.
 	 * @throws ClassNotFoundException      if the class cannot be located.
 	 * @throws LinkageError                if the linkage fails.
 	 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
-	 * @throws NullPointerException        if the given {@code loader} or {@code family} or {@code name} or {@code tree} is null.
+	 * @throws NullPointerException        if the given {@code loader} or {@code name} or {@code family} or {@code tree} is null.
 	 * @see Class#forName(String, boolean, ClassLoader)
 	 */
-	public static Clazz ofn(ClassLoader loader, boolean initialize, Class family, String name, ClazzTree tree) throws ClassNotFoundException {
+	public static Clazz ofn(ClassLoader loader, boolean initialize, String name, Class family, ClazzTree tree) throws ClassNotFoundException {
 		Objects.requireNonNull(loader, "loader");
-		Objects.requireNonNull(family, "family");
 		Objects.requireNonNull(name, "name");
+		Objects.requireNonNull(family, "family");
 		Objects.requireNonNull(tree, "tree");
-		return Clazz.of(family, Class.forName(name, initialize, loader), tree);
+		return Clazz.of(Class.forName(name, initialize, loader), family, tree);
 	}
 
 	/**
@@ -456,11 +496,11 @@ public final class Clazz<T> implements Type, Serializable {
 	 * {@code instance}.
 	 *
 	 * @param instance an instance that its class to be represented by the returned clazz, and its elements is the source of its tree.
-	 * @param <C>      the type of the class represented by the returned clazz.
+	 * @param <T>      the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the class of the given {@code instance}, and with a {@code tree} auto generated from the given {@code
 	 * 		instance}.
 	 */
-	public static <C> Clazz<C> ofx(C instance) {
+	public static <T> Clazz<T> ofx(T instance) {
 		return Clazz.ofi(instance, ClazzTree.ofx(instance));
 	}
 
@@ -470,11 +510,11 @@ public final class Clazz<T> implements Type, Serializable {
 	 *
 	 * @param instance  an instance that its class to be represented by the returned clazz, and its elements is the source of its tree.
 	 * @param baseClazz the class for the elements its class isn't declared in the generated tree.
-	 * @param <C>       the type of the class represented by the returned clazz.
+	 * @param <T>       the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the class of the given {@code instance}, and with a {@code tree} auto generated from the elements of the given
 	 *        {@code instance} with the given {@code baseClazz}.
 	 */
-	public static <C> Clazz<C> ofx(C instance, Clazz baseClazz) {
+	public static <T> Clazz<T> ofx(T instance, Clazz baseClazz) {
 		return Clazz.ofi(instance, ClazzTree.ofx(instance, baseClazz));
 	}
 
@@ -482,52 +522,52 @@ public final class Clazz<T> implements Type, Serializable {
 	 * Get a clazz that represents the class of the given {@code instance}, and should be treated as if it was the given {@code family}, and with a
 	 * {@code tree} auto generated from the elements of the given {@code instance}.
 	 *
-	 * @param family   the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param instance an instance that its class to be represented by the returned clazz, and its elements is the source of its tree.
-	 * @param <C>      the type of the class represented by the returned clazz.
+	 * @param family   the class that an instance of the returned clazz should be treated as if it was an instance of it.
+	 * @param <T>      the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the class of the given {@code instance}, and should be treated as if it was the given {@code family}, and with
 	 * 		a {@code tree} auto generated from the elements of the given {@code instance}.
 	 * @throws NullPointerException if the given {@code family} is null.
 	 */
-	public static <C> Clazz<C> ofx(Class family, C instance) {
+	public static <T> Clazz<T> ofx(T instance, Class family) {
 		Objects.requireNonNull(family, "family");
-		return Clazz.ofi(family, instance, ClazzTree.ofx(instance));
+		return Clazz.ofi(instance, family, ClazzTree.ofx(instance));
 	}
 
 	/**
 	 * Get a clazz that represents the class of the given {@code instance}, and should be treated as if it was the given {@code family}, and with a
 	 * {@code tree} auto generated from the elements of the given {@code instance}, with the given {@code baseClazz}.
 	 *
-	 * @param family    the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param instance  an instance that its class to be represented by the returned clazz, and its elements is the source of its tree.
+	 * @param family    the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param baseClazz the class for the elements its class isn't declared in the generated tree.
-	 * @param <C>       the type of the class represented by the returned clazz.
+	 * @param <T>       the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the class of the given {@code instance}, and should be treated as if it was the given {@code family}, and with
 	 * 		a {@code tree} auto generated from the elements of the given {@code instance}, with the given {@code baseClazz}.
 	 * @throws NullPointerException if the given {@code family} is null.
 	 */
-	public static <C> Clazz<C> ofx(Class family, C instance, Clazz baseClazz) {
+	public static <T> Clazz<T> ofx(T instance, Class family, Clazz baseClazz) {
 		Objects.requireNonNull(family, "family");
-		return Clazz.ofi(family, instance, ClazzTree.ofx(instance, baseClazz));
+		return Clazz.ofi(instance, family, ClazzTree.ofx(instance, baseClazz));
 	}
 
 	/**
 	 * Get a clazz that represents the {@code klass} of the given {@code klassSrc}, and have the {@code tree} of the given {@code treeSrc}, and should
 	 * be treated as if it was the {@code family} of the given {@code familySrc}.
 	 *
-	 * @param familySrc the source of the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param klassSrc  the source of the class to be represented by the returned clazz.
+	 * @param familySrc the source of the class that an instance of the returned clazz should be treated as if it was an instance of it.
 	 * @param treeSrc   the source of the tree of the clazzes specified foreach component to be held by an instances of the returned clazz.
-	 * @param <C>       the type of the class represented by the returned clazz.
+	 * @param <T>       the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the {@code klass} of the given {@code klassSrc}, and have the {@code tree} of the given {@code treeSrc}, and
 	 * 		should be treated as if it was the {@code family} of the given {@code familySrc}.
 	 * @throws NullPointerException if the given {@code familySrc} or {@code klassSrc} or {@code treeSrc} is null.
 	 */
-	public static <C> Clazz<C> ofz(Clazz familySrc, Clazz<C> klassSrc, Clazz treeSrc) {
-		Objects.requireNonNull(familySrc, "familySrc");
+	public static <T> Clazz<T> ofz(Clazz<T> klassSrc, Clazz familySrc, Clazz treeSrc) {
 		Objects.requireNonNull(klassSrc, "klassSrc");
+		Objects.requireNonNull(familySrc, "familySrc");
 		Objects.requireNonNull(treeSrc, "treeSrc");
-		return Clazz.of(familySrc.family, klassSrc.klass, treeSrc.tree);
+		return Clazz.of(klassSrc.klass, familySrc.family, treeSrc.tree);
 	}
 
 	/**
@@ -759,6 +799,7 @@ public final class Clazz<T> implements Type, Serializable {
 	 *
 	 * @return the tree of the clazzes specified foreach component to be held by an instance of this clazz.
 	 */
+	@Deprecated
 	public ClazzTree getTree() {
 		return this.tree;
 	}
@@ -768,6 +809,7 @@ public final class Clazz<T> implements Type, Serializable {
 	 *
 	 * @return the {@code baseClazz} of the {@code tree} of this. Or null if the {@code tree} of this has no {@code baseClazz}.
 	 */
+	@Deprecated
 	public Clazz getTreeBaseClazz() {
 		return this.tree.getBaseClazz();
 	}
@@ -778,6 +820,7 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @param key the key of the returned clazz at the {@code tree} of this clazz.
 	 * @return a clazz in the {@code tree} of this clazz that is associated to the given {@code key}.
 	 */
+	@Deprecated
 	public Clazz getTreeClazz(Object key) {
 		return this.tree.getTreeClazz(key);
 	}
