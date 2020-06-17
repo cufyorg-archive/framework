@@ -39,6 +39,8 @@ import java.util.*;
  * @since 29-Mar-2020
  */
 public final class Clazz<T> implements Type, Serializable {
+	//TODO multiple trees, getComponentClazz(0) | getComponentClazz(0, null) : To support charts and getName returns <A, B, C>
+
 	/**
 	 * A key for a general clazz for all components to be held by an instance of a clazz.
 	 */
