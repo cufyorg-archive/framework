@@ -139,6 +139,19 @@ public final class Clazz<T> implements Type, Serializable {
 	//of: of raw parameters
 
 	/**
+	 * Get a clazz that represents the class {@link Object}, and have the given {@code trees}.
+	 *
+	 * @param trees an array of trees of the clazzes specified foreach component to be held by an instance of the
+	 *              constructed clazz.
+	 * @return a clazz that represents the class {@link Object}, and have the given {@code trees}.
+	 * @throws NullPointerException if the given {@code trees} or any of its elements is null.
+	 */
+	public static Clazz<Object> of(Map<Object, Clazz>... trees) {
+		Objects.requireNonNull(trees, "trees");
+		return new Clazz(Object.class, trees);
+	}
+
+	/**
 	 * Get a clazz that represents the given {@code klass}, and have the given {@code trees}.
 	 *
 	 * @param klass the class to be represented by the returned clazz.
