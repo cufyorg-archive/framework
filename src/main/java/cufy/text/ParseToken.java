@@ -34,27 +34,27 @@ public class ParseToken<T> {
 	/**
 	 * The data of THIS token.
 	 */
-	final public Map data = new HashMap();
+	public final Map data = new HashMap();
 	/**
 	 * The depth of this token form the first parent.
 	 */
-	final public int depth;
+	public final int depth;
 	/**
 	 * The reader to read the input from.
 	 */
-	final public Reader input;
+	public final Reader input;
 	/**
-	 * A table of data to be copied from this token to it's sub-tokens.
+	 * A table of data to be copied from this token to it is sub-tokens.
 	 */
-	final public Map linear;
+	public final Map linear;
 	/**
 	 * The parsing-token for the parsing that required initializing this token.
 	 */
-	final public ParseToken parent;
+	public final ParseToken parent;
 	/**
-	 * A table of data globally shared across this token and it's sub-tokens.
+	 * A table of data globally shared across this token, and it is sub-tokens.
 	 */
-	final public Map tree;
+	public final Map tree;
 	/**
 	 * The class that the output should have.
 	 */
@@ -67,15 +67,14 @@ public class ParseToken<T> {
 	/**
 	 * Construct a new parsing token instance.
 	 *
-	 * @param input  the input to read from
-	 * @param output the initial output instance
-	 * @param klazz  the clazz to be for the output
-	 * @throws NullPointerException if the given 'klazz' or 'input' is null
+	 * @param input  the input to read from.
+	 * @param output the initial output instance.
+	 * @param klazz  the clazz to be for the output.
+	 * @throws NullPointerException if the given {@code input} or {@code klazz} is null.
 	 */
 	public ParseToken(Reader input, T output, Clazz klazz) {
 		Objects.requireNonNull(input, "input");
 		Objects.requireNonNull(klazz, "klazz");
-
 		this.parent = null;
 		this.linear = new HashMap();
 		this.tree = new HashMap();
@@ -88,17 +87,16 @@ public class ParseToken<T> {
 	/**
 	 * Construct a new parsing token instance.
 	 *
-	 * @param parent the parent token
-	 * @param input  the input to read from
-	 * @param output the initial output instance
-	 * @param klazz  the clazz to be for the output
-	 * @throws NullPointerException if the given 'parent' or 'input' or 'klazz' is null
+	 * @param parent the parent token.
+	 * @param input  the input to read from.
+	 * @param output the initial output instance.
+	 * @param klazz  the clazz to be for the output.
+	 * @throws NullPointerException if the given {@code parent} or {@code input} or {@code klazz} is null.
 	 */
 	protected ParseToken(ParseToken parent, Reader input, T output, Clazz klazz) {
 		Objects.requireNonNull(parent, "parent");
 		Objects.requireNonNull(input, "input");
 		Objects.requireNonNull(klazz, "klazz");
-
 		this.parent = parent;
 		this.linear = new HashMap(parent.linear);
 		this.tree = parent.tree;
@@ -111,79 +109,77 @@ public class ParseToken<T> {
 	/**
 	 * Get a sub token of this token with the given parameters.
 	 *
-	 * @param input  the input to read from
-	 * @param output the initial output instance
-	 * @param klazz  the clazz to be for the output
-	 * @param <U>    the type of the output in the sub token
-	 * @return a sub token of this token
-	 * @throws NullPointerException if the given 'klazz' or 'input' is null
+	 * @param input  the input to read from.
+	 * @param output the initial output instance.
+	 * @param klazz  the clazz to be for the output.
+	 * @param <U>    the type of the output in the sub token.
+	 * @return a sub token of this token.
+	 * @throws NullPointerException if the given {@code input} or {@code klazz} is null.
 	 */
-	public <U> ParseToken<U> subToken(Reader input, U output, Clazz klazz) {
+	public <U> ParseToken<U> subToken(Reader input, U output, Clazz<U> klazz) {
 		return new ParseToken(this, input, output, klazz);
 	}
 
 	/**
 	 * Get a sub token of this token with the given parameters.
-	 * <p>
-	 * The rules:
+	 * <br>
+	 * The details about the {@code klazz} of the returned token:
 	 * <ul>
 	 *     <li>
-	 *         subToken.klazz.klass
+	 *         {@code klass}
 	 *         <ul>
-	 *             <li>Without any exception, `klazz.klass` will be taken.</li>
-	 *             <li>If `subClazz.klass` is assignable from `klazz.klass`, then `subClazz.klass` will be taken.</li>
-	 *             <li>If `klazz` is null, then `subClazz.klass` will be taken.</li>
-	 *             <li>If both `klazz` and `subClazz` are null, then `Object.class` will be taken.</li>
+	 *             <li>Without any exception, {@code componentClazz}'s will be taken.</li>
+	 *             <li>If {@code componentClazz} is assignable from {@code outputClazz}, then {@code outputClazz}'s will be taken.</li>
+	 *             <li>If only {@code componentClazz} is null, then {@code outputClazz} will be taken.</li>
+	 *             <li>If both {@code componentClazz} and {@code outputClazz} are null, then {@link Clazz#of(Map[]) Clazz.of()}'s will be taken.</li>
 	 *         </ul>
 	 *     </li>
 	 *     <li>
-	 *         subToken.klazz.family
+	 *         {@code family}
 	 *         <ul>
-	 *             <li>Without any exception, `subClazz.family` will be taken.</li>
-	 *             <li>If `subClazz` is null, then `klazz.family` will be taken.</li>
-	 *             <li>If both `subClazz` and `klazz` are null, then `Object.class` will be taken.</li>
+	 *             <li>Without any exception, {@code outputClazz}'s will be taken.</li>
+	 *             <li>If only {@code outputClazz} is null, then {@code componentClazz} will be taken.</li>
+	 *             <li>If both {@code outputClazz} and {@code componentClazz} are null, then {@link Clazz#of(Map[]) Clazz.of()}'s will be taken.</li>
 	 *         </ul>
 	 *     </li>
 	 *     <li>
-	 *         subToken.klazz.componentTypes
+	 *         {@code componentTree}
 	 *         <ul>
-	 *             <li>Without any exception, `klazz.componentTypes` will be taken.</li>
-	 *             <li>If `klazz` is null, then `subClazz.componentTypes` will be taken.</li>
-	 *             <li>If both `klazz` and `subClazz` are null, then no componentTypes will be taken.</li>
+	 *             <li>Without any exception, {@code componentClazz}'s will be taken.</li>
+	 *             <li>If only {@code componentClazz} is null, then {@code outputClazz}'s will be taken.</li>
+	 *             <li>If both {@code componentClazz} and {@code outputClazz} are null, then {@link Clazz#of(Map[]) Clazz.of()}'s will be taken.</li>
 	 *         </ul>
 	 *     </li>
 	 * </ul>
 	 *
-	 * @param input     the input to read from
-	 * @param output    the initial output instance
-	 * @param subClazz  the flavor clazz (see the rules above for more details)
-	 * @param component the component index to get from the parent's clazzes to the clazzes of this
-	 * @param <U>       the type of the output in the sub token
-	 * @return a sub token of this token
-	 * @throws NullPointerException     if the given 'input' is null
-	 * @throws IllegalArgumentException if the given component index is less than 0
+	 * @param input       the input to read from.
+	 * @param output      the initial output instance.
+	 * @param outputClazz the clazz of the given {@code output}.
+	 * @param tree        the tree where the given {@code output} is located at its parent.
+	 * @param key         the key of the given {@code output}.
+	 * @param <U>         the type of the given {@code output}.
+	 * @return a sub token of this token.
+	 * @throws NullPointerException if the given {@code input} is null.
 	 */
-	public <U> ParseToken<U> subToken(Reader input, U output, Clazz subClazz, int component) {
+	public <U> ParseToken<U> subToken(Reader input, U output, Clazz outputClazz, int tree, Object key) {
 		Objects.requireNonNull(input, "input");
-		if (component < 0)
-			throw new IllegalArgumentException("component < 0");
-
-		Clazz klazz = this.klazz.getComponentType(component);
-
-		if (klazz == null)
-			klazz = subClazz == null ?
-					//OBJECT, OBJECT, OBJECT
-					Clazz.of(Object.class) :
-					//DEFAULT, DEFAULT, DEFAULT
-					subClazz;
-		else if (subClazz != null)
-			klazz = klazz.isAssignableFrom(subClazz) ?
-					//DEFAULT, DEFAULT, CLAZZ
-					Clazz.ofz(subClazz, subClazz, klazz) :
-					//DEFAULT, CLAZZ, CLAZZ
-					Clazz.ofz(subClazz, klazz, klazz);
-		//CLAZZ, CLAZZ, CLAZZ
-
-		return this.subToken(input, output, klazz);
+		Clazz outputComponentClazz = this.klazz.getComponentClazz(tree, key);
+		return this.subToken(input, output,
+				//OUTPUT -------------------------------------------------------
+				outputComponentClazz == null ?
+				outputClazz == null ?
+				//if both outputComponentClazz and outputClazz are null
+				Clazz.of() :
+				//if outputComponentClazz is null
+				outputClazz :
+				outputClazz != null ?
+				outputComponentClazz.isAssignableFrom(outputClazz) ?
+				//if outputComponentClazz is assignable from outputClazz
+				Clazz.ofz(outputClazz, outputClazz, outputComponentClazz) :
+				//if outputComponentClazz isn't assignable from outputClazz
+				Clazz.ofz(outputComponentClazz, outputClazz, outputComponentClazz) :
+				//if outputClazz is null
+				outputComponentClazz
+		);
 	}
 }

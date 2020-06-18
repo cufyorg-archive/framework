@@ -56,27 +56,27 @@ public class ConvertToken<I, O> {
 	/**
 	 * The data of THIS token.
 	 */
-	final public Map data = new HashMap();
+	public final Map data = new HashMap();
 	/**
 	 * The depth of this token form the first parent.
 	 */
-	final public int depth;
+	public final int depth;
 	/**
 	 * The input object.
 	 */
-	final public I input;
+	public final I input;
 	/**
-	 * A table of data to be copied from this token to it's sub-tokens.
+	 * A table of data to be copied from this token to it is sub-tokens.
 	 */
-	final public Map linear;
+	public final Map linear;
 	/**
 	 * The convert-token for the conversion that required initializing this token.
 	 */
-	final public ConvertToken parent;
+	public final ConvertToken parent;
 	/**
-	 * A table of data globally shared across this token and it's sub-tokens.
+	 * A table of data globally shared across this token, and it is sub-tokens.
 	 */
-	final public Map tree;
+	public final Map tree;
 	/**
 	 * The class that the input do have.
 	 */
@@ -93,11 +93,11 @@ public class ConvertToken<I, O> {
 	/**
 	 * Construct a new conversion token instance.
 	 *
-	 * @param input       the input instance
-	 * @param output      the initial output instance
-	 * @param inputClazz  the clazz of the input
-	 * @param outputClazz the clazz to be for the output
-	 * @throws NullPointerException if the given 'inputClass' or 'outputClass' is null
+	 * @param input       the input instance.
+	 * @param output      the initial output instance.
+	 * @param inputClazz  the clazz of the input.
+	 * @param outputClazz the clazz to be for the output.
+	 * @throws NullPointerException if the given 'inputClass' or 'outputClass' is null.
 	 */
 	public ConvertToken(I input, O output, Clazz inputClazz, Clazz outputClazz) {
 		Objects.requireNonNull(inputClazz, "inputClazz");
@@ -116,12 +116,12 @@ public class ConvertToken<I, O> {
 	/**
 	 * Construct a new conversion token instance.
 	 *
-	 * @param parent      the parent converting-token
-	 * @param input       the input instance
-	 * @param output      the initial output instance
-	 * @param inputClazz  the clazz of the input
-	 * @param outputClazz the clazz to be for the output
-	 * @throws NullPointerException if the given 'parent' or 'inputClass' or 'outputClass' is null
+	 * @param parent      the parent converting-token.
+	 * @param input       the input instance.
+	 * @param output      the initial output instance.
+	 * @param inputClazz  the clazz of the input.
+	 * @param outputClazz the clazz to be for the output.
+	 * @throws NullPointerException if the given 'parent' or 'inputClass' or 'outputClass' is null.
 	 */
 	protected ConvertToken(ConvertToken parent, I input, O output, Clazz inputClazz, Clazz outputClazz) {
 		Objects.requireNonNull(parent, "parent");
@@ -141,14 +141,14 @@ public class ConvertToken<I, O> {
 	/**
 	 * Get a sub token of this token with the given parameters.
 	 *
-	 * @param input       the input instance
-	 * @param output      the initial output instance
-	 * @param inputClazz  the clazz of the input
-	 * @param outputClazz the clazz to be for the output
-	 * @param <J>         the type of the input in the sub token
-	 * @param <Q>         the type of the output in the sub token
-	 * @return a sub token of this token
-	 * @throws NullPointerException if the given 'inputClass' or 'outputClass' is null
+	 * @param input       the input instance.
+	 * @param output      the initial output instance.
+	 * @param inputClazz  the clazz of the input.
+	 * @param outputClazz the clazz to be for the output.
+	 * @param <J>         the type of the input in the sub token.
+	 * @param <Q>         the type of the output in the sub token.
+	 * @return a sub token of this token.
+	 * @throws NullPointerException if the given 'inputClass' or 'outputClass' is null.
 	 */
 	public <J, Q> ConvertToken<J, Q> subToken(J input, Q output, Clazz inputClazz, Clazz outputClazz) {
 		return new ConvertToken<>(this, input, output, inputClazz, outputClazz);
@@ -157,80 +157,80 @@ public class ConvertToken<I, O> {
 	/**
 	 * Get a sub token of this token with the given parameters.
 	 * <p>
-	 * The rules:
+	 * The details about the {@code inputClazz} and {@code outputClazz} (mentioned as {@code elementClazz}) of the
+	 * returned token:
 	 * <ul>
 	 *     <li>
-	 *         subToken.klazz.klass
+	 *         {@code klass}
 	 *         <ul>
-	 *             <li>Without any exception, `klazz.klass` will be taken.</li>
-	 *             <li>If `subClazz.klass` is assignable from `klazz.klass`, then `subClazz.klass` will be taken.</li>
-	 *             <li>If `klazz` is null, then `subClazz.klass` will be taken.</li>
-	 *             <li>If both `klazz` and `subClazz` are null, then `Object.class` will be taken.</li>
+	 *             <li>Without any exception, {@code componentClazz}'s will be taken.</li>
+	 *             <li>If {@code componentClazz} is assignable from {@code elementClazz}, then {@code elementClazz}'s will be taken.</li>
+	 *             <li>If only {@code componentClazz} is null, then {@code elementClazz} will be taken.</li>
+	 *             <li>If both {@code componentClazz} and {@code elementClazz} are null, then {@link Clazz#of(Map[]) Clazz.of()}'s will be taken.</li>
 	 *         </ul>
 	 *     </li>
 	 *     <li>
-	 *         subToken.klazz.family
+	 *         {@code family}
 	 *         <ul>
-	 *             <li>Without any exception, `subClazz.family` will be taken.</li>
-	 *             <li>If `subClazz` is null, then `klazz.family` will be taken.</li>
-	 *             <li>If both `subClazz` and `klazz` are null, then `Object.class` will be taken.</li>
+	 *             <li>Without any exception, {@code elementClazz}'s will be taken.</li>
+	 *             <li>If only {@code elementClazz} is null, then {@code componentClazz} will be taken.</li>
+	 *             <li>If both {@code elementClazz} and {@code componentClazz} are null, then {@link Clazz#of(Map[]) Clazz.of()}'s will be taken.</li>
 	 *         </ul>
 	 *     </li>
 	 *     <li>
-	 *         subToken.klazz.componentTypes
+	 *         {@code componentTree}
 	 *         <ul>
-	 *             <li>Without any exception, `klazz.componentTypes` will be taken.</li>
-	 *             <li>If `klazz` is null, then `subClazz.componentTypes` will be taken.</li>
-	 *             <li>If both `klazz` and `subClazz` are null, then no componentTypes will be taken.</li>
+	 *             <li>Without any exception, {@code componentClazz}'s will be taken.</li>
+	 *             <li>If only {@code componentClazz} is null, then {@code elementClazz}'s will be taken.</li>
+	 *             <li>If both {@code componentClazz} and {@code elementClazz} are null, then {@link Clazz#of(Map[]) Clazz.of()}'s will be taken.</li>
 	 *         </ul>
 	 *     </li>
 	 * </ul>
 	 *
-	 * @param input          the input instance
-	 * @param output         the initial output instance
-	 * @param subInputClazz  the flavor inputClazz (see the rules above for more details)
-	 * @param subOutputClazz the flavor outputClazz (see the rules above for more details)
-	 * @param component      the component index to pass to the subToken
-	 * @param <J>            the type of the input in the sub token
-	 * @param <Q>            the type of the output in the sub token
-	 * @return a sub token of this token
-	 * @throws IllegalArgumentException if the given component index is less than 0
+	 * @param input       the input instance.
+	 * @param output      the initial output instance.
+	 * @param inputClazz  the clazz of the given {@code input}.
+	 * @param outputClazz the clazz of the given {@code output}.
+	 * @param tree        the tree where the given {@code input} and {@code output} are located at their parent.
+	 * @param key         the key of the given {@code input} and {@code output}.
+	 * @param <V>         the type of the given {@code input}.
+	 * @param <W>         the type of the given {@code output}.
+	 * @return a sub token of this token.
 	 */
-	public <J, Q> ConvertToken<J, Q> subToken(J input, Q output, Clazz subInputClazz, Clazz subOutputClazz, int component) {
-		if (component < 0)
-			throw new IllegalArgumentException("component < 0");
-
-		Clazz inputClazz = this.inputClazz.getComponentType(component);
-		Clazz outputClazz = this.outputClazz.getComponentType(component);
-
-		if (inputClazz == null)
-			inputClazz = subInputClazz == null ?
-						 //OBJECT, OBJECT, OBJECT
-						 Clazz.of(Object.class) :
-						 //DEFAULT, DEFAULT, DEFAULT
-						 subInputClazz;
-		else if (subInputClazz != null)
-			inputClazz = inputClazz.isAssignableFrom(subInputClazz) ?
-						 //DEFAULT, DEFAULT, CLAZZ
-						 Clazz.ofz(subInputClazz, subInputClazz, inputClazz) :
-						 //DEFAULT, CLAZZ, CLAZZ
-						 Clazz.ofz(subInputClazz, inputClazz, inputClazz);
-		//CLAZZ, CLAZZ, CLAZZ
-
-		if (outputClazz == null)
-			outputClazz = subOutputClazz == null ?
-						  //OBJECT, OBJECT, OBJECT
-						  Clazz.of(Object.class) :
-						  //DEFAULT, DEFAULT, DEFAULT
-						  subOutputClazz;
-		else if (subOutputClazz != null)
-			outputClazz = outputClazz.isAssignableFrom(subOutputClazz) ?
-						  //DEFAULT, DEFAULT, CLAZZ
-						  Clazz.ofz(subOutputClazz, subOutputClazz, outputClazz) :
-						  //DEFAULT, CLAZZ, CLAZZ
-						  Clazz.ofz(subOutputClazz, outputClazz, outputClazz);
-		//CLAZZ, CLAZZ, CLAZZ
-
-		return new ConvertToken<>(this, input, output, inputClazz, outputClazz);
+	public <V, W> ConvertToken<V, W> subToken(V input, W output, Clazz inputClazz, Clazz outputClazz, int tree, Object key) {
+		Clazz inputComponentClazz = this.inputClazz.getComponentClazz(tree, key);
+		Clazz outputComponentClazz = this.outputClazz.getComponentClazz(tree, key);
+		return this.subToken(input, output,
+				//INPUT --------------------------------------------------------
+				inputComponentClazz == null ?
+				inputClazz == null ?
+				//if both inputComponentClazz and inputClazz are null
+				Clazz.of() :
+				//if inputComponentClazz is null
+				inputClazz :
+				inputClazz != null ?
+				inputComponentClazz.isAssignableFrom(inputClazz) ?
+				//if inputComponentClazz is assignable from inputClazz
+				Clazz.ofz(inputClazz, inputClazz, inputComponentClazz) :
+				//if inputComponentClazz isn't assignable from inputClazz
+				Clazz.ofz(inputComponentClazz, inputClazz, inputComponentClazz) :
+				//if inputClazz is null
+				inputComponentClazz,
+				//OUTPUT -------------------------------------------------------
+				outputComponentClazz == null ?
+				outputClazz == null ?
+				//if both outputComponentClazz and outputClazz are null
+				Clazz.of() :
+				//if outputComponentClazz is null
+				outputClazz :
+				outputClazz != null ?
+				outputComponentClazz.isAssignableFrom(outputClazz) ?
+				//if outputComponentClazz is assignable from outputClazz
+				Clazz.ofz(outputClazz, outputClazz, outputComponentClazz) :
+				//if outputComponentClazz isn't assignable from outputClazz
+				Clazz.ofz(outputComponentClazz, outputClazz, outputComponentClazz) :
+				//if outputClazz is null
+				outputComponentClazz
+		);
 	}
 }

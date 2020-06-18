@@ -34,31 +34,31 @@ public class FormatToken<T> {
 	/**
 	 * The data of THIS token.
 	 */
-	final public Map data = new HashMap();
+	public final Map data = new HashMap();
 	/**
 	 * The depth of this token form the first parent.
 	 */
-	final public int depth;
+	public final int depth;
 	/**
 	 * The input object.
 	 */
-	final public T input;
+	public final T input;
 	/**
-	 * A table of data to be copied from this token to it's sub-tokens.
+	 * A table of data to be copied from this token to it is sub-tokens.
 	 */
-	final public Map linear;
+	public final Map linear;
 	/**
 	 * The writer to write the output to.
 	 */
-	final public Writer output;
+	public final Writer output;
 	/**
 	 * The formatting token for the formatting that required initializing this token.
 	 */
-	final public FormatToken parent;
+	public final FormatToken parent;
 	/**
-	 * A table of data globally shared across this token and it's sub-tokens.
+	 * A table of data globally shared across this token, and it is sub-tokens.
 	 */
-	final public Map tree;
+	public final Map tree;
 	/**
 	 * The class that the input do have.
 	 */
@@ -67,10 +67,10 @@ public class FormatToken<T> {
 	/**
 	 * Construct a new formatting token.
 	 *
-	 * @param input  the input instance
-	 * @param output the output to write to
-	 * @param klazz  the clazz of the input
-	 * @throws NullPointerException if the given 'klazz' or 'output' is null
+	 * @param input  the input instance.
+	 * @param output the output to write to.
+	 * @param klazz  the clazz of the input.
+	 * @throws NullPointerException if the given 'klazz' or 'output' is null.
 	 */
 	public FormatToken(T input, Writer output, Clazz klazz) {
 		Objects.requireNonNull(output, "output");
@@ -87,11 +87,11 @@ public class FormatToken<T> {
 	/**
 	 * Construct a new formatting token.
 	 *
-	 * @param parent the parent token
-	 * @param input  the input instance
-	 * @param output the output to write to
-	 * @param klazz  the clazz of the input
-	 * @throws NullPointerException if the given 'parent' or 'output' or 'klazz' is null
+	 * @param parent the parent token.
+	 * @param input  the input instance.
+	 * @param output the output to write to.
+	 * @param klazz  the clazz of the input.
+	 * @throws NullPointerException if the given 'parent' or 'output' or 'klazz' is null.
 	 */
 	public FormatToken(FormatToken parent, T input, Writer output, Clazz klazz) {
 		Objects.requireNonNull(parent, "parent");
@@ -110,12 +110,12 @@ public class FormatToken<T> {
 	/**
 	 * Get a sub token of this token with the given parameters.
 	 *
-	 * @param input  the input instance
-	 * @param output the output to write to
-	 * @param klazz  the clazz of the input
-	 * @param <U>    the type of the input in the sub token
-	 * @return a sub token of this token
-	 * @throws NullPointerException if the given 'klazz' or 'output' is null
+	 * @param input  the input instance.
+	 * @param output the output to write to.
+	 * @param klazz  the clazz of the input.
+	 * @param <U>    the type of the input in the sub token.
+	 * @return a sub token of this token.
+	 * @throws NullPointerException if the given 'klazz' or 'output' is null.
 	 */
 	public <U> FormatToken<U> subToken(U input, Writer output, Clazz klazz) {
 		return new FormatToken<>(this, input, output, klazz);
@@ -123,66 +123,64 @@ public class FormatToken<T> {
 
 	/**
 	 * Get a sub token of this token with the given parameters.
-	 * <p>
-	 * The rules:
+	 * <br>
+	 * The details about the {@code klazz} of the returned token:
 	 * <ul>
 	 *     <li>
-	 *         subToken.klazz.klass
+	 *         {@code klass}
 	 *         <ul>
-	 *             <li>Without any exception, `klazz.klass` will be taken.</li>
-	 *             <li>If `subClazz.klass` is assignable from `klazz.klass`, then `subClazz.klass` will be taken.</li>
-	 *             <li>If `klazz` is null, then `subClazz.klass` will be taken.</li>
-	 *             <li>If both `klazz` and `subClazz` are null, then `Object.class` will be taken.</li>
+	 *             <li>Without any exception, {@code componentClazz}'s will be taken.</li>
+	 *             <li>If {@code componentClazz} is assignable from {@code inputClazz}, then {@code inputClazz}'s will be taken.</li>
+	 *             <li>If only {@code componentClazz} is null, then {@code inputClazz} will be taken.</li>
+	 *             <li>If both {@code componentClazz} and {@code inputClazz} are null, then {@link Clazz#of(Map[]) Clazz.of()}'s will be taken.</li>
 	 *         </ul>
 	 *     </li>
 	 *     <li>
-	 *         subToken.klazz.family
+	 *         {@code family}
 	 *         <ul>
-	 *             <li>Without any exception, `subClazz.family` will be taken.</li>
-	 *             <li>If `subClazz` is null, then `klazz.family` will be taken.</li>
-	 *             <li>If both `subClazz` and `klazz` are null, then `Object.class` will be taken.</li>
+	 *             <li>Without any exception, {@code inputClazz}'s will be taken.</li>
+	 *             <li>If only {@code inputClazz} is null, then {@code componentClazz} will be taken.</li>
+	 *             <li>If both {@code inputClazz} and {@code componentClazz} are null, then {@link Clazz#of(Map[]) Clazz.of()}'s will be taken.</li>
 	 *         </ul>
 	 *     </li>
 	 *     <li>
-	 *         subToken.klazz.componentTypes
+	 *         {@code componentTree}
 	 *         <ul>
-	 *             <li>Without any exception, `klazz.componentTypes` will be taken.</li>
-	 *             <li>If `klazz` is null, then `subClazz.componentTypes` will be taken.</li>
-	 *             <li>If both `klazz` and `subClazz` are null, then no componentTypes will be taken.</li>
+	 *             <li>Without any exception, {@code componentClazz}'s will be taken.</li>
+	 *             <li>If only {@code componentClazz} is null, then {@code inputClazz}'s will be taken.</li>
+	 *             <li>If both {@code componentClazz} and {@code inputClazz} are null, then {@link Clazz#of(Map[]) Clazz.of()}'s will be taken.</li>
 	 *         </ul>
 	 *     </li>
 	 * </ul>
 	 *
-	 * @param input     the input instance
-	 * @param output    the output to write to
-	 * @param subClazz  the flavor clazz (see the rules above for more details)
-	 * @param component the component index to get from the parent's clazzes to the clazzes of this
-	 * @param <U>       the type of the input in the sub token
-	 * @return a sub token of this token
-	 * @throws NullPointerException     if the given 'output' or 'defaultClazz' is null
-	 * @throws IllegalArgumentException if the given component index is less than 0
+	 * @param input      the input instance.
+	 * @param output     the output to write to.
+	 * @param inputClazz the clazz of the given {@code input}.
+	 * @param tree       the tree where the given {@code input} is located at its parent.
+	 * @param key        the key of the given {@code input}.
+	 * @param <U>        the type of the given {@code input}.
+	 * @return a sub token of this token.
+	 * @throws NullPointerException if the given {@code output} is null.
 	 */
-	public <U> FormatToken<U> subToken(U input, Writer output, Clazz subClazz, int component) {
+	public <U> FormatToken<U> subToken(U input, Writer output, Clazz inputClazz, int tree, Object key) {
 		Objects.requireNonNull(output, "output");
-		if (component < 0)
-			throw new IllegalAccessError("component < 0");
-
-		Clazz klazz = this.klazz.getComponentType(component);
-
-		if (klazz == null)
-			klazz = subClazz == null ?
-					//OBJECT, OBJECT, OBJECT
-					Clazz.of(Object.class) :
-					//DEFAULT, DEFAULT, DEFAULT
-					subClazz;
-		else if (subClazz != null)
-			klazz = klazz.isAssignableFrom(subClazz) ?
-					//DEFAULT, DEFAULT, CLAZZ
-					Clazz.ofz(subClazz, subClazz, klazz) :
-					//DEFAULT, CLAZZ, CLAZZ
-					Clazz.ofz(subClazz, klazz, klazz);
-		//CLAZZ, CLAZZ, CLAZZ
-
-		return this.subToken(input, output, klazz);
+		Clazz inputComponentClazz = this.klazz.getComponentClazz(tree, key);
+		return this.subToken(input, output,
+				//INPUT --------------------------------------------------------
+				inputComponentClazz == null ?
+				inputClazz == null ?
+				//if both inputComponentClazz and inputClazz are null
+				Clazz.of() :
+				//if inputComponentClazz is null
+				inputClazz :
+				inputClazz != null ?
+				inputComponentClazz.isAssignableFrom(inputClazz) ?
+				//if inputComponentClazz is assignable from inputClazz
+				Clazz.ofz(inputClazz, inputClazz, inputComponentClazz) :
+				//if inputComponentClazz isn't assignable from inputClazz
+				Clazz.ofz(inputComponentClazz, inputClazz, inputComponentClazz) :
+				//if inputClazz is null
+				inputComponentClazz
+		);
 	}
 }
