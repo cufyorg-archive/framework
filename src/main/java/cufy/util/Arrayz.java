@@ -28,9 +28,9 @@ import java.util.function.BiFunction;
  */
 public final class Arrayz {
 	/**
-	 * This is a util class. And shall not be instanced as an object.
+	 * This is an util class. And must not be instanced as an object.
 	 *
-	 * @throws AssertionError when called
+	 * @throws AssertionError when called.
 	 */
 	private Arrayz() {
 		throw new AssertionError("No instance for you!");
@@ -39,14 +39,14 @@ public final class Arrayz {
 	//all
 
 	/**
-	 * Check whether the given array contains all of the given elements.
+	 * Check whether the given array contains all the given elements.
 	 *
-	 * @param array    the array to be checked
-	 * @param elements to check for
-	 * @param <T>      the type of the elements of the given array
-	 * @return the index of the elements missing on the given elements, Or -1 if no element missing
-	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array
+	 * @param array    the array to be checked.
+	 * @param elements to check for.
+	 * @param <T>      the type of the elements of the given array.
+	 * @return the index of the elements missing on the given elements, Or -1 if no element missing.
+	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array.
 	 */
 	public static <T> int all(T[] array, T... elements) {
 		Objects.requireNonNull(array, "array");
@@ -64,13 +64,13 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Check whether the given array contains all of the given elements.
+	 * Check whether the given array contains all the given elements.
 	 *
-	 * @param array    the array to be checked
-	 * @param elements to check for
-	 * @return the index of the elements missing on the given elements, Or -1 if no element missing
-	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array
+	 * @param array    the array to be checked.
+	 * @param elements to check for.
+	 * @return the index of the elements missing on the given elements, Or -1 if no element missing.
+	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array.
 	 */
 	public static int all(boolean[] array, boolean... elements) {
 		Objects.requireNonNull(array, "array");
@@ -88,13 +88,13 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Check whether the given array contains all of the given elements.
+	 * Check whether the given array contains all the given elements.
 	 *
-	 * @param array    the array to be checked
-	 * @param elements to check for
-	 * @return the index of the elements missing on the given elements, Or -1 if no element missing
-	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array
+	 * @param array    the array to be checked.
+	 * @param elements to check for.
+	 * @return the index of the elements missing on the given elements, Or -1 if no element missing.
+	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array.
 	 */
 	public static int all(byte[] array, byte... elements) {
 		Objects.requireNonNull(array, "array");
@@ -112,13 +112,13 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Check whether the given array contains all of the given elements.
+	 * Check whether the given array contains all the given elements.
 	 *
-	 * @param array    the array to be checked
-	 * @param elements to check for
-	 * @return the index of the elements missing on the given elements, Or -1 if no element missing
-	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array
+	 * @param array    the array to be checked.
+	 * @param elements to check for.
+	 * @return the index of the elements missing on the given elements, Or -1 if no element missing.
+	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array.
 	 */
 	public static int all(char[] array, char... elements) {
 		Objects.requireNonNull(array, "array");
@@ -136,13 +136,13 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Check whether the given array contains all of the given elements.
+	 * Check whether the given array contains all the given elements.
 	 *
-	 * @param array    the array to be checked
-	 * @param elements to check for
-	 * @return the index of the elements missing on the given elements, Or -1 if no element missing
-	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array
+	 * @param array    the array to be checked.
+	 * @param elements to check for.
+	 * @return the index of the elements missing on the given elements, Or -1 if no element missing.
+	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array.
 	 */
 	public static int all(double[] array, double... elements) {
 		Objects.requireNonNull(array, "array");
@@ -160,13 +160,13 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Check whether the given array contains all of the given elements.
+	 * Check whether the given array contains all the given elements.
 	 *
-	 * @param array    the array to be checked
-	 * @param elements to check for
-	 * @return the index of the elements missing on the given elements, Or -1 if no element missing
-	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array
+	 * @param array    the array to be checked.
+	 * @param elements to check for.
+	 * @return the index of the elements missing on the given elements, Or -1 if no element missing.
+	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array.
 	 */
 	public static int all(float[] array, float... elements) {
 		Objects.requireNonNull(array, "array");
@@ -184,13 +184,13 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Check whether the given array contains all of the given elements.
+	 * Check whether the given array contains all the given elements.
 	 *
-	 * @param array    the array to be checked
-	 * @param elements to check for
-	 * @return the index of the elements missing on the given elements, Or -1 if no element missing
-	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array
+	 * @param array    the array to be checked.
+	 * @param elements to check for.
+	 * @return the index of the elements missing on the given elements, Or -1 if no element missing.
+	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array.
 	 */
 	public static int all(int[] array, int... elements) {
 		Objects.requireNonNull(array, "array");
@@ -208,13 +208,13 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Check whether the given array contains all of the given elements.
+	 * Check whether the given array contains all the given elements.
 	 *
-	 * @param array    the array to be checked
-	 * @param elements to check for
-	 * @return the index of the elements missing on the given elements, Or -1 if no element missing
-	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array
+	 * @param array    the array to be checked.
+	 * @param elements to check for.
+	 * @return the index of the elements missing on the given elements, Or -1 if no element missing.
+	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array.
 	 */
 	public static int all(long[] array, long... elements) {
 		Objects.requireNonNull(array, "array");
@@ -232,13 +232,13 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Check whether the given array contains all of the given elements.
+	 * Check whether the given array contains all the given elements.
 	 *
-	 * @param array    the array to be checked
-	 * @param elements to check for
-	 * @return the index of the elements missing on the given elements, Or -1 if no element missing
-	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array
+	 * @param array    the array to be checked.
+	 * @param elements to check for.
+	 * @return the index of the elements missing on the given elements, Or -1 if no element missing.
+	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array.
 	 */
 	public static int all(short[] array, short... elements) {
 		Objects.requireNonNull(array, "array");
@@ -256,13 +256,13 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Check whether the given array contains all of the given elements. Using reflection.
+	 * Check whether the given array contains all the given elements. Using reflection.
 	 *
-	 * @param array    the array to be checked
-	 * @param elements to check for
-	 * @return the index of the elements missing on the given elements, Or -1 if no element missing
-	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array
+	 * @param array    the array to be checked.
+	 * @param elements to check for.
+	 * @return the index of the elements missing on the given elements, Or -1 if no element missing.
+	 * @throws NullPointerException     if ether the given 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' aren't an array.
 	 */
 	public static int all0(Object array, Object elements) {
 		Objects.requireNonNull(array, "array");
@@ -292,7 +292,7 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Check whether the given array contains all of the given elements. Using {@code if} statements.
+	 * Check whether the given array contains all the given elements. Using {@code if} statements.
 	 *
 	 * @param array    the array to be checked.
 	 * @param elements to check for.
@@ -306,23 +306,23 @@ public final class Arrayz {
 		Objects.requireNonNull(elements, "elements");
 
 		if (array instanceof Object[])
-			return all((Object[]) array, (Object[]) elements);
+			return Arrayz.all((Object[]) array, (Object[]) elements);
 		if (array instanceof boolean[])
-			return all((boolean[]) array, (boolean[]) elements);
+			return Arrayz.all((boolean[]) array, (boolean[]) elements);
 		if (array instanceof byte[])
-			return all((byte[]) array, (byte[]) elements);
+			return Arrayz.all((byte[]) array, (byte[]) elements);
 		if (array instanceof char[])
-			return all((char[]) array, (char[]) elements);
+			return Arrayz.all((char[]) array, (char[]) elements);
 		if (array instanceof double[])
-			return all((double[]) array, (double[]) elements);
+			return Arrayz.all((double[]) array, (double[]) elements);
 		if (array instanceof float[])
-			return all((float[]) array, (float[]) elements);
+			return Arrayz.all((float[]) array, (float[]) elements);
 		if (array instanceof int[])
-			return all((int[]) array, (int[]) elements);
+			return Arrayz.all((int[]) array, (int[]) elements);
 		if (array instanceof long[])
-			return all((long[]) array, (long[]) elements);
+			return Arrayz.all((long[]) array, (long[]) elements);
 		if (array instanceof short[])
-			return all((short[]) array, (short[]) elements);
+			return Arrayz.all((short[]) array, (short[]) elements);
 
 		throw new IllegalArgumentException("Not an array");
 	}
@@ -332,12 +332,12 @@ public final class Arrayz {
 	/**
 	 * Check whether the given array contains any of the given elements or not.
 	 *
-	 * @param array    to check
-	 * @param elements to check for
-	 * @param <T>      the type of elements to look for
-	 * @return the index of the first element found on the given array, Or -1 if no element found
-	 * @throws NullPointerException     if ether 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if the given 'array' param is actually not an array
+	 * @param array    to check.
+	 * @param elements to check for.
+	 * @param <T>      the type of elements to look for.
+	 * @return the index of the first element found on the given array, Or -1 if no element found.
+	 * @throws NullPointerException     if ether 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if the given 'array' param is actually not an array.
 	 */
 	public static <T> int any(T[] array, T... elements) {
 		Objects.requireNonNull(array, "array");
@@ -354,11 +354,11 @@ public final class Arrayz {
 	/**
 	 * Check whether the given array contains any of the given elements or not.
 	 *
-	 * @param array    to check
-	 * @param elements to check for
-	 * @return the index of the first element found on the given array, Or -1 if no element found
-	 * @throws NullPointerException     if ether 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if the given 'array' param is actually not an array
+	 * @param array    to check.
+	 * @param elements to check for.
+	 * @return the index of the first element found on the given array, Or -1 if no element found.
+	 * @throws NullPointerException     if ether 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if the given 'array' param is actually not an array.
 	 */
 	public static int any(boolean[] array, boolean... elements) {
 		Objects.requireNonNull(array, "array");
@@ -375,11 +375,11 @@ public final class Arrayz {
 	/**
 	 * Check whether the given array contains any of the given elements or not.
 	 *
-	 * @param array    to check
-	 * @param elements to check for
-	 * @return the index of the first element found on the given array, Or -1 if no element found
-	 * @throws NullPointerException     if ether 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if the given 'array' param is actually not an array
+	 * @param array    to check.
+	 * @param elements to check for.
+	 * @return the index of the first element found on the given array, Or -1 if no element found.
+	 * @throws NullPointerException     if ether 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if the given 'array' param is actually not an array.
 	 */
 	public static int any(byte[] array, byte... elements) {
 		Objects.requireNonNull(array, "array");
@@ -396,11 +396,11 @@ public final class Arrayz {
 	/**
 	 * Check whether the given array contains any of the given elements or not.
 	 *
-	 * @param array    to check
-	 * @param elements to check for
-	 * @return the index of the first element found on the given array, Or -1 if no element found
-	 * @throws NullPointerException     if ether 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if the given 'array' param is actually not an array
+	 * @param array    to check.
+	 * @param elements to check for.
+	 * @return the index of the first element found on the given array, Or -1 if no element found.
+	 * @throws NullPointerException     if ether 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if the given 'array' param is actually not an array.
 	 */
 	public static int any(char[] array, char... elements) {
 		Objects.requireNonNull(array, "array");
@@ -417,11 +417,11 @@ public final class Arrayz {
 	/**
 	 * Check whether the given array contains any of the given elements or not.
 	 *
-	 * @param array    to check
-	 * @param elements to check for
-	 * @return the index of the first element found on the given array, Or -1 if no element found
-	 * @throws NullPointerException     if ether 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if the given 'array' param is actually not an array
+	 * @param array    to check.
+	 * @param elements to check for.
+	 * @return the index of the first element found on the given array, Or -1 if no element found.
+	 * @throws NullPointerException     if ether 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if the given 'array' param is actually not an array.
 	 */
 	public static int any(double[] array, double... elements) {
 		Objects.requireNonNull(array, "array");
@@ -438,11 +438,11 @@ public final class Arrayz {
 	/**
 	 * Check whether the given array contains any of the given elements or not.
 	 *
-	 * @param array    to check
-	 * @param elements to check for
-	 * @return the index of the first element found on the given array, Or -1 if no element found
-	 * @throws NullPointerException     if ether 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if the given 'array' param is actually not an array
+	 * @param array    to check.
+	 * @param elements to check for.
+	 * @return the index of the first element found on the given array, Or -1 if no element found.
+	 * @throws NullPointerException     if ether 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if the given 'array' param is actually not an array.
 	 */
 	public static int any(float[] array, float... elements) {
 		Objects.requireNonNull(array, "array");
@@ -459,11 +459,11 @@ public final class Arrayz {
 	/**
 	 * Check whether the given array contains any of the given elements or not.
 	 *
-	 * @param array    to check
-	 * @param elements to check for
-	 * @return the index of the first element found on the given array, Or -1 if no element found
-	 * @throws NullPointerException     if ether 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if the given 'array' param is actually not an array
+	 * @param array    to check.
+	 * @param elements to check for.
+	 * @return the index of the first element found on the given array, Or -1 if no element found.
+	 * @throws NullPointerException     if ether 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if the given 'array' param is actually not an array.
 	 */
 	public static int any(int[] array, int... elements) {
 		Objects.requireNonNull(array, "array");
@@ -480,11 +480,11 @@ public final class Arrayz {
 	/**
 	 * Check whether the given array contains any of the given elements or not.
 	 *
-	 * @param array    to check
-	 * @param elements to check for
-	 * @return the index of the first element found on the given array, Or -1 if no element found
-	 * @throws NullPointerException     if ether 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if the given 'array' param is actually not an array
+	 * @param array    to check.
+	 * @param elements to check for.
+	 * @return the index of the first element found on the given array, Or -1 if no element found.
+	 * @throws NullPointerException     if ether 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if the given 'array' param is actually not an array.
 	 */
 	public static int any(long[] array, long... elements) {
 		Objects.requireNonNull(array, "array");
@@ -501,11 +501,11 @@ public final class Arrayz {
 	/**
 	 * Check whether the given array contains any of the given elements or not.
 	 *
-	 * @param array    to check
-	 * @param elements to check for
-	 * @return the index of the first element found on the given array, Or -1 if no element found
-	 * @throws NullPointerException     if ether 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if the given 'array' param is actually not an array
+	 * @param array    to check.
+	 * @param elements to check for.
+	 * @return the index of the first element found on the given array, Or -1 if no element found.
+	 * @throws NullPointerException     if ether 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if the given 'array' param is actually not an array.
 	 */
 	public static int any(short[] array, short... elements) {
 		Objects.requireNonNull(array, "array");
@@ -522,11 +522,11 @@ public final class Arrayz {
 	/**
 	 * Check whether the given array contains any of the given elements or not. Using reflection.
 	 *
-	 * @param array    to check
-	 * @param elements to check for
-	 * @return the index of the first element found on the given array, Or -1 if no element found
-	 * @throws NullPointerException     if ether 'array' or 'elements' are null
-	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' param is actually not an array
+	 * @param array    to check.
+	 * @param elements to check for.
+	 * @return the index of the first element found on the given array, Or -1 if no element found.
+	 * @throws NullPointerException     if ether 'array' or 'elements' are null.
+	 * @throws IllegalArgumentException if ether the given 'array' or 'elements' param is actually not an array.
 	 */
 	public static int any0(Object array, Object elements) {
 		Objects.requireNonNull(array, "array");
@@ -567,23 +567,23 @@ public final class Arrayz {
 		Objects.requireNonNull(elements, "elements");
 
 		if (array instanceof Object[])
-			return any((Object[]) array, (Object[]) elements);
+			return Arrayz.any((Object[]) array, (Object[]) elements);
 		if (array instanceof boolean[])
-			return any((boolean[]) array, (boolean[]) elements);
+			return Arrayz.any((boolean[]) array, (boolean[]) elements);
 		if (array instanceof byte[])
-			return any((byte[]) array, (byte[]) elements);
+			return Arrayz.any((byte[]) array, (byte[]) elements);
 		if (array instanceof char[])
-			return any((char[]) array, (char[]) elements);
+			return Arrayz.any((char[]) array, (char[]) elements);
 		if (array instanceof double[])
-			return any((double[]) array, (double[]) elements);
+			return Arrayz.any((double[]) array, (double[]) elements);
 		if (array instanceof float[])
-			return any((float[]) array, (float[]) elements);
+			return Arrayz.any((float[]) array, (float[]) elements);
 		if (array instanceof int[])
-			return any((int[]) array, (int[]) elements);
+			return Arrayz.any((int[]) array, (int[]) elements);
 		if (array instanceof long[])
-			return any((long[]) array, (long[]) elements);
+			return Arrayz.any((long[]) array, (long[]) elements);
 		if (array instanceof short[])
-			return any((short[]) array, (short[]) elements);
+			return Arrayz.any((short[]) array, (short[]) elements);
 
 		throw new IllegalArgumentException("not an array");
 	}
@@ -593,11 +593,11 @@ public final class Arrayz {
 	/**
 	 * Construct a new list and add all the given elements from the given 'array' object.
 	 *
-	 * @param array to construct the list with
-	 * @param <T>   the type of the elements from the given array
-	 * @return a list containing all the given elements from the given array object
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' isn't actually an array
+	 * @param array to construct the list with.
+	 * @param <T>   the type of the elements from the given array.
+	 * @return a list containing all the given elements from the given array object.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static <T> List<T> asList(T... array) {
 		Objects.requireNonNull(array, "array");
@@ -630,14 +630,13 @@ public final class Arrayz {
 				Objects.requireNonNull(a, "a");
 				final int length = a.length;
 
-				if (length < array.length) {
+				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				} else {
+				else {
 					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
-					if (length > array.length) {
+					if (length > array.length)
 						a[array.length] = null;
-					}
 
 					return a;
 				}
@@ -648,10 +647,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new list and add all the given elements from the given 'array' object.
 	 *
-	 * @param array to construct the list with
-	 * @return a list containing all the given elements from the given array object
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' isn't actually an array
+	 * @param array to construct the list with.
+	 * @return a list containing all the given elements from the given array object.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Boolean> asList(boolean[] array) {
 		Objects.requireNonNull(array, "array");
@@ -684,14 +683,13 @@ public final class Arrayz {
 				Objects.requireNonNull(a, "a");
 				final int length = a.length;
 
-				if (length < array.length) {
+				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				} else {
+				else {
 					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
-					if (length > array.length) {
+					if (length > array.length)
 						a[array.length] = null;
-					}
 
 					return a;
 				}
@@ -702,10 +700,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new list and add all the given elements from the given 'array' object.
 	 *
-	 * @param array to construct the list with
-	 * @return a list containing all the given elements from the given array object
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' isn't actually an array
+	 * @param array to construct the list with.
+	 * @return a list containing all the given elements from the given array object.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Byte> asList(byte[] array) {
 		Objects.requireNonNull(array, "array");
@@ -738,14 +736,13 @@ public final class Arrayz {
 				Objects.requireNonNull(a, "a");
 				final int length = a.length;
 
-				if (length < array.length) {
+				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				} else {
+				else {
 					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
-					if (length > array.length) {
+					if (length > array.length)
 						a[array.length] = null;
-					}
 
 					return a;
 				}
@@ -756,10 +753,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new list and add all the given elements from the given 'array' object.
 	 *
-	 * @param array to construct the list with
-	 * @return a list containing all the given elements from the given array object
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' isn't actually an array
+	 * @param array to construct the list with.
+	 * @return a list containing all the given elements from the given array object.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Character> asList(char[] array) {
 		Objects.requireNonNull(array, "array");
@@ -792,14 +789,13 @@ public final class Arrayz {
 				Objects.requireNonNull(a, "a");
 				final int length = a.length;
 
-				if (length < array.length) {
+				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				} else {
+				else {
 					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
-					if (length > array.length) {
+					if (length > array.length)
 						a[array.length] = null;
-					}
 
 					return a;
 				}
@@ -810,10 +806,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new list and add all the given elements from the given 'array' object.
 	 *
-	 * @param array to construct the list with
-	 * @return a list containing all the given elements from the given array object
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' isn't actually an array
+	 * @param array to construct the list with.
+	 * @return a list containing all the given elements from the given array object.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Double> asList(double[] array) {
 		Objects.requireNonNull(array, "array");
@@ -846,14 +842,13 @@ public final class Arrayz {
 				Objects.requireNonNull(a, "a");
 				final int length = a.length;
 
-				if (length < array.length) {
+				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				} else {
+				else {
 					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
-					if (length > array.length) {
+					if (length > array.length)
 						a[array.length] = null;
-					}
 
 					return a;
 				}
@@ -864,10 +859,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new list and add all the given elements from the given 'array' object.
 	 *
-	 * @param array to construct the list with
-	 * @return a list containing all the given elements from the given array object
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' isn't actually an array
+	 * @param array to construct the list with.
+	 * @return a list containing all the given elements from the given array object.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Float> asList(float[] array) {
 		Objects.requireNonNull(array, "array");
@@ -900,14 +895,13 @@ public final class Arrayz {
 				Objects.requireNonNull(a, "a");
 				final int length = a.length;
 
-				if (length < array.length) {
+				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				} else {
+				else {
 					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
-					if (length > array.length) {
+					if (length > array.length)
 						a[array.length] = null;
-					}
 
 					return a;
 				}
@@ -918,10 +912,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new list and add all the given elements from the given 'array' object.
 	 *
-	 * @param array to construct the list with
-	 * @return a list containing all the given elements from the given array object
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' isn't actually an array
+	 * @param array to construct the list with.
+	 * @return a list containing all the given elements from the given array object.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Integer> asList(int[] array) {
 		Objects.requireNonNull(array, "array");
@@ -954,14 +948,13 @@ public final class Arrayz {
 				Objects.requireNonNull(a, "a");
 				final int length = a.length;
 
-				if (length < array.length) {
+				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				} else {
+				else {
 					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
-					if (length > array.length) {
+					if (length > array.length)
 						a[array.length] = null;
-					}
 
 					return a;
 				}
@@ -972,10 +965,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new list and add all the given elements from the given 'array' object.
 	 *
-	 * @param array to construct the list with
-	 * @return a list containing all the given elements from the given array object
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' isn't actually an array
+	 * @param array to construct the list with.
+	 * @return a list containing all the given elements from the given array object.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Long> asList(long[] array) {
 		Objects.requireNonNull(array, "array");
@@ -1008,14 +1001,13 @@ public final class Arrayz {
 				Objects.requireNonNull(a, "a");
 				final int length = a.length;
 
-				if (length < array.length) {
+				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				} else {
+				else {
 					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
-					if (length > array.length) {
+					if (length > array.length)
 						a[array.length] = null;
-					}
 
 					return a;
 				}
@@ -1026,10 +1018,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new list and add all the given elements from the given 'array' object.
 	 *
-	 * @param array to construct the list with
-	 * @return a list containing all the given elements from the given array object
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' isn't actually an array
+	 * @param array to construct the list with.
+	 * @return a list containing all the given elements from the given array object.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Short> asList(short[] array) {
 		Objects.requireNonNull(array, "array");
@@ -1062,14 +1054,13 @@ public final class Arrayz {
 				Objects.requireNonNull(a, "a");
 				final int length = a.length;
 
-				if (length < array.length) {
+				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				} else {
+				else {
 					Arrayz.hardcopy(array, 0, a, 0, array.length);
 
-					if (length > array.length) {
+					if (length > array.length)
 						a[array.length] = null;
-					}
 
 					return a;
 				}
@@ -1080,10 +1071,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new list and add all the given elements from the given 'array' object. Using reflection.
 	 *
-	 * @param array to construct the list with
-	 * @return a list containing all the given elements from the given array object
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' isn't actually an array
+	 * @param array to construct the list with.
+	 * @return a list containing all the given elements from the given array object.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List asList0(Object array) {
 		Objects.requireNonNull(array, "array");
@@ -1119,14 +1110,13 @@ public final class Arrayz {
 				Objects.requireNonNull(a, "a");
 				final int length = a.length;
 
-				if (length < size) {
+				if (length < size)
 					return (Object[]) Arrayz.copyOf0(array, size, a.getClass());
-				} else {
+				else {
 					Arrayz.hardcopy(array, 0, a, 0, size);
 
-					if (length > size) {
+					if (length > size)
 						a[size] = null;
-					}
 
 					return a;
 				}
@@ -1137,32 +1127,32 @@ public final class Arrayz {
 	/**
 	 * Construct a new list and add all the given elements from the given 'array' object. Using {@code if statements}.
 	 *
-	 * @param array to construct the list with
-	 * @return a list containing all the given elements from the given array object
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' isn't actually an array
+	 * @param array to construct the list with.
+	 * @return a list containing all the given elements from the given array object.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List asList1(Object array) {
 		Objects.requireNonNull(array, "array");
 
 		if (array instanceof Object[])
-			return asList((Object[]) array);
+			return Arrayz.asList((Object[]) array);
 		if (array instanceof boolean[])
-			return asList((boolean[]) array);
+			return Arrayz.asList((boolean[]) array);
 		if (array instanceof byte[])
-			return asList((byte[]) array);
+			return Arrayz.asList((byte[]) array);
 		if (array instanceof char[])
-			return asList((char[]) array);
+			return Arrayz.asList((char[]) array);
 		if (array instanceof double[])
-			return asList((double[]) array);
+			return Arrayz.asList((double[]) array);
 		if (array instanceof float[])
-			return asList((float[]) array);
+			return Arrayz.asList((float[]) array);
 		if (array instanceof int[])
-			return asList((int[]) array);
+			return Arrayz.asList((int[]) array);
 		if (array instanceof long[])
-			return asList((long[]) array);
+			return Arrayz.asList((long[]) array);
 		if (array instanceof short[])
-			return asList((short[]) array);
+			return Arrayz.asList((short[]) array);
 
 		throw new IllegalArgumentException("not an array");
 	}
@@ -1172,13 +1162,13 @@ public final class Arrayz {
 	/**
 	 * Construct a new map from the given array.
 	 *
-	 * @param array the source array
-	 * @param <K>   the type of the key of the returned map
-	 * @param <V>   the type of the value of the returned map
-	 * @param <E>   the type of the elements of the given array
-	 * @return a new map from the given array
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' has odd length
+	 * @param array the source array.
+	 * @param <K>   the type of the key of the returned map.
+	 * @param <V>   the type of the value of the returned map.
+	 * @param <E>   the type of the elements of the given array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
 	public static <K extends E, V extends E, E> Map<K, V> asMap(E... array) {
 		Objects.requireNonNull(array, "array");
@@ -1195,10 +1185,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new map from the given array.
 	 *
-	 * @param array the source array
-	 * @return a new map from the given array
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' has odd length
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
 	public static Map<Boolean, Boolean> asMap(boolean... array) {
 		Objects.requireNonNull(array, "array");
@@ -1215,10 +1205,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new map from the given array.
 	 *
-	 * @param array the source array
-	 * @return a new map from the given array
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' has odd length
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
 	public static Map<Byte, Byte> asMap(byte... array) {
 		Objects.requireNonNull(array, "array");
@@ -1235,10 +1225,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new map from the given array.
 	 *
-	 * @param array the source array
-	 * @return a new map from the given array
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' has odd length
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
 	public static Map<Character, Character> asMap(char... array) {
 		Objects.requireNonNull(array, "array");
@@ -1255,10 +1245,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new map from the given array.
 	 *
-	 * @param array the source array
-	 * @return a new map from the given array
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' has odd length
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
 	public static Map<Double, Double> asMap(double... array) {
 		Objects.requireNonNull(array, "array");
@@ -1275,10 +1265,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new map from the given array.
 	 *
-	 * @param array the source array
-	 * @return a new map from the given array
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' has odd length
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
 	public static Map<Float, Float> asMap(float... array) {
 		Objects.requireNonNull(array, "array");
@@ -1295,10 +1285,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new map from the given array.
 	 *
-	 * @param array the source array
-	 * @return a new map from the given array
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' has odd length
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
 	public static Map<Integer, Integer> asMap(int... array) {
 		Objects.requireNonNull(array, "array");
@@ -1315,10 +1305,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new map from the given array.
 	 *
-	 * @param array the source array
-	 * @return a new map from the given array
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' has odd length
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
 	public static Map<Long, Long> asMap(long... array) {
 		Objects.requireNonNull(array, "array");
@@ -1335,10 +1325,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new map from the given array.
 	 *
-	 * @param array the source array
-	 * @return a new map from the given array
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' has odd length
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
 	public static Map<Short, Short> asMap(short... array) {
 		Objects.requireNonNull(array, "array");
@@ -1355,10 +1345,10 @@ public final class Arrayz {
 	/**
 	 * Construct a new map from the given array. Using reflection.
 	 *
-	 * @param array the source array
-	 * @return a new map from the given array
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' is not an array, or has an odd length
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' is not an array, or has an odd length.
 	 */
 	public static Map asMap0(Object array) {
 		Objects.requireNonNull(array, "array");
@@ -1377,32 +1367,32 @@ public final class Arrayz {
 	/**
 	 * Construct a new map from the given array. Using {@code if} statements.
 	 *
-	 * @param array the source array
-	 * @return a new map from the given array
-	 * @throws NullPointerException     if the given 'array' is null
-	 * @throws IllegalArgumentException if the given 'array' is not an array, or has an odd length
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' is not an array, or has an odd length.
 	 */
 	public static Map asMap1(Object array) {
 		Objects.requireNonNull(array, "array");
 
 		if (array instanceof Object[])
-			return asMap((Object[]) array);
+			return Arrayz.asMap((Object[]) array);
 		if (array instanceof boolean[])
-			return asMap((boolean[]) array);
+			return Arrayz.asMap((boolean[]) array);
 		if (array instanceof byte[])
-			return asMap((byte[]) array);
+			return Arrayz.asMap((byte[]) array);
 		if (array instanceof char[])
-			return asMap((char[]) array);
+			return Arrayz.asMap((char[]) array);
 		if (array instanceof double[])
-			return asMap((double[]) array);
+			return Arrayz.asMap((double[]) array);
 		if (array instanceof float[])
-			return asMap((float[]) array);
+			return Arrayz.asMap((float[]) array);
 		if (array instanceof int[])
-			return asMap((int[]) array);
+			return Arrayz.asMap((int[]) array);
 		if (array instanceof long[])
-			return asMap((long[]) array);
+			return Arrayz.asMap((long[]) array);
 		if (array instanceof short[])
-			return asMap((short[]) array);
+			return Arrayz.asMap((short[]) array);
 
 		throw new IllegalArgumentException("not an array");
 	}
@@ -1412,12 +1402,12 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @param <T>    the type of the elements of the given array
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @param <T>    the type of the elements of the given array.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' isn't an array. Or the given length is negative.
 	 */
 	public static <T> T[] copyOf(T[] array, int length) {
 		Objects.requireNonNull(array, "array");
@@ -1434,14 +1424,15 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @param klass  the type of the result array
-	 * @param <T>    the type of the elements of the given array
-	 * @param <U>    the type of the elements in the returned array
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @param klass  the type of the result array.
+	 * @param <T>    the type of the elements of the given array.
+	 * @param <U>    the type of the elements in the returned array.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given array is null.
+	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or
+	 *                                  the given length is negative.
 	 */
 	public static <T extends U, U> U[] copyOf(T[] array, int length, Class<U[]> klass) {
 		Objects.requireNonNull(array, "array");
@@ -1461,11 +1452,11 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given array is null.
+	 * @throws IllegalArgumentException if the given array isn't an array. Or the given length is negative.
 	 */
 	public static boolean[] copyOf(boolean[] array, int length) {
 		Objects.requireNonNull(array, "array");
@@ -1482,11 +1473,11 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given array is null.
+	 * @throws IllegalArgumentException if the given array isn't an array. Or the given length is negative.
 	 */
 	public static byte[] copyOf(byte[] array, int length) {
 		Objects.requireNonNull(array, "array");
@@ -1503,11 +1494,11 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given array is null.
+	 * @throws IllegalArgumentException if the given array isn't an array. Or the given length is negative.
 	 */
 	public static char[] copyOf(char[] array, int length) {
 		Objects.requireNonNull(array, "array");
@@ -1524,11 +1515,11 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given array is null.
+	 * @throws IllegalArgumentException if the given array isn't an array. Or the given length is negative.
 	 */
 	public static double[] copyOf(double[] array, int length) {
 		Objects.requireNonNull(array, "array");
@@ -1545,11 +1536,11 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given array is null.
+	 * @throws IllegalArgumentException if the given array isn't an array. Or the given length is negative.
 	 */
 	public static float[] copyOf(float[] array, int length) {
 		Objects.requireNonNull(array, "array");
@@ -1566,11 +1557,11 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given array is null.
+	 * @throws IllegalArgumentException if the given array isn't an array. Or the given length is negative.
 	 */
 	public static int[] copyOf(int[] array, int length) {
 		Objects.requireNonNull(array, "array");
@@ -1587,11 +1578,11 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given array is null.
+	 * @throws IllegalArgumentException if the given array isn't an array. Or the given length is negative.
 	 */
 	public static long[] copyOf(long[] array, int length) {
 		Objects.requireNonNull(array, "array");
@@ -1608,11 +1599,11 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given array is null.
+	 * @throws IllegalArgumentException if the given array isn't an array. Or the given length is negative.
 	 */
 	public static short[] copyOf(short[] array, int length) {
 		Objects.requireNonNull(array, "array");
@@ -1629,11 +1620,11 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class. Using reflection.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given array is null.
+	 * @throws IllegalArgumentException if the given array isn't an array. Or the given length is negative.
 	 */
 	public static Object copyOf0(Object array, int length) {
 		Objects.requireNonNull(array, "array");
@@ -1652,12 +1643,13 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class. Using reflection.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @param klass  the type of the new array
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @param klass  the type of the new array.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given array is null.
+	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or
+	 *                                  the given length is negative.
 	 */
 	public static Object copyOf0(Object array, int length, Class klass) {
 		Objects.requireNonNull(array, "array");
@@ -1679,33 +1671,33 @@ public final class Arrayz {
 	/**
 	 * Get a copy of the given array. Copy to a new array from the given class. Using {@code if} statements.
 	 *
-	 * @param array  the array to be copied
-	 * @param length the length of the new
-	 * @return a copy of the given array with the type of the given class
-	 * @throws NullPointerException     if the given array is null
-	 * @throws IllegalArgumentException if the given array isn't an array. Or the given class isn't an array class. Or the given length is negative
+	 * @param array  the array to be copied.
+	 * @param length the length of the new.
+	 * @return a copy of the given array with the type of the given class.
+	 * @throws NullPointerException     if the given array is null.
+	 * @throws IllegalArgumentException if the given array isn't an array. Or the given length is negative.
 	 */
 	public static Object copyOf1(Object array, int length) {
 		Objects.requireNonNull(array, "array");
 
 		if (array instanceof Object[])
-			return copyOf((Object[]) array, length);
+			return Arrayz.copyOf((Object[]) array, length);
 		if (array instanceof boolean[])
-			return copyOf((boolean[]) array, length);
+			return Arrayz.copyOf((boolean[]) array, length);
 		if (array instanceof byte[])
-			return copyOf((byte[]) array, length);
+			return Arrayz.copyOf((byte[]) array, length);
 		if (array instanceof char[])
-			return copyOf((char[]) array, length);
+			return Arrayz.copyOf((char[]) array, length);
 		if (array instanceof double[])
-			return copyOf((double[]) array, length);
+			return Arrayz.copyOf((double[]) array, length);
 		if (array instanceof float[])
-			return copyOf((float[]) array, length);
+			return Arrayz.copyOf((float[]) array, length);
 		if (array instanceof int[])
-			return copyOf((int[]) array, length);
+			return Arrayz.copyOf((int[]) array, length);
 		if (array instanceof long[])
-			return copyOf((long[]) array, length);
+			return Arrayz.copyOf((long[]) array, length);
 		if (array instanceof short[])
-			return copyOf((short[]) array, length);
+			return Arrayz.copyOf((short[]) array, length);
 
 		throw new IllegalArgumentException("not an array");
 	}
@@ -1715,14 +1707,15 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @param <T>        the type of the elements on the given array
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @param <T>        the type of the elements on the given array.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static <T> T[] copyOfRange(T[] array, int beginIndex, int endIndex) {
@@ -1751,16 +1744,17 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @param klass      the class of the returned array
-	 * @param <T>        the type of the elements on the given array
-	 * @param <U>        the type of the returned array
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @param klass      the class of the returned array.
+	 * @param <T>        the type of the elements on the given array.
+	 * @param <U>        the type of the returned array.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static <T extends U, U> U[] copyOfRange(T[] array, int beginIndex, int endIndex, Class<U[]> klass) {
@@ -1789,13 +1783,14 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static boolean[] copyOfRange(boolean[] array, int beginIndex, int endIndex) {
@@ -1824,13 +1819,14 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static byte[] copyOfRange(byte[] array, int beginIndex, int endIndex) {
@@ -1859,13 +1855,14 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static char[] copyOfRange(char[] array, int beginIndex, int endIndex) {
@@ -1894,13 +1891,14 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static double[] copyOfRange(double[] array, int beginIndex, int endIndex) {
@@ -1929,13 +1927,14 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static float[] copyOfRange(float[] array, int beginIndex, int endIndex) {
@@ -1964,13 +1963,14 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static int[] copyOfRange(int[] array, int beginIndex, int endIndex) {
@@ -1999,13 +1999,14 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static long[] copyOfRange(long[] array, int beginIndex, int endIndex) {
@@ -2034,13 +2035,14 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static short[] copyOfRange(short[] array, int beginIndex, int endIndex) {
@@ -2069,14 +2071,15 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array. Using reflection.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IllegalArgumentException  if the given 'array' isn't actually an array
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IllegalArgumentException  if the given 'array' isn't actually an array.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static Object copyOfRange0(Object array, int beginIndex, int endIndex) {
@@ -2108,15 +2111,16 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array. Using reflection.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @param klass      the class of the product array
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IllegalArgumentException  if the given 'array' isn't actually an array
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @param klass      the class of the product array.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IllegalArgumentException  if the given 'array' isn't actually an array.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static Object copyOfRange0(Object array, int beginIndex, int endIndex, Class klass) {
@@ -2150,37 +2154,38 @@ public final class Arrayz {
 	/**
 	 * Copies the specified range of the specified array into a new array. Using {@code if} statements.
 	 *
-	 * @param array      to get a subarray of
-	 * @param beginIndex the index to begin
-	 * @param endIndex   the index to stop
-	 * @return a subarray of the given array
-	 * @throws NullPointerException      if the given 'array' is null
-	 * @throws IllegalArgumentException  if the given 'array' isn't actually an array
-	 * @throws IndexOutOfBoundsException if ether the beginIndex or the endIndex is negative. Or if the endIndex is less than beginIndex. Or if ether
-	 *                                   the beginIndex or the endIndex is greater than array.length.
+	 * @param array      to get a subarray of.
+	 * @param beginIndex the index to begin.
+	 * @param endIndex   the index to stop.
+	 * @return a subarray of the given array.
+	 * @throws NullPointerException      if the given 'array' is null.
+	 * @throws IllegalArgumentException  if the given 'array' isn't actually an array.
+	 * @throws IndexOutOfBoundsException if ether the beginIndex, or the endIndex is negative. Or if the endIndex is
+	 *                                   less than beginIndex. Or if ether the beginIndex or the endIndex is greater
+	 *                                   than array.length.
 	 * @see String#substring
 	 */
 	public static Object copyOfRange1(Object array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
 
 		if (array instanceof Object[])
-			return copyOfRange((Object[]) array, beginIndex, endIndex);
+			return Arrayz.copyOfRange((Object[]) array, beginIndex, endIndex);
 		if (array instanceof boolean[])
-			return copyOfRange((boolean[]) array, beginIndex, endIndex);
+			return Arrayz.copyOfRange((boolean[]) array, beginIndex, endIndex);
 		if (array instanceof byte[])
-			return copyOfRange((byte[]) array, beginIndex, endIndex);
+			return Arrayz.copyOfRange((byte[]) array, beginIndex, endIndex);
 		if (array instanceof char[])
-			return copyOfRange((char[]) array, beginIndex, endIndex);
+			return Arrayz.copyOfRange((char[]) array, beginIndex, endIndex);
 		if (array instanceof double[])
-			return copyOfRange((double[]) array, beginIndex, endIndex);
+			return Arrayz.copyOfRange((double[]) array, beginIndex, endIndex);
 		if (array instanceof float[])
-			return copyOfRange((float[]) array, beginIndex, endIndex);
+			return Arrayz.copyOfRange((float[]) array, beginIndex, endIndex);
 		if (array instanceof int[])
-			return copyOfRange((int[]) array, beginIndex, endIndex);
+			return Arrayz.copyOfRange((int[]) array, beginIndex, endIndex);
 		if (array instanceof long[])
-			return copyOfRange((long[]) array, beginIndex, endIndex);
+			return Arrayz.copyOfRange((long[]) array, beginIndex, endIndex);
 		if (array instanceof short[])
-			return copyOfRange((short[]) array, beginIndex, endIndex);
+			return Arrayz.copyOfRange((short[]) array, beginIndex, endIndex);
 
 		throw new IllegalArgumentException("not an array");
 	}
@@ -2188,20 +2193,22 @@ public final class Arrayz {
 	//hardcopy
 
 	/**
-	 * Copies elements on an array from the specified source array, beginning at the specified position, to the specified position of the destination
-	 * array. A subsequence of array components are copied from the source array referenced by src to the destination array referenced by dest. The
-	 * number of components copied is equal to the length argument. The components at positions srcPos through srcPos+length-1 in the source array are
-	 * copied into positions destPos through destPos+length-1, respectively, of the destination array.If the src and dest arguments refer to the same
-	 * array object, then the copying is performed as if the components at positions srcPos through srcPos+length-1 were first copied to a temporary
-	 * array with length components and then the contents of the temporary array were copied into positions destPos through destPos+length-1 of the
-	 * destination array. If dest is null, then a NullPointerException is thrown. If src is null, then a NullPointerException is thrown and the
-	 * destination array is not modified. Otherwise, if any of the following is true, an ArrayStoreException is thrown and the destination is not
-	 * modified:
+	 * Copies elements on an array from the specified source array, beginning at the specified position, to the
+	 * specified position of the destination array. A subsequence of array components are copied from the source array
+	 * referenced by src to the destination array referenced by dest. The number of components copied is equal to the
+	 * length argument. The components at positions srcPos through srcPos+length-1 in the source array are copied into
+	 * positions destPos through destPos+length-1, respectively, of the destination array.If the src and dest arguments
+	 * refer to the same array object, then the copying is performed as if the components at positions srcPos through
+	 * srcPos+length-1 were first copied to a temporary array with length components and then the contents of the
+	 * temporary array were copied into positions destPos through destPos+length-1 of the destination array. If dest is
+	 * null, then a NullPointerException is thrown. If src is null, then a NullPointerException is thrown, and the
+	 * destination array is not modified. Otherwise, if any of the following is true, an ArrayStoreException is thrown,
+	 * and the destination is not modified:
 	 * <ul>
 	 *     <li>The src argument refers to an object that is not an array.</li>
 	 *     <li>The dest argument refers to an object that is not an array.</li>
 	 * </ul>
-	 * Otherwise, if any of the following is true, an IndexOutOfBoundsException is thrown and the destination is not modified:
+	 * Otherwise, if any of the following is true, an IndexOutOfBoundsException is thrown, and the destination is not modified:
 	 * <ul>
 	 *     <li>The srcPos argument is negative.</li>
 	 *     <li>The destPos argument is negative.</li>
@@ -2225,7 +2232,8 @@ public final class Arrayz {
 	 * @param destPos starting position in the destination data.
 	 * @param length  the number of array elements to be copied.
 	 * @throws IndexOutOfBoundsException if copying would cause access of data outside array bounds.
-	 * @throws ArrayStoreException       if an element in the src array could not be stored into the dest array because of a type mismatch.
+	 * @throws ArrayStoreException       if an element in the src array could not be stored into the dest array because
+	 *                                   of a type mismatch.
 	 * @throws NullPointerException      if either src or dest is null.
 	 * @see System#arraycopy(Object, int, Object, int, int)
 	 */
@@ -2269,14 +2277,17 @@ public final class Arrayz {
 	//merge
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order.
 	 *
-	 * @param arrays the arrays to be merged
-	 * @param <T>    the type of the given arrays
+	 * @param arrays the arrays to be merged.
+	 * @param <T>    the type of the given arrays.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static <T> T[] merge(T[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
@@ -2284,7 +2295,8 @@ public final class Arrayz {
 		if (arrays.length == 0)
 			return (T[]) Array.newInstance(arrays.getClass().getComponentType().getComponentType(), 0);
 
-		T[] product = (T[]) Array.newInstance(arrays[0].getClass().getComponentType(), sum(arrays, 0, (s, a) -> s + a.length));
+		T[] product = (T[]) Array.newInstance(arrays[0].getClass().getComponentType(), Arrayz.sum(arrays, 0, (s, a) ->
+				s + a.length));
 
 		int i = 0;
 		for (T[] array : arrays) {
@@ -2296,21 +2308,24 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order.
 	 *
-	 * @param klass  the class of the returned array
-	 * @param arrays the arrays to be merged
-	 * @param <T>    the type of the given arrays
-	 * @param <U>    the type of the returned array
+	 * @param klass  the class of the returned array.
+	 * @param arrays the arrays to be merged.
+	 * @param <T>    the type of the given arrays.
+	 * @param <U>    the type of the returned array.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static <T extends U, U> U[] merge(Class<U[]> klass, T[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		T[] product = (T[]) Array.newInstance(klass.getComponentType(), sum(arrays, 0, (s, a) -> s + a.length));
+		T[] product = (T[]) Array.newInstance(klass.getComponentType(), Arrayz.sum(arrays, 0, (s, a) -> s + a.length));
 
 		int i = 0;
 		for (T[] array : arrays) {
@@ -2322,18 +2337,21 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order.
 	 *
-	 * @param arrays the arrays to be merged
+	 * @param arrays the arrays to be merged.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static boolean[] merge(boolean[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		boolean[] product = new boolean[sum(arrays, 0, (s, a) -> s + a.length)];
+		boolean[] product = new boolean[Arrayz.sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (boolean[] array : arrays) {
@@ -2345,18 +2363,21 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order.
 	 *
-	 * @param arrays the arrays to be merged
+	 * @param arrays the arrays to be merged.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static byte[] merge(byte[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		byte[] product = new byte[sum(arrays, 0, (s, a) -> s + a.length)];
+		byte[] product = new byte[Arrayz.sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (byte[] array : arrays) {
@@ -2368,18 +2389,21 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order.
 	 *
-	 * @param arrays the arrays to be merged
+	 * @param arrays the arrays to be merged.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static char[] merge(char[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		char[] product = new char[sum(arrays, 0, (s, a) -> s + a.length)];
+		char[] product = new char[Arrayz.sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (char[] array : arrays) {
@@ -2391,18 +2415,21 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order.
 	 *
-	 * @param arrays the arrays to be merged
+	 * @param arrays the arrays to be merged.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static double[] merge(double[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		double[] product = new double[sum(arrays, 0, (s, a) -> s + a.length)];
+		double[] product = new double[Arrayz.sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (double[] array : arrays) {
@@ -2414,18 +2441,21 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order.
 	 *
-	 * @param arrays the arrays to be merged
+	 * @param arrays the arrays to be merged.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static float[] merge(float[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		float[] product = new float[sum(arrays, 0, (s, a) -> s + a.length)];
+		float[] product = new float[Arrayz.sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (float[] array : arrays) {
@@ -2437,18 +2467,21 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order.
 	 *
-	 * @param arrays the arrays to be merged
+	 * @param arrays the arrays to be merged.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static int[] merge(int[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		int[] product = new int[sum(arrays, 0, (s, a) -> s + a.length)];
+		int[] product = new int[Arrayz.sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (int[] array : arrays) {
@@ -2460,18 +2493,21 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order.
 	 *
-	 * @param arrays the arrays to be merged
+	 * @param arrays the arrays to be merged.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static long[] merge(long[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		long[] product = new long[sum(arrays, 0, (s, a) -> s + a.length)];
+		long[] product = new long[Arrayz.sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (long[] array : arrays) {
@@ -2483,18 +2519,21 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order.
 	 *
-	 * @param arrays the arrays to be merged
+	 * @param arrays the arrays to be merged.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static short[] merge(short[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
-		short[] product = new short[sum(arrays, 0, (s, a) -> s + a.length)];
+		short[] product = new short[Arrayz.sum(arrays, 0, (s, a) -> s + a.length)];
 
 		int i = 0;
 		for (short[] array : arrays) {
@@ -2506,13 +2545,16 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order. Using reflection.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order. Using reflection.
 	 *
-	 * @param arrays the arrays to be merged
+	 * @param arrays the arrays to be merged.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static Object merge0(Object[] arrays) {
 		Objects.requireNonNull(arrays, "arrays");
@@ -2520,7 +2562,8 @@ public final class Arrayz {
 		if (arrays.length == 0)
 			return Array.newInstance(arrays.getClass().getComponentType().getComponentType(), 0);
 
-		Object product = Array.newInstance(arrays[0].getClass().getComponentType(), sum(arrays, 0, (s, a) -> s + Array.getLength(a)));
+		Object product = Array.newInstance(arrays[0].getClass().getComponentType(), Arrayz.sum(arrays, 0, (s, a) -> s +
+																													Array.getLength(a)));
 
 		int i = 0;
 		for (Object array : arrays) {
@@ -2533,14 +2576,17 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order. Using reflection.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order. Using reflection.
 	 *
-	 * @param klass  the type of the new array
-	 * @param arrays the arrays to be merged
+	 * @param klass  the type of the new array.
+	 * @param arrays the arrays to be merged.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static Object merge0(Class klass, Object[] arrays) {
 		Objects.requireNonNull(arrays, "arrays");
@@ -2548,13 +2594,14 @@ public final class Arrayz {
 		if (!klass.isArray())
 			throw new IllegalArgumentException(klass + " isn't an array class");
 
-		Object product = Array.newInstance(klass.getComponentType(), sum(arrays, 0, (s, a) -> s + Array.getLength(a)));
+		Object product = Array.newInstance(klass.getComponentType(), Arrayz.sum(arrays, 0, (s, a) -> s +
+																									 Array.getLength(a)));
 
 		int i = 0;
 		for (Object array : arrays) {
 			int length = Array.getLength(array);
 
-			//if the types don't match. Then System.arraycopy() will not work
+			//if the types don't match. Then System.arraycopy() will not work.
 			Arrayz.hardcopy(array, 0, product, i, length);
 
 			i += length;
@@ -2564,36 +2611,38 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in order. Using {@code if}
-	 * statements.
+	 * Merge the given arrays in a new array. The new array will contain the content of the given arrays merged in
+	 * order. Using {@code if} statements.
 	 *
-	 * @param arrays the arrays to be merged
+	 * @param arrays the arrays to be merged.
 	 * @return an array that includes all the elements of the given arrays ordered with the order of the arrays given.
-	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't an array class
-	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the given klass is null
-	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array
+	 * @throws IllegalArgumentException if any of the given arrays is not actually an array. Or if the given class isn't
+	 *                                  an array class.
+	 * @throws NullPointerException     if 'arrays' param is null. Or if any of the given arrays are null. Or if the
+	 *                                  given klass is null.
+	 * @throws ArrayStoreException      if any element from the given arrays can't be stored at the product array.
 	 */
 	public static Object merge1(Object[] arrays) {
 		Objects.requireNonNull(arrays, "arrays");
 
 		if (arrays instanceof Object[][])
-			return merge((Object[][]) arrays);
+			return Arrayz.merge((Object[][]) arrays);
 		if (arrays instanceof boolean[][])
-			return merge((boolean[][]) arrays);
+			return Arrayz.merge((boolean[][]) arrays);
 		if (arrays instanceof byte[][])
-			return merge((byte[][]) arrays);
+			return Arrayz.merge((byte[][]) arrays);
 		if (arrays instanceof char[][])
-			return merge((char[][]) arrays);
+			return Arrayz.merge((char[][]) arrays);
 		if (arrays instanceof double[][])
-			return merge((double[][]) arrays);
+			return Arrayz.merge((double[][]) arrays);
 		if (arrays instanceof float[][])
-			return merge((float[][]) arrays);
+			return Arrayz.merge((float[][]) arrays);
 		if (arrays instanceof int[][])
-			return merge((int[][]) arrays);
+			return Arrayz.merge((int[][]) arrays);
 		if (arrays instanceof long[][])
-			return merge((long[][]) arrays);
+			return Arrayz.merge((long[][]) arrays);
 		if (arrays instanceof short[][])
-			return merge((short[][]) arrays);
+			return Arrayz.merge((short[][]) arrays);
 
 		throw new IllegalArgumentException("not an array of array");
 	}
@@ -2601,17 +2650,17 @@ public final class Arrayz {
 	//sum
 
 	/**
-	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
-	 * together.
+	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum
+	 * all the returned values together.
 	 *
-	 * @param array      to sum their elements
-	 * @param initialSum the initial sum
-	 * @param function   the function to get the value of each element
-	 * @param <T>        the type of the sum
-	 * @param <U>        the type of the elements on the given array
-	 * @return the total sum of the given arrays
-	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
-	 * @throws IllegalArgumentException if any of the given array isn't actually an array
+	 * @param array      to sum their elements.
+	 * @param initialSum the initial sum.
+	 * @param function   the function to get the value of each element.
+	 * @param <T>        the type of the sum.
+	 * @param <U>        the type of the elements on the given array.
+	 * @return the total sum of the given arrays.
+	 * @throws NullPointerException     if ether the given {@code array} or {@code function} is null.
+	 * @throws IllegalArgumentException if any of the given array isn't actually an array.
 	 */
 	public static <T, U> T sum(U[] array, T initialSum, BiFunction<T, U, T> function) {
 		Objects.requireNonNull(array, "array");
@@ -2625,16 +2674,16 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
-	 * together.
+	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum
+	 * all the returned values together.
 	 *
-	 * @param array      to sum their elements
-	 * @param initialSum the initial sum
-	 * @param function   the function to get the value of each element
-	 * @param <T>        the type of the sum
-	 * @return the total sum of the given arrays
-	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
-	 * @throws IllegalArgumentException if any of the given array isn't actually an array
+	 * @param array      to sum their elements.
+	 * @param initialSum the initial sum.
+	 * @param function   the function to get the value of each element.
+	 * @param <T>        the type of the sum.
+	 * @return the total sum of the given arrays.
+	 * @throws NullPointerException     if ether the given {@code array} or {@code function} is null.
+	 * @throws IllegalArgumentException if any of the given array isn't actually an array.
 	 */
 	public static <T> T sum(boolean[] array, T initialSum, BiFunction<T, Boolean, T> function) {
 		Objects.requireNonNull(array, "array");
@@ -2648,16 +2697,16 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
-	 * together.
+	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum
+	 * all the returned values together.
 	 *
-	 * @param array      to sum their elements
-	 * @param initialSum the initial sum
-	 * @param function   the function to get the value of each element
-	 * @param <T>        the type of the sum
-	 * @return the total sum of the given arrays
-	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
-	 * @throws IllegalArgumentException if any of the given array isn't actually an array
+	 * @param array      to sum their elements.
+	 * @param initialSum the initial sum.
+	 * @param function   the function to get the value of each element.
+	 * @param <T>        the type of the sum.
+	 * @return the total sum of the given arrays.
+	 * @throws NullPointerException     if ether the given {@code array} or {@code function} is null.
+	 * @throws IllegalArgumentException if any of the given array isn't actually an array.
 	 */
 	public static <T> T sum(byte[] array, T initialSum, BiFunction<T, Byte, T> function) {
 		Objects.requireNonNull(array, "array");
@@ -2671,16 +2720,16 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
-	 * together.
+	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum
+	 * all the returned values together.
 	 *
-	 * @param array      to sum their elements
-	 * @param initialSum the initial sum
-	 * @param function   the function to get the value of each element
-	 * @param <T>        the type of the sum
-	 * @return the total sum of the given arrays
-	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
-	 * @throws IllegalArgumentException if any of the given array isn't actually an array
+	 * @param array      to sum their elements.
+	 * @param initialSum the initial sum.
+	 * @param function   the function to get the value of each element.
+	 * @param <T>        the type of the sum.
+	 * @return the total sum of the given arrays.
+	 * @throws NullPointerException     if ether the given {@code array} or {@code function} is null.
+	 * @throws IllegalArgumentException if any of the given array isn't actually an array.
 	 */
 	public static <T> T sum(char[] array, T initialSum, BiFunction<T, Character, T> function) {
 		Objects.requireNonNull(array, "array");
@@ -2694,16 +2743,16 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
-	 * together.
+	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum
+	 * all the returned values together.
 	 *
-	 * @param array      to sum their elements
-	 * @param initialSum the initial sum
-	 * @param function   the function to get the value of each element
-	 * @param <T>        the type of the sum
-	 * @return the total sum of the given arrays
-	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
-	 * @throws IllegalArgumentException if any of the given array isn't actually an array
+	 * @param array      to sum their elements.
+	 * @param initialSum the initial sum.
+	 * @param function   the function to get the value of each element.
+	 * @param <T>        the type of the sum.
+	 * @return the total sum of the given arrays.
+	 * @throws NullPointerException     if ether the given {@code array} or {@code function} is null.
+	 * @throws IllegalArgumentException if any of the given array isn't actually an array.
 	 */
 	public static <T> T sum(double[] array, T initialSum, BiFunction<T, Double, T> function) {
 		Objects.requireNonNull(array, "array");
@@ -2717,16 +2766,16 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
-	 * together.
+	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum
+	 * all the returned values together.
 	 *
-	 * @param array      to sum their elements
-	 * @param initialSum the initial sum
-	 * @param function   the function to get the value of each element
-	 * @param <T>        the type of the sum
-	 * @return the total sum of the given arrays
-	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
-	 * @throws IllegalArgumentException if any of the given array isn't actually an array
+	 * @param array      to sum their elements.
+	 * @param initialSum the initial sum.
+	 * @param function   the function to get the value of each element.
+	 * @param <T>        the type of the sum.
+	 * @return the total sum of the given arrays.
+	 * @throws NullPointerException     if ether the given {@code array} or {@code function} is null.
+	 * @throws IllegalArgumentException if any of the given array isn't actually an array.
 	 */
 	public static <T> T sum(float[] array, T initialSum, BiFunction<T, Float, T> function) {
 		Objects.requireNonNull(array, "array");
@@ -2740,16 +2789,16 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
-	 * together.
+	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum
+	 * all the returned values together.
 	 *
-	 * @param array      to sum their elements
-	 * @param initialSum the initial sum
-	 * @param function   the function to get the value of each element
-	 * @param <T>        the type of the sum
-	 * @return the total sum of the given arrays
-	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
-	 * @throws IllegalArgumentException if any of the given array isn't actually an array
+	 * @param array      to sum their elements.
+	 * @param initialSum the initial sum.
+	 * @param function   the function to get the value of each element.
+	 * @param <T>        the type of the sum.
+	 * @return the total sum of the given arrays.
+	 * @throws NullPointerException     if ether the given {@code array} or {@code function} is null.
+	 * @throws IllegalArgumentException if any of the given array isn't actually an array.
 	 */
 	public static <T> T sum(int[] array, T initialSum, BiFunction<T, Integer, T> function) {
 		Objects.requireNonNull(array, "array");
@@ -2763,16 +2812,16 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
-	 * together.
+	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum
+	 * all the returned values together.
 	 *
-	 * @param array      to sum their elements
-	 * @param initialSum the initial sum
-	 * @param function   the function to get the value of each element
-	 * @param <T>        the type of the sum
-	 * @return the total sum of the given arrays
-	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
-	 * @throws IllegalArgumentException if any of the given array isn't actually an array
+	 * @param array      to sum their elements.
+	 * @param initialSum the initial sum.
+	 * @param function   the function to get the value of each element.
+	 * @param <T>        the type of the sum.
+	 * @return the total sum of the given arrays.
+	 * @throws NullPointerException     if ether the given {@code array} or {@code function} is null.
+	 * @throws IllegalArgumentException if any of the given array isn't actually an array.
 	 */
 	public static <T> T sum(long[] array, T initialSum, BiFunction<T, Long, T> function) {
 		Objects.requireNonNull(array, "array");
@@ -2786,16 +2835,16 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
-	 * together.
+	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum
+	 * all the returned values together.
 	 *
-	 * @param array      to sum their elements
-	 * @param initialSum the initial sum
-	 * @param function   the function to get the value of each element
-	 * @param <T>        the type of the sum
-	 * @return the total sum of the given arrays
-	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
-	 * @throws IllegalArgumentException if any of the given array isn't actually an array
+	 * @param array      to sum their elements.
+	 * @param initialSum the initial sum.
+	 * @param function   the function to get the value of each element.
+	 * @param <T>        the type of the sum.
+	 * @return the total sum of the given arrays.
+	 * @throws NullPointerException     if ether the given {@code array} or {@code function} is null.
+	 * @throws IllegalArgumentException if any of the given array isn't actually an array.
 	 */
 	public static <T> T sum(short[] array, T initialSum, BiFunction<T, Short, T> function) {
 		Objects.requireNonNull(array, "array");
@@ -2809,15 +2858,15 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
-	 * together. Using reflection.
+	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum
+	 * all the returned values together. Using reflection.
 	 *
-	 * @param array      to sum their elements
-	 * @param initialSum the initial sum
-	 * @param function   the function to get the value of each element
-	 * @return the total sum of the given arrays
-	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
-	 * @throws IllegalArgumentException if any of the given array isn't actually an array
+	 * @param array      to sum their elements.
+	 * @param initialSum the initial sum.
+	 * @param function   the function to get the value of each element.
+	 * @return the total sum of the given arrays.
+	 * @throws NullPointerException     if ether the given {@code array} or {@code function} is null.
+	 * @throws IllegalArgumentException if any of the given array isn't actually an array.
 	 */
 	public static Object sum0(Object array, Object initialSum, BiFunction function) {
 		Objects.requireNonNull(array, "array");
@@ -2834,37 +2883,37 @@ public final class Arrayz {
 	}
 
 	/**
-	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum all the returned values
-	 * together. Using {@code if} statements.
+	 * Get the total sum of the given array. By applying the given function foreach element of the given array. Then sum
+	 * all the returned values together. Using {@code if} statements.
 	 *
-	 * @param array      to sum their elements
-	 * @param initialSum the initial sum
-	 * @param function   the function to get the value of each element
-	 * @return the total sum of the given arrays
-	 * @throws NullPointerException     if ether the given 'array' or the given 'function' is null
-	 * @throws IllegalArgumentException if any of the given array isn't actually an array
+	 * @param array      to sum their elements.
+	 * @param initialSum the initial sum.
+	 * @param function   the function to get the value of each element.
+	 * @return the total sum of the given arrays.
+	 * @throws NullPointerException     if ether the given {@code array} or {@code function} is null.
+	 * @throws IllegalArgumentException if any of the given array isn't actually an array.
 	 */
 	public static Object sum1(Object array, Object initialSum, BiFunction function) {
 		Objects.requireNonNull(array, "array");
 
 		if (array instanceof Object[])
-			return sum((Object[]) array, initialSum, function);
+			return Arrayz.sum((Object[]) array, initialSum, function);
 		if (array instanceof boolean[])
-			return sum((boolean[]) array, initialSum, function);
+			return Arrayz.sum((boolean[]) array, initialSum, function);
 		if (array instanceof byte[])
-			return sum((byte[]) array, initialSum, function);
+			return Arrayz.sum((byte[]) array, initialSum, function);
 		if (array instanceof char[])
-			return sum((char[]) array, initialSum, function);
+			return Arrayz.sum((char[]) array, initialSum, function);
 		if (array instanceof double[])
-			return sum((double[]) array, initialSum, function);
+			return Arrayz.sum((double[]) array, initialSum, function);
 		if (array instanceof float[])
-			return sum((float[]) array, initialSum, function);
+			return Arrayz.sum((float[]) array, initialSum, function);
 		if (array instanceof int[])
-			return sum((int[]) array, initialSum, function);
+			return Arrayz.sum((int[]) array, initialSum, function);
 		if (array instanceof long[])
-			return sum((long[]) array, initialSum, function);
+			return Arrayz.sum((long[]) array, initialSum, function);
 		if (array instanceof short[])
-			return sum((short[]) array, initialSum, function);
+			return Arrayz.sum((short[]) array, initialSum, function);
 
 		throw new IllegalArgumentException("not an array");
 	}
