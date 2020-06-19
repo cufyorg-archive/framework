@@ -20,22 +20,22 @@ import java.util.Objects;
 /**
  * Looping until get broken manually.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
- * @since 07-Dec-2019
+ * @since 0.0.1 ~2019.12.07
  */
 public class Forever extends Loop<Forever.Code> {
 	/**
-	 * Construct a new forever loop.
+	 * Construct a new {@code forever} loop.
 	 */
 	public Forever() {
 	}
 
 	/**
-	 * Construct a new forever loop with the given parameters.
+	 * Construct a new {@code forever} loop with the given parameters.
 	 *
-	 * @param code the first looping code
-	 * @throws NullPointerException if the given code is null
+	 * @param code the first looping code.
+	 * @throws NullPointerException if the given {@code code} is null.
 	 */
 	public Forever(Code code) {
 		Objects.requireNonNull(code, "code");
@@ -44,11 +44,12 @@ public class Forever extends Loop<Forever.Code> {
 
 	@Override
 	protected void loop() {
-		while (this.next(null)) ;
+		while (this.next(null))
+			;
 	}
 
 	/**
-	 * A loop-code for {@code Forever} loops.
+	 * A loop code for {@code Forever} loops. Represents the {@code code block}.
 	 */
 	@FunctionalInterface
 	public interface Code extends Loop.Code<Forever> {
@@ -58,11 +59,11 @@ public class Forever extends Loop<Forever.Code> {
 		}
 
 		/**
-		 * Perform this {@code Forever} loop-code with the given item. Get called when a {@code Forever} loop is executing its code and this code is
-		 * added to its code.
+		 * Perform this {@code Forever} loop code with the given item. Get called when a {@code Forever} loop is
+		 * executing its code and this code is added to its code.
 		 *
 		 * @param loop the loop that executed this code
-		 * @throws NullPointerException if the given 'loop' is null
+		 * @throws NullPointerException if the given {@code loop} is null.
 		 */
 		void onRun(Forever loop);
 	}

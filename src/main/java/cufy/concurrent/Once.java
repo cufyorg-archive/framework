@@ -18,24 +18,24 @@ package cufy.concurrent;
 import java.util.Objects;
 
 /**
- * A loop to do code just one time.
+ * A loop that executes its code just one time.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
- * @since 13-Feb-2020
+ * @since 0.1.0 ~2020.02.13
  */
 public class Once extends Loop<Once.Code> {
 	/**
-	 * Construct a new 'do' loop.
+	 * Construct a new {@code once} loop.
 	 */
 	public Once() {
 	}
 
 	/**
-	 * Construct a new 'do' loop with the given parameters.
+	 * Construct a new {@code once} loop with the given parameters.
 	 *
-	 * @param code the first looping code
-	 * @throws NullPointerException if the given code is null
+	 * @param code the first looping code.
+	 * @throws NullPointerException if the given code is null.
 	 */
 	public Once(Code code) {
 		Objects.requireNonNull(code, "code");
@@ -48,7 +48,7 @@ public class Once extends Loop<Once.Code> {
 	}
 
 	/**
-	 * A loop-code for {@code Once} loops.
+	 * A loop code for {@code Once} loops. Represents the {@code code block}.
 	 */
 	@FunctionalInterface
 	public interface Code extends Loop.Code<Once> {
@@ -58,11 +58,11 @@ public class Once extends Loop<Once.Code> {
 		}
 
 		/**
-		 * Perform this {@code Once} loop-code with the given item. Get called when a {@code Once} loop is executing its code and this code is added
-		 * to its code.
+		 * Perform this {@code Once} loop code with the given item. Get called when a {@code Once} loop is executing its
+		 * code and this code is added to its code.
 		 *
-		 * @param loop the loop that executed this code
-		 * @throws NullPointerException if the given 'loop' is null
+		 * @param loop the loop that executed this code.
+		 * @throws NullPointerException if the given {@code loop} is null.
 		 */
 		void onRun(Once loop);
 	}

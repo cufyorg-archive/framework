@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Loop for each item of a list.
+ * A {@link Loop} version of the typical {@code for(element : iterable)} statement.
  *
  * @param <I> items Type
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
- * @since 07-Dec-2019
+ * @since 0.0.1 ~2019.12.07
  */
 public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	/**
@@ -36,10 +36,10 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	protected final Iterable<I> iterable;
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @throws NullPointerException if the given array is null
+	 * @param array of items to be looped foreach.
+	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public Foreach(I[] array) {
 		Objects.requireNonNull(array, "array");
@@ -47,10 +47,10 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @throws NullPointerException if the given array is null
+	 * @param array of items to be looped foreach.
+	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public Foreach(boolean[] array) {
 		Objects.requireNonNull(array, "array");
@@ -58,10 +58,10 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @throws NullPointerException if the given array is null
+	 * @param array of items to be looped foreach.
+	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public Foreach(byte[] array) {
 		Objects.requireNonNull(array, "array");
@@ -69,10 +69,10 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @throws NullPointerException if the given array is null
+	 * @param array of items to be looped foreach.
+	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public Foreach(char[] array) {
 		Objects.requireNonNull(array, "array");
@@ -80,10 +80,10 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @throws NullPointerException if the given array is null
+	 * @param array of items to be looped foreach.
+	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public Foreach(double[] array) {
 		Objects.requireNonNull(array, "array");
@@ -91,10 +91,10 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @throws NullPointerException if the given array is null
+	 * @param array of items to be looped foreach.
+	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public Foreach(float[] array) {
 		Objects.requireNonNull(array, "array");
@@ -102,10 +102,10 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @throws NullPointerException if the given array is null
+	 * @param array of items to be looped foreach.
+	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public Foreach(int[] array) {
 		Objects.requireNonNull(array, "array");
@@ -113,10 +113,10 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @throws NullPointerException if the given array is null
+	 * @param array of items to be looped foreach.
+	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public Foreach(long[] array) {
 		Objects.requireNonNull(array, "array");
@@ -124,10 +124,10 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @throws NullPointerException if the given array is null
+	 * @param array of items to be looped foreach.
+	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public Foreach(short[] array) {
 		Objects.requireNonNull(array, "array");
@@ -135,10 +135,10 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param iterable of items to be looped foreach
-	 * @throws NullPointerException if the given iterable is null
+	 * @param iterable of items to be looped foreach.
+	 * @throws NullPointerException if the given {@code iterable} is null.
 	 */
 	public Foreach(Iterable<I> iterable) {
 		Objects.requireNonNull(iterable, "iterable");
@@ -146,11 +146,11 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @param code  first looping code
-	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 * @param array of items to be looped foreach.
+	 * @param code  first looping code.
+	 * @throws NullPointerException if the given {@code array} or {@code code} is null.
 	 */
 	public Foreach(I[] array, Code<I> code) {
 		Objects.requireNonNull(array, "array");
@@ -160,11 +160,11 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @param code  first looping code
-	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 * @param array of items to be looped foreach.
+	 * @param code  first looping code.
+	 * @throws NullPointerException if the given {@code array} or {@code code} is null.
 	 */
 	public Foreach(boolean[] array, Code<Boolean> code) {
 		Objects.requireNonNull(array, "array");
@@ -174,11 +174,11 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @param code  first looping code
-	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 * @param array of items to be looped foreach.
+	 * @param code  first looping code.
+	 * @throws NullPointerException if the given {@code array} or {@code code} is null.
 	 */
 	public Foreach(byte[] array, Code<Byte> code) {
 		Objects.requireNonNull(array, "array");
@@ -188,11 +188,11 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @param code  first looping code
-	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 * @param array of items to be looped foreach.
+	 * @param code  first looping code.
+	 * @throws NullPointerException if the given {@code array} or {@code code} is null.
 	 */
 	public Foreach(char[] array, Code<Character> code) {
 		Objects.requireNonNull(array, "array");
@@ -202,11 +202,11 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @param code  first looping code
-	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 * @param array of items to be looped foreach.
+	 * @param code  first looping code.
+	 * @throws NullPointerException if the given {@code array} or {@code code} is null.
 	 */
 	public Foreach(double[] array, Code<Double> code) {
 		Objects.requireNonNull(array, "array");
@@ -216,11 +216,11 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @param code  first looping code
-	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 * @param array of items to be looped foreach.
+	 * @param code  first looping code.
+	 * @throws NullPointerException if the given {@code array} or {@code code} is null.
 	 */
 	public Foreach(float[] array, Code<Float> code) {
 		Objects.requireNonNull(array, "array");
@@ -230,11 +230,11 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @param code  first looping code
-	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 * @param array of items to be looped foreach.
+	 * @param code  first looping code.
+	 * @throws NullPointerException if the given {@code array} or {@code code} is null.
 	 */
 	public Foreach(int[] array, Code<Integer> code) {
 		Objects.requireNonNull(array, "array");
@@ -244,11 +244,11 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @param code  first looping code
-	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 * @param array of items to be looped foreach.
+	 * @param code  first looping code.
+	 * @throws NullPointerException if the given {@code array} or {@code code} is null.
 	 */
 	public Foreach(long[] array, Code<Long> code) {
 		Objects.requireNonNull(array, "array");
@@ -258,11 +258,11 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param array of items to be looped foreach
-	 * @param code  first looping code
-	 * @throws NullPointerException if the given 'array' or 'code' is null
+	 * @param array of items to be looped foreach.
+	 * @param code  first looping code.
+	 * @throws NullPointerException if the given {@code array} or {@code code} is null.
 	 */
 	public Foreach(short[] array, Code<Short> code) {
 		Objects.requireNonNull(array, "array");
@@ -272,11 +272,11 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * Initialize this.
+	 * Construct a new {@code foreach} loop with the given arguments.
 	 *
-	 * @param iterable of items to be looped foreach
-	 * @param code     first looping code
-	 * @throws NullPointerException if the given 'iterable' or 'code' is null
+	 * @param iterable of items to be looped foreach.
+	 * @param code     first looping code.
+	 * @throws NullPointerException if the given {@code iterable} or {@code code} is null.
 	 */
 	public Foreach(Iterable<I> iterable, Code<I> code) {
 		Objects.requireNonNull(iterable, "iterable");
@@ -293,9 +293,9 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	}
 
 	/**
-	 * A loop-code for {@code Foreach} loops.
+	 * A loop code for {@code Foreach} loops. Represents the {@code code block}.
 	 *
-	 * @param <I> the type of iterating items
+	 * @param <I> the type of iterating items.
 	 */
 	@FunctionalInterface
 	public interface Code<I> extends Loop.Code<Foreach> {
@@ -305,12 +305,12 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 		}
 
 		/**
-		 * Perform this {@code Foreach} loop-code with the given item. Get called when a {@code Foreach} loop is executing its code and this code is
-		 * added to its code.
+		 * Perform this {@code Foreach} loop code with the given item. Get called when a {@code Foreach} loop is
+		 * executing its code and this code is added to its code.
 		 *
-		 * @param loop the loop that executed this code
-		 * @param item the current item in the foreach-iteration
-		 * @throws NullPointerException if the given 'loop' is null
+		 * @param loop the loop that executed this code.
+		 * @param item the current item in the foreach iteration.
+		 * @throws NullPointerException if the given {@code loop} is null.
 		 */
 		void onRun(Foreach<I> loop, I item);
 	}

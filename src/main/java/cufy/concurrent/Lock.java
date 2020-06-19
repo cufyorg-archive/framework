@@ -22,25 +22,25 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A java lock locker thread. Designed to be a replacement of wrapping the code with 'synchronized' statement. By creating a thread on the background
- * to {@link #lock()} that lock and hold it until {@link #unlock()} get invoked.
+ * A java lock locker thread. Designed to be a replacement of wrapping the code with {@code synchronized} statements. By
+ * creating a thread on the background to {@link #lock()} that lock and hold it until {@link #unlock()} get invoked.
  *
  * @param <T> the type of that lock
- * @author lsafer
+ * @author LSafer
  * @version 0.1.3
- * @since 07-Dec-2019
+ * @since 0.0.1 ~2019.12.07
  */
 public class Lock<T> extends Thread implements Closeable {
 	/**
-	 * The lock holder should end it's thread.
+	 * The lock holder should end its thread.
 	 */
 	protected static final int CLOSE = -1;
 	/**
-	 * The lock holder should gain it's targeted lock.
+	 * The lock holder should gain its targeted lock.
 	 */
 	protected static final int LOCK = 1;
 	/**
-	 * The lock holder should release it's targeted lock.
+	 * The lock holder should release its targeted lock.
 	 */
 	protected static final int UNLOCK = 0;
 
@@ -55,13 +55,13 @@ public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * The reference to communicate with the lock holder thread. Representing the state integer code.
 	 */
-	protected final AtomicInteger state = new AtomicInteger(UNLOCK);
+	protected final AtomicInteger state = new AtomicInteger(Lock.UNLOCK);
 
 	/**
 	 * Initialize a new lock holder.
 	 *
-	 * @param lock the targeted lock
-	 * @throws NullPointerException if the given lock is null
+	 * @param lock the targeted lock.
+	 * @throws NullPointerException if the given {@code lock} is null.
 	 */
 	public Lock(T lock) {
 		Objects.requireNonNull(lock, "lock");
@@ -80,18 +80,18 @@ public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @throws IllegalThreadException if the caller thread isn't the owner thread of this lock
+	 * @throws IllegalThreadException if the {@code caller thread} isn't the owner thread of this lock
 	 */
 	@Override
 	public void close() {
 		this.assertMasterThread();
 		synchronized (this.state) {
-			if (this.state.get() == CLOSE)
+			if (this.state.get() == Lock.CLOSE)
 				//already closed
 				return;
 			try {
 				//change the state
-				this.state.set(CLOSE);
+				this.state.set(Lock.CLOSE);
 				//notify the thread
 				this.state.notify();
 				//wait for the thread to do its job
@@ -106,47 +106,46 @@ public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @throws IllegalThreadException if the caller thread is not this
+	 * @throws IllegalThreadException if the {@code caller thread} is not this.
 	 */
 	@Override
 	public void run() {
 		this.assertThisThread();
-		while (true) {
+		while (true)
 			synchronized (this.state) {
 				switch (this.state.get()) {
-					case UNLOCK:
+					case Lock.UNLOCK:
 						this.unlock0();
 						break;
-					case LOCK:
+					case Lock.LOCK:
 						this.lock0();
 						break;
-					case CLOSE:
+					case Lock.CLOSE:
 						this.close0();
 						return;
 					default:
 						throw new IllegalStateException(this.state.toString());
 				}
 			}
-		}
 	}
 
 	/**
 	 * Hold the lock. Wait for the lock been gained.
 	 *
-	 * @throws IllegalThreadStateException if this lock already closed
-	 * @throws IllegalThreadException      if the caller thread isn't the master of this
+	 * @throws IllegalThreadStateException if this lock already closed.
+	 * @throws IllegalThreadException      if the {@code caller thread} isn't the master of this.
 	 */
 	public void lock() {
 		this.assertMasterThread();
 		synchronized (this.state) {
-			if (this.state.get() == LOCK)
+			if (this.state.get() == Lock.LOCK)
 				//if already locked
 				return;
 			if (!this.isAlive())
 				this.start();
 			try {
 				//change the state
-				this.state.set(LOCK);
+				this.state.set(Lock.LOCK);
 				//notify the thread
 				this.state.notify();
 				//wait for the thread to do its job
@@ -159,18 +158,18 @@ public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * Release the targeted lock by this.
 	 *
-	 * @throws IllegalThreadException if the caller thread isn't the master of this
+	 * @throws IllegalThreadException if the {@code caller thread} isn't the master of this.
 	 */
 	public void unlock() {
 		this.assertMasterThread();
 		synchronized (this.state) {
 			int s = this.state.get();
-			if (s == UNLOCK || s == CLOSE || !this.isAlive())
+			if (s == Lock.UNLOCK || s == Lock.CLOSE || !this.isAlive())
 				//if already released
 				return;
 			try {
 				//change the state
-				this.state.set(UNLOCK);
+				this.state.set(Lock.UNLOCK);
 				//notify the thread
 				this.state.notify();
 				//wait for the thread to do its job
@@ -183,7 +182,7 @@ public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * Do code before closing the lock.
 	 *
-	 * @throws IllegalThreadException if the caller thread isn't this thread
+	 * @throws IllegalThreadException if the {@code caller thread} isn't this thread.
 	 */
 	protected void close0() {
 		this.assertThisThread();
@@ -196,7 +195,7 @@ public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * Sleep with while owning the lock.
 	 *
-	 * @throws IllegalThreadException if the caller thread isn't this thread
+	 * @throws IllegalThreadException if the {@code caller thread} isn't this thread.
 	 */
 	protected void lock0() {
 		this.assertThisThread();
@@ -216,7 +215,7 @@ public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * Sleep until notified.
 	 *
-	 * @throws IllegalThreadException if the caller thread isn't this thread
+	 * @throws IllegalThreadException if the {@code caller thread} isn't this thread.
 	 */
 	protected void unlock0() {
 		this.assertThisThread();
@@ -234,7 +233,7 @@ public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * Assert that the caller thread is the master of this lock.
 	 *
-	 * @throws IllegalThreadException if the caller thread isn't the master of this
+	 * @throws IllegalThreadException if the {@code caller thread} isn't the master of this.
 	 */
 	private void assertMasterThread() {
 		Thread current = Thread.currentThread();
@@ -245,7 +244,7 @@ public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * Assert that the caller thread is this lock.
 	 *
-	 * @throws IllegalThreadException if the caller thread isn't this thread
+	 * @throws IllegalThreadException if the {@code caller thread} isn't this thread.
 	 */
 	private void assertThisThread() {
 		Thread current = Thread.currentThread();

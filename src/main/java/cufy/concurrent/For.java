@@ -18,16 +18,16 @@ package cufy.concurrent;
 import java.util.Objects;
 
 /**
- * A {@link Loop} version of the typical 'for' statement.
+ * A {@link Loop} version of the typical {@code for(declaration; condition; increment)} statement.
  *
  * @param <I> The type of the first initialized variable
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
- * @since 07-Dec-2019
+ * @since 0.0.1 ~2019.12.07
  */
 public class For<I> extends Loop<For.Code<I>> {
 	/**
-	 * The function to be applied before each round on the loop to check whether the loop shall continue or break.
+	 * The function to be applied before each round on the loop to check whether the loop must continue or break.
 	 */
 	protected final Condition<I> condition;
 	/**
@@ -40,12 +40,12 @@ public class For<I> extends Loop<For.Code<I>> {
 	protected I variable;
 
 	/**
-	 * Construct a new for loop with the given arguments.
+	 * Construct a new {@code for} loop with the given arguments.
 	 *
-	 * @param variable  initial variable
-	 * @param condition looping condition
-	 * @param increment action to be applied to the variable on each round
-	 * @throws NullPointerException if ether the given 'condition' or 'increment' is null
+	 * @param variable  initial variable.
+	 * @param condition looping condition.
+	 * @param increment action to be applied to the variable on each round.
+	 * @throws NullPointerException if the given {@code condition} or {@code increment} is null.
 	 */
 	public For(I variable, Condition<I> condition, Increment<I> increment) {
 		Objects.requireNonNull(condition, "condition");
@@ -56,13 +56,13 @@ public class For<I> extends Loop<For.Code<I>> {
 	}
 
 	/**
-	 * Construct a new for loop with the given arguments.
+	 * Construct a new {@code for} loop with the given arguments.
 	 *
-	 * @param variable  initial variable
-	 * @param condition looping condition
-	 * @param increment action to be applied to the variable on each round
-	 * @param code      first looping code
-	 * @throws NullPointerException if one of the given 'condition' or 'reducer' or 'code' is null
+	 * @param variable  initial variable.
+	 * @param condition looping condition.
+	 * @param increment action to be applied to the variable on each round.
+	 * @param code      first looping code.
+	 * @throws NullPointerException if the given {@code condition} or {@code increment} or {@code code} is null.
 	 */
 	public For(I variable, Condition<I> condition, Increment<I> increment, Code<I> code) {
 		Objects.requireNonNull(condition, "condition");
@@ -81,9 +81,9 @@ public class For<I> extends Loop<For.Code<I>> {
 	}
 
 	/**
-	 * A loop-code for {@code For} loops.
+	 * A loop code for {@code For} loops. Representing the {@code code block}.
 	 *
-	 * @param <I> the type of iterating items
+	 * @param <I> the type of iterating items.
 	 */
 	@FunctionalInterface
 	public interface Code<I> extends Loop.Code<For> {
@@ -93,44 +93,44 @@ public class For<I> extends Loop<For.Code<I>> {
 		}
 
 		/**
-		 * Perform this {@code For} loop-code with the given item. Get called when a {@code For} loop is executing its code and this code is added to
-		 * its code.
+		 * Perform this {@code For} loop code with the given item. Get called when a {@code For} loop is executing its
+		 * code and this code is added to its code.
 		 *
-		 * @param loop the loop that executed this code
-		 * @param item the current item in the for-iteration
-		 * @throws NullPointerException if the given 'loop' is null
+		 * @param loop the loop that executed this code.
+		 * @param item the current item in the for iteration.
+		 * @throws NullPointerException if the given {@code loop} is null.
 		 */
 		void onRun(For<Code<I>> loop, I item);
 	}
 
 	/**
-	 * A condition check for {@code For} loops.
+	 * A condition check for {@code For} loops. Represents the {@code condition}.
 	 *
-	 * @param <I> the type of the iterating items
+	 * @param <I> the type of the iterating items.
 	 */
 	@FunctionalInterface
 	public interface Condition<I> {
 		/**
-		 * Check if the loop should continue iterating or not.
+		 * Determine if the loop should continue iterating or not.
 		 *
-		 * @param item the current iterating item
-		 * @return true, to not stop the loop
+		 * @param item the current iterating item.
+		 * @return true, to not stop the loop.
 		 */
 		boolean check(I item);
 	}
 
 	/**
-	 * The code that changes the iterating item for {@code For} loops.
+	 * The code that changes the iterating item for {@code For} loops. Represents the {@code increment}.
 	 *
-	 * @param <I> the type of the iterating items
+	 * @param <I> the type of the iterating items.
 	 */
 	@FunctionalInterface
 	public interface Increment<I> {
 		/**
 		 * Increment the given item to be replaced in the {@code For} loop.
 		 *
-		 * @param item the current item
-		 * @return the next item
+		 * @param item the current item.
+		 * @return the next item.
 		 */
 		I increment(I item);
 	}

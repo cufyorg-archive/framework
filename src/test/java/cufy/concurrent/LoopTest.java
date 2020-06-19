@@ -3,7 +3,7 @@ package cufy.concurrent;
 import org.junit.Assert;
 import org.junit.Test;
 
-@SuppressWarnings({"JavaDoc"})
+@SuppressWarnings("JavaDoc")
 public class LoopTest {
 	@Test(timeout = 700)
 	public void join() {

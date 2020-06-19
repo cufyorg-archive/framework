@@ -5,7 +5,7 @@ import org.junit.Test;
 
 @SuppressWarnings("JavaDoc")
 public class InstructorTest {
-	@Test(timeout = 100)
+	@Test(timeout = 1000)
 	public void join() {
 		Instructor instructor = new Instructor();
 		Forever loop0 = new Forever(instructor::tick);
@@ -16,7 +16,7 @@ public class InstructorTest {
 
 		instructor.pair();
 
-		Assert.assertTrue("haven't paired correctly!", instructor.getLoops().size() != 0);
+		Assert.assertFalse("haven't paired correctly!", instructor.getLoops().isEmpty());
 
 		loop0.pair();
 		loop1.pair();

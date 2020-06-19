@@ -14,13 +14,13 @@
  *	limitations under the License.
  */
 /**
- * When it comes to concurrent actions. Complexity is all over the place. Using instances that manages those concurrent actions is the solution. Those
- * utils helps to deal with concurrent actions and infinite loops. And many other concurrent actions. And what makes it special that it depends on the
- * logic rather than the timing.
+ * When it comes to concurrent actions. Complexity is all over the place. Using instances that manages those concurrent
+ * actions is the solution. Those utils helps to deal with concurrent actions and infinite loops. And many other
+ * concurrent actions. And what makes it special that it depends on the logic rather than the timing.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
- * @see <a href="https://framework.cufy.org/site/concurrent">framework.cufy.org/site/concurrent</a>
- * @since 18-May-2019
+ * @see <a href="https://framework.cufy.org/concurrent">framework.cufy.org/concurrent</a>
+ * @since 0.0.a ~2019.05.18
  */
 package cufy.concurrent;
