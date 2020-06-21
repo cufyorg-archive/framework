@@ -20,15 +20,15 @@ import java.util.Objects;
 /**
  * Useful utils for strings.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.3
- * @since 11 Jun 2019
+ * @since 0.0.a ~2019.06.11
  */
 public final class Stringz {
 	/**
-	 * This is a util class. And shall not be instanced as an object.
+	 * This is an util class and must not be instanced as an object.
 	 *
-	 * @throws AssertionError when called
+	 * @throws AssertionError when called.
 	 */
 	private Stringz() {
 		throw new AssertionError("No instance for you!");
@@ -37,10 +37,10 @@ public final class Stringz {
 	/**
 	 * Return the first missing query in the given string.
 	 *
-	 * @param string  to check
-	 * @param queries to check for
-	 * @return the first missing query on the given string. Or null if no query missing
-	 * @throws NullPointerException if the given string or any of the given queries is null. Or the queries array itself is null
+	 * @param string  to check.
+	 * @param queries to check for.
+	 * @return the first missing query on the given string. Or null if no query missing.
+	 * @throws NullPointerException if the given {@code string} or {@code queries} or any of its elements is null.
 	 */
 	public static CharSequence all(String string, CharSequence... queries) {
 		Objects.requireNonNull(string, "string");
@@ -59,10 +59,10 @@ public final class Stringz {
 	/**
 	 * Return the first query found on the given string. Or null if no query found.
 	 *
-	 * @param string  to check
-	 * @param queries to check for
-	 * @return the first found query on the given string. or null if no query found
-	 * @throws NullPointerException if the given string or any of the given queries is null. Or the queries array itself is null
+	 * @param string  to check.
+	 * @param queries to check for.
+	 * @return the first found query on the given string. or null if no query found.
+	 * @throws NullPointerException if the given {@code string} or {@code queries} or any of its elements is null.
 	 */
 	public static CharSequence any(String string, CharSequence... queries) {
 		Objects.requireNonNull(string, "string");
@@ -81,10 +81,11 @@ public final class Stringz {
 	/**
 	 * Determine if the given string ends with any of the given sequences.
 	 *
-	 * @param string    to check
-	 * @param sequences to chek for
-	 * @return the first sequence that the string ended with, or null if the string does not end with any of the given sequences
-	 * @throws NullPointerException if the given 'string' or 'sequences' is null
+	 * @param string    to check.
+	 * @param sequences to chek for.
+	 * @return the first sequence that the string ended with, or null if the string does not end with any of the given
+	 * 		sequences.
+	 * @throws NullPointerException if the given {@code string} or {@code sequences} or any of its elements is null.
 	 */
 	public static CharSequence endsWith(String string, CharSequence... sequences) {
 		Objects.requireNonNull(string, "string");
@@ -104,11 +105,11 @@ public final class Stringz {
 	 * repeat("abc_", 3) == "abc_abc_abc_"
 	 * </pre>
 	 *
-	 * @param string to repeat from
-	 * @param times  to repeat
-	 * @return new string created from repeated given string
-	 * @throws NullPointerException     if the given string or delimiter is null
-	 * @throws IllegalArgumentException if the given 'times' is negative
+	 * @param string to repeat from.
+	 * @param times  to repeat.
+	 * @return new string created from repeated given string.
+	 * @throws NullPointerException     if the given {@code string} is null.
+	 * @throws IllegalArgumentException if the given {@code times} is negative.
 	 */
 	public static String repeat(String string, int times) {
 		Objects.requireNonNull(string, "string");
@@ -135,12 +136,12 @@ public final class Stringz {
 	 * repeat("abc", " ", 3) == "abc abc abc"
 	 * </pre>
 	 *
-	 * @param string    to repeat from
-	 * @param delimiter to be in the middle of the repeated strings
-	 * @param times     to repeat
-	 * @return new string created from repeated given string
-	 * @throws NullPointerException     if the given string or delimiter is null
-	 * @throws IllegalArgumentException if the given 'times' is negative
+	 * @param string    to repeat from.
+	 * @param delimiter to be in the middle of the repeated strings.
+	 * @param times     to repeat.
+	 * @return new string created from repeated given string.
+	 * @throws NullPointerException     if the given {@code string} or {@code delimiter} is null.
+	 * @throws IllegalArgumentException if the given {@code times} is negative.
 	 */
 	public static String repeat(String string, String delimiter, int times) {
 		Objects.requireNonNull(string, "string");
@@ -173,10 +174,11 @@ public final class Stringz {
 	/**
 	 * Determine if the given string starts with any of the given sequences.
 	 *
-	 * @param string    to check
-	 * @param sequences to chek for
-	 * @return the first sequence that the string started with, or null if the string does not start with any of the given sequences
-	 * @throws NullPointerException if the given 'string' or 'sequences' is null
+	 * @param string    to check.
+	 * @param sequences to chek for.
+	 * @return the first sequence that the string started with, or null if the string does not start with any of the
+	 * 		given sequences.
+	 * @throws NullPointerException if the given {@code string} or {@code sequences} is null.
 	 */
 	public static CharSequence startsWith(String string, CharSequence... sequences) {
 		Objects.requireNonNull(string, "string");

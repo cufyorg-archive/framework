@@ -22,12 +22,12 @@ import java.util.function.BiConsumer;
 /**
  * Functional Interface that can be specified to throw an exception.
  *
- * @param <E> the exception
- * @param <T> the type of the first argument to the operation
- * @param <U> the type of the second argument to the operation
- * @author lsafer
+ * @param <E> the exception.
+ * @param <T> the type of the first argument to the operation.
+ * @param <U> the type of the second argument to the operation.
+ * @author LSafer
  * @version 0.1.3
- * @since 13-Feb-2020
+ * @since 0.1.0 ~2020.02.13
  */
 @FunctionalInterface
 public interface ThrowBiConsumer<T, U, E extends Throwable> extends BiConsumer<T, U> {
@@ -36,16 +36,16 @@ public interface ThrowBiConsumer<T, U, E extends Throwable> extends BiConsumer<T
 		try {
 			this.accept0(t, u);
 		} catch (Throwable e) {
-			Reflection.<Error>ignite(e);
+			throw Reflection.ignite(e);
 		}
 	}
 
 	/**
 	 * Performs this operation on the given arguments.
 	 *
-	 * @param t the first input argument
-	 * @param u the second input argument
-	 * @throws E the exception
+	 * @param t the first input argument.
+	 * @param u the second input argument.
+	 * @throws E the exception.
 	 */
 	void accept0(T t, U u) throws E;
 }

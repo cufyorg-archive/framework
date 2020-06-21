@@ -22,12 +22,12 @@ import java.util.function.Function;
 /**
  * Functional Interface that can be specified to throw an exception.
  *
- * @param <E> the exception
- * @param <T> the type of the input to the function
- * @param <R> the type of the result of the function
- * @author lsafer
+ * @param <E> the exception.
+ * @param <T> the type of the input to the function.
+ * @param <R> the type of the result of the function.
+ * @author LSafer
  * @version 0.1.3
- * @since 13-Feb-2020
+ * @since 0.1.0 ~2020.02.13
  */
 @FunctionalInterface
 public interface ThrowFunction<T, R, E extends Throwable> extends Function<T, R> {
@@ -36,16 +36,16 @@ public interface ThrowFunction<T, R, E extends Throwable> extends Function<T, R>
 		try {
 			return this.apply0(t);
 		} catch (Throwable e) {
-			throw Reflection.<Error>ignite(e);
+			throw Reflection.ignite(e);
 		}
 	}
 
 	/**
 	 * Applies this function to the given argument.
 	 *
-	 * @param t the function argument
-	 * @return the function result
-	 * @throws E the exception
+	 * @param t the function argument.
+	 * @return the function result.
+	 * @throws E the exception.
 	 */
 	R apply0(T t) throws E;
 }

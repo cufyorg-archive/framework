@@ -22,12 +22,12 @@ import java.util.function.BiPredicate;
 /**
  * Functional Interface that can be specified to throw an exception.
  *
- * @param <T> the type of the first argument to the predicate
- * @param <U> the type of the second argument the predicate
- * @param <E> the exception
- * @author lsafer
+ * @param <T> the type of the first argument to the predicate.
+ * @param <U> the type of the second argument the predicate.
+ * @param <E> the exception.
+ * @author LSafer
  * @version 0.1.3
- * @since 13-Feb-2020
+ * @since 0.1.0 ~2020.02.13
  */
 @FunctionalInterface
 public interface ThrowBiPredicate<T, U, E extends Throwable> extends BiPredicate<T, U> {
@@ -36,17 +36,17 @@ public interface ThrowBiPredicate<T, U, E extends Throwable> extends BiPredicate
 		try {
 			return this.test0(t, u);
 		} catch (Throwable e) {
-			throw Reflection.<Error>ignite(e);
+			throw Reflection.ignite(e);
 		}
 	}
 
 	/**
 	 * Evaluates this predicate on the given arguments.
 	 *
-	 * @param t the first input argument
-	 * @param u the second input argument
-	 * @return true if the input arguments match the predicate, otherwise false
-	 * @throws E the exception
+	 * @param t the first input argument.
+	 * @param u the second input argument.
+	 * @return true, if the input arguments match the predicate, otherwise false.
+	 * @throws E the exception.
 	 */
 	boolean test0(T t, U u) throws E;
 }

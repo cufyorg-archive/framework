@@ -26,15 +26,15 @@ import java.util.Objects;
 /**
  * Utils for dealing with java reflection.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.4
- * @since 11-Jun-2019
+ * @since 0.0.a ~2019.06.11
  */
 public final class Reflection {
 	/**
 	 * This is a utility class and shouldn't be instanced!.
 	 *
-	 * @throws AssertionError when called
+	 * @throws AssertionError when called.
 	 */
 	private Reflection() {
 		throw new AssertionError("No instance for you!");
@@ -43,10 +43,10 @@ public final class Reflection {
 	/**
 	 * Get an array class of the given class.
 	 *
-	 * @param klass to get an array class of
-	 * @param <C>   the targeted class
-	 * @return an array class of the given class
-	 * @throws NullPointerException if the given class is null
+	 * @param klass to get an array class of.
+	 * @param <C>   the targeted class.
+	 * @return an array class of the given class.
+	 * @throws NullPointerException if the given {@code klass} is null.
 	 */
 	public static <C> Class<C[]> asArrayClass(Class<C> klass) {
 		Objects.requireNonNull(klass, "klass");
@@ -56,10 +56,10 @@ public final class Reflection {
 	/**
 	 * Get the class that extends {@link Object} that represent the given class.
 	 *
-	 * @param klass to get the object class of
-	 * @return the class that extends Object class and represent the given class
-	 * @throws NullPointerException     if the given class is null
-	 * @throws IllegalArgumentException if the given class neither object nor primitive
+	 * @param klass to get the object class of.
+	 * @return the class that extends Object class and represent the given class.
+	 * @throws NullPointerException     if the given {@code klass} is null.
+	 * @throws IllegalArgumentException if the given {@code klass} neither object nor primitive.
 	 */
 	public static Class asObjectClass(Class klass) {
 		Objects.requireNonNull(klass, "klass");
@@ -67,9 +67,9 @@ public final class Reflection {
 
 		if (comp != null && (comp.isPrimitive() || comp.isArray())) {
 			//Avoiding creating empty arrays using arrayClass()
-			Class comp1 = asObjectClass(comp);
-			return comp == comp1 ? klass : asArrayClass(comp1);
-		} else if (klass.isPrimitive()) {
+			Class comp1 = Reflection.asObjectClass(comp);
+			return comp == comp1 ? klass : Reflection.asArrayClass(comp1);
+		} else if (klass.isPrimitive())
 			if (klass == char.class)
 				return Character.class;
 			else if (klass == int.class)
@@ -86,19 +86,19 @@ public final class Reflection {
 				return Long.class;
 			else if (klass == short.class)
 				return Short.class;
-			else throw new IllegalArgumentException(klass + " neither object nor primitive");
-		}
+			else
+				throw new IllegalArgumentException(klass + " neither object nor primitive");
 
 		return klass;
 	}
 
 	/**
-	 * Get the class that don't extends {@link Object} from the given class.
+	 * Get the class that don't extend {@link Object} from the given class.
 	 *
-	 * @param klass to get the non-object class of
-	 * @return the non-object class of the given class
-	 * @throws IllegalArgumentException when the given class don't have a primitive type
-	 * @throws NullPointerException     if the given class is null
+	 * @param klass to get the non-object class of.
+	 * @return the non-object class of the given class.
+	 * @throws IllegalArgumentException when the given class don't have a primitive type.
+	 * @throws NullPointerException     if the given {@code klass} is null.
 	 */
 	public static Class asPrimitiveClass(Class klass) {
 		Objects.requireNonNull(klass, "klass");
@@ -107,7 +107,7 @@ public final class Reflection {
 
 		if (comp != null && (!comp.isPrimitive() || comp.isArray()))
 			//Avoiding creating empty arrays using arrayClass()
-			return (comp1 = asPrimitiveClass(comp)) == comp ? klass : asArrayClass(comp1);
+			return (comp1 = Reflection.asPrimitiveClass(comp)) == comp ? klass : Reflection.asArrayClass(comp1);
 		if (!klass.isPrimitive())
 			if (klass == Character.class)
 				return char.class;
@@ -125,7 +125,8 @@ public final class Reflection {
 				return long.class;
 			else if (klass == Short.class)
 				return short.class;
-			else throw new IllegalArgumentException(klass + " don't have a primitive type");
+			else
+				throw new IllegalArgumentException(klass + " don't have a primitive type");
 
 		return klass;
 	}
@@ -133,9 +134,9 @@ public final class Reflection {
 	/**
 	 * Get ALL the fields that the given class have. ALL means ALL.
 	 *
-	 * @param klass the class to get all the fields that it have
-	 * @return ALL the fields that the given class have
-	 * @throws NullPointerException if the given class is null
+	 * @param klass the class to get all the fields that it have.
+	 * @return ALL the fields that the given class have.
+	 * @throws NullPointerException if the given {@code klass} is null.
 	 */
 	public static List<Field> getAllFields(Class klass) {
 		List<Field> fields = new ArrayList<>(Arrays.asList(klass.getDeclaredFields()));
@@ -147,8 +148,8 @@ public final class Reflection {
 	}
 
 	/**
-	 * Get all methods that can be invoked to the given class. Overriding methods will cancel the Overridden methods. No duplicated methods will be
-	 * returned.
+	 * Get all methods that can be invoked to the given class. Overriding methods will cancel the Overridden methods. No
+	 * duplicated methods will be returned.
 	 *
 	 * @param klass the class to get the methods from
 	 * @return the list of all methods that can be invoked to the given class. (no overridden methods)
@@ -165,7 +166,7 @@ public final class Reflection {
 			for (Method method : superClass.getDeclaredMethods()) {
 				//Check if the method have been overridden on any of the subclasses
 				for (Method override : methods)
-					if (overrides(method, override))
+					if (Reflection.overrides(method, override))
 						continue for0;
 				superMethods.add(method);
 			}
@@ -179,9 +180,9 @@ public final class Reflection {
 	/**
 	 * Check if the given class is or has a primitive class or not.
 	 *
-	 * @param klass to check
-	 * @return whether the given class is or has a primitive class or not
-	 * @throws NullPointerException if the given 'klass' is null
+	 * @param klass to check.
+	 * @return whether the given class is or has a primitive class or not.
+	 * @throws NullPointerException if the given {@code klass} is null.
 	 */
 	public static boolean hasPrimitiveClass(Class klass) {
 		Objects.requireNonNull(klass, "klass");
@@ -199,24 +200,36 @@ public final class Reflection {
 	/**
 	 * A java syntax glitch to throw any throwable without the need to catch it.
 	 *
+	 * @param throwable to be ignite.
+	 * @return nothing.
+	 * @throws NullPointerException if the given throwable is null.
+	 */
+	public static Error ignite(Throwable throwable) {
+		return Reflection.ignite0(throwable);
+	}
+
+	/**
+	 * A java syntax glitch to throw any throwable without the need to catch it.
+	 *
 	 * @param throwable to be ignite
 	 * @param <T>       the type of the throwable to trick the compiler that it's the one thrown
-	 * @return nothing
-	 * @throws T                    exactly the given throwable (unless if the given throwable is null. Then NullPointerException will be thrown)
-	 * @throws NullPointerException if the given throwable is null
+	 * @return nothing.
+	 * @throws T                    exactly the given throwable (unless if the given throwable is null. Then
+	 *                              NullPointerException will be thrown).
+	 * @throws NullPointerException if the given {@code throwable} is null.
 	 */
-	public static <T extends Throwable> T ignite(Throwable throwable) throws T {
+	public static <T extends Throwable> T ignite0(Throwable throwable) throws T {
 		Objects.requireNonNull(throwable, "throwable");
 		throw (T) throwable;
 	}
 
 	/**
-	 * Check if the given 'override' method do override the 'base' method or not.
+	 * Check if the given {@code override} method do override the {@code base} method or not.
 	 *
-	 * @param base     the method that expected to be overridden
-	 * @param override the method that expected to be overriding the base method
-	 * @return true if the given 'override' method do override the 'base' method or not
-	 * @throws NullPointerException if ether the given 'base' or 'override' is null
+	 * @param base     the method that expected to be overridden.
+	 * @param override the method that expected to be overriding the base method.
+	 * @return true if the given {@code override} method do override the {@code base} method or not.
+	 * @throws NullPointerException if ether the given {@code base} or {@code override} is null.
 	 */
 	public static boolean overrides(Method base, Method override) {
 		Objects.requireNonNull(base, "base");
@@ -239,24 +252,28 @@ public final class Reflection {
 	}
 
 	/**
-	 * Cast the given value to the given class. If the given class is primitive. And the given value's class can be casted to that primitive class.
-	 * Then the cast will be preformed. Otherwise a {@link ClassCastException} will be thrown.
+	 * Cast the given {@code instance} to the given {@code klass}. If the given {@code klass} is primitive, and the
+	 * given {@code instance}'s class can be casted to that primitive class. Then the cast will be preformed. Otherwise,
+	 * a {@link ClassCastException} will be thrown.
 	 *
-	 * @param klass the class to cast the given value to
-	 * @param value the value to be casted to the given class
-	 * @return the given value casted to the given class. Or null if the given value is null and the given class isn't primitive
-	 * @throws NullPointerException if the given 'klass' is null. Or if the given class is primitive and the given value is null
-	 * @throws ClassCastException   if the given value can't be casted to the given class
+	 * @param klass the class to cast the given {@code instance} to.
+	 * @param value the value to be casted to the given {@code klass}.
+	 * @return the given {@code instance} casted to the given {@code klass}. Or null if the given {@code instance} is
+	 * 		null, and the given {@code klass} isn't primitive.
+	 * @throws NullPointerException if the given {@code klass} is null. Or if the given {@code klass} is primitive and
+	 *                              the given {@code instance} is null.
+	 * @throws ClassCastException   if the given {@code instance} can't be casted to the given {@code klass}.
 	 */
 	public static Object primitiveCast(Class klass, Object value) {
 		//DON'T ASK ME WHY! 🤬. This is all Java primitive type's fault.
-		//I couldn't came up with a better solution!.
+		//I couldn't come up with a better solution!.
 		//Send me if you have a solution you think it's better.
 		Objects.requireNonNull(klass, "klass");
 		if (value == null)
 			if (klass.isPrimitive())
 				throw new NullPointerException("value");
-			else return null;
+			else
+				return null;
 		if (klass.isInstance(value))
 			return value;
 
@@ -354,7 +371,7 @@ public final class Reflection {
 				return value;
 			else if (vc == Short.class)
 				return (long) (short) (Short) value;
-		} else if (klass == short.class || klass == Short.class) {
+		} else if (klass == short.class || klass == Short.class)
 			if (vc == Byte.class)
 				return (short) (byte) (Byte) value;
 			else if (vc == Character.class)
@@ -369,7 +386,6 @@ public final class Reflection {
 				return (short) (long) (Long) value;
 			else if (vc == Short.class)
 				return value;
-		}
 
 		throw new ClassCastException("Cant cast " + value.getClass() + " to " + klass);
 	}

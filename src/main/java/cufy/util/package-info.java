@@ -14,13 +14,13 @@
  *	limitations under the License.
  */
 /**
- * A package of utilities used in the framework. The utilities can be used anywhere and it is not designed to work only on the framework. It have been
- * designed help to the syntax user and the reflection user. It have a variant type of utils such as utils for arrays, collections, readers and also
- * reflection and many more.
+ * A package of utilities used in the framework. The utilities can be used anywhere, and it is not designed to work only
+ * on the framework. It has been designed help to the syntax user and the reflection user. It has a variant type of
+ * utils such as utils for arrays, collections, readers and reflection and many more.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
- * @see <a href="https://framework.cufy.org/site/util">cufy.util</a>
- * @since 11-Jun-2019
+ * @see <a href="https://framework.cufy.org/util">framework.cufy.org/util</a>
+ * @since 0.0.a ~2019.06.11
  */
 package cufy.util;

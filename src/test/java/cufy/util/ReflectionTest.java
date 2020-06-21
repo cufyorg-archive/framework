@@ -81,10 +81,10 @@ public class ReflectionTest {
 		try {
 			//noinspection TrivialFunctionalExpressionUsage
 			((Supplier<Object>) () -> {
-				throw Reflection.<Error>ignite(new IOException());
+				throw Reflection.ignite(new IOException());
 			}).get();
 		} catch (Exception e) {
-			throw Reflection.<Error>ignite(e);
+			throw Reflection.ignite(e);
 		}
 
 		Assert.fail("The exception haven't been caught");

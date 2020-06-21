@@ -22,11 +22,11 @@ import java.util.function.Consumer;
 /**
  * Functional Interface that can be specified to throw an exception.
  *
- * @param <E> the exception
- * @param <T> the type of the input to the operation
- * @author lsafer
+ * @param <E> the exception.
+ * @param <T> the type of the input to the operation.
+ * @author LSafer
  * @version 0.1.3
- * @since 13-Feb-2020
+ * @since 0.1.0 ~2020.02.13
  */
 @FunctionalInterface
 public interface ThrowConsumer<T, E extends Throwable> extends Consumer<T> {
@@ -35,15 +35,15 @@ public interface ThrowConsumer<T, E extends Throwable> extends Consumer<T> {
 		try {
 			this.accept0(t);
 		} catch (Throwable e) {
-			Reflection.<Error>ignite(e);
+			throw Reflection.ignite(e);
 		}
 	}
 
 	/**
 	 * Performs this operation on the given argument.
 	 *
-	 * @param t the input argument
-	 * @throws E the exception that this runnable throws
+	 * @param t the input argument.
+	 * @throws E the exception that this runnable throws.
 	 */
 	void accept0(T t) throws E;
 }

@@ -20,10 +20,10 @@ import cufy.util.Reflection;
 /**
  * Functional Interface that can be specified to throw an exception.
  *
- * @param <E> the exception
- * @author lsafer
+ * @param <E> the exception.
+ * @author LSafer
  * @version 0.1.3
- * @since 13-Feb-2020
+ * @since 0.1.0 ~2020.02.13
  */
 @FunctionalInterface
 public interface ThrowRunnable<E extends Throwable> extends Runnable {
@@ -32,15 +32,16 @@ public interface ThrowRunnable<E extends Throwable> extends Runnable {
 		try {
 			this.run0();
 		} catch (Throwable e) {
-			Reflection.<Error>ignite(e);
+			throw Reflection.ignite(e);
 		}
 	}
 
 	/**
-	 * When an object implementing interface Runnable is used to create a thread, starting the thread causes the object's run method to be called in
-	 * that separately executing thread. The general contract of the method run is that it may take any action whatsoever.
+	 * When an object implementing interface Runnable is used to create a thread, starting the thread causes the
+	 * object's run method to be called in that separately executing thread. The general contract of the method run is
+	 * that it may take any action whatsoever.
 	 *
-	 * @throws E the exception that this runnable throws
+	 * @throws E the exception that this runnable throws.
 	 */
 	void run0() throws E;
 }

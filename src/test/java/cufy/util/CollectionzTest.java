@@ -117,7 +117,8 @@ public class CollectionzTest {
 	public void combine() {
 		Iterator<String> a = Arrayz.asList("a", "B", "c").iterator();
 		Iterator<String> b = Arrayz.asList("a", "B", "c").iterator();
-		Iterator<String> c = Arrayz.asList("a", "B", "c").iterator();
+		List cl = new ArrayList(Arrayz.asList("a", "B", "c"));
+		Iterator<String> c = cl.iterator();
 
 		Iterator<String> x = Collectionz.combine(a, b, c);
 
@@ -133,6 +134,9 @@ public class CollectionzTest {
 			Assert.fail("No such element!");
 		} catch (NoSuchElementException ignored) {
 		}
+
+		x.remove();
+		Assert.assertEquals("Remove should work no matter what", 2, cl.size());
 	}
 
 	@SuppressWarnings("MessageMissingOnJUnitAssertion")

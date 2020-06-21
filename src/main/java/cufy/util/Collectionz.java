@@ -24,53 +24,53 @@ import java.util.function.Predicate;
 /**
  * Utils all about maps.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.3
- * @since 11-Jun-2019
+ * @since 0.0.b ~2019.06.11
  */
 public final class Collectionz {
 	/**
-	 * This is a util class. And shall not be instanced as an object.
+	 * This is an util class and must not be instanced as an object.
 	 *
-	 * @throws AssertionError when called
+	 * @throws AssertionError when called.
 	 */
 	private Collectionz() {
 		throw new AssertionError("No instance for you!");
 	}
 
 	/**
-	 * Get a list that is read and write to the given map. The list will use the positive integer keys only.
+	 * Get a list that do read and write to the given {@code map}. The list will use the positive integer keys only.
 	 *
-	 * @param map to get the list for
-	 * @param <T> the type of the elements on the returned list
-	 * @return a list for the given map
-	 * @throws NullPointerException if the given map is null
+	 * @param map the map that the returned list is reading-from/writing-to.
+	 * @param <T> the type of the elements in the returned list.
+	 * @return a list that do read and write to the given {@code map}.
+	 * @throws NullPointerException if the given {@code map} is null.
 	 */
 	public static <T> List<T> asList(Map<Integer, T> map) {
 		Objects.requireNonNull(map, "map");
 		return new AbstractList<T>() {
 			@Override
 			public T get(int index) {
-				checkBounds(index, this.maxIndex());
+				this.checkBounds(index, this.maxIndex());
 				return map.get(index);
 			}
 
 			@Override
 			public T set(int index, T element) {
-				checkBounds(index, this.maxIndex());
+				this.checkBounds(index, this.maxIndex());
 				return map.put(index, element);
 			}
 
 			@Override
 			public void add(int index, T element) {
-				checkBounds(index, this.size());
+				this.checkBounds(index, this.size());
 				this.shiftIndexes(index, null, 1);
 				map.put(index, element);
 			}
 
 			@Override
 			public T remove(int index) {
-				checkBounds(index, this.maxIndex());
+				this.checkBounds(index, this.maxIndex());
 				T value = map.remove(index);
 				this.shiftIndexes(index, null, -1);
 				return value;
@@ -97,7 +97,7 @@ public final class Collectionz {
 			/**
 			 * The maximum integer. That have been stored as a key in this.
 			 *
-			 * @return the maximum index of this
+			 * @return the maximum index in the provided {@code map}.
 			 */
 			private int maxIndex() {
 				int index;
@@ -117,16 +117,16 @@ public final class Collectionz {
 			 * <pre>
 			 *     map = {0:zero, 1:one, 2:two, 3:three}
 			 *     map.shiftIndexes(<font color="gray">start</font> 1, <font color="gray">end</font> 2, <font color="gray">by</font> -1)
-			 *     map => {0:zero, 1:two, 3:three}
+			 *     assert map == {0:zero, 1:two, 3:three}
 			 *
 			 *     map = {0:A, 1:B, 2:C, 3:D, 4:E}
 			 *     map.shiftIndexes(<font color="gray">start</font> 2, <font color="gray">end</font> null, <font color="gray">by</font> 2)
-			 *     map => {0:A, 1:B, 4:C, 5:D, 6:E}
+			 *     assert map == {0:A, 1:B, 4:C, 5:D, 6:E}
 			 * </pre>
 			 *
-			 * @param start the start of the shifting range (aka min)(null for no start)
-			 * @param end   the end of the shifting range (aka max)(null for no end)
-			 * @param by    the length to shift the values of this by
+			 * @param start the start of the shifting range (null for no start).
+			 * @param end   the end of the shifting range (null for no end).
+			 * @param by    the length to shift the values of the provided {@code map} by.
 			 */
 			private void shiftIndexes(Integer start, Integer end, int by) {
 				HashMap<Integer, T> modified = new HashMap<>();
@@ -151,14 +151,14 @@ public final class Collectionz {
 	}
 
 	/**
-	 * Get a map that whenever the method {@link Map#put(Object, Object)} is invoked to it. It will put the value to an existing PUBLIC NON-FINALE
-	 * field with the name of the key's value (only if it is string). And whenever the method {@link Map#get(Object)} is invoked to it. It will get
-	 * the value of an existing PUBLIC field.
+	 * Get a map that whenever the method {@link Map#put(Object, Object)} is invoked to it. It will put the value to an
+	 * existing PUBLIC NON-FINALE field with the name of the key's value (only if it is string), and whenever the method
+	 * {@link Map#get(Object)} is invoked to it. It will get the value of an existing PUBLIC field.
 	 *
-	 * @param object the instance
-	 * @param <T>    the type of values on the returned map
-	 * @return a remote map to that instance
-	 * @throws NullPointerException if the given object is null
+	 * @param object the object the returned map is reading-from/writing-to.
+	 * @param <T>    the type of values on the returned map.
+	 * @return a map that is remotely reading and writing to the fields of the given {@code object}.
+	 * @throws NullPointerException if the given {@code object} is null.
 	 */
 	public static <T> Map<String, T> asMap(Object object) {
 		Objects.requireNonNull(object, "object");
@@ -166,11 +166,11 @@ public final class Collectionz {
 			/**
 			 * The entry-set of this map.
 			 */
-			private Set<Entry<String, T>> entrySet;
+			private Set<Map.Entry<String, T>> entrySet;
 
 			@Override
 			public T put(String key, T value) {
-				for (Entry<String, T> entry : this.entrySet())
+				for (Map.Entry<String, T> entry : this.entrySet())
 					if (Objects.equals(entry.getKey(), key))
 						return entry.setValue(value);
 
@@ -178,13 +178,13 @@ public final class Collectionz {
 			}
 
 			@Override
-			public Set<Entry<String, T>> entrySet() {
+			public Set<Map.Entry<String, T>> entrySet() {
 				if (this.entrySet == null) {
-					HashSet<Entry<String, T>> entrySet = new HashSet<>();
+					HashSet<Map.Entry<String, T>> entrySet = new HashSet<>();
 
 					for (Field field : Reflection.getAllFields(object.getClass()))
 						if (Modifier.isPublic(field.getModifiers()))
-							entrySet.add(new Entry<String, T>() {
+							entrySet.add(new Map.Entry<String, T>() {
 								@Override
 								public String getKey() {
 									return field.getName();
@@ -221,12 +221,13 @@ public final class Collectionz {
 	}
 
 	/**
-	 * Get a map that is read and write to the given list. The map will use the indexes as the keys of the elements on the given list.
+	 * Get a map that do read and write to the given {@code list}. The map will use the indexes as the keys of the
+	 * elements on the given list.
 	 *
-	 * @param list to get a map for
-	 * @param <T>  the type of values on the returned map
-	 * @return a map for the given list
-	 * @throws NullPointerException if the given 'list' is null
+	 * @param list the list that the returned map is reading-from/writing-to.
+	 * @param <T>  the type of values on the returned map.
+	 * @return a map that do read and write to the given {@code list}.
+	 * @throws NullPointerException if the given {@code list} is null.
 	 */
 	public static <T> Map<Integer, T> asMap(List<T> list) {
 		Objects.requireNonNull(list, "list");
@@ -234,18 +235,18 @@ public final class Collectionz {
 			/**
 			 * The entrySet of this map.
 			 */
-			private Set<Entry<Object, T>> entrySet;
+			private Set<Map.Entry<Object, T>> entrySet;
 
 			@Override
 			public T put(Object key, T value) {
-				if (!(key instanceof Integer) || ((Integer) key) < 0)
+				if (!(key instanceof Integer) || (Integer) key < 0)
 					throw new UnsupportedOperationException("can't store the key: " + key);
 
 				int index = (Integer) key;
 
-				if (list.size() > index) {
+				if (list.size() > index)
 					return list.set(index, value);
-				} else {
+				else {
 					list.addAll(java.util.Collections.nCopies(index - list.size(), null));
 					list.add(value);
 					return null;
@@ -253,28 +254,32 @@ public final class Collectionz {
 			}
 
 			@Override
-			public Set<Entry<Object, T>> entrySet() {
-				if (this.entrySet == null) {
-					this.entrySet = new AbstractSet<Entry<Object, T>>() {
+			public Set<Map.Entry<Object, T>> entrySet() {
+				if (this.entrySet == null)
+					this.entrySet = new AbstractSet<Map.Entry<Object, T>>() {
 						@Override
-						public Iterator<Entry<Object, T>> iterator() {
-							int mod = list.size();
-							return new Iterator<Entry<Object, T>>() {
+						public Iterator<Map.Entry<Object, T>> iterator() {
+							return new Iterator<Map.Entry<Object, T>>() {
 								/**
 								 * The current position of this iterator.
 								 */
 								private int cursor = 0;
+								/**
+								 * The initial size of this array once this iterator created.
+								 */
+								private int mod = list.size();
 
 								@Override
 								public boolean hasNext() {
-									return mod > this.cursor;
+									return this.mod > this.cursor;
 								}
 
 								@Override
-								public Entry<Object, T> next() {
-									this.checkModification();
+								public Map.Entry<Object, T> next() {
+									this.assertNoModification();
+									this.assertInBounds();
 									int key = this.cursor++;
-									return new Entry<Object, T>() {
+									return new Map.Entry<Object, T>() {
 										@Override
 										public Integer getKey() {
 											return key;
@@ -282,13 +287,15 @@ public final class Collectionz {
 
 										@Override
 										public T getValue() {
-											checkModification();
+											//noinspection UnqualifiedMethodAccess
+											assertNoModification();
 											return list.get(key);
 										}
 
 										@Override
 										public T setValue(T t) {
-											checkModification();
+											//noinspection UnqualifiedMethodAccess
+											assertNoModification();
 											return list.set(key, t);
 										}
 									};
@@ -296,18 +303,31 @@ public final class Collectionz {
 
 								@Override
 								public void remove() {
-									this.checkModification();
+									this.assertNoModification();
 									list.remove(this.cursor);
+									this.mod--;
+								}
+
+								/**
+								 * Check if this iterator still has more elements.
+								 *
+								 * @throws NoSuchElementException if this iterator has no more elements.
+								 */
+								private void assertInBounds() {
+									if (this.mod <= this.cursor)
+										throw new NoSuchElementException(String.valueOf(this.cursor + 1));
 								}
 
 								/**
 								 * Check if the list has modified while using this iterator.
 								 *
-								 * @throws ConcurrentModificationException if the list has been modified since creating this iterator
+								 * @throws ConcurrentModificationException if the list has been modified since creating this iterator.
 								 */
-								private void checkModification() {
-									if (mod != list.size())
-										throw new ConcurrentModificationException();
+								private void assertNoModification() {
+									int size = list.size();
+									if (this.mod != size)
+										throw new ConcurrentModificationException(
+												"expected: " + this.mod + ", but was: " + size);
 								}
 							};
 						}
@@ -317,7 +337,6 @@ public final class Collectionz {
 							return list.size();
 						}
 					};
-				}
 
 				return this.entrySet;
 			}
@@ -327,55 +346,41 @@ public final class Collectionz {
 	/**
 	 * Get an iterator combined from the given iterators.
 	 *
-	 * @param <T>       the type of elements provided by the returned iterator
-	 * @param iterators to combine
+	 * @param <T>       the type of elements provided by the returned iterator.
+	 * @param iterators to combine.
 	 * @return an iterator combined from the given iterators.
-	 * @throws NullPointerException if any of the given iterators is null. Or if the given iterator array is null itself
+	 * @throws NullPointerException if the given {@code iterators} or any of its elements is null.
 	 */
 	public static <T> Iterator<T> combine(Iterator<? extends T>... iterators) {
 		Objects.requireNonNull(iterators, "iterators");
-		for (Iterator<? extends T> iterator : iterators)
-			Objects.requireNonNull(iterator, "iterators[?]");
-
 		return new Iterator<T>() {
 			/**
 			 * The index of the current iterator.
 			 */
-			protected int i = 0;
+			protected int cursor = 0;
 
 			@Override
 			public boolean hasNext() {
-				return iterators.length > this.i && iterators[this.i].hasNext();
+				for (int i = this.cursor; i < iterators.length; i++)
+					if (iterators[i].hasNext())
+						return true;
+				return false;
 			}
 
 			@Override
 			public T next() {
-				this.fix();
+				for (; this.cursor < iterators.length; this.cursor++)
+					if (iterators[this.cursor].hasNext())
+						return iterators[this.cursor].next();
 
-				if (iterators.length > this.i) {
-					T t = iterators[this.i].next();
-					this.fix();
-					return t;
-				} else {
-					throw new NoSuchElementException("No more elements");
-				}
+				//allow next calls to remove()
+				this.cursor--;
+				throw new NoSuchElementException("No more elements");
 			}
 
 			@Override
 			public void remove() {
-				if (iterators.length > this.i) {
-					iterators[this.i].remove();
-				} else {
-					throw new IllegalStateException("remove");
-				}
-			}
-
-			/**
-			 * Set the index to the minimum iterator that has next.
-			 */
-			private void fix() {
-				while (iterators.length > this.i && !iterators[this.i].hasNext())
-					this.i++;
+				iterators[this.cursor].remove();
 			}
 		};
 	}
@@ -383,10 +388,10 @@ public final class Collectionz {
 	/**
 	 * Get a group that reads directly from the given group, but can't modify it.
 	 *
-	 * @param group to get an unmodifiable group for
-	 * @param <T>   the type of the elements on given group
-	 * @return an unmodifiable group for the given group
-	 * @throws NullPointerException if the given 'group' is null
+	 * @param group to get an unmodifiable group for.
+	 * @param <T>   the type of the elements on given group.
+	 * @return an unmodifiable group for the given group.
+	 * @throws NullPointerException if the given {@code group} is null.
 	 */
 	public static <T> Group<T> unmodifiableGroup(Group<T> group) {
 		Objects.requireNonNull(group, "group");
@@ -494,12 +499,12 @@ public final class Collectionz {
 
 			@Override
 			public Group<T> subGroup(Object key, Predicate<T> predicate) {
-				return unmodifiableGroup(group.subGroup(key, predicate));
+				return Collectionz.unmodifiableGroup(group.subGroup(key, predicate));
 			}
 
 			@Override
 			public Group<T> subGroup(Object key) {
-				return unmodifiableGroup(group.subGroup(key));
+				return Collectionz.unmodifiableGroup(group.subGroup(key));
 			}
 		};
 	}

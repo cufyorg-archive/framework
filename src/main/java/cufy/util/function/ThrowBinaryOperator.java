@@ -22,11 +22,11 @@ import java.util.function.BinaryOperator;
 /**
  * Functional Interface that can be specified to throw an exception.
  *
- * @param <T> the type of the operands and result of the operator
- * @param <E> the exception
- * @author lsafer
+ * @param <T> the type of the operands and result of the operator.
+ * @param <E> the exception.
+ * @author LSafer
  * @version 0.1.3
- * @since 13-Feb-2020
+ * @since 0.1.0 ~2020.02.13
  */
 @FunctionalInterface
 public interface ThrowBinaryOperator<T, E extends Throwable> extends BinaryOperator<T> {
@@ -35,17 +35,17 @@ public interface ThrowBinaryOperator<T, E extends Throwable> extends BinaryOpera
 		try {
 			return this.apply0(t, t2);
 		} catch (Throwable e) {
-			throw Reflection.<Error>ignite(e);
+			throw Reflection.ignite(e);
 		}
 	}
 
 	/**
 	 * Applies this function to the given arguments.
 	 *
-	 * @param t  the first function argument
-	 * @param t2 the second function argument
-	 * @return the function result
-	 * @throws E the exception
+	 * @param t  the first function argument.
+	 * @param t2 the second function argument.
+	 * @return the function result.
+	 * @throws E the exception.
 	 */
 	T apply0(T t, T t2) throws E;
 }

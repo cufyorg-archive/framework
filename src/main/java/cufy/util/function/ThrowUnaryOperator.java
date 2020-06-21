@@ -22,11 +22,11 @@ import java.util.function.UnaryOperator;
 /**
  * Functional Interface that can be specified to throw an exception.
  *
- * @param <T> the type of the operand and result of the operator
- * @param <E> the exception
- * @author lsafer
+ * @param <T> the type of the operand and result of the operator.
+ * @param <E> the exception.
+ * @author LSafer
  * @version 0.1.3
- * @since 13-Feb-2020
+ * @since 0.1.0 ~2020.02.13
  */
 @FunctionalInterface
 public interface ThrowUnaryOperator<T, E extends Throwable> extends UnaryOperator<T> {
@@ -35,16 +35,16 @@ public interface ThrowUnaryOperator<T, E extends Throwable> extends UnaryOperato
 		try {
 			return this.apply0(t);
 		} catch (Throwable e) {
-			throw Reflection.<Error>ignite(e);
+			throw Reflection.ignite(e);
 		}
 	}
 
 	/**
 	 * Applies this function to the given argument.
 	 *
-	 * @param t the function argument
-	 * @return the function result
-	 * @throws E the exception
+	 * @param t the function argument.
+	 * @return the function result.
+	 * @throws E the exception.
 	 */
 	T apply0(T t) throws E;
 }

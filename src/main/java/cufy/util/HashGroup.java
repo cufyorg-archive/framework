@@ -21,12 +21,13 @@ import java.util.HashSet;
 import java.util.function.Predicate;
 
 /**
- * This class implements the interface {@link Group}. Stores it's values by inheriting {@link HashSet} and it's subgroups using a {@link HashMap}.
+ * This class implements the interface {@link Group}. Stores its values by inheriting {@link HashSet} and it's subgroups
+ * using a {@link HashMap}.
  *
  * @param <E> the type of the elements in this group
- * @author lsafer
+ * @author LSafer
  * @version 0.1.3
- * @since 20-Apr-2020
+ * @since 0.1.3 ~2020.04.20
  */
 public class HashGroup<E> extends HashSet<E> implements Group<E> {
 	/**
@@ -43,18 +44,18 @@ public class HashGroup<E> extends HashSet<E> implements Group<E> {
 	/**
 	 * Constructs a new group containing the elements in the specified collection.
 	 *
-	 * @param c the collection whose elements are to be placed into this set
-	 * @throws NullPointerException if the specified collection is null
+	 * @param collection the collection whose elements are to be placed into this set.
+	 * @throws NullPointerException if the given {@code collection} is null.
 	 */
-	public HashGroup(Collection<? extends E> c) {
-		super(c);
+	public HashGroup(Collection<? extends E> collection) {
+		super(collection);
 	}
 
 	/**
 	 * Constructs a new, empty group.
 	 *
-	 * @param initialCapacity the initial capacity of the hash table
-	 * @throws IllegalArgumentException if the initial capacity is less than zero
+	 * @param initialCapacity the initial capacity of the hash table.
+	 * @throws IllegalArgumentException if the given {@code initial capacity} is less than zero.
 	 */
 	public HashGroup(int initialCapacity) {
 		super(initialCapacity);
@@ -63,9 +64,10 @@ public class HashGroup<E> extends HashSet<E> implements Group<E> {
 	/**
 	 * Constructs a new, empty set.
 	 *
-	 * @param initialCapacity the initial capacity of the hash map
-	 * @param loadFactor      the load factor of the hash map
-	 * @throws IllegalArgumentException if the initial capacity is less than zero, or if the load factor is nonpositive
+	 * @param initialCapacity the initial capacity of the hash map.
+	 * @param loadFactor      the load factor of the hash map.
+	 * @throws IllegalArgumentException if the given {@code initial capacity} is less than zero, or if the given {@code
+	 *                                  load factor} is nonpositive.
 	 */
 	public HashGroup(int initialCapacity, int loadFactor) {
 		super(initialCapacity, loadFactor);

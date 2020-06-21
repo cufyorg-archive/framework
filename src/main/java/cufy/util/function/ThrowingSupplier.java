@@ -22,11 +22,11 @@ import java.util.function.Supplier;
 /**
  * Functional Interface that can be specified to throw an exception.
  *
- * @param <T> the type of results supplied by this supplier
- * @param <E> the exception
- * @author lsafer
+ * @param <T> the type of results supplied by this supplier.
+ * @param <E> the exception.
+ * @author LSafer
  * @version 0.1.3
- * @since 13-Feb-2020
+ * @since 0.1.0 ~2020.02.13
  */
 @FunctionalInterface
 public interface ThrowingSupplier<T, E extends Throwable> extends Supplier<T> {
@@ -35,15 +35,15 @@ public interface ThrowingSupplier<T, E extends Throwable> extends Supplier<T> {
 		try {
 			return this.get0();
 		} catch (Throwable e) {
-			throw Reflection.<Error>ignite(e);
+			throw Reflection.ignite(e);
 		}
 	}
 
 	/**
 	 * Gets a result.
 	 *
-	 * @return a result
-	 * @throws E the exception
+	 * @return a result.
+	 * @throws E the exception.
 	 */
 	T get0() throws E;
 }

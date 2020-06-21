@@ -22,13 +22,13 @@ import java.util.function.BiFunction;
 /**
  * Useful methods for Arrays.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
- * @since 11 Jun 2019
+ * @since 0.0.a ~2019.06.11
  */
 public final class Arrayz {
 	/**
-	 * This is an util class. And must not be instanced as an object.
+	 * This is an util class and must not be instanced as an object.
 	 *
 	 * @throws AssertionError when called.
 	 */

@@ -26,21 +26,21 @@ public class ReaderzTest {
 		reader.mark(0);
 
 		//no trim & no fullRead & no ignoreCase
-		Assert.assertEquals("Should equals", 2, Readerz.isRemainingEquals(reader, false, false, false, "AB", "X", "AbC", "ABCDEF"));
+		Assert.assertTrue("Should equals", Readerz.isRemainingEquals(reader, false, false, false, "AB", "X", "AbC", "ABCDEF"));
 		reader.reset();
-		Assert.assertEquals("Should not equals", -1, Readerz.isRemainingEquals(reader, false, false, false, "AbCD", "  AbCdEf  ", "E", "ABCDEF"));
+		Assert.assertFalse("Should not equals", Readerz.isRemainingEquals(reader, false, false, false, "AbCD", "  AbCdEf  ", "E", "ABCDEF"));
 		reader.reset();
 
 		//no trim & no fullRead & ignoreCase
-		Assert.assertEquals("should equals", 3, Readerz.isRemainingEquals(reader, false, false, true, "x", "Y", "E", "ABCDEF", "AbCx"));
+		Assert.assertTrue("should equals", Readerz.isRemainingEquals(reader, false, false, true, "x", "Y", "E", "ABCDEF", "AbCx"));
 		reader.reset();
 
 		//no trim & fullRead & no ignoreCase
 
 		//no trim & fullRead & ignoreCase
-		Assert.assertEquals("Should equals", 3, Readerz.isRemainingEquals(reader, false, true, true, "A", "X", "ABC", "ABCDEF"));
+		Assert.assertTrue("Should equals", Readerz.isRemainingEquals(reader, false, true, true, "A", "X", "ABC", "ABCDEF"));
 		reader.reset();
-		Assert.assertEquals("Should not equals", -1, Readerz.isRemainingEquals(reader, false, true, true, "A", "  AbCdEf  ", "E", "R"));
+		Assert.assertFalse("Should not equals", Readerz.isRemainingEquals(reader, false, true, true, "A", "  AbCdEf  ", "E", "R"));
 		reader.reset();
 
 		//trim & no fullRead & no ignoreCase

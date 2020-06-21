@@ -25,15 +25,15 @@ import java.util.Objects;
 /**
  * Useful utils for {@link Reader}s.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.3
- * @since 12-Dec-2019
+ * @since 0.0.5 ~2019.12.12
  */
 public final class Readerz {
 	/**
-	 * This is a util class. And shall not be instanced as an object.
+	 * This is an util class and must not be instanced as an object.
 	 *
-	 * @throws AssertionError when called
+	 * @throws AssertionError when called.
 	 */
 	private Readerz() {
 		throw new AssertionError("No instance for you!");
@@ -42,13 +42,15 @@ public final class Readerz {
 	/**
 	 * Read the remaining string from the given reader.
 	 *
-	 * @param reader          to read from
-	 * @param bufferCapacity  the capacity of the buffer (higher takes more RAM, lower takes more processing power and time)
-	 * @param builderCapacity the initial capacity of the builder (higher takes more RAM, lower takes more processing power and time)
-	 * @return all the characters from the given reader
-	 * @throws NullPointerException     if the given reader is null
-	 * @throws IllegalArgumentException if ether the given 'bufferCapacity' or 'builderCapacity' is less than 1
-	 * @throws IOException              if any I/O exception occurs
+	 * @param reader          to read from.
+	 * @param bufferCapacity  the capacity of the buffer (higher takes more RAM, lower takes more processing power and
+	 *                        time).
+	 * @param builderCapacity the initial capacity of the builder (higher takes more RAM, lower takes more processing
+	 *                        power and time).
+	 * @return all the characters from the given reader.
+	 * @throws NullPointerException     if the given {@code reader} is null.
+	 * @throws IllegalArgumentException if the given {@code bufferCapacity} or {@code builderCapacity} is less than 1.
+	 * @throws IOException              if any I/O exception occurs.
 	 */
 	public static String getRemaining(Reader reader, int bufferCapacity, int builderCapacity) throws IOException {
 		Objects.requireNonNull(reader, "reader");
@@ -70,12 +72,12 @@ public final class Readerz {
 	/**
 	 * Read the remaining string from the given reader. Or less if the remaining string is greater than 'readLimit'.
 	 *
-	 * @param reader    to read from
-	 * @param readLimit the
-	 * @return all the characters from the given reader
-	 * @throws NullPointerException     if the given reader is null
-	 * @throws IllegalArgumentException if ether the given 'readLimit' is negative
-	 * @throws IOException              if any I/O exception occurs
+	 * @param reader    to read from.
+	 * @param readLimit the length limit of the returned string.
+	 * @return all the characters from the given reader.
+	 * @throws NullPointerException     if the given {@code reader} is null.
+	 * @throws IllegalArgumentException if ether the given {@code readLimit} is negative.
+	 * @throws IOException              if any I/O exception occurs.
 	 */
 	public static String getRemaining(Reader reader, int readLimit) throws IOException {
 		Objects.requireNonNull(reader, "reader");
@@ -90,80 +92,76 @@ public final class Readerz {
 	}
 
 	/**
-	 * This method will check if the remaining characters in the given reader is equals to any of the given strings. This method will depend on the
-	 * given rules on the equation.
-	 * <p>
-	 * Note: can't predict after how many characters will this method stop reading from the given reader.
-	 * <p>
-	 * Note: this method will not invoke {@link Reader#mark} or {@link Reader#reset()}
+	 * Determine if the remaining string in the given {@code reader} is equals to any of the given {@code strings}. This
+	 * method will depend on the given rules on the equation. The position of the given {@code reader} after invoking
+	 * this method is unspecified.
 	 *
-	 * @param reader     to read from
-	 * @param trim       when true, this method will ignore the first and last characters if it's whitespaces
-	 * @param fullRead   when true, this method will take the results once a string matches the read characters
-	 * @param ignoreCase when true, this method will match the characters even if they're different case(ex. 'A' and 'a' will match)
-	 * @param strings    the strings match
-	 * @return the index of the string matched. Or -1 if no string matching
-	 * @throws NullPointerException if the given 'reader' or 'strings' or any of the given strings is null
-	 * @throws IOException          if any I/O exception occurred
+	 * @param reader     to read from.
+	 * @param trim       when true, this method will ignore the first and last characters if it's whitespaces.
+	 * @param fullRead   when true, this method will take the results once a string matches the read characters.
+	 * @param ignoreCase when true, this method will match the characters even if they're different case(ex. 'A' and 'a'
+	 *                   will match).
+	 * @param strings    the strings to be matched.
+	 * @return true, if any of the given {@code strings} does match the remaining string in the given {@code reader}
+	 * 		depending on the given rules.
+	 * @throws NullPointerException if the given {@code reader} or {@code strings} or any of the given strings is null.
+	 * @throws IOException          if any I/O exception occurred.
 	 */
-	public static int isRemainingEquals(Reader reader, boolean trim, boolean fullRead, boolean ignoreCase, String... strings) throws IOException {
+	public static boolean isRemainingEquals(Reader reader, boolean trim, boolean fullRead, boolean ignoreCase, String... strings) throws IOException {
 		Objects.requireNonNull(reader, "reader");
 		Objects.requireNonNull(strings, "strings");
 
 		List<String> list = new ArrayList<>(Arrayz.asList(strings));
-		list.replaceAll(s -> {
-			Objects.requireNonNull(s, "strings[?]");
-			if (trim)
-				s = s.trim();
-			if (ignoreCase)
-				s = s.toLowerCase();
-			return s;
-		});
+
+		if (list.contains(""))
+			//easy exit
+			return true;
+
+		if (ignoreCase || trim)
+			list.replaceAll(s -> {
+				if (trim)
+					s = s.trim();
+				return ignoreCase ? s.toLowerCase() : s;
+			});
 
 		int i = reader.read();
 
-		if (trim) {
+		if (trim)
 			do {
 				if (i == -1)
-					return list.indexOf("");
+					//empty from the start
+					return false;
 				if (!Character.isWhitespace(i))
 					break;
 
 				i = reader.read();
 			} while (true);
-		}
 
-		boolean allNulls;
 		do {
 			char c = (char) (ignoreCase ? Character.toLowerCase(i) : i);
 
-			allNulls = false;
 			ListIterator<String> iterator = list.listIterator();
-			for (int index = 0; iterator.hasNext(); index++) {
+			while (iterator.hasNext()) {
 				String s = iterator.next();
 
-				if (s != null) {
-					if (!s.isEmpty()) {
-						if (s.charAt(0) == c) {
-							String sub = s.substring(1);
+				if (!s.isEmpty()) {
+					if (s.charAt(0) == c) {
+						String sub = s.substring(1);
 
-							if (!fullRead && sub.isEmpty())
-								return index;
+						if (!fullRead && sub.isEmpty())
+							//match!
+							return true;
 
-							iterator.set(sub);
-							allNulls = false;
-							continue;
-						}
-					} else if (trim && Character.isWhitespace(c)) {
-						allNulls = false;
+						iterator.set(sub);
 						continue;
 					}
+				} else if (trim && Character.isWhitespace(c))
+					continue;
 
-					iterator.set(null);
-				}
+				iterator.remove();
 			}
-		} while (!allNulls && (i = reader.read()) != -1);
+		} while (!list.isEmpty() && (i = reader.read()) != -1);
 
-		return list.indexOf("");
+		return list.contains("");
 	}
 }
