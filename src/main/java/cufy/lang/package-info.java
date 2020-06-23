@@ -14,12 +14,12 @@
  *	limitations under the License.
  */
 /**
- * A package with classes that treated as if it's a part of the language. Such Classes are universal and have no main purpose. But deep in the code,
- * It so helpful. Specially if it designed that anyone is relying on them.
+ * A package with classes that treated as if it is a part of the language. Such Classes are universal and have no main
+ * purpose. Deep in the code, It so helpful. Specially that it have been designed that anyone is relying on them.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
  * @see <a href="https://framework.cufy.org/site/lang">framework.cufy.org/site/lang</a>
- * @since 11-Jun-2019
+ * @since 0.0.1 ~2019.06.11
  */
 package cufy.lang;

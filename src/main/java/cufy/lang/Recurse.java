@@ -18,15 +18,15 @@ package cufy.lang;
 /**
  * A representation for a recursion occurred.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.3
- * @since 25-Nov-2019
+ * @since 0.0.1 ~2019.11.25
  */
 public final class Recurse {
 	/**
 	 * This is a representation class and should not be instanced.
 	 *
-	 * @throws AssertionError when called
+	 * @throws AssertionError when called.
 	 */
 	private Recurse() {
 		throw new AssertionError("No instance for you!");

@@ -18,15 +18,15 @@ package cufy.lang;
 /**
  * A class represents dejaVu.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.3
- * @since 03-Mar-2020
+ * @since 0.1.3 ~2020.03.03
  */
 public final class DejaVu {
 	/**
 	 * This is a representation class and should not be instanced.
 	 *
-	 * @throws AssertionError when called
+	 * @throws AssertionError when called.
 	 */
 	private DejaVu() {
 		throw new AssertionError("No instance for you!");

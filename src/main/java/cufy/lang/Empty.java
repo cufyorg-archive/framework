@@ -18,15 +18,15 @@ package cufy.lang;
 /**
  * A class Represents emptiness.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.3
- * @since 03-Mar-2020
+ * @since 0.1.0 ~2020.03.03
  */
 public final class Empty {
 	/**
 	 * This is a representation class and should not be instanced.
 	 *
-	 * @throws AssertionError when called
+	 * @throws AssertionError when called.
 	 */
 	private Empty() {
 		throw new AssertionError("No instance for you!");
