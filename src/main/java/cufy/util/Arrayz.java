@@ -2274,6 +2274,748 @@ public final class Arrayz {
 			}
 	}
 
+	//iterator
+
+	/**
+	 * Get an iterator that iterates the elements of the given {@code array}. Note that the returned iterator will not
+	 * support {@link ListIterator#remove()} nor {@link ListIterator#add(Object)} since arrays can't be modified in
+	 * size.
+	 *
+	 * @param array the array that the returned iterator is iterating.
+	 * @param <T>   the type of the iterated elements in the returned iterator.
+	 * @return an iterator that iterates the elements of the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 */
+	public static <T> ListIterator<T> iterator(T... array) {
+		Objects.requireNonNull(array, "array");
+		return new ListIterator<T>() {
+			/**
+			 * The index of the next element.
+			 */
+			private int cursor = 0;
+
+			@Override
+			public boolean hasNext() {
+				return this.cursor < array.length;
+			}
+
+			@Override
+			public T next() {
+				if (this.cursor >= array.length)
+					throw new NoSuchElementException();
+
+				return array[this.cursor++];
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				return this.cursor > 0;
+			}
+
+			@Override
+			public T previous() {
+				if (this.cursor == 0)
+					throw new NoSuchElementException();
+
+				return array[--this.cursor];
+			}
+
+			@Override
+			public int nextIndex() {
+				return this.cursor;
+			}
+
+			@Override
+			public int previousIndex() {
+				return this.cursor - 1;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public void set(T t) {
+				array[this.cursor] = t;
+			}
+
+			@Override
+			public void add(T t) {
+				throw new UnsupportedOperationException("add");
+			}
+		};
+	}
+
+	/**
+	 * Get an iterator that iterates the elements of the given {@code array}. Note that the returned iterator will not
+	 * support {@link ListIterator#remove()} nor {@link ListIterator#add(Object)} since arrays can't be modified in
+	 * size.
+	 *
+	 * @param array the array that the returned iterator is iterating.
+	 * @return an iterator that iterates the elements of the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 */
+	public static ListIterator<Boolean> iterator(boolean[] array) {
+		Objects.requireNonNull(array, "array");
+		return new ListIterator<Boolean>() {
+			/**
+			 * The index of the next element.
+			 */
+			private int cursor = 0;
+
+			@Override
+			public boolean hasNext() {
+				return this.cursor < array.length;
+			}
+
+			@Override
+			public Boolean next() {
+				if (this.cursor >= array.length)
+					throw new NoSuchElementException();
+
+				return array[this.cursor++];
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				return this.cursor > 0;
+			}
+
+			@Override
+			public Boolean previous() {
+				if (this.cursor == 0)
+					throw new NoSuchElementException();
+
+				return array[--this.cursor];
+			}
+
+			@Override
+			public int nextIndex() {
+				return this.cursor;
+			}
+
+			@Override
+			public int previousIndex() {
+				return this.cursor - 1;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public void set(Boolean t) {
+				array[this.cursor] = t;
+			}
+
+			@Override
+			public void add(Boolean t) {
+				throw new UnsupportedOperationException("add");
+			}
+		};
+	}
+
+	/**
+	 * Get an iterator that iterates the elements of the given {@code array}. Note that the returned iterator will not
+	 * support {@link ListIterator#remove()} nor {@link ListIterator#add(Object)} since arrays can't be modified in
+	 * size.
+	 *
+	 * @param array the array that the returned iterator is iterating.
+	 * @return an iterator that iterates the elements of the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 */
+	public static ListIterator<Byte> iterator(byte[] array) {
+		Objects.requireNonNull(array, "array");
+		return new ListIterator<Byte>() {
+			/**
+			 * The index of the next element.
+			 */
+			private int cursor = 0;
+
+			@Override
+			public boolean hasNext() {
+				return this.cursor < array.length;
+			}
+
+			@Override
+			public Byte next() {
+				if (this.cursor >= array.length)
+					throw new NoSuchElementException();
+
+				return array[this.cursor++];
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				return this.cursor > 0;
+			}
+
+			@Override
+			public Byte previous() {
+				if (this.cursor == 0)
+					throw new NoSuchElementException();
+
+				return array[--this.cursor];
+			}
+
+			@Override
+			public int nextIndex() {
+				return this.cursor;
+			}
+
+			@Override
+			public int previousIndex() {
+				return this.cursor - 1;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public void set(Byte t) {
+				array[this.cursor] = t;
+			}
+
+			@Override
+			public void add(Byte t) {
+				throw new UnsupportedOperationException("add");
+			}
+		};
+	}
+
+	/**
+	 * Get an iterator that iterates the elements of the given {@code array}. Note that the returned iterator will not
+	 * support {@link ListIterator#remove()} nor {@link ListIterator#add(Object)} since arrays can't be modified in
+	 * size.
+	 *
+	 * @param array the array that the returned iterator is iterating.
+	 * @return an iterator that iterates the elements of the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 */
+	public static ListIterator<Character> iterator(char[] array) {
+		Objects.requireNonNull(array, "array");
+		return new ListIterator<Character>() {
+			/**
+			 * The index of the next element.
+			 */
+			private int cursor = 0;
+
+			@Override
+			public boolean hasNext() {
+				return this.cursor < array.length;
+			}
+
+			@Override
+			public Character next() {
+				if (this.cursor >= array.length)
+					throw new NoSuchElementException();
+
+				return array[this.cursor++];
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				return this.cursor > 0;
+			}
+
+			@Override
+			public Character previous() {
+				if (this.cursor == 0)
+					throw new NoSuchElementException();
+
+				return array[--this.cursor];
+			}
+
+			@Override
+			public int nextIndex() {
+				return this.cursor;
+			}
+
+			@Override
+			public int previousIndex() {
+				return this.cursor - 1;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public void set(Character t) {
+				array[this.cursor] = t;
+			}
+
+			@Override
+			public void add(Character t) {
+				throw new UnsupportedOperationException("add");
+			}
+		};
+	}
+
+	/**
+	 * Get an iterator that iterates the elements of the given {@code array}. Note that the returned iterator will not
+	 * support {@link ListIterator#remove()} nor {@link ListIterator#add(Object)} since arrays can't be modified in
+	 * size.
+	 *
+	 * @param array the array that the returned iterator is iterating.
+	 * @return an iterator that iterates the elements of the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 */
+	public static ListIterator<Double> iterator(double[] array) {
+		Objects.requireNonNull(array, "array");
+		return new ListIterator<Double>() {
+			/**
+			 * The index of the next element.
+			 */
+			private int cursor = 0;
+
+			@Override
+			public boolean hasNext() {
+				return this.cursor < array.length;
+			}
+
+			@Override
+			public Double next() {
+				if (this.cursor >= array.length)
+					throw new NoSuchElementException();
+
+				return array[this.cursor++];
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				return this.cursor > 0;
+			}
+
+			@Override
+			public Double previous() {
+				if (this.cursor == 0)
+					throw new NoSuchElementException();
+
+				return array[--this.cursor];
+			}
+
+			@Override
+			public int nextIndex() {
+				return this.cursor;
+			}
+
+			@Override
+			public int previousIndex() {
+				return this.cursor - 1;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public void set(Double t) {
+				array[this.cursor] = t;
+			}
+
+			@Override
+			public void add(Double t) {
+				throw new UnsupportedOperationException("add");
+			}
+		};
+	}
+
+	/**
+	 * Get an iterator that iterates the elements of the given {@code array}. Note that the returned iterator will not
+	 * support {@link ListIterator#remove()} nor {@link ListIterator#add(Object)} since arrays can't be modified in
+	 * size.
+	 *
+	 * @param array the array that the returned iterator is iterating.
+	 * @return an iterator that iterates the elements of the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 */
+	public static ListIterator<Float> iterator(float[] array) {
+		Objects.requireNonNull(array, "array");
+		return new ListIterator<Float>() {
+			/**
+			 * The index of the next element.
+			 */
+			private int cursor = 0;
+
+			@Override
+			public boolean hasNext() {
+				return this.cursor < array.length;
+			}
+
+			@Override
+			public Float next() {
+				if (this.cursor >= array.length)
+					throw new NoSuchElementException();
+
+				return array[this.cursor++];
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				return this.cursor > 0;
+			}
+
+			@Override
+			public Float previous() {
+				if (this.cursor == 0)
+					throw new NoSuchElementException();
+
+				return array[--this.cursor];
+			}
+
+			@Override
+			public int nextIndex() {
+				return this.cursor;
+			}
+
+			@Override
+			public int previousIndex() {
+				return this.cursor - 1;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public void set(Float t) {
+				array[this.cursor] = t;
+			}
+
+			@Override
+			public void add(Float t) {
+				throw new UnsupportedOperationException("add");
+			}
+		};
+	}
+
+	/**
+	 * Get an iterator that iterates the elements of the given {@code array}. Note that the returned iterator will not
+	 * support {@link ListIterator#remove()} nor {@link ListIterator#add(Object)} since arrays can't be modified in
+	 * size.
+	 *
+	 * @param array the array that the returned iterator is iterating.
+	 * @return an iterator that iterates the elements of the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 */
+	public static ListIterator<Integer> iterator(int[] array) {
+		Objects.requireNonNull(array, "array");
+		return new ListIterator<Integer>() {
+			/**
+			 * The index of the next element.
+			 */
+			private int cursor = 0;
+
+			@Override
+			public boolean hasNext() {
+				return this.cursor < array.length;
+			}
+
+			@Override
+			public Integer next() {
+				if (this.cursor >= array.length)
+					throw new NoSuchElementException();
+
+				return array[this.cursor++];
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				return this.cursor > 0;
+			}
+
+			@Override
+			public Integer previous() {
+				if (this.cursor == 0)
+					throw new NoSuchElementException();
+
+				return array[--this.cursor];
+			}
+
+			@Override
+			public int nextIndex() {
+				return this.cursor;
+			}
+
+			@Override
+			public int previousIndex() {
+				return this.cursor - 1;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public void set(Integer t) {
+				array[this.cursor] = t;
+			}
+
+			@Override
+			public void add(Integer t) {
+				throw new UnsupportedOperationException("add");
+			}
+		};
+	}
+
+	/**
+	 * Get an iterator that iterates the elements of the given {@code array}. Note that the returned iterator will not
+	 * support {@link ListIterator#remove()} nor {@link ListIterator#add(Object)} since arrays can't be modified in
+	 * size.
+	 *
+	 * @param array the array that the returned iterator is iterating.
+	 * @return an iterator that iterates the elements of the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 */
+	public static ListIterator<Long> iterator(long[] array) {
+		Objects.requireNonNull(array, "array");
+		return new ListIterator<Long>() {
+			/**
+			 * The index of the next element.
+			 */
+			private int cursor = 0;
+
+			@Override
+			public boolean hasNext() {
+				return this.cursor < array.length;
+			}
+
+			@Override
+			public Long next() {
+				if (this.cursor >= array.length)
+					throw new NoSuchElementException();
+
+				return array[this.cursor++];
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				return this.cursor > 0;
+			}
+
+			@Override
+			public Long previous() {
+				if (this.cursor == 0)
+					throw new NoSuchElementException();
+
+				return array[--this.cursor];
+			}
+
+			@Override
+			public int nextIndex() {
+				return this.cursor;
+			}
+
+			@Override
+			public int previousIndex() {
+				return this.cursor - 1;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public void set(Long t) {
+				array[this.cursor] = t;
+			}
+
+			@Override
+			public void add(Long t) {
+				throw new UnsupportedOperationException("add");
+			}
+		};
+	}
+
+	/**
+	 * Get an iterator that iterates the elements of the given {@code array}. Note that the returned iterator will not
+	 * support {@link ListIterator#remove()} nor {@link ListIterator#add(Object)} since arrays can't be modified in
+	 * size.
+	 *
+	 * @param array the array that the returned iterator is iterating.
+	 * @return an iterator that iterates the elements of the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 */
+	public static ListIterator<Short> iterator(short[] array) {
+		Objects.requireNonNull(array, "array");
+		return new ListIterator<Short>() {
+			/**
+			 * The index of the next element.
+			 */
+			private int cursor = 0;
+
+			@Override
+			public boolean hasNext() {
+				return this.cursor < array.length;
+			}
+
+			@Override
+			public Short next() {
+				if (this.cursor >= array.length)
+					throw new NoSuchElementException();
+
+				return array[this.cursor++];
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				return this.cursor > 0;
+			}
+
+			@Override
+			public Short previous() {
+				if (this.cursor == 0)
+					throw new NoSuchElementException();
+
+				return array[--this.cursor];
+			}
+
+			@Override
+			public int nextIndex() {
+				return this.cursor;
+			}
+
+			@Override
+			public int previousIndex() {
+				return this.cursor - 1;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public void set(Short t) {
+				array[this.cursor] = t;
+			}
+
+			@Override
+			public void add(Short t) {
+				throw new UnsupportedOperationException("add");
+			}
+		};
+	}
+
+	/**
+	 * Get an iterator that iterates the elements of the given {@code array}. Note that the returned iterator will not
+	 * support {@link ListIterator#remove()} nor {@link ListIterator#add(Object)} since arrays can't be modified in
+	 * size. Using reflection.
+	 *
+	 * @param array the array that the returned iterator is iterating.
+	 * @return an iterator that iterates the elements of the given {@code array}.
+	 * @throws NullPointerException     if the given {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array} is not an array.
+	 */
+	public static ListIterator iterator0(Object array) {
+		Objects.requireNonNull(array, "array");
+		if (!array.getClass().isArray())
+			throw new IllegalArgumentException("Not an array " + array);
+		int length = Array.getLength(array);
+		return new ListIterator() {
+			/**
+			 * The index of the next element.
+			 */
+			private int cursor = 0;
+
+			@Override
+			public boolean hasNext() {
+				return this.cursor < length;
+			}
+
+			@Override
+			public Object next() {
+				if (this.cursor >= length)
+					throw new NoSuchElementException();
+
+				return Array.get(array, this.cursor++);
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				return this.cursor > 0;
+			}
+
+			@Override
+			public Object previous() {
+				if (this.cursor == 0)
+					throw new NoSuchElementException();
+
+				return Array.get(array, --this.cursor);
+			}
+
+			@Override
+			public int nextIndex() {
+				return this.cursor;
+			}
+
+			@Override
+			public int previousIndex() {
+				return this.cursor - 1;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public void set(Object t) {
+				Array.set(array, this.cursor, t);
+			}
+
+			@Override
+			public void add(Object t) {
+				throw new UnsupportedOperationException("add");
+			}
+		};
+	}
+
+	/**
+	 * Get an iterator that iterates the elements of the given {@code array}. Note that the returned iterator will not
+	 * support {@link ListIterator#remove()} nor {@link ListIterator#add(Object)} since arrays can't be modified in
+	 * size. Using {@code if} statements.
+	 *
+	 * @param array the array that the returned iterator is iterating.
+	 * @return an iterator that iterates the elements of the given {@code array}.
+	 * @throws NullPointerException     if the given {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array} is not an array.
+	 */
+	public static ListIterator iterator1(Object array) {
+		Objects.requireNonNull(array, "array");
+
+		if (array instanceof Object[])
+			return Arrayz.iterator((Object[]) array);
+		if (array instanceof boolean[])
+			return Arrayz.iterator((boolean[]) array);
+		if (array instanceof byte[])
+			return Arrayz.iterator((byte[]) array);
+		if (array instanceof char[])
+			return Arrayz.iterator((char[]) array);
+		if (array instanceof double[])
+			return Arrayz.iterator((double[]) array);
+		if (array instanceof float[])
+			return Arrayz.iterator((float[]) array);
+		if (array instanceof int[])
+			return Arrayz.iterator((int[]) array);
+		if (array instanceof long[])
+			return Arrayz.iterator((long[]) array);
+		if (array instanceof short[])
+			return Arrayz.iterator((short[]) array);
+
+		throw new IllegalArgumentException("not an array");
+	}
+
 	//merge
 
 	/**
