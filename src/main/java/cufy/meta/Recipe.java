@@ -25,33 +25,33 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 /**
- * A recipe to construct a value. Given the {@link #value()} is the source value. And the {@link #converter()} to convert that value. And {@link
- * #type()} is the type of that value.
+ * A recipe to construct a value. Given the {@link #value()} is the source value. The {@link #converter()} to convert
+ * that value. {@link #type()} is the type of that value.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
- * @since 21-Nov-2019
+ * @since 0.0.1 ~2019.11.21
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Recipe {
 	/**
 	 * The reference to the converter to be used to construct the value.
 	 *
-	 * @return the reference to the  converter to be used to construct the value
+	 * @return the reference to the converter to be used to construct the value.
 	 */
 	Where converter() default @Where(BaseConverter.class);
 
 	/**
 	 * The clazz of the object.
 	 *
-	 * @return the clazz of the object
+	 * @return the clazz of the object.
 	 */
 	Type type() default @Type(String.class);
 
 	/**
 	 * The source string of the value.
 	 *
-	 * @return the source string of teh value
+	 * @return the source string of teh value.
 	 */
 	String value() default "";
 
@@ -60,9 +60,9 @@ public @interface Recipe {
 	 */
 	final class Util {
 		/**
-		 * This is a util class. And shall not be instanced as an object.
+		 * This is an util class and must not be instanced as an object.
 		 *
-		 * @throws AssertionError when called
+		 * @throws AssertionError when called.
 		 */
 		private Util() {
 			throw new AssertionError("No instance for you!");
@@ -73,9 +73,9 @@ public @interface Recipe {
 		 *
 		 * @param recipe the value constructing recipe
 		 * @param <O>    the type of the returned value
-		 * @return a value from the given value constructing recipe
-		 * @throws NullPointerException if the given 'recipe' is null
-		 * @throws IllegalMetaException if ANY throwable get thrown while constructing it
+		 * @return a value from the given {@code recipe}.
+		 * @throws NullPointerException if the given {@code recipe} is null.
+		 * @throws IllegalMetaException if ANY throwable get thrown while constructing it.
 		 */
 		public static <O> O get(Recipe recipe) {
 			Objects.requireNonNull(recipe, "recipe");

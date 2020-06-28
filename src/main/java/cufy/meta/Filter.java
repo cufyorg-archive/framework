@@ -31,40 +31,44 @@ import java.util.Objects;
  *     <li>{@link #includeAll()}</li>
  * </ul>
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
- * @since 21-Nov-2019
+ * @since 0.0.1 ~2019.11.21
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Filter {
 	/**
 	 * Classes not in range (subclasses NOT included).
 	 *
-	 * @return absolute classes not in range
+	 * @return absolute classes not in range.
 	 */
 	Class<?>[] exclude() default {};
+
 	/**
 	 * Classes not in range (subclasses included).
 	 *
-	 * @return super classes not in range
+	 * @return super classes not in range.
 	 */
 	Class<?>[] excludeAll() default {};
+
 	/**
 	 * Classes in range (subclasses NOT included).
 	 *
-	 * @return absolute classes in range
+	 * @return absolute classes in range.
 	 */
 	Class<?>[] include() default {};
+
 	/**
 	 * Classes in range (subclasses included).
 	 *
-	 * @return super classes in range
+	 * @return super classes in range.
 	 */
 	Class<?>[] includeAll() default {};
+
 	/**
 	 * Classes in range (subclasses NOT included).
 	 *
-	 * @return absolute classes in range
+	 * @return absolute classes in range.
 	 */
 	Class<?>[] value() default {};
 
@@ -73,21 +77,21 @@ public @interface Filter {
 	 */
 	final class Util {
 		/**
-		 * This is a util class. And shall not be instanced as an object.
+		 * This is an util class and must not be instanced as an object.
 		 *
-		 * @throws AssertionError when called
+		 * @throws AssertionError when called.
 		 */
 		private Util() {
 			throw new AssertionError("No instance for you!");
 		}
 
 		/**
-		 * Check whether the given class is in the given family or not.
+		 * Determine whether the given class is in the given family or not.
 		 *
-		 * @param family to check if the class is in
-		 * @param klass  to be checked
-		 * @return whether the given class is in the given family or not
-		 * @throws NullPointerException if the given 'family' or 'klass' is null
+		 * @param family to check if the class is in.
+		 * @param klass  to be checked.
+		 * @return true, if the given {@code klass} is in the given {@code family}.
+		 * @throws NullPointerException if the given {@code family} or {@code klass} is null.
 		 */
 		public static boolean test(Filter family, Class klass) {
 			Objects.requireNonNull(family, "family");

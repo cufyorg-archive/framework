@@ -22,14 +22,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 /**
- * A recipe to pass information about a clazz in the annotations environment.
+ * A recipe to pass information about a clazz in the annotations' environment.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
- * @since 31-Mar-2020
+ * @since 0.1.0 ~2020.03.31
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Type {
+	/**
+	 * The {@code componentClasses} of the trees of this clazz (in order).
+	 *
+	 * @return the {@code componentClazz} of this clazz.
+	 */
+	Class[] components() default {};
+
 	/**
 	 * The family of this clazz. How this clazz should be treated.
 	 *
@@ -38,11 +45,12 @@ public @interface Type {
 	 * @see Clazz#family
 	 */
 	Class[] family() default {};
+
 	/**
 	 * The class represented by this clazz.
 	 *
 	 * @return the class represented by this clazz.
-	 * @see Clazz#klass
+	 * @see cufy.lang.Clazz#klass
 	 */
 	Class value();
 
@@ -51,9 +59,9 @@ public @interface Type {
 	 */
 	final class Util {
 		/**
-		 * This is a util class. And shall not be instanced as an object.
+		 * This is an util class and must not be instanced as an object.
 		 *
-		 * @throws AssertionError when called
+		 * @throws AssertionError when called.
 		 */
 		private Util() {
 			throw new AssertionError("No instance for you!");
@@ -62,25 +70,26 @@ public @interface Type {
 		/**
 		 * Get a clazz from the given meta-clazz.
 		 *
-		 * @param type the meta-clazz to get a clazz from
-		 * @param <T>  the component-type of the returned clazz
-		 * @return a clazz represents the same class that the given meta-clazz is representing
-		 * @throws NullPointerException if the given 'type' is null
+		 * @param type the meta-clazz to get a clazz from.
+		 * @param <T>  the component-type of the returned clazz.
+		 * @return a clazz represents the same class that the given meta-clazz is representing.
+		 * @throws NullPointerException if the given {@code type} is null.
 		 */
 		public static <T> Clazz<T> get(Type type) {
 			Objects.requireNonNull(type, "type");
 
 			Class<T> klass = type.value();
-			Class[] families = type.family();
-			Class family;
+			Class[] family = type.family();
+			Class[] components = type.components();
 
-			if (families.length == 0)
-				family = klass;
-			else if (families.length == 1)
-				family = families[0];
-			else throw new IllegalMetaException("Type.family.length > 1");
+			if (family.length > 1)
+				throw new IllegalMetaException("Type.family().length > 1");
 
-			return Clazz.of(family, klass);
+			return Clazz.as(
+					klass,
+					family.length == 0 ? klass : family[0],
+					components
+			);
 		}
 	}
 }

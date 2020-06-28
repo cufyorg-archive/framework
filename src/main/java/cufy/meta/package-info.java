@@ -14,12 +14,13 @@
  *	limitations under the License.
  */
 /**
- * Annotations are a big part of the java language. It makes the code more easier yet powerful. But annotations has so many limitations and can't
- * specify that much data without base annotations to depend on. This package provides base annotations that have so many uses.
+ * Annotations are a big part of the java language. It makes the code easier yet powerful. Annotations have so many
+ * limitations and can't specify that much data without base annotations to depend on. This package provides base
+ * annotations that have so many uses.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
- * @see <a href="https://framework.cufy.org/site/meta">framework.cufy.org/site/meta</a>
- * @since 21-Nov-2019
+ * @see <a href="https://framework.cufy.org/meta">framework.cufy.org/meta</a>
+ * @since 0.0.1 ~2019.11.21
  */
 package cufy.meta;

@@ -25,22 +25,23 @@ import java.util.Objects;
 /**
  * A reference to a static field with a specific type. That field should have {@link Target} annotated to it.
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
- * @since 31-Mar-2020
+ * @since 0.1.0 ~2020.03.31
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Where {
 	/**
 	 * The id of that field.
 	 *
-	 * @return the id of that field
+	 * @return the id of that field.
 	 */
 	String name() default "";
+
 	/**
 	 * The class that the targeted field is at.
 	 *
-	 * @return the class that the targeted field is at
+	 * @return the class that the targeted field is at.
 	 */
 	Class value();
 
@@ -54,7 +55,7 @@ public @interface Where {
 		/**
 		 * The id of the field.
 		 *
-		 * @return the id of the field
+		 * @return the id of the field.
 		 */
 		String name() default "";
 
@@ -67,7 +68,7 @@ public @interface Where {
 			/**
 			 * The array of the meta-references.
 			 *
-			 * @return the array of meta-references
+			 * @return the array of meta-references.
 			 */
 			Target[] value();
 		}
@@ -78,57 +79,57 @@ public @interface Where {
 	 */
 	final class Util {
 		/**
-		 * This is a util class. And shall not be instanced as an object.
+		 * This is an util class and must not be instanced as an object.
 		 *
-		 * @throws AssertionError when called
+		 * @throws AssertionError when called.
 		 */
 		private Util() {
 			throw new AssertionError("No instance for you!");
 		}
 
 		/**
-		 * Get the field represented by the given where.
+		 * Get the field represented by the given {@code where}.
 		 *
-		 * @param where to get the field of
-		 * @return the field represented by the given where
+		 * @param where to get the field of.
+		 * @return the field represented by the given {@code where}.
 		 */
 		public static Field get(Where where) {
 			Objects.requireNonNull(where, "reference");
 
 			for (Field field : where.value().getDeclaredFields())
 				for (Where.Target target : field.getAnnotationsByType(Where.Target.class))
-					if (target.name().equals(where.name()))
+					if (Objects.equals(target.name(), where.name()))
 						return field;
 
 			throw new IllegalMetaException("No such field at " + where);
 		}
 
 		/**
-		 * Get the static value stored at the reference given.
+		 * Get the static value stored at the given {@code where}.
 		 *
-		 * @param where where the value stored
-		 * @param <O>   the type of the returned value
-		 * @return the value stored at the given reference
+		 * @param where where the value stored.
+		 * @param <O>   the type of the returned value.
+		 * @return the value stored at the given {@code where}.
 		 */
 		public static <O> O getValue(Where where) {
 			try {
-				return (O) get(where).get(null);
+				return (O) Util.get(where).get(null);
 			} catch (IllegalAccessException e) {
 				throw new IllegalMetaException(e);
 			}
 		}
 
 		/**
-		 * Get the value stored at the reference given in the given instance.
+		 * Get the value stored at the given {@code where} in the given {@code instance}.
 		 *
-		 * @param where    where the value stored
-		 * @param instance to get the value from
-		 * @param <O>      the type of the returned value
-		 * @return the value stored at the given reference in the given instance
+		 * @param where    where the value stored.
+		 * @param instance to get the value from.
+		 * @param <O>      the type of the returned value.
+		 * @return the value stored at the given {@code reference} in the given {@code instance}.
 		 */
 		public static <O> O getValue(Where where, Object instance) {
 			try {
-				return (O) get(where).get(instance);
+				return (O) Util.get(where).get(instance);
 			} catch (IllegalAccessException e) {
 				throw new IllegalMetaException(e);
 			}
