@@ -29,6 +29,7 @@ import java.util.Objects;
  * @version 0.1.3
  * @since 0.0.5 ~2019.12.12
  */
+@Deprecated
 public final class Readerz {
 	/**
 	 * This is an util class and must not be instanced as an object.
@@ -63,6 +64,7 @@ public final class Readerz {
 		char[] buffer = new char[bufferCapacity];
 
 		int l;
+		//noinspection MethodCallInLoopCondition
 		while ((l = reader.read(buffer)) != -1)
 			builder.append(buffer, 0, l);
 
@@ -119,9 +121,12 @@ public final class Readerz {
 
 		if (ignoreCase || trim)
 			list.replaceAll(s -> {
+				String replacement = s;
 				if (trim)
-					s = s.trim();
-				return ignoreCase ? s.toLowerCase() : s;
+					replacement = replacement.trim();
+				if (ignoreCase)
+					replacement = replacement.toLowerCase();
+				return replacement;
 			});
 
 		int i = reader.read();
