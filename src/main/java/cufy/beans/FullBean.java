@@ -18,160 +18,149 @@ package cufy.beans;
 import cufy.util.Reflection;
 
 import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A bean designed to have a final entrySet. Since the original {@link Bean} can't have a final entrySet.
  *
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
- * @author lsafer
+ * @author LSafer
  * @version 0.1.3
- * @since 09-Dec-2019
+ * @since 0.0.1 ~2019.12.09
  */
 public interface FullBean<K, V> extends Bean<K, V> {
 	@Override
 	default int size() {
-		return this.entrySet().size();
+		Set<Entry<K, V>> entrySet = this.entrySet();
+		return entrySet.size();
 	}
 
 	@Override
 	default boolean isEmpty() {
-		return this.entrySet().isEmpty();
+		Set<Entry<K, V>> entrySet = this.entrySet();
+		return entrySet.isEmpty();
 	}
 
 	@Override
 	default boolean containsKey(Object key) {
-		for (Entry entry : this.entrySet())
-			if (Objects.equals(entry.getKey(), key))
+		for (Entry entry : this.entrySet()) {
+			Object entryKey = entry.getKey();
+
+			if (Objects.equals(key, entryKey))
 				return true;
+		}
 
 		return false;
 	}
 
 	@Override
 	default boolean containsValue(Object value) {
-		for (Entry entry : this.entrySet())
-			if (Objects.equals(entry.getValue(), value))
-				return true;
+		for (Entry entry : this.entrySet()) {
+			Object entryValue = entry.getValue();
 
+			if (Objects.equals(value, entryValue))
+				return true;
+		}
 		return false;
 	}
 
 	@Override
 	default V get(Object key) {
-		for (Entry<K, V> entry : this.entrySet())
-			if (Objects.equals(entry.getKey(), key))
+		for (Entry<K, V> entry : this.entrySet()) {
+			K entryKey = entry.getKey();
+
+			if (Objects.equals(entryKey, key))
 				return entry.getValue();
+		}
+
+		//noinspection ReturnOfNull
 		return null;
 	}
 
 	@Override
 	default V put(K key, V value) {
-		//looking for existing entry
-		for (Entry<K, V> entry : this.entrySet())
-			if (Objects.equals(entry.getKey(), key))
+		Set<Entry<K, V>> entrySet = this.entrySet();
+
+		//looking in the existing entries
+		for (Entry<K, V> entry : entrySet) {
+			K entryKey = entry.getKey();
+
+			if (Objects.equals(entryKey, key))
 				return entry.setValue(value);
+		}
 
-		//looking for a field with removed entry
-		for (Field field : Reflection.getAllFields(this.getClass()))
-			if (field.isAnnotationPresent(Property.class))
-				for (K filedKey : (K[]) Bean.getKeys(field))
-					if (Objects.equals(key, field)) {
-						FieldEntry entry = new FieldEntry(this, field, filedKey);
-						entry.setValue(value);
-						this.entrySet().add(entry);
-						return null;
-					}
-
-		//create a simple entry
-		this.entrySet().add(new SimpleEntry<>(key, value));
+		//looking in the fields with removed entries, Or add a simple entry
+		Object instance = this.getInstance();
+		FieldEntry<K, V> entry = Bean.entry(instance, key, value);
+		entrySet.add(entry != null ? entry : new AbstractMap.SimpleEntry<>(key, value));
 		return null;
 	}
 
 	@Override
 	default V remove(Object key) {
-		V old = null;
+		Set<Entry<K, V>> entrySet = this.entrySet();
 
-		for (Entry<K, V> entry : this.entrySet())
-			if (Objects.equals(entry.getKey(), key)) {
-				old = entry.getValue();
-				this.entrySet().remove(entry);
-				break;
+		Iterator<Entry<K, V>> iterator = entrySet.iterator();
+		while (iterator.hasNext()) {
+			Entry<K, V> entry = iterator.next();
+			K entryKey = entry.getKey();
+
+			if (Objects.equals(key, entryKey)) {
+				V old = entry.getValue();
+				iterator.remove();
+				return old;
 			}
+		}
 
-		return old;
+		//noinspection ReturnOfNull
+		return null;
 	}
 
 	@Override
 	default void putAll(Map<? extends K, ? extends V> map) {
+		//DON'T replace it with something like map.forEach(this::put)!
 		Objects.requireNonNull(map, "map");
-		map.forEach(this::put);
+		//noinspection NestedMethodCall
+		Set<K> keys = new HashSet<>(map.keySet());
+		Set<Entry<K, V>> entrySet = this.entrySet();
+
+		//looking in the existing entries
+		for (Entry<K, V> entry : entrySet) {
+			K entryKey = entry.getKey();
+
+			if (keys.remove(entryKey)) {
+				V value = map.get(entryKey);
+				entry.setValue(value);
+			}
+		}
+
+		//looking in the fields with removed entries
+		Object instance = this.getInstance();
+		Class<?> klass = instance.getClass();
+
+		for (Field field : Reflection.getAllFields(klass))
+			if (field.isAnnotationPresent(Property.class))
+				for (K key : (K[]) Bean.Util.getKeys(field))
+					if (keys.remove(key)) {
+						V value = map.get(key);
+						FieldEntry<K, V> entry = Bean.entry(instance, field, key, value);
+						entrySet.add(entry);
+					}
+
+		//adding simple entries
+		for (K key : keys) {
+			V value = map.get(key);
+			entrySet.add(new AbstractMap.SimpleEntry(key, value));
+		}
 	}
 
 	@Override
 	default void clear() {
-		this.entrySet().clear();
+		Set<Entry<K, V>> entrySet = this.entrySet();
+		entrySet.clear();
 	}
 
 	@Override
 	Set<Entry<K, V>> entrySet();
-
-	/**
-	 * A simple entry that holds a final key and a changeable value.
-	 */
-	class SimpleEntry<K, V> implements Entry<K, V> {
-		/**
-		 * The key of this entry.
-		 */
-		protected final K key;
-		/**
-		 * The value of this entry.
-		 */
-		protected V value;
-
-		/**
-		 * Construct a new simple entry.
-		 *
-		 * @param key   the key of this entry
-		 * @param value the initial value
-		 */
-		public SimpleEntry(K key, V value) {
-			this.key = key;
-			this.value = value;
-		}
-
-		@Override
-		public K getKey() {
-			return this.key;
-		}
-
-		@Override
-		public V getValue() {
-			return this.value;
-		}
-
-		@Override
-		public V setValue(V v) {
-			return this.value = v;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(getKey());
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			} else if (o instanceof Entry) {
-				Entry entry = (Entry) o;
-				return Objects.equals(this.key, entry.getKey());
-			}
-			return false;
-		}
-	}
 }
