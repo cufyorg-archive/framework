@@ -53,6 +53,7 @@ public final class Stringz {
 				return query;
 		}
 
+		//noinspection ReturnOfNull
 		return null;
 	}
 
@@ -75,6 +76,7 @@ public final class Stringz {
 				return query;
 		}
 
+		//noinspection ReturnOfNull
 		return null;
 	}
 
@@ -82,7 +84,7 @@ public final class Stringz {
 	 * Determine if the given string ends with any of the given sequences.
 	 *
 	 * @param string    to check.
-	 * @param sequences to chek for.
+	 * @param sequences to be checked for.
 	 * @return the first sequence that the string ended with, or null if the string does not end with any of the given
 	 * 		sequences.
 	 * @throws NullPointerException if the given {@code string} or {@code sequences} or any of its elements is null.
@@ -95,6 +97,7 @@ public final class Stringz {
 			if (string.endsWith(sequence.toString()))
 				return sequence;
 
+		//noinspection ReturnOfNull
 		return null;
 	}
 
@@ -119,8 +122,8 @@ public final class Stringz {
 		if (times == 0)
 			return "";
 
-		final int sl = string.length();
-		final int length = sl * times;
+		int sl = string.length();
+		int length = sl * times;
 
 		char[] chars = new char[length];
 		for (int i = 0; i < length; i += sl)
@@ -152,10 +155,10 @@ public final class Stringz {
 		if (times == 0)
 			return "";
 
-		final int sl = string.length();
-		final int dl = delimiter.length();
-		final int length = (sl + dl) * times - dl;
-		final int lm = length - 1;
+		int sl = string.length();
+		int dl = delimiter.length();
+		int length = (sl + dl) * times - dl;
+		int lm = length - 1;
 
 		char[] chars = new char[length];
 		for (int i = 0; i < length; ) {
@@ -175,7 +178,7 @@ public final class Stringz {
 	 * Determine if the given string starts with any of the given sequences.
 	 *
 	 * @param string    to check.
-	 * @param sequences to chek for.
+	 * @param sequences to be checked for.
 	 * @return the first sequence that the string started with, or null if the string does not start with any of the
 	 * 		given sequences.
 	 * @throws NullPointerException if the given {@code string} or {@code sequences} is null.
@@ -188,6 +191,7 @@ public final class Stringz {
 			if (string.startsWith(sequence.toString()))
 				return sequence;
 
+		//noinspection ReturnOfNull
 		return null;
 	}
 }

@@ -51,26 +51,26 @@ public final class Collectionz {
 		return new AbstractList<T>() {
 			@Override
 			public T get(int index) {
-				this.checkBounds(index, this.maxIndex());
+				this.assertWithinBounds(index, this.maxIndex());
 				return map.get(index);
 			}
 
 			@Override
 			public T set(int index, T element) {
-				this.checkBounds(index, this.maxIndex());
+				this.assertWithinBounds(index, this.maxIndex());
 				return map.put(index, element);
 			}
 
 			@Override
 			public void add(int index, T element) {
-				this.checkBounds(index, this.size());
+				this.assertWithinBounds(index, this.size());
 				this.shiftIndexes(index, null, 1);
 				map.put(index, element);
 			}
 
 			@Override
 			public T remove(int index) {
-				this.checkBounds(index, this.maxIndex());
+				this.assertWithinBounds(index, this.maxIndex());
 				T value = map.remove(index);
 				this.shiftIndexes(index, null, -1);
 				return value;
@@ -84,10 +84,10 @@ public final class Collectionz {
 			/**
 			 * Check if the given index is valid or not.
 			 *
-			 * @param index the index to check
+			 * @param index   the index to check
 			 * @param allowed the allowed index (as maximum)
 			 */
-			private void checkBounds(int index, int allowed) {
+			private void assertWithinBounds(int index, int allowed) {
 				if (index < 0)
 					throw new IndexOutOfBoundsException("index=" + index + " is negative");
 				else if (index > allowed)
@@ -104,6 +104,7 @@ public final class Collectionz {
 				int max = -1;
 
 				for (Object key : map.keySet())
+					//noinspection NestedAssignment
 					if (key instanceof Integer && (index = (int) key) > max)
 						max = index;
 
@@ -129,7 +130,7 @@ public final class Collectionz {
 			 * @param by    the length to shift the values of the provided {@code map} by.
 			 */
 			private void shiftIndexes(Integer start, Integer end, int by) {
-				HashMap<Integer, T> modified = new HashMap<>();
+				Map<Integer, T> modified = new HashMap<>();
 
 				boolean noStart = start == null;
 				boolean noEnd = end == null;
@@ -140,11 +141,12 @@ public final class Collectionz {
 				});
 
 				modified.forEach((key, value) -> {
-					map.remove(key, value);
-					key += by;
+					int index = key;
+					map.remove(index, value);
 
-					if ((noStart || key >= start) && (noEnd || key <= end))
-						map.put(key, value);
+					index += by;
+					if ((noStart || index >= start) && (noEnd || index <= end))
+						map.put(index, value);
 				});
 			}
 		};
@@ -180,7 +182,7 @@ public final class Collectionz {
 			@Override
 			public Set<Map.Entry<String, T>> entrySet() {
 				if (this.entrySet == null) {
-					HashSet<Map.Entry<String, T>> entrySet = new HashSet<>();
+					Set<Entry<String, T>> entrySet = new HashSet<>();
 
 					for (Field field : Reflection.getAllFields(object.getClass()))
 						if (Modifier.isPublic(field.getModifiers()))
@@ -263,7 +265,7 @@ public final class Collectionz {
 								/**
 								 * The current position of this iterator.
 								 */
-								private int cursor = 0;
+								private int cursor;
 								/**
 								 * The initial size of this array once this iterator created.
 								 */
@@ -357,7 +359,7 @@ public final class Collectionz {
 			/**
 			 * The index of the current iterator.
 			 */
-			protected int cursor = 0;
+			private int cursor;
 
 			@Override
 			public boolean hasNext() {

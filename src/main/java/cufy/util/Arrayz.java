@@ -52,10 +52,12 @@ public final class Arrayz {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(elements, "elements");
 
+		//noinspection LabeledStatement
 		for0:
 		for (int ei = 0; ei < elements.length; ei++) {
 			for (T ae : array)
 				if (Objects.equals(elements[ei], ae))
+					//noinspection ContinueStatementWithLabel
 					continue for0;
 			return ei;
 		}
@@ -76,10 +78,12 @@ public final class Arrayz {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(elements, "elements");
 
+		//noinspection LabeledStatement
 		for0:
 		for (int ei = 0; ei < elements.length; ei++) {
 			for (boolean ae : array)
 				if (Objects.equals(elements[ei], ae))
+					//noinspection ContinueStatementWithLabel
 					continue for0;
 			return ei;
 		}
@@ -100,10 +104,12 @@ public final class Arrayz {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(elements, "elements");
 
+		//noinspection LabeledStatement
 		for0:
 		for (int ei = 0; ei < elements.length; ei++) {
 			for (byte ae : array)
 				if (Objects.equals(elements[ei], ae))
+					//noinspection ContinueStatementWithLabel
 					continue for0;
 			return ei;
 		}
@@ -124,10 +130,12 @@ public final class Arrayz {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(elements, "elements");
 
+		//noinspection LabeledStatement
 		for0:
 		for (int ei = 0; ei < elements.length; ei++) {
 			for (char ae : array)
 				if (Objects.equals(elements[ei], ae))
+					//noinspection ContinueStatementWithLabel
 					continue for0;
 			return ei;
 		}
@@ -148,10 +156,12 @@ public final class Arrayz {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(elements, "elements");
 
+		//noinspection LabeledStatement
 		for0:
 		for (int ei = 0; ei < elements.length; ei++) {
 			for (double ae : array)
 				if (Objects.equals(elements[ei], ae))
+					//noinspection ContinueStatementWithLabel
 					continue for0;
 			return ei;
 		}
@@ -172,10 +182,12 @@ public final class Arrayz {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(elements, "elements");
 
+		//noinspection LabeledStatement
 		for0:
 		for (int ei = 0; ei < elements.length; ei++) {
 			for (float ae : array)
 				if (Objects.equals(elements[ei], ae))
+					//noinspection ContinueStatementWithLabel
 					continue for0;
 			return ei;
 		}
@@ -196,10 +208,12 @@ public final class Arrayz {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(elements, "elements");
 
+		//noinspection LabeledStatement
 		for0:
 		for (int ei = 0; ei < elements.length; ei++) {
 			for (int ae : array)
 				if (Objects.equals(elements[ei], ae))
+					//noinspection ContinueStatementWithLabel
 					continue for0;
 			return ei;
 		}
@@ -220,10 +234,12 @@ public final class Arrayz {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(elements, "elements");
 
+		//noinspection LabeledStatement
 		for0:
 		for (int ei = 0; ei < elements.length; ei++) {
 			for (long ae : array)
 				if (Objects.equals(elements[ei], ae))
+					//noinspection ContinueStatementWithLabel
 					continue for0;
 			return ei;
 		}
@@ -244,10 +260,12 @@ public final class Arrayz {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(elements, "elements");
 
+		//noinspection LabeledStatement
 		for0:
 		for (int ei = 0; ei < elements.length; ei++) {
 			for (short ae : array)
 				if (Objects.equals(elements[ei], ae))
+					//noinspection ContinueStatementWithLabel
 					continue for0;
 			return ei;
 		}
@@ -272,16 +290,18 @@ public final class Arrayz {
 		if (!elements.getClass().isArray())
 			throw new IllegalArgumentException(elements + " isn't an array");
 
-		int el = Array.getLength(elements);
+		int elementsLength = Array.getLength(elements);
 		int al = Array.getLength(array);
+		//noinspection LabeledStatement
 		for0:
-		for (int ei = 0; ei < el; ei++) {
-			Object ee = Array.get(elements, ei);
+		for (int ei = 0; ei < elementsLength; ei++) {
+			Object element = Array.get(elements, ei);
 
 			for (int ai = 0; ai < al; ai++) {
 				Object ae = Array.get(array, ai);
 
-				if (Objects.equals(ee, ae))
+				if (Objects.equals(element, ae))
+					//noinspection ContinueStatementWithLabel
 					continue for0;
 			}
 
@@ -344,8 +364,8 @@ public final class Arrayz {
 		Objects.requireNonNull(elements, "elements");
 
 		for (int ai = 0; ai < array.length; ai++)
-			for (T ee : elements)
-				if (Objects.equals(array[ai], ee))
+			for (T element : elements)
+				if (Objects.equals(array[ai], element))
 					return ai;
 
 		return -1;
@@ -365,8 +385,8 @@ public final class Arrayz {
 		Objects.requireNonNull(elements, "elements");
 
 		for (int ai = 0; ai < array.length; ai++)
-			for (boolean ee : elements)
-				if (Objects.equals(array[ai], ee))
+			for (boolean element : elements)
+				if (Objects.equals(array[ai], element))
 					return ai;
 
 		return -1;
@@ -386,8 +406,8 @@ public final class Arrayz {
 		Objects.requireNonNull(elements, "elements");
 
 		for (int ai = 0; ai < array.length; ai++)
-			for (byte ee : elements)
-				if (Objects.equals(array[ai], ee))
+			for (byte element : elements)
+				if (Objects.equals(array[ai], element))
 					return ai;
 
 		return -1;
@@ -407,8 +427,8 @@ public final class Arrayz {
 		Objects.requireNonNull(elements, "elements");
 
 		for (int ai = 0; ai < array.length; ai++)
-			for (char ee : elements)
-				if (Objects.equals(array[ai], ee))
+			for (char element : elements)
+				if (Objects.equals(array[ai], element))
 					return ai;
 
 		return -1;
@@ -428,8 +448,8 @@ public final class Arrayz {
 		Objects.requireNonNull(elements, "elements");
 
 		for (int ai = 0; ai < array.length; ai++)
-			for (double ee : elements)
-				if (Objects.equals(array[ai], ee))
+			for (double element : elements)
+				if (Objects.equals(array[ai], element))
 					return ai;
 
 		return -1;
@@ -449,8 +469,8 @@ public final class Arrayz {
 		Objects.requireNonNull(elements, "elements");
 
 		for (int ai = 0; ai < array.length; ai++)
-			for (float ee : elements)
-				if (Objects.equals(array[ai], ee))
+			for (float element : elements)
+				if (Objects.equals(array[ai], element))
 					return ai;
 
 		return -1;
@@ -470,8 +490,8 @@ public final class Arrayz {
 		Objects.requireNonNull(elements, "elements");
 
 		for (int ai = 0; ai < array.length; ai++)
-			for (int ee : elements)
-				if (Objects.equals(array[ai], ee))
+			for (int element : elements)
+				if (Objects.equals(array[ai], element))
 					return ai;
 
 		return -1;
@@ -491,8 +511,8 @@ public final class Arrayz {
 		Objects.requireNonNull(elements, "elements");
 
 		for (int ai = 0; ai < array.length; ai++)
-			for (long ee : elements)
-				if (Objects.equals(array[ai], ee))
+			for (long element : elements)
+				if (Objects.equals(array[ai], element))
 					return ai;
 
 		return -1;
@@ -512,8 +532,8 @@ public final class Arrayz {
 		Objects.requireNonNull(elements, "elements");
 
 		for (int ai = 0; ai < array.length; ai++)
-			for (short ee : elements)
-				if (Objects.equals(array[ai], ee))
+			for (short element : elements)
+				if (Objects.equals(array[ai], element))
 					return ai;
 
 		return -1;
@@ -542,9 +562,9 @@ public final class Arrayz {
 			Object ae = Array.get(array, ai);
 
 			for (int ei = 0; ei < el; ei++) {
-				Object ee = Array.get(elements, ei);
+				Object element = Array.get(elements, ei);
 
-				if (Objects.equals(ae, ee))
+				if (Objects.equals(ae, element))
 					return ai;
 			}
 		}
@@ -628,7 +648,7 @@ public final class Arrayz {
 			@Override
 			public Object[] toArray(Object[] a) {
 				Objects.requireNonNull(a, "a");
-				final int length = a.length;
+				int length = a.length;
 
 				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
@@ -681,7 +701,7 @@ public final class Arrayz {
 			@Override
 			public Object[] toArray(Object[] a) {
 				Objects.requireNonNull(a, "a");
-				final int length = a.length;
+				int length = a.length;
 
 				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
@@ -734,7 +754,7 @@ public final class Arrayz {
 			@Override
 			public Object[] toArray(Object[] a) {
 				Objects.requireNonNull(a, "a");
-				final int length = a.length;
+				int length = a.length;
 
 				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
@@ -787,7 +807,7 @@ public final class Arrayz {
 			@Override
 			public Object[] toArray(Object[] a) {
 				Objects.requireNonNull(a, "a");
-				final int length = a.length;
+				int length = a.length;
 
 				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
@@ -840,7 +860,7 @@ public final class Arrayz {
 			@Override
 			public Object[] toArray(Object[] a) {
 				Objects.requireNonNull(a, "a");
-				final int length = a.length;
+				int length = a.length;
 
 				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
@@ -893,7 +913,7 @@ public final class Arrayz {
 			@Override
 			public Object[] toArray(Object[] a) {
 				Objects.requireNonNull(a, "a");
-				final int length = a.length;
+				int length = a.length;
 
 				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
@@ -946,7 +966,7 @@ public final class Arrayz {
 			@Override
 			public Object[] toArray(Object[] a) {
 				Objects.requireNonNull(a, "a");
-				final int length = a.length;
+				int length = a.length;
 
 				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
@@ -999,7 +1019,7 @@ public final class Arrayz {
 			@Override
 			public Object[] toArray(Object[] a) {
 				Objects.requireNonNull(a, "a");
-				final int length = a.length;
+				int length = a.length;
 
 				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
@@ -1052,7 +1072,7 @@ public final class Arrayz {
 			@Override
 			public Object[] toArray(Object[] a) {
 				Objects.requireNonNull(a, "a");
-				final int length = a.length;
+				int length = a.length;
 
 				if (length < array.length)
 					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
@@ -1108,7 +1128,7 @@ public final class Arrayz {
 			@Override
 			public Object[] toArray(Object[] a) {
 				Objects.requireNonNull(a, "a");
-				final int length = a.length;
+				int length = a.length;
 
 				if (length < size)
 					return (Object[]) Arrayz.copyOf0(array, size, a.getClass());
@@ -2292,7 +2312,7 @@ public final class Arrayz {
 			/**
 			 * The index of the next element.
 			 */
-			private int cursor = 0;
+			private int cursor;
 
 			@Override
 			public boolean hasNext() {
@@ -2302,7 +2322,7 @@ public final class Arrayz {
 			@Override
 			public T next() {
 				if (this.cursor >= array.length)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
 
 				return array[this.cursor++];
 			}
@@ -2315,7 +2335,7 @@ public final class Arrayz {
 			@Override
 			public T previous() {
 				if (this.cursor == 0)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: 0");
 
 				return array[--this.cursor];
 			}
@@ -2362,7 +2382,7 @@ public final class Arrayz {
 			/**
 			 * The index of the next element.
 			 */
-			private int cursor = 0;
+			private int cursor;
 
 			@Override
 			public boolean hasNext() {
@@ -2372,7 +2392,7 @@ public final class Arrayz {
 			@Override
 			public Boolean next() {
 				if (this.cursor >= array.length)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
 
 				return array[this.cursor++];
 			}
@@ -2385,7 +2405,7 @@ public final class Arrayz {
 			@Override
 			public Boolean previous() {
 				if (this.cursor == 0)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: 0");
 
 				return array[--this.cursor];
 			}
@@ -2432,7 +2452,7 @@ public final class Arrayz {
 			/**
 			 * The index of the next element.
 			 */
-			private int cursor = 0;
+			private int cursor;
 
 			@Override
 			public boolean hasNext() {
@@ -2442,7 +2462,7 @@ public final class Arrayz {
 			@Override
 			public Byte next() {
 				if (this.cursor >= array.length)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
 
 				return array[this.cursor++];
 			}
@@ -2455,7 +2475,7 @@ public final class Arrayz {
 			@Override
 			public Byte previous() {
 				if (this.cursor == 0)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: 0");
 
 				return array[--this.cursor];
 			}
@@ -2502,7 +2522,7 @@ public final class Arrayz {
 			/**
 			 * The index of the next element.
 			 */
-			private int cursor = 0;
+			private int cursor;
 
 			@Override
 			public boolean hasNext() {
@@ -2512,7 +2532,7 @@ public final class Arrayz {
 			@Override
 			public Character next() {
 				if (this.cursor >= array.length)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
 
 				return array[this.cursor++];
 			}
@@ -2525,7 +2545,7 @@ public final class Arrayz {
 			@Override
 			public Character previous() {
 				if (this.cursor == 0)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: 0");
 
 				return array[--this.cursor];
 			}
@@ -2572,7 +2592,7 @@ public final class Arrayz {
 			/**
 			 * The index of the next element.
 			 */
-			private int cursor = 0;
+			private int cursor;
 
 			@Override
 			public boolean hasNext() {
@@ -2582,7 +2602,7 @@ public final class Arrayz {
 			@Override
 			public Double next() {
 				if (this.cursor >= array.length)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
 
 				return array[this.cursor++];
 			}
@@ -2595,7 +2615,7 @@ public final class Arrayz {
 			@Override
 			public Double previous() {
 				if (this.cursor == 0)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: 0");
 
 				return array[--this.cursor];
 			}
@@ -2642,7 +2662,7 @@ public final class Arrayz {
 			/**
 			 * The index of the next element.
 			 */
-			private int cursor = 0;
+			private int cursor;
 
 			@Override
 			public boolean hasNext() {
@@ -2652,7 +2672,7 @@ public final class Arrayz {
 			@Override
 			public Float next() {
 				if (this.cursor >= array.length)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
 
 				return array[this.cursor++];
 			}
@@ -2665,7 +2685,7 @@ public final class Arrayz {
 			@Override
 			public Float previous() {
 				if (this.cursor == 0)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: 0");
 
 				return array[--this.cursor];
 			}
@@ -2712,7 +2732,7 @@ public final class Arrayz {
 			/**
 			 * The index of the next element.
 			 */
-			private int cursor = 0;
+			private int cursor;
 
 			@Override
 			public boolean hasNext() {
@@ -2722,7 +2742,7 @@ public final class Arrayz {
 			@Override
 			public Integer next() {
 				if (this.cursor >= array.length)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
 
 				return array[this.cursor++];
 			}
@@ -2735,7 +2755,7 @@ public final class Arrayz {
 			@Override
 			public Integer previous() {
 				if (this.cursor == 0)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: 0");
 
 				return array[--this.cursor];
 			}
@@ -2782,7 +2802,7 @@ public final class Arrayz {
 			/**
 			 * The index of the next element.
 			 */
-			private int cursor = 0;
+			private int cursor;
 
 			@Override
 			public boolean hasNext() {
@@ -2792,7 +2812,7 @@ public final class Arrayz {
 			@Override
 			public Long next() {
 				if (this.cursor >= array.length)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
 
 				return array[this.cursor++];
 			}
@@ -2805,7 +2825,7 @@ public final class Arrayz {
 			@Override
 			public Long previous() {
 				if (this.cursor == 0)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: 0");
 
 				return array[--this.cursor];
 			}
@@ -2852,7 +2872,7 @@ public final class Arrayz {
 			/**
 			 * The index of the next element.
 			 */
-			private int cursor = 0;
+			private int cursor;
 
 			@Override
 			public boolean hasNext() {
@@ -2862,7 +2882,7 @@ public final class Arrayz {
 			@Override
 			public Short next() {
 				if (this.cursor >= array.length)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
 
 				return array[this.cursor++];
 			}
@@ -2875,7 +2895,7 @@ public final class Arrayz {
 			@Override
 			public Short previous() {
 				if (this.cursor == 0)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: 0");
 
 				return array[--this.cursor];
 			}
@@ -2926,7 +2946,7 @@ public final class Arrayz {
 			/**
 			 * The index of the next element.
 			 */
-			private int cursor = 0;
+			private int cursor;
 
 			@Override
 			public boolean hasNext() {
@@ -2936,7 +2956,7 @@ public final class Arrayz {
 			@Override
 			public Object next() {
 				if (this.cursor >= length)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + length);
 
 				return Array.get(array, this.cursor++);
 			}
@@ -2949,7 +2969,7 @@ public final class Arrayz {
 			@Override
 			public Object previous() {
 				if (this.cursor == 0)
-					throw new NoSuchElementException();
+					throw new NoSuchElementException("cursor: 0");
 
 				return Array.get(array, --this.cursor);
 			}

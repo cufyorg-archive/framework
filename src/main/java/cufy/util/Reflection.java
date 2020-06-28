@@ -70,6 +70,7 @@ public final class Reflection {
 			Class comp1 = Reflection.asObjectClass(comp);
 			return comp == comp1 ? klass : Reflection.asArrayClass(comp1);
 		} else if (klass.isPrimitive())
+			//noinspection IfStatementWithTooManyBranches
 			if (klass == char.class)
 				return Character.class;
 			else if (klass == int.class)
@@ -109,6 +110,7 @@ public final class Reflection {
 			//Avoiding creating empty arrays using arrayClass()
 			return (comp1 = Reflection.asPrimitiveClass(comp)) == comp ? klass : Reflection.asArrayClass(comp1);
 		if (!klass.isPrimitive())
+			//noinspection IfStatementWithTooManyBranches
 			if (klass == Character.class)
 				return char.class;
 			else if (klass == Integer.class)
@@ -162,11 +164,13 @@ public final class Reflection {
 		//foreach super class of the given class
 		for (Class superClass = klass.getSuperclass(); superClass != null; superClass = superClass.getSuperclass()) {
 			List<Method> superMethods = new ArrayList<>(10);
+			//noinspection LabeledStatement
 			for0:
 			for (Method method : superClass.getDeclaredMethods()) {
 				//Check if the method have been overridden on any of the subclasses
 				for (Method override : methods)
 					if (Reflection.overrides(method, override))
+						//noinspection ContinueStatementWithLabel
 						continue for0;
 				superMethods.add(method);
 			}
@@ -238,7 +242,7 @@ public final class Reflection {
 		if (base == override)
 			return true;
 		if (base.getParameterCount() != override.getParameterCount() ||
-			!base.getName().equals(override.getName()) ||
+			!Objects.equals(base.getName(), override.getName()) ||
 			!base.getDeclaringClass().isAssignableFrom(override.getDeclaringClass()) ||
 			!base.getReturnType().isAssignableFrom(override.getReturnType()))
 			return false;
@@ -272,16 +276,18 @@ public final class Reflection {
 		if (value == null)
 			if (klass.isPrimitive())
 				throw new NullPointerException("value");
-			else
+			else //noinspection ReturnOfNull
 				return null;
 		if (klass.isInstance(value))
 			return value;
 
 		Class vc = value.getClass();
+		//noinspection IfStatementWithTooManyBranches
 		if (klass == boolean.class || klass == Boolean.class) {
 			if (vc == Boolean.class)
 				return value;
 		} else if (klass == byte.class || klass == Byte.class) {
+			//noinspection IfStatementWithTooManyBranches
 			if (vc == Byte.class)
 				return value;
 			else if (vc == Character.class)
@@ -297,6 +303,7 @@ public final class Reflection {
 			else if (vc == Short.class)
 				return (byte) (short) (Short) value;
 		} else if (klass == char.class || klass == Character.class) {
+			//noinspection IfStatementWithTooManyBranches
 			if (vc == Byte.class)
 				return (char) (byte) (Byte) value;
 			else if (vc == Character.class)
@@ -312,6 +319,7 @@ public final class Reflection {
 			else if (vc == Short.class)
 				return (char) (short) (Short) value;
 		} else if (klass == double.class || klass == Double.class) {
+			//noinspection IfStatementWithTooManyBranches
 			if (vc == Byte.class)
 				return (double) (byte) (Byte) value;
 			else if (vc == Character.class)
@@ -327,6 +335,7 @@ public final class Reflection {
 			else if (vc == Short.class)
 				return (double) (short) (Short) value;
 		} else if (klass == float.class || klass == Float.class) {
+			//noinspection IfStatementWithTooManyBranches
 			if (vc == Byte.class)
 				return (float) (byte) (Byte) value;
 			else if (vc == Character.class)
@@ -342,6 +351,7 @@ public final class Reflection {
 			else if (vc == Short.class)
 				return (float) (short) (Short) value;
 		} else if (klass == int.class || klass == Integer.class) {
+			//noinspection IfStatementWithTooManyBranches
 			if (vc == Byte.class)
 				return (int) (byte) (Byte) value;
 			else if (vc == Character.class)
@@ -357,6 +367,7 @@ public final class Reflection {
 			else if (vc == Short.class)
 				return (int) (short) (Short) value;
 		} else if (klass == long.class || klass == Long.class) {
+			//noinspection IfStatementWithTooManyBranches
 			if (vc == Byte.class)
 				return (long) (byte) (Byte) value;
 			else if (vc == Character.class)
@@ -372,6 +383,7 @@ public final class Reflection {
 			else if (vc == Short.class)
 				return (long) (short) (Short) value;
 		} else if (klass == short.class || klass == Short.class)
+			//noinspection IfStatementWithTooManyBranches
 			if (vc == Byte.class)
 				return (short) (byte) (Byte) value;
 			else if (vc == Character.class)

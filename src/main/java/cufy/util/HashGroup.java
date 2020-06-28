@@ -15,9 +15,7 @@
  */
 package cufy.util;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -29,11 +27,12 @@ import java.util.function.Predicate;
  * @version 0.1.3
  * @since 0.1.3 ~2020.04.20
  */
+@SuppressWarnings({"CloneableClassWithoutClone", "ClassHasNoToStringMethod", "CloneableClassInSecureContext"})
 public class HashGroup<E> extends HashSet<E> implements Group<E> {
 	/**
 	 * The subgroups of this group.
 	 */
-	private HashMap<Object, Group<E>> subgroups = new HashMap<>();
+	private final Map<Object, Group<E>> subgroups = new HashMap<>();
 
 	/**
 	 * The default constructor.
@@ -69,13 +68,22 @@ public class HashGroup<E> extends HashSet<E> implements Group<E> {
 	 * @throws IllegalArgumentException if the given {@code initial capacity} is less than zero, or if the given {@code
 	 *                                  load factor} is nonpositive.
 	 */
-	public HashGroup(int initialCapacity, int loadFactor) {
+	public HashGroup(int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
 	}
 
 	@Override
 	public boolean equals(Object object) {
-		return object instanceof Group && this.size() == ((Group) object).size() && this.containsAll((Group) object);
+		return object == this ||
+			   object instanceof Group &&
+			   ((Collection) object).size() == this.size() &&
+			   this.containsAll((Collection) object);
+	}
+
+	@Override
+	public int hashCode() {
+		//noinspection ObjectInstantiationInEqualsHashCode
+		return Objects.hash(super.hashCode(), this.subgroups);
 	}
 
 	@Override
