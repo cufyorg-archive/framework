@@ -25,13 +25,13 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * An abstraction for the interface {@link Bean}.
+ * An abstraction for the interface {@link FullBean}.
  *
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
- * @author lsafer
+ * @author LSafer
  * @version 0.1.3
- * @since 11 Jun 2019
+ * @since 0.0.1 ~2019.06.11
  **/
 public abstract class AbstractBean<K, V> implements FullBean<K, V>, Serializable {
 	/**
@@ -50,7 +50,8 @@ public abstract class AbstractBean<K, V> implements FullBean<K, V>, Serializable
 	@Override
 	public Set<Entry<K, V>> entrySet() {
 		if (this.entrySet == null) {
-			this.entrySet = Bean.entrySet(this);
+			Object instance = this.getInstance();
+			this.entrySet = Bean.entrySet(instance);
 		}
 
 		return this.entrySet;
@@ -58,79 +59,70 @@ public abstract class AbstractBean<K, V> implements FullBean<K, V>, Serializable
 
 	@Override
 	public Set<K> keySet() {
-		if (this.keySet == null) {
+		if (this.keySet == null)
 			this.keySet = FullBean.super.keySet();
-		}
 
 		return this.keySet;
 	}
 
 	@Override
 	public Collection<V> values() {
-		if (this.values == null) {
+		if (this.values == null)
 			this.values = FullBean.super.values();
-		}
 
 		return this.values;
 	}
 
 	@Override
 	public String toString() {
-		Iterator<Entry<K, V>> entries = this.entrySet().iterator();
+		Set<Entry<K, V>> entrySet = this.entrySet();
+		Iterator<Entry<K, V>> iterator = entrySet.iterator();
 
-		if (!entries.hasNext()) {
-			return "{}";
-		} else {
+		if (iterator.hasNext()) {
 			StringBuilder builder = new StringBuilder("{");
 
-			while (true) {
-				Entry<K, V> entry = entries.next();
+			while (iterator.hasNext()) {
+				Entry<K, V> entry = iterator.next();
 				Object key = entry.getKey();
 				Object value = entry.getValue();
+				boolean next = iterator.hasNext();
 
 				builder.append(key == this ? "(this Bean)" : key)
 						.append('=')
-						.append(value == this ? "(this Bean)" : value);
-
-				if (!entries.hasNext()) {
-					return builder.append('}').toString();
-				}
-
-				builder.append(", ");
+						.append(value == this ? "(this Bean)" : value)
+						.append(next ? ", " : "}");
 			}
-		}
+
+			return builder.toString();
+		} else
+			return "{}";
 	}
 
-	/**
-	 * Deserialization method.
-	 *
-	 * @param stream to initialize this using
-	 * @throws ClassNotFoundException if the class of a serialized object could not be found.
-	 * @throws IOException            if an I/O error occurs.
-	 * @throws NullPointerException   if the given 'stream' is null
-	 */
+	@SuppressWarnings("JavaDoc")
 	private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
 		Objects.requireNonNull(stream, "stream");
 
 		int length = stream.readInt();
-		for (int i = 0; i < length; i++)
-			this.put((K) stream.readObject(), (V) stream.readObject());
+		for (int i = 0; i < length; i++) {
+			Object key = stream.readObject();
+			Object value = stream.readObject();
+
+			this.put((K) key, (V) value);
+		}
 	}
 
-	/**
-	 * Serialization method.
-	 *
-	 * @param stream to use to serialize this
-	 * @throws IOException          if an I/O error occurs
-	 * @throws NullPointerException if the given 'stream' is null
-	 */
+	@SuppressWarnings("JavaDoc")
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		Objects.requireNonNull(stream, "stream");
+		int size = this.size();
 
-		stream.writeInt(this.size());
+		stream.writeInt(size);
 		for (Entry<K, V> entry : this.entrySet()) {
-			stream.writeObject(entry.getKey());
-			stream.writeObject(entry.getValue());
+			K key = entry.getKey();
+			V value = entry.getValue();
+
+			stream.writeObject(key);
+			stream.writeObject(value);
 		}
 	}
 }
