@@ -15,28 +15,27 @@
  */
 /**
  * <h1><b>Cufy Framework</b></h1>
- * The cufy framework is focused on to be more inheritable and more reflection friendly. Making it less efficient (minor) but more fun and reliable in
- * big complex projects.
- * <ul>
- *     <b>Featuring:</b>
- *     <ol>
- *         <li>{@link cufy.util}</li>
- *         <li>{@link cufy.util.function}</li>
- *         <li>{@link cufy.lang}</li>
- *         <li>{@link cufy.meta}</li>
- *         <li>{@link cufy.convert}</li>
- *         <li>{@link cufy.text}</li>
- *         <li>{@link cufy.text.json}</li>
- *         <li>{@link cufy.beans}</li>
- *         <li>{@link cufy.concurrent}</li>
- *         <li>{@link cufy.io}</li>
- *         <li>{@link cufy.io.loadable}</li>
- *     </ol>
- * </ul>
+ * The cufy framework is focused on to be more inheritable and more reflection friendly. Making it less efficient
+ * (minor) but more fun and reliable in big complex projects.
+ * <br>
+ * <b>Featuring:</b>
+ * <ol>
+ *     <li>{@link cufy.util}</li>
+ *     <li>{@link cufy.util.function}</li>
+ *     <li>{@link cufy.lang}</li>
+ *     <li>{@link cufy.meta}</li>
+ *     <li>{@link cufy.convert}</li>
+ *     <li>{@link cufy.text}</li>
+ *     <li>{@link cufy.text.json}</li>
+ *     <li>{@link cufy.beans}</li>
+ *     <li>{@link cufy.concurrent}</li>
+ *     <li>{@link cufy.io}</li>
+ *     <li>{@link cufy.io.loadable}</li>
+ * </ol>
  *
- * @author lsafer
+ * @author LSafer
  * @version 0.1.5
  * @see <a href="https://framework.cufy.org">framework.cufy.org</a>
- * @since 18 May 2019
+ * @since 0.1.a ~2019.05.18
  */
 package cufy;
