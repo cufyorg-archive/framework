@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version 0.1.3
  * @since 0.0.1 ~2019.12.07
  */
+@SuppressWarnings("ClassHasNoToStringMethod")
 public class Lock<T> extends Thread implements Closeable {
 	/**
 	 * The lock holder should end its thread.
@@ -115,11 +116,6 @@ public class Lock<T> extends Thread implements Closeable {
 						throw new IllegalStateException(this.state.toString());
 				}
 			}
-	}
-
-	@Override
-	public String toString() {
-		return "lock " + this.lock;
 	}
 
 	/**

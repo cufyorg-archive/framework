@@ -4,7 +4,7 @@ import cufy.convert.BaseConverter;
 import org.junit.Assert;
 import org.junit.Test;
 
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings("ALL")
 public class RecipeTest {
 	@Test
 	@Recipe(
@@ -12,7 +12,7 @@ public class RecipeTest {
 			type = @Type(Integer.class)
 	)
 	public void docs() {
-		//the following object will be an integer with the value 9
+		//the above recipe will be an integer with the value 9
 	}
 
 	@Test
@@ -22,8 +22,8 @@ public class RecipeTest {
 			converter = @Where(BaseConverter.class)
 	)
 	public void get() throws NoSuchMethodException {
-		Recipe object = this.getClass().getMethod("get").getAnnotation(Recipe.class);
-		int i = Recipe.Util.get(object);
+		Recipe recipe = this.getClass().getMethod("get").getAnnotation(Recipe.class);
+		int i = Recipe.Util.get(recipe);
 
 		Assert.assertEquals("Wrong value", 3, i, 0);
 	}

@@ -5,17 +5,17 @@ import cufy.meta.Type;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.HashMap;
+import java.util.*;
 
-@SuppressWarnings({"JavaDoc", "RedundantOperationOnEmptyContainer"})
+@SuppressWarnings("ALL")
 public class BeanTest {
 	@Test
 	public void _forInstance_put_get_size() throws ReflectiveOperationException {
 		Object object = new Object() {
+			@Bean.Property(key = @Recipe(value = "false", type = @Type(Boolean.class)), type = @Type(Integer.class))
+			private final int property0 = 90;
 			@Bean.Property
 			public int p;
-			@Bean.Property(key = @Recipe(value = "false", type = @Type(Boolean.class)), type = @Type(Integer.class))
-			private int property0 = 90;
 		};
 
 		Bean<Object, Object> bean = Bean.forInstance(object);
@@ -34,10 +34,7 @@ public class BeanTest {
 
 	@Test
 	public void _forInstance_remove() {
-		Bean bean = Bean.forInstance(new Object() {
-			@Bean.Property
-			int i = 0;
-		});
+		Bean bean = Bean.forInstance(new TestBean());
 
 		Assert.assertEquals("get(): don't work on pre-existing properties", 0, bean.get("i"));
 		Assert.assertEquals("size(): don't work on pre-existing properties", 1, bean.size());
@@ -85,7 +82,7 @@ public class BeanTest {
 	public void _forInstance_struct_put_get_size() {
 		Object object = new Object() {
 			@Bean.Property(key = @Recipe(value = "false", type = @Type(Boolean.class)))
-			private Integer integer = 45;
+			private final Integer integer = 45;
 		};
 
 		Bean<Object, Object> bean = Bean.forInstance(object);
@@ -117,7 +114,7 @@ public class BeanTest {
 	public void _struct_put_get_size() {
 		Bean<Object, Object> bean = new Bean<Object, Object>() {
 			@Bean.Property(key = @Recipe(value = "false", type = @Type(Boolean.class)), type = @Type(Integer.class))
-			private int property0 = 90;
+			private final int property0 = 90;
 		};
 
 		try {
@@ -159,18 +156,38 @@ public class BeanTest {
 	}
 
 	@Test
-	public void putAll() {
+	public void constancy() {
 		class TestBean implements Bean {
-			@Property(key = @Recipe("y"))
-			public int x = 0;
+			@Property
+			public final List constant = new ArrayList();
 
-			@Property(key = @Recipe("x"))
-			public int y = 1;
+			@Property
+			public final List variable = new ArrayList();
 		}
 
 		TestBean bean = new TestBean();
 
-		HashMap map = new HashMap();
+		bean.put("constant", Arrays.asList("HI"));
+		bean.put("variable", Arrays.asList("BYE"));
+
+		Assert.assertEquals("Final element not updated", "HI", bean.constant.get(0));
+		Assert.assertFalse("Variable element not changed", bean.variable instanceof ArrayList);
+		Assert.assertEquals("Non-final element not updated", "BYE", bean.variable.get(0));
+	}
+
+	@Test
+	public void putAll() {
+		class TestBean implements Bean {
+			@Property(key = @Recipe("y"))
+			public final int x = 0;
+
+			@Property(key = @Recipe("x"))
+			public final int y = 1;
+		}
+
+		TestBean bean = new TestBean();
+
+		Map map = new HashMap();
 		map.put("x", 19);
 		map.put("y", 21);
 
@@ -186,5 +203,10 @@ public class BeanTest {
 			Assert.fail("Can't store all the keys");
 		} catch (UnsupportedOperationException ignored) {
 		}
+	}
+
+	static class TestBean {
+		@Bean.Property
+		static int i;
 	}
 }
