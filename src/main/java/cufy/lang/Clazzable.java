@@ -63,8 +63,39 @@ public interface Clazzable {
 	 *
 	 * @return a {@link Clazz} represents the type of this {@code clazzable} and the elements stored within it.
 	 */
-	default Clazz getClazz() {
+	default Clazz clazz() {
 		return Clazz.of(this.getClass(), this.getComponentTrees());
+	}
+
+	/**
+	 * Get a clazz representing this clazzable, and with a {@code trees} with the given {@code componentClazzes}.
+	 *
+	 * @param componentClazzes the clazzes for the elements that can't construct a sub-tree for it. The clazzes should
+	 *                         be ordered to its targeted tree.
+	 * @return a clazz representing this clazzable, and with a {@code trees} with the given {@code componentClazzes}.
+	 * @throws NullPointerException if the given {@code componentClazzes} is null.
+	 */
+	default Clazz clazz(Clazz... componentClazzes) {
+		Objects.requireNonNull(componentClazzes, "componentClazzes");
+		return Clazz.of(this.getClass(), Clazz.trees(this, componentClazzes));
+	}
+
+	/**
+	 * Get a clazz representing this clazzable, and should be treated as if it was the given {@code family}, and with a
+	 * {@code trees} with the given {@code componentClazzes}.
+	 *
+	 * @param family           the class that an instance of the returned clazz should be treated as if it was an
+	 *                         instance of it.
+	 * @param componentClazzes the clazzes for the elements that can't construct a sub-tree for it. The clazzes should
+	 *                         be ordered to its targeted tree.
+	 * @return a clazz representing this clazzable, and should be treated as if it was the given {@code family}, and
+	 * 		with a {@code trees} with the given {@code componentClazzes}.
+	 * @throws NullPointerException if the given {@code family} or {@code componentClazzes} is null.
+	 */
+	default Clazz clazz(Class family, Clazz... componentClazzes) {
+		Objects.requireNonNull(family, "family");
+		Objects.requireNonNull(componentClazzes, "componentClazzes");
+		return Clazz.of(this.getClass(), family, Clazz.trees(this, componentClazzes));
 	}
 
 	/**
@@ -72,8 +103,10 @@ public interface Clazzable {
 	 *
 	 * @param componentClazzes the {@code componentClazzes} preferred to be used in the returned tree.
 	 * @return a clazz component {@code tree} for the elements in this {@code clazzable}.
+	 * @throws NullPointerException if the given {@code componentClazzes} is null.
 	 */
 	default Map<Object, Clazz>[] getComponentTrees(Clazz... componentClazzes) {
-		return Clazz.trees0(this, componentClazzes);
+		Objects.requireNonNull(componentClazzes, "componentClazzes");
+		return Clazz.treesFrom(this, componentClazzes);
 	}
 }

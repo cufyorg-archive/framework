@@ -55,6 +55,7 @@ public final class Clazz<T> implements Type, Serializable {
 	 * A final empty trees array to reduce redundant array initializing.
 	 */
 	private static final ComponentTree[] EMPTY_TREES = new ComponentTree[0];
+
 	/**
 	 * The class that an instance of this clazz should be treated as if it was an instance of it. This field should be
 	 * treated as final field.
@@ -160,7 +161,7 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @throws NullPointerException if the given {@code klass} or {@code family} or {@code componentClasses} is null.
 	 * @since 0.1.5
 	 */
-	public static Clazz as(Class klass, Class family, Class... componentClasses) {
+	public static Clazz as(Class klass, Class family, Class[] componentClasses) {
 		return Clazz.of(klass, family, Clazz.trees(Clazz.array(componentClasses)));
 	}
 
@@ -184,10 +185,14 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @throws NullPointerException if the given {@code componentClazzes} is null.
 	 * @since 0.1.5
 	 */
-	public static <T> Clazz<T> in(T instance, Clazz... componentClazzes) {
+	public static <T> Clazz<T> from(T instance, Clazz... componentClazzes) {
 		Objects.requireNonNull(componentClazzes, "componentClazzes");
-		Class klass = instance == null ? Void.class : instance.getClass();
-		return Clazz.of(klass, Clazz.trees(instance, componentClazzes));
+		if (instance instanceof Clazzable) {
+			return ((Clazzable) instance).clazz(componentClazzes);
+		} else {
+			Class klass = instance == null ? Void.class : instance.getClass();
+			return Clazz.of(klass, Clazz.trees(instance, componentClazzes));
+		}
 	}
 
 	/**
@@ -214,11 +219,15 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @throws NullPointerException if the given {@code family} or {@code componentClazzes} is null.
 	 * @since 0.1.5
 	 */
-	public static <T> Clazz<T> in(T instance, Class family, Clazz... componentClazzes) {
+	public static <T> Clazz<T> from(T instance, Class family, Clazz... componentClazzes) {
 		Objects.requireNonNull(family, "family");
 		Objects.requireNonNull(componentClazzes, "componentClazzes");
-		Class klass = instance == null ? Void.class : instance.getClass();
-		return Clazz.of(klass, family, Clazz.trees(instance, componentClazzes));
+		if (instance instanceof Clazzable) {
+			return ((Clazzable) instance).clazz(family, componentClazzes);
+		} else {
+			Class klass = instance == null ? Void.class : instance.getClass();
+			return Clazz.of(klass, family, Clazz.trees(instance, componentClazzes));
+		}
 	}
 
 	/**
@@ -479,7 +488,7 @@ public final class Clazz<T> implements Type, Serializable {
 	 * componentClazzes}.
 	 * <pre>
 	 *     Clazz.trees(<font color="d3c4ff">COMPONENT0</font>, <font color="d3c4ff">COMPONENT1</font>, <font color="d3c4ff">COMPONENT2</font>, …)
-	 *     &lt;<font color="d3c4ff"><font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, …&gt;
+	 *     &lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, …&gt;
 	 * </pre>
 	 *
 	 * @param componentClazzes the general clazzes array for the components that have no mapping in the tree at the same
@@ -548,7 +557,7 @@ public final class Clazz<T> implements Type, Serializable {
 		if (instance instanceof Clazzable)
 			return ((Clazzable) instance).getComponentTrees(componentClazzes);
 		else if (Clazzable.isClazzable(instance))
-			return Clazz.trees0(instance, componentClazzes);
+			return Clazz.treesFrom(instance, componentClazzes);
 
 		return Clazz.trees(componentClazzes);
 	}
@@ -615,18 +624,13 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @param <T>   the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the given
 	 * 		array's class.
-	 * @throws NullPointerException     if the given {@code klass} is null.
-	 * @throws IllegalArgumentException if the given {@code klass} is not an array's clazz.
+	 * @throws NullPointerException if the given {@code klass} is null.
 	 */
 	static <T> Clazz<T> ofArray(Class<T> klass) {
 		Objects.requireNonNull(klass, "klass");
-		if (!klass.isArray())
-			throw new IllegalArgumentException("Not an array's class " + klass);
-
-		Class component = klass.getComponentType();
-		Clazz componentClazz = component.isArray() ? Clazz.ofArray(component) : Clazz.of(component);
-
-		return Clazz.of(klass, Clazz.tree(componentClazz));
+		return klass.isArray() ?
+			   Clazz.of(klass, Clazz.tree(Clazz.ofArray(klass.getComponentType()))) :
+			   Clazz.of(klass);
 	}
 
 	/**
@@ -642,21 +646,14 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @param <T>    the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the given
 	 * 		array's class, and should be treated as if it was the given {@code family}.
-	 * @throws NullPointerException     if the given {@code klass} or {@code family} is null.
-	 * @throws IllegalArgumentException if the given {@code klass} is not an array's clazz.
+	 * @throws NullPointerException if the given {@code klass} or {@code family} is null.
 	 */
 	static <T> Clazz<T> ofArray(Class<T> klass, Class family) {
 		Objects.requireNonNull(klass, "klass");
 		Objects.requireNonNull(family, "family");
-		if (!klass.isArray())
-			throw new IllegalArgumentException(klass + " is not an array-class");
-
-		Class component = klass.getComponentType();
-		Class componentFamily = family.isArray() ? family.getComponentType() : component;
-		Clazz componentClazz =
-				component.isArray() ? Clazz.ofArray(componentFamily, component) : Clazz.of(componentFamily, component);
-
-		return Clazz.of(klass, family, Clazz.tree(componentClazz));
+		return klass.isArray() ?
+			   Clazz.of(klass, family, Clazz.tree(Clazz.ofArray(klass.getComponentType()))) :
+			   Clazz.of(klass, family);
 	}
 
 	/**
@@ -664,7 +661,7 @@ public final class Clazz<T> implements Type, Serializable {
 	 * componentClazzes}.
 	 * <pre>
 	 *     Clazz.trees(<font color="fc888a">MIN_LENGTH</font>, <font color="d3c4ff">COMPONENT0</font>, <font color="d3c4ff">COMPONENT1</font>, <font color="d3c4ff">COMPONENT2</font>, …)
-	 *     &lt;<font color="d3c4ff"><font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, <font color="fc888a">…</font>&gt;
+	 *     &lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, <font color="fc888a">…</font>&gt;
 	 * </pre>
 	 *
 	 * @param ml               the minimum length the returned array will be
@@ -703,14 +700,14 @@ public final class Clazz<T> implements Type, Serializable {
 	 * 		from the given {@code componentClazzes}.
 	 * @throws NullPointerException if the given {@code componentClazzes} is null.
 	 */
-	static Map<Object, Clazz>[] trees0(Object instance, Clazz... componentClazzes) {
+	static Map<Object, Clazz>[] treesFrom(Object instance, Clazz... componentClazzes) {
 		Objects.requireNonNull(instance, "instance");
 		if (instance instanceof Iterable)
-			Clazz.treesForIterable((Iterable) instance, componentClazzes);
+			Clazz.treesFromIterable((Iterable) instance, componentClazzes);
 		if (instance instanceof Map)
-			Clazz.treesForMap((Map) instance, componentClazzes);
+			Clazz.treesFromMap((Map) instance, componentClazzes);
 		if (instance.getClass().isArray())
-			Clazz.treesForArray(instance, componentClazzes);
+			Clazz.treesFromArray(instance, componentClazzes);
 
 		return Clazz.trees(componentClazzes);
 	}
@@ -730,19 +727,20 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @throws NullPointerException     if the given {@code array} or {@code componentClazzes} is null.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 */
-	static Map<Object, Clazz>[] treesForArray(Object array, Clazz[] componentClazzes) {
+	static Map<Object, Clazz>[] treesFromArray(Object array, Clazz[] componentClazzes) {
 		Objects.requireNonNull(array, "array");
 		if (!array.getClass().isArray())
 			throw new IllegalArgumentException("Not an array " + array);
-		Class component;
-		Map<Object, Clazz>[] trees = Clazz.trees(1, componentClazzes.length > 0 ? componentClazzes : new Clazz[]{
-				(component = array.getClass().getComponentType()).isArray() ? Clazz.ofArray(component)
-																			: Clazz.of(component)
-		});
+
+		Map<Object, Clazz>[] trees = Clazz.trees(
+				componentClazzes.length > 0 ?
+				componentClazzes :
+				Clazz.ofArray(array.getClass().getComponentType())
+		);
 
 		Iterator iterator = Arrayz.iterator1(array);
 		for (int i = 0; iterator.hasNext(); i++)
-			trees[0].put(i, Clazz.in(iterator.next()));
+			trees[0].put(i, Clazz.from(iterator.next()));
 
 		return trees;
 	}
@@ -761,14 +759,14 @@ public final class Clazz<T> implements Type, Serializable {
 	 * 		from the given {@code componentClazzes}.
 	 * @throws NullPointerException if the given {@code iterable} or {@code componentClazzes} is null.
 	 */
-	static Map<Object, Clazz>[] treesForIterable(Iterable iterable, Clazz[] componentClazzes) {
+	static Map<Object, Clazz>[] treesFromIterable(Iterable iterable, Clazz[] componentClazzes) {
 		Objects.requireNonNull(iterable, "iterable");
 		Objects.requireNonNull(componentClazzes, "componentClazzes");
 		Map<Object, Clazz>[] trees = Clazz.trees(1, componentClazzes);
 
 		Iterator iterator = iterable.iterator();
 		for (int i = 0; iterator.hasNext(); i++)
-			trees[0].put(i, Clazz.in(iterator.next()));
+			trees[0].put(i, Clazz.from(iterator.next()));
 
 		return trees;
 	}
@@ -787,19 +785,17 @@ public final class Clazz<T> implements Type, Serializable {
 	 * 		given {@code componentClazzes}.
 	 * @throws NullPointerException if the given {@code map} or {@code componentClazzes} is null.
 	 */
-	static Map<Object, Clazz>[] treesForMap(Map map, Clazz[] componentClazzes) {
+	static Map<Object, Clazz>[] treesFromMap(Map map, Clazz[] componentClazzes) {
 		Objects.requireNonNull(map, "map");
 		Objects.requireNonNull(componentClazzes, "componentClazzes");
 		Map<Object, Clazz>[] trees = Clazz.trees(2, componentClazzes);
 
-		Iterator<Map.Entry> iterator = map.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry entry = iterator.next();
+		for (Map.Entry entry : (Iterable<Map.Entry>) map.entrySet()) {
 			Object key = entry.getKey();
 			Object value = entry.getValue();
 
-			trees[0].put(key, Clazz.in(key));
-			trees[1].put(key, Clazz.in(value));
+			trees[0].put(key, Clazz.from(key));
+			trees[1].put(key, Clazz.from(value));
 		}
 
 		return trees;
@@ -931,8 +927,8 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @since 0.1.5
 	 */
 	@SuppressWarnings("JavaDoc")
-	public final T newInstance() throws InstantiationException, IllegalAccessException {
-		return this.klass.newInstance();
+	public final T newInstance() throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+		return this.klass.getConstructor().newInstance();
 	}
 
 	/**
@@ -945,31 +941,19 @@ public final class Clazz<T> implements Type, Serializable {
 	 */
 	@SuppressWarnings("JavaDoc")
 	public final T newInstance(Object... parameters) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		//noinspection LabeledStatement
 		for0:
 		for (Constructor<T> constructor : (Constructor<T>[]) this.klass.getDeclaredConstructors()) {
 			Class[] parameterTypes = constructor.getParameterTypes();
 			for (int i = 0; i < parameterTypes.length; i++)
 				if (!parameterTypes[i].isInstance(parameters[i]))
+					//noinspection ContinueStatementWithLabel
 					continue for0;
 
 			return constructor.newInstance(parameters);
 		}
 
-		throw new NoSuchMethodException();
-	}
-
-	@Override
-	public boolean equals(Object that) {
-		return this == that ||
-			   that instanceof Clazz &&
-			   ((Clazz) that).klass == this.klass &&
-			   ((Clazz) that).family == this.family &&
-			   Arrays.equals(((Clazz) that).trees, this.trees);
-	}
-
-	@Override
-	public String toString() {
-		return "clazz " + this.getName();
+		throw new NoSuchMethodException("No constructor found for the given parameters");
 	}
 
 	@Override
@@ -991,6 +975,26 @@ public final class Clazz<T> implements Type, Serializable {
 		return typeName.toString();
 	}
 
+	@Override
+	public int hashCode() {
+		//noinspection ObjectInstantiationInEqualsHashCode
+		return 31 * Objects.hash(this.family, this.klass) + Arrays.hashCode(this.trees);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return this == obj ||
+			   obj instanceof Clazz &&
+			   ((Clazz) obj).klass == this.klass &&
+			   ((Clazz) obj).family == this.family &&
+			   Arrays.equals(((Clazz) obj).trees, this.trees);
+	}
+
+	@Override
+	public String toString() {
+		return "clazz " + this.getName();
+	}
+
 	/**
 	 * Get the general clazz for all components in the specified {@code tree} to be held by an instance of this clazz.
 	 * <br>
@@ -1003,6 +1007,7 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @since 0.1.5
 	 */
 	public Clazz getComponentClazz(int tree) {
+		//noinspection ReturnOfNull
 		return tree >= 0 && tree < this.trees.length ? this.trees[tree].getComponentClazz() : null;
 	}
 
@@ -1018,6 +1023,7 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @since 0.1.5
 	 */
 	public Clazz getComponentClazz(int tree, Object key) {
+		//noinspection ReturnOfNull
 		return tree >= 0 && tree < this.trees.length ? this.trees[tree].getComponentClazz(key) : null;
 	}
 
@@ -1033,6 +1039,7 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @since 0.1.5
 	 */
 	public ComponentTree getComponentTree(int tree) {
+		//noinspection ReturnOfNull
 		return tree >= 0 && tree < this.trees.length ? this.trees[tree] : null;
 	}
 
@@ -1164,8 +1171,9 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @since 0.1.5
 	 */
 	public Clazz toObjectClazz() {
-		return !this.klass.isPrimitive() ? this :
-			   Clazz.of(this.family, Reflection.asObjectClass(this.klass), this.trees);
+		//noinspection ReturnOfThis
+		return this.klass.isPrimitive() ? Clazz.of(Reflection.asObjectClass(this.klass), this.family, this.trees)
+										: this;
 	}
 
 	/**
@@ -1178,8 +1186,9 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @since 0.1.5
 	 */
 	public Clazz toPrimitiveClazz() {
-		return !Reflection.hasPrimitiveClass(this.klass) ? null :
-			   Clazz.of(this.family, Reflection.asPrimitiveClass(this.klass), this.trees);
+		//noinspection ReturnOfNull
+		return Reflection.hasPrimitiveClass(this.klass)
+			   ? Clazz.of(Reflection.asPrimitiveClass(this.klass), this.family, this.trees) : null;
 	}
 
 	/**
@@ -1209,7 +1218,7 @@ public final class Clazz<T> implements Type, Serializable {
 	 */
 	public Clazz with(Map<Object, Clazz> tree) {
 		Objects.requireNonNull(tree, "tree");
-		return Clazz.of(this.family, this.klass, tree);
+		return Clazz.of(this.klass, this.family, tree);
 	}
 
 	/**
@@ -1225,9 +1234,9 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @since 0.1.5
 	 */
 	public Clazz with(Class family, Map<Object, Clazz>... trees) {
-		Objects.requireNonNull(family, "family");
 		Objects.requireNonNull(trees, "trees");
-		return Clazz.of(family, this.klass, trees);
+		Objects.requireNonNull(family, "family");
+		return Clazz.of(this.klass, family, trees);
 	}
 
 	@SuppressWarnings("JavaDoc")
