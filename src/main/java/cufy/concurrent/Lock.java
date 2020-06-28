@@ -15,8 +15,6 @@
  */
 package cufy.concurrent;
 
-import cufy.lang.IllegalThreadException;
-
 import java.io.Closeable;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -77,11 +75,6 @@ public class Lock<T> extends Thread implements Closeable {
 		this.master = Thread.currentThread();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws IllegalThreadException if the {@code caller thread} isn't the owner thread of this lock
-	 */
 	@Override
 	public void close() {
 		this.assertMasterThread();
@@ -93,7 +86,7 @@ public class Lock<T> extends Thread implements Closeable {
 				//change the state
 				this.state.set(Lock.CLOSE);
 				//notify the thread
-				this.state.notify();
+				this.state.notifyAll();
 				//wait for the thread to do its job
 				this.state.wait();
 				//wait for the thread to die
@@ -103,11 +96,6 @@ public class Lock<T> extends Thread implements Closeable {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @throws IllegalThreadException if the {@code caller thread} is not this.
-	 */
 	@Override
 	public void run() {
 		this.assertThisThread();
@@ -129,6 +117,11 @@ public class Lock<T> extends Thread implements Closeable {
 			}
 	}
 
+	@Override
+	public String toString() {
+		return "lock " + this.lock;
+	}
+
 	/**
 	 * Hold the lock. Wait for the lock been gained.
 	 *
@@ -147,7 +140,7 @@ public class Lock<T> extends Thread implements Closeable {
 				//change the state
 				this.state.set(Lock.LOCK);
 				//notify the thread
-				this.state.notify();
+				this.state.notifyAll();
 				//wait for the thread to do its job
 				this.state.wait();
 			} catch (InterruptedException ignored) {
@@ -171,7 +164,7 @@ public class Lock<T> extends Thread implements Closeable {
 				//change the state
 				this.state.set(Lock.UNLOCK);
 				//notify the thread
-				this.state.notify();
+				this.state.notifyAll();
 				//wait for the thread to do its job
 				this.state.wait();
 			} catch (InterruptedException ignored) {
@@ -188,7 +181,7 @@ public class Lock<T> extends Thread implements Closeable {
 		this.assertThisThread();
 		synchronized (this.state) {
 			//notify the caller
-			this.state.notify();
+			this.state.notifyAll();
 		}
 	}
 
@@ -203,7 +196,7 @@ public class Lock<T> extends Thread implements Closeable {
 			synchronized (this.lock) {
 				try {
 					//notify the caller
-					this.state.notify();
+					this.state.notifyAll();
 					//wait until the state changes
 					this.state.wait();
 				} catch (InterruptedException ignored) {
@@ -222,7 +215,7 @@ public class Lock<T> extends Thread implements Closeable {
 		synchronized (this.state) {
 			try {
 				//notify the caller
-				this.state.notify();
+				this.state.notifyAll();
 				//wait until the state changes
 				this.state.wait();
 			} catch (InterruptedException ignored) {
