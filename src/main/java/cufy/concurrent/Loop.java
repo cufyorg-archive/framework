@@ -15,8 +15,6 @@
  */
 package cufy.concurrent;
 
-import cufy.lang.IllegalThreadException;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +32,7 @@ import java.util.function.Consumer;
  * @version 0.1.5
  * @since 0.0.a ~2019.05.18
  */
+@SuppressWarnings("ClassHasNoToStringMethod")
 public abstract class Loop<C extends Loop.Code> {
 	//TODO security
 	/**
@@ -83,9 +82,12 @@ public abstract class Loop<C extends Loop.Code> {
 	 */
 	public Loop<C> append(C code) {
 		Objects.requireNonNull(code, "code");
+
 		synchronized (this.code) {
 			this.code.add(code);
 		}
+
+		//noinspection ReturnOfThis
 		return this;
 	}
 
@@ -112,8 +114,10 @@ public abstract class Loop<C extends Loop.Code> {
 
 		synchronized (this.code) {
 			action.accept(this.code);
-			return this;
 		}
+
+		//noinspection ReturnOfThis
+		return this;
 	}
 
 	/**
@@ -139,8 +143,10 @@ public abstract class Loop<C extends Loop.Code> {
 
 		synchronized (this.posts) {
 			action.accept(this.posts);
-			return this;
 		}
+
+		//noinspection ReturnOfThis
+		return this;
 	}
 
 	/**
@@ -166,8 +172,10 @@ public abstract class Loop<C extends Loop.Code> {
 
 		synchronized (this.state) {
 			action.accept(this.state.get());
-			return this;
 		}
+
+		//noinspection ReturnOfThis
+		return this;
 	}
 
 	/**
@@ -195,8 +203,10 @@ public abstract class Loop<C extends Loop.Code> {
 
 		synchronized (this.thread) {
 			action.accept(this.thread.get());
-			return this;
 		}
+
+		//noinspection ReturnOfThis
+		return this;
 	}
 
 	/**
@@ -235,7 +245,9 @@ public abstract class Loop<C extends Loop.Code> {
 	 */
 	public Loop<C> join() {
 		this.assertNotRecursiveThreadCall();
+
 		synchronized (this) {
+			//noinspection ReturnOfThis
 			return this;
 		}
 	}
@@ -255,7 +267,7 @@ public abstract class Loop<C extends Loop.Code> {
 	public Loop<C> join(Consumer<Loop<C>> alter, long millis) {
 		this.assertNotRecursiveThreadCall();
 		Objects.requireNonNull(alter, "alter");
-		if (millis < 0)
+		if (millis < 0L)
 			throw new IllegalArgumentException("timeout value is negative");
 
 		AtomicBoolean state = new AtomicBoolean(true);
@@ -266,7 +278,7 @@ public abstract class Loop<C extends Loop.Code> {
 				synchronized (state) {
 					if (state.get()) {
 						state.set(false);
-						state.notify();
+						state.notifyAll();
 					}
 				}
 			}).start();
@@ -281,6 +293,7 @@ public abstract class Loop<C extends Loop.Code> {
 			}
 		}
 
+		//noinspection ReturnOfThis
 		return this;
 	}
 
@@ -298,9 +311,11 @@ public abstract class Loop<C extends Loop.Code> {
 		synchronized (this.code) {
 			synchronized (this.state) {
 				this.state.set(state);
-				this.code.notify();
+				this.code.notifyAll();
 			}
 		}
+
+		//noinspection ReturnOfThis
 		return this;
 	}
 
@@ -329,6 +344,8 @@ public abstract class Loop<C extends Loop.Code> {
 		synchronized (this.posts) {
 			this.posts.add(post);
 		}
+
+		//noinspection ReturnOfThis
 		return this;
 	}
 
@@ -351,11 +368,14 @@ public abstract class Loop<C extends Loop.Code> {
 			synchronized (this.posts) {
 				if (this.isAlive()) {
 					this.posts.add(post);
+					//noinspection ReturnOfThis
 					return this;
 				}
 			}
 		}
+
 		new Thread(() -> post.post(this, false)).start();
+		//noinspection ReturnOfThis
 		return this;
 	}
 
@@ -374,7 +394,7 @@ public abstract class Loop<C extends Loop.Code> {
 	 */
 	public Loop<C> postWithin(long timeout, Post<Loop<C>> post) {
 		Objects.requireNonNull(post, "post");
-		if (timeout < 0)
+		if (timeout < 0L)
 			throw new IllegalArgumentException("timeout value is negative");
 
 		//whether the timeout still not ended or not
@@ -396,7 +416,7 @@ public abstract class Loop<C extends Loop.Code> {
 							boolean w = post.post(loop, loopingThread);
 							//tell the sub thread that the post have been posted
 							state.set(false);
-							state.notify();
+							state.notifyAll();
 							applied.set(true);
 							return w;
 						}
@@ -424,6 +444,8 @@ public abstract class Loop<C extends Loop.Code> {
 				}).start();
 			}
 		}
+
+		//noinspection ReturnOfThis
 		return this;
 	}
 
@@ -439,10 +461,14 @@ public abstract class Loop<C extends Loop.Code> {
 				throw new InternalError("loop still alive");
 			this.thread.set(Thread.currentThread());
 		}
+
 		this.loop();
+
 		synchronized (this.thread) {
 			this.thread.set(null);
 		}
+
+		//noinspection ReturnOfThis
 		return this;
 	}
 
@@ -487,7 +513,7 @@ public abstract class Loop<C extends Loop.Code> {
 							//prevent the post to be executed more than one
 							state.set(false);
 							//notify the caller thread
-							state.notify();
+							state.notifyAll();
 						}
 					}
 				});
@@ -504,6 +530,8 @@ public abstract class Loop<C extends Loop.Code> {
 				state.set(false);
 			}
 		}
+
+		//noinspection ReturnOfThis
 		return this;
 	}
 
@@ -534,6 +562,7 @@ public abstract class Loop<C extends Loop.Code> {
 			//block the loop from finishing/starting
 			synchronized (this.thread) {
 				synchronized (this.posts) {
+					//noinspection AssignmentUsedAsCondition,NestedAssignment,NestedAssignment
 					if (w = this.isAlive())
 						this.posts.add((SynchronizedPost) (loop, loopingThread) -> {
 							//wait until the caller thread invokes 'wait()'
@@ -543,7 +572,7 @@ public abstract class Loop<C extends Loop.Code> {
 									post.post(loop, loopingThread);
 									//tell the post that we have finished the post
 									state.set(false);
-									state.notify();
+									state.notifyAll();
 								}
 							}
 						});
@@ -562,6 +591,8 @@ public abstract class Loop<C extends Loop.Code> {
 				post.post(this, false);
 			}
 		}
+
+		//noinspection ReturnOfThis
 		return this;
 	}
 
@@ -582,7 +613,7 @@ public abstract class Loop<C extends Loop.Code> {
 	public Loop<C> synchronouslyWithin(long timeout, SynchronizedPost<Loop<C>> post) {
 		this.assertNotRecursiveThreadCall();
 		Objects.requireNonNull(post, "post");
-		if (timeout < 0)
+		if (timeout < 0L)
 			throw new IllegalArgumentException("timeout value is negative");
 
 		//true → the post should be done | false → the alter post shouldn't be done
@@ -599,7 +630,7 @@ public abstract class Loop<C extends Loop.Code> {
 							post.post(loop, loopingThread);
 							//tell the caller thread that the post have been posted
 							state.set(false);
-							state.notify();
+							state.notifyAll();
 						}
 					}
 				});
@@ -618,6 +649,8 @@ public abstract class Loop<C extends Loop.Code> {
 				post.post(this, false);
 			}
 		}
+
+		//noinspection ReturnOfThis
 		return this;
 	}
 
@@ -629,6 +662,7 @@ public abstract class Loop<C extends Loop.Code> {
 	 */
 	public Loop<C> thread() {
 		new Thread(this::start).start();
+		//noinspection ReturnOfThis
 		return this;
 	}
 
@@ -643,6 +677,7 @@ public abstract class Loop<C extends Loop.Code> {
 	public Loop<C> thread(String state) {
 		Objects.requireNonNull(state, "state");
 		new Thread(() -> this.start(state)).start();
+		//noinspection ReturnOfThis
 		return this;
 	}
 
@@ -656,6 +691,7 @@ public abstract class Loop<C extends Loop.Code> {
 	protected boolean next(Object item) {
 		synchronized (this.code) {
 			Iterator<Code> iterator = this.code.iterator();
+			//noinspection MethodCallInLoopCondition
 			while (this.tick() && iterator.hasNext())
 				iterator.next().run(this, item);
 			//invoker.invoke(iterator.next());, but, yeah, it will make a lot of type mismatches
