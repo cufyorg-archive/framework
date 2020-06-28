@@ -15,8 +15,6 @@
  */
 package cufy.concurrent;
 
-import cufy.lang.IllegalThreadException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +30,7 @@ import java.util.function.Consumer;
  * @version 0.1.5
  * @since 0.0.a ~2019.05.18
  */
+@SuppressWarnings("ReturnOfThis")
 public class Instructor {
 	/**
 	 * Loops that linked to this.
@@ -51,6 +50,11 @@ public class Instructor {
 	 * Note: synchronized use only.
 	 */
 	protected final AtomicReference<String> state = new AtomicReference<>(Loop.CONTINUE);
+
+	@Override
+	public String toString() {
+		return super.toString() + " " + this.loops;
+	}
 
 	/**
 	 * Get the {@link #loops} of this loop.
@@ -78,6 +82,7 @@ public class Instructor {
 		synchronized (this.loops) {
 			action.accept(this.loops);
 		}
+
 		return this;
 	}
 
@@ -105,6 +110,7 @@ public class Instructor {
 		synchronized (this.posts) {
 			action.accept(this.posts);
 		}
+
 		return this;
 	}
 
@@ -130,8 +136,10 @@ public class Instructor {
 		Objects.requireNonNull(action, "action");
 
 		synchronized (this.state) {
-			action.accept(this.state.get());
+			String state = this.state.get();
+			action.accept(state);
 		}
+
 		return this;
 	}
 
@@ -162,12 +170,14 @@ public class Instructor {
 		synchronized (this.loops) {
 			this.loops.forEach(Loop::join);
 		}
+
 		//micro time waiting method
 		boolean w;
 		do
 			synchronized (this.loops) {
 				w = !this.loops.isEmpty();
 			} while (w);
+
 		return this;
 	}
 
@@ -185,7 +195,7 @@ public class Instructor {
 	 */
 	public Instructor join(Consumer<Instructor> alter, long millis) {
 		Objects.requireNonNull(alter, "alter");
-		if (millis > 0)
+		if (millis > 0L)
 			throw new IllegalArgumentException("timeout value is negative");
 
 		//the deadline
@@ -197,7 +207,7 @@ public class Instructor {
 				long wait = deadline - System.currentTimeMillis();
 
 				//if the deadline passed
-				if (wait <= 0) {
+				if (wait <= 0L) {
 					alter.accept(this);
 					return this;
 				}
@@ -225,6 +235,7 @@ public class Instructor {
 		synchronized (this.loops) {
 			synchronized (this.state) {
 				this.state.set(state);
+				//noinspection NestedMethodCall
 				this.loops.forEach(loop -> loop.notify(state));
 			}
 		}
@@ -283,6 +294,7 @@ public class Instructor {
 				}
 			}
 		}
+		//noinspection NestedMethodCall,ChainedMethodCall
 		new Thread(() -> post.post(this, null, false)).start();
 		return this;
 	}
@@ -303,7 +315,7 @@ public class Instructor {
 	 */
 	public Instructor postWithin(long timeout, Post post) {
 		Objects.requireNonNull(post, "post");
-		if (timeout < 0)
+		if (timeout < 0L)
 			throw new IllegalArgumentException("timeout value is negative");
 
 		AtomicBoolean state = new AtomicBoolean(true);
@@ -318,13 +330,14 @@ public class Instructor {
 						if (state.get()) {
 							boolean w = post.post(instructor, loop, loopingThread);
 							state.set(false);
-							state.notify();
+							state.notifyAll();
 							applied.set(true);
 							return w;
 						}
 					}
 					return false;
 				});
+				//noinspection ChainedMethodCall
 				new Thread(() -> {
 					synchronized (state) {
 						if (state.get()) {
@@ -360,7 +373,10 @@ public class Instructor {
 				this.loops.add(loop);
 			}
 		}
-		loop.start(this.state.get());
+
+		String state = this.state.get();
+		loop.start(state);
+
 		synchronized (this.loops) {
 			this.loops.remove(loop);
 		}
@@ -386,7 +402,7 @@ public class Instructor {
 					synchronized (state) {
 						if (state.get()) {
 							post.post(instructor, loop, loopingThread);
-							state.notify();
+							state.notifyAll();
 						}
 					}
 				});
@@ -424,13 +440,14 @@ public class Instructor {
 			boolean w;
 			synchronized (this.loops) {
 				synchronized (this.posts) {
+					//noinspection AssignmentUsedAsCondition,NestedAssignment
 					if (w = this.isAlive())
 						this.posts.add((SynchronizedPost) (instructor, loop, loopingThread) -> {
 							synchronized (state) {
 								if (state.get()) {
 									post.post(instructor, loop, loopingThread);
 									state.set(false);
-									state.notify();
+									state.notifyAll();
 								}
 							}
 						});
@@ -465,7 +482,7 @@ public class Instructor {
 	 */
 	public Instructor synchronouslyWithin(long timeout, SynchronizedPost post) {
 		Objects.requireNonNull(post, "post");
-		if (timeout < 0)
+		if (timeout < 0L)
 			throw new IllegalArgumentException("timeout value is negative");
 
 		AtomicBoolean state = new AtomicBoolean();
@@ -477,7 +494,7 @@ public class Instructor {
 						if (state.get()) {
 							post.post(instructor, loop, loopingThread);
 							state.set(false);
-							state.notify();
+							state.notifyAll();
 						}
 					}
 				});
