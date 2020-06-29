@@ -59,6 +59,22 @@ public final class Clazz<T> implements Type, Serializable {
 	private Class<T> klass;
 
 	/**
+	 * Construct a new clazz that represents the class {@link Object}, and have the given {@code components}.
+	 *
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
+	 * @throws NullPointerException if the given {@code components} or any of its elements is null.
+	 */
+	private Clazz(Component... components) {
+		Objects.requireNonNull(components, "components");
+		this.klass = (Class<T>) Object.class;
+		this.family = Object.class;
+		this.components = Arrayz.copyOf(components, components.length);
+
+		Component.setModifiable(this.components, false);
+	}
+
+	/**
 	 * Construct a new clazz that represents the given {@code klass}, and have the given {@code components}.
 	 *
 	 * @param klass      the class to be represented by the constructed clazz.
@@ -925,10 +941,6 @@ public final class Clazz<T> implements Type, Serializable {
 		 */
 		public static final Object DEFAULT_CLAZZ = new Object();
 		/**
-		 * A final empty component to reduce redundant component initializing.
-		 */
-		static final Component EMPTY = new Component();
-		/**
 		 * A final empty components array to reduce redundant array initializing.
 		 */
 		static final Component[] EMPTY_ARRAY = new Component[0];
@@ -936,49 +948,16 @@ public final class Clazz<T> implements Type, Serializable {
 		/**
 		 * An unmodifiable entry-set containing the {@link Entry}s of this component.
 		 */
-		private final Set<Entry<Object, Clazz>> entrySet;
+		private final Set<ComponentEntry> entrySet = new HashSet();
 		/**
 		 * True, if this component can be modified.
 		 */
-		private boolean modifiable;
+		private boolean modifiable = true;
 
 		/**
-		 * Construct a new empty clazzes component that can't be modified and contains nothing.
+		 * Initialize a new empty component.
 		 */
 		private Component() {
-			this.entrySet = Collections.emptySet();
-		}
-
-		/**
-		 * Construct a new clazzes component that can't be modified and contains a clone of the mappings of the given
-		 * component.
-		 *
-		 * @param component to clone the mappings of it to the constructed component.
-		 * @throws NullPointerException     if the given {@code component} is null.
-		 * @throws IllegalArgumentException if a value is stored in the given {@code component} is not an instance of
-		 *                                  {@link Clazz}.
-		 */
-		private Component(Map<Object, Clazz> component) {
-			if (component instanceof Clazz.Component)
-				this.entrySet = ((Component) component).entrySet;
-			else {
-				Set entrySet = new HashSet();
-				component.forEach((key, klazz) -> {
-					if (!(klazz instanceof Clazz))
-						throw new IllegalArgumentException("Not a clazz " + klazz);
-
-					entrySet.add(new AbstractMap.SimpleEntry(key, klazz) {
-						@Override
-						public Object setValue(Object value) {
-							if (Component.this.isModifiable())
-								return super.setValue(value);
-
-							throw new UnsupportedOperationException("Unmodifiable Component!");
-						}
-					});
-				});
-				this.entrySet = Collections.unmodifiableSet(entrySet);
-			}
 		}
 
 		/**
@@ -1061,7 +1040,7 @@ public final class Clazz<T> implements Type, Serializable {
 			for (; i < componentClazzes.length; i++)
 				components[i] = Component.of(componentClazzes[i]);
 			for (; i < ml; i++)
-				components[i] = Component.EMPTY;
+				components[i] = new Component();
 
 			return components;
 		}
@@ -1075,7 +1054,7 @@ public final class Clazz<T> implements Type, Serializable {
 			for (; i < componentClasses.length; i++)
 				components[i] = Component.of(componentClasses[i]);
 			for (; i < ml; i++)
-				components[i] = Component.EMPTY;
+				components[i] = new Component();
 
 			return components;
 		}
@@ -1101,12 +1080,11 @@ public final class Clazz<T> implements Type, Serializable {
 			Objects.requireNonNull(componentClasses, "componentClasses");
 			if (componentClasses.length == 0)
 				//length == 0 ? empty
-				return Component.EMPTY;
-
+				return new Component();
 			if (componentClasses.length == 1)
 				//length == 1 ? singleton
 				return componentClasses[0] == null ?
-					   Component.EMPTY :
+					   new Component() :
 					   Component.of(Clazz.of(componentClasses[0]));
 			else //otherwise ? recursive
 				return Component.of(Clazz.of(
@@ -1131,7 +1109,9 @@ public final class Clazz<T> implements Type, Serializable {
 		 * @since 0.1.5
 		 */
 		public static Component of(Clazz componentClazz) {
-			return new Component(Collections.singletonMap(Component.DEFAULT_CLAZZ, componentClazz));
+			Component component = new Component();
+			component.put(Component.DEFAULT_CLAZZ, componentClazz);
+			return component;
 		}
 
 		/**
@@ -1146,8 +1126,20 @@ public final class Clazz<T> implements Type, Serializable {
 		}
 
 		@Override
+		public Clazz put(Object key, Clazz klazz) {
+			if (this.modifiable)
+				for (ComponentEntry entry : this.entrySet)
+					if (entry.getKey().equals(key))
+						return entry.setValue(klazz);
+
+			this.entrySet.add(new ComponentEntry(key, klazz));
+			//noinspection ReturnOfNull
+			return null;
+		}
+
+		@Override
 		public Set<Entry<Object, Clazz>> entrySet() {
-			return this.entrySet;
+			return Collections.unmodifiableSet(this.entrySet);
 		}
 
 		@Override
@@ -1229,7 +1221,7 @@ public final class Clazz<T> implements Type, Serializable {
 		 *
 		 * @return true, if modifications are allowed in this component.
 		 */
-		public synchronized boolean isModifiable() {
+		public boolean isModifiable() {
 			return this.modifiable;
 		}
 
@@ -1238,8 +1230,128 @@ public final class Clazz<T> implements Type, Serializable {
 		 *
 		 * @param modifiable the new modification state.
 		 */
-		private synchronized void setModifiable(boolean modifiable) {
+		private void setModifiable(boolean modifiable) {
 			this.modifiable = modifiable;
+		}
+
+		/**
+		 * An {@link Map.Entry} implementation for {@link Component}s.
+		 */
+		private final class ComponentEntry extends AbstractMap.SimpleEntry<Object, Clazz> {
+			/**
+			 * Construct a new component-entry.
+			 *
+			 * @param key   the key of this entry.
+			 * @param klazz the klazz (value) to this entry.
+			 */
+			private ComponentEntry(Object key, Clazz klazz) {
+				super(key, klazz);
+			}
+
+			@Override
+			public Clazz setValue(Clazz value) {
+				if (Component.this.isModifiable())
+					return super.setValue(value);
+
+				throw new UnsupportedOperationException("Unmodifiable Component");
+			}
+		}
+	}
+
+	/**
+	 * A util class for auto-generating clazzes.
+	 */
+	@SuppressWarnings("JavaDoc")
+	public static final class Generate {
+		/**
+		 * This is an util class and must not be instanced as an object.
+		 *
+		 * @throws AssertionError when called.
+		 */
+		private Generate() {
+			throw new AssertionError("No instance for you!");
+		}
+
+		public static <T> Clazz<T> from(T instance, Clazz... componentClazzes) {
+			return Generate.from0(new HashMap(), instance, componentClazzes);
+		}
+
+		public static <T> Clazz<T> from(T instance, Class family, Clazz... componentClazzes) {
+			return Generate.from0(new HashMap(), instance, family, componentClazzes);
+		}
+
+		static <T> Clazz<T> from0(Map<Object, Clazz> dejaVus, T instance, Clazz... componentClazzes) {
+			Class family = instance == null ? Void.class : instance.getClass();
+			return Generate.from0(dejaVus, instance, family, componentClazzes);
+		}
+
+		static <T> Clazz<T> from0(Map<Object, Clazz> dejaVus, T instance, Class family, Clazz... componentClazzes) {
+			Objects.requireNonNull(dejaVus, "dejaVus");
+			Objects.requireNonNull(family, "family");
+			Objects.requireNonNull(componentClazzes, "componentClazzes");
+
+			if (instance != null)
+				if (instance instanceof Map)
+					return Generate.fromMap(dejaVus, (Map) instance, family, componentClazzes);
+				else if (instance instanceof Iterable)
+					return Generate.fromIterable(dejaVus, (Iterable) instance, family, componentClazzes);
+				else if (instance.getClass().isArray())
+					return Generate.fromArray(dejaVus, instance, family, componentClazzes);
+
+			return Clazz.from(instance, family, Component.as(componentClazzes));
+		}
+
+		static <T> Clazz<T> fromArray(Map<Object, Clazz> dejaVus, Object array, Class family, Clazz[] componentClazzes) {
+			Objects.requireNonNull(array, "array");
+			Objects.requireNonNull(componentClazzes, "componentClazzes");
+
+			Clazz klazz = new Clazz();
+			return null;
+		}
+
+		static <T> Clazz<T> fromIterable(Map<Object, Clazz> dejaVus, Iterable iterable, Class family, Clazz[] componentClazzes) {
+			Objects.requireNonNull(dejaVus, "dejaVus");
+			Objects.requireNonNull(iterable, "iterable");
+			Objects.requireNonNull(family, "family");
+			Objects.requireNonNull(componentClazzes, "componentClazzes");
+
+			if (dejaVus.containsKey(iterable))
+				//if already seen
+				return dejaVus.get(iterable);
+			else {
+				//the components of the returned clazz
+				Component[] components = Component.as(1, componentClazzes);
+				//the clazz that will be returned
+				Clazz klazz = Clazz.from(iterable, family);
+
+				//assign for later use
+				dejaVus.put(iterable, klazz);
+
+				Iterator iterator = iterable.iterator();
+				for (int i = 0; iterator.hasNext(); i++) {
+					Object element = iterator.next();
+
+					if (dejaVus.containsKey(element))
+						components[0].put(i, dejaVus.get(element));
+					else {
+						Clazz elementClazz = Generate.from0(dejaVus, element, componentClazzes);
+						components[0].put(i, elementClazz);
+						dejaVus.put(element, elementClazz);
+					}
+				}
+
+				//finalize everything
+				Component.setModifiable(components, false);
+				klazz.setComponents(components);
+				return klazz;
+			}
+		}
+
+		static <T> Clazz<T> fromMap(Map<Object, Clazz> dejaVus, Map map, Class family, Clazz[] componentClazzes) {
+			Objects.requireNonNull(map, "map");
+			Objects.requireNonNull(componentClazzes, "componentClazzes");
+
+			return null;
 		}
 	}
 }
