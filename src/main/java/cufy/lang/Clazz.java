@@ -29,12 +29,12 @@ import java.util.*;
 
 /**
  * An alternative representation for {@link Class classes}. This provides more data about the targeted type. About the
- * components tree and the family of that class. The family is how the class should be treated. The clazz-tree is a tree
- * of clazzes for each specific component in an instance this clazz is representing.
+ * components component and the family of that class. The family is how the class should be treated. The clazz-component
+ * is a component of clazzes for each specific component in an instance this clazz is representing.
  * <br>
  * Note: the class {@link Void} is the class of null.
  * <pre>
- *     clazz (root) -> tree (component tree) -> clazz (default clazz | new root) -> tree -> clazz -> tree ->...
+ *     clazz (root) -> component (component component) -> clazz (default clazz | new root) -> component -> clazz -> component ->...
  * </pre>
  *
  * @param <T> the type of the class represented by this clazz.
@@ -44,18 +44,10 @@ import java.util.*;
  */
 public final class Clazz<T> implements Type, Serializable {
 	/**
-	 * A key for a general clazz for all components to be held by an instance of a clazz.
+	 * A component of the clazzes specified foreach component to be held by an instance of this clazz. This field should
+	 * be treated as final field.
 	 */
-	public static final Object COMPONENT = new Object();
-	/**
-	 * A final empty tree to reduce redundant tree initializing.
-	 */
-	private static final ComponentTree EMPTY_TREE = new ComponentTree();
-	/**
-	 * A final empty trees array to reduce redundant array initializing.
-	 */
-	private static final ComponentTree[] EMPTY_TREES = new ComponentTree[0];
-
+	private Component[] components;
 	/**
 	 * The class that an instance of this clazz should be treated as if it was an instance of it. This field should be
 	 * treated as final field.
@@ -65,47 +57,46 @@ public final class Clazz<T> implements Type, Serializable {
 	 * The class represented by this clazz. This field should be treated as final field.
 	 */
 	private Class<T> klass;
-	/**
-	 * A tree of the clazzes specified foreach component to be held by an instance of this clazz. This field should be
-	 * treated as final field.
-	 */
-	private ComponentTree[] trees;
 
 	/**
-	 * Construct a new clazz that represents the given {@code klass}, and have the given {@code trees}.
+	 * Construct a new clazz that represents the given {@code klass}, and have the given {@code components}.
 	 *
-	 * @param klass the class to be represented by the constructed clazz.
-	 * @param trees an array of trees of the clazzes specified foreach component to be held by an instance of the
-	 *              constructed clazz.
-	 * @throws NullPointerException if the given {@code klass} or {@code trees} or any of its elements is null.
+	 * @param klass      the class to be represented by the constructed clazz.
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
+	 * @throws NullPointerException if the given {@code klass} or {@code components} or any of its elements is null.
 	 */
-	private Clazz(Class<T> klass, Map<Object, Clazz>... trees) {
+	private Clazz(Class<T> klass, Component... components) {
 		Objects.requireNonNull(klass, "klass");
-		Objects.requireNonNull(trees, "trees");
+		Objects.requireNonNull(components, "components");
 		this.klass = klass;
 		this.family = klass;
-		this.trees = Clazz.finalize(trees);
+		this.components = Arrayz.copyOf(components, components.length);
+
+		Component.setModifiable(this.components, false);
 	}
 
 	/**
-	 * Construct a new clazz that represents the given {@code klass}, and have the given {@code trees}, and should be
-	 * treated as if it was the given {@code family}.
+	 * Construct a new clazz that represents the given {@code klass}, and have the given {@code components}, and should
+	 * be treated as if it was the given {@code family}.
 	 *
-	 * @param klass  the class to be represented by the constructed clazz.
-	 * @param family the class that an instance of the constructed clazz should be treated as if it was an instance of
-	 *               it.
-	 * @param trees  an array of trees of the clazzes specified foreach component to be held by an instance of the
-	 *               constructed clazz.
-	 * @throws NullPointerException if the given {@code klass} or {@code family} or {@code trees} or any of its elements
-	 *                              is null.
+	 * @param klass      the class to be represented by the constructed clazz.
+	 * @param family     the class that an instance of the constructed clazz should be treated as if it was an instance
+	 *                   of it.
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
+	 * @throws NullPointerException if the given {@code klass} or {@code family} or {@code components} or any of its
+	 *                              elements is null.
 	 */
-	private Clazz(Class<T> klass, Class family, Map<Object, Clazz>... trees) {
+	private Clazz(Class<T> klass, Class family, Component... components) {
 		Objects.requireNonNull(klass, "klass");
 		Objects.requireNonNull(family, "family");
-		Objects.requireNonNull(trees, "trees");
+		Objects.requireNonNull(components, "components");
 		this.klass = klass;
 		this.family = family;
-		this.trees = Clazz.finalize(trees);
+		this.components = Arrayz.copyOf(components, components.length);
+
+		Component.setModifiable(this.components, false);
 	}
 
 	/**
@@ -128,25 +119,27 @@ public final class Clazz<T> implements Type, Serializable {
 	}
 
 	/**
-	 * Get a clazz that represents teh given {@code klass}, and have trees with the given {@code componentClasses}.
+	 * Get a clazz that represents teh given {@code klass}, and have components with the given {@code
+	 * componentClasses}.
 	 * <pre>
 	 *     Clazz.as(<font color="a5edff">KLASS</font>, <font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
 	 *     <font color="a5edff">KLASS</font>&lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, …&gt;
 	 * </pre>
 	 *
 	 * @param klass            the class to be represented by the returned clazz.
-	 * @param componentClasses the component clazzes of the trees of the returned clazz.
-	 * @return a clazz that represents teh given {@code klass}, and have trees with the given {@code componentClasses}.
+	 * @param componentClasses the component clazzes of the components of the returned clazz.
+	 * @return a clazz that represents teh given {@code klass}, and have components with the given {@code
+	 * 		componentClasses}.
 	 * @throws NullPointerException if the given {@code klass} or {@code componentClasses} is null.
 	 * @since 0.1.5
 	 */
 	public static Clazz as(Class klass, Class... componentClasses) {
-		return Clazz.of(klass, Clazz.trees(Clazz.array(componentClasses)));
+		return Clazz.of(klass, Component.as(Clazz.array(componentClasses)));
 	}
 
 	/**
-	 * Get a clazz that represents teh given {@code klass}, and have trees with the given {@code componentClasses}, and
-	 * should be treated as if it was the given {@code family}.
+	 * Get a clazz that represents teh given {@code klass}, and have components with the given {@code componentClasses},
+	 * and should be treated as if it was the given {@code family}.
 	 * <pre>
 	 *     Clazz.as(<font color="a5edff">KLASS</font>, <font color="fc8fbb">FAMILY</font> <font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
 	 *     <font color="a5edff">KLASS</font>:<font color="fc8fbb">FAMILY</font>&lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, …&gt;
@@ -155,200 +148,184 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @param klass            the class to be represented by the returned clazz.
 	 * @param family           the class that an instance of the returned clazz should be treated as if it was an
 	 *                         instance of it.
-	 * @param componentClasses the component clazzes of the trees of the returned clazz.
-	 * @return a clazz that represents teh given {@code klass}, and have trees with the given {@code componentClasses},
-	 * 		and should be treated as if it was the given {@code family}.
+	 * @param componentClasses the component clazzes of the components of the returned clazz.
+	 * @return a clazz that represents teh given {@code klass}, and have components with the given {@code
+	 * 		componentClasses}, and should be treated as if it was the given {@code family}.
 	 * @throws NullPointerException if the given {@code klass} or {@code family} or {@code componentClasses} is null.
 	 * @since 0.1.5
 	 */
 	public static Clazz as(Class klass, Class family, Class[] componentClasses) {
-		return Clazz.of(klass, family, Clazz.trees(Clazz.array(componentClasses)));
+		return Clazz.of(klass, family, Component.as(Clazz.array(componentClasses)));
 	}
 
 	/**
-	 * Get a clazz that represents the class of the given {@code instance}, and with a {@code trees} auto generated from
-	 * the elements of the given {@code instance} with the given {@code componentClazzes}.
-	 * <br>
-	 * Note: If a component clazz is missing, the standard component clazz for the instance that miss it will be taken.
+	 * Get a clazz that represents the class of the given {@code instance}, and with the given {@code components}.
 	 * <pre>
 	 *     Clazz.in(<font color="a5edff">INSTANCE</font>, <font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
 	 *     <font color="a5edff">KLASS</font>&lt;<font color="d3c4ff">TREE0, TREE1, TREE2, …</font>&gt;
 	 * </pre>
 	 *
-	 * @param instance         an instance that its class to be represented by the returned clazz, and its elements is
-	 *                         the source of its trees.
-	 * @param componentClazzes the clazzes for the elements that can't construct a sub-tree for it. The clazzes should
-	 *                         be ordered to its targeted auto-generated tree.
-	 * @param <T>              the type of the class represented by the returned clazz.
-	 * @return a clazz that represents the class of the given {@code instance}, and with a {@code trees} auto generated
-	 * 		from the elements of the given {@code instance} with the given {@code componentClazzes}.
+	 * @param instance   an instance that its class to be represented by the returned clazz, and its elements is the
+	 *                   source of its trees.
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
+	 * @param <T>        the type of the class represented by the returned clazz.
+	 * @return a clazz that represents the class of the given {@code instance}, and with the given {@code components}.
 	 * @throws NullPointerException if the given {@code componentClazzes} is null.
 	 * @since 0.1.5
 	 */
-	public static <T> Clazz<T> from(T instance, Clazz... componentClazzes) {
-		Objects.requireNonNull(componentClazzes, "componentClazzes");
-		if (instance instanceof Clazzable) {
-			return ((Clazzable) instance).clazz(componentClazzes);
-		} else {
-			Class klass = instance == null ? Void.class : instance.getClass();
-			return Clazz.of(klass, Clazz.trees(instance, componentClazzes));
-		}
+	public static <T> Clazz<T> from(T instance, Component... components) {
+		Class klass = instance == null ? Void.class : instance.getClass();
+		return Clazz.of(klass, components);
 	}
 
 	/**
 	 * Get a clazz that represents the class of the given {@code instance}, and should be treated as if it was the given
-	 * {@code family}, and with a {@code trees} auto generated from the elements of the given {@code instance} with the
-	 * given {@code componentClazzes}.
+	 * {@code family}, and with the given {@code components}.
 	 * <br>
-	 * Note: If a component clazz is missing, the standard component clazz for the instance that miss it will be taken.
 	 * <pre>
 	 *     Clazz.in(<font color="a5edff">INSTANCE</font>, <font color="fc8fbb">FAMILY</font>, <font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
 	 *     <font color="a5edff">KLASS</font>:<font color="fc8fbb">FAMILY</font>&lt;<font color="d3c4ff">TREE0, TREE1, TREE2, …</font>&gt;
 	 * </pre>
 	 *
-	 * @param instance         an instance that its class to be represented by the returned clazz, and its elements is
-	 *                         the source of its tree.
-	 * @param family           the class that an instance of the returned clazz should be treated as if it was an
-	 *                         instance of it.
-	 * @param componentClazzes the clazzes for the elements that can't construct a sub-tree for it. The clazzes should
-	 *                         be ordered to its targeted auto-generated tree.
-	 * @param <T>              the type of the class represented by the returned clazz.
+	 * @param instance   an instance that its class to be represented by the returned clazz, and its elements is the
+	 *                   source of its tree.
+	 * @param family     the class that an instance of the returned clazz should be treated as if it was an instance of
+	 *                   it.
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
+	 * @param <T>        the type of the class represented by the returned clazz.
 	 * @return a clazz that represents the class of the given {@code instance}, and should be treated as if it was the
-	 * 		given {@code family}, and with a {@code trees} auto generated from the elements of the given {@code instance}
-	 * 		with the given {@code componentClazzes}.
+	 * 		given {@code family}, and with the given {@code components}.
 	 * @throws NullPointerException if the given {@code family} or {@code componentClazzes} is null.
 	 * @since 0.1.5
 	 */
-	public static <T> Clazz<T> from(T instance, Class family, Clazz... componentClazzes) {
-		Objects.requireNonNull(family, "family");
-		Objects.requireNonNull(componentClazzes, "componentClazzes");
-		if (instance instanceof Clazzable) {
-			return ((Clazzable) instance).clazz(family, componentClazzes);
-		} else {
-			Class klass = instance == null ? Void.class : instance.getClass();
-			return Clazz.of(klass, family, Clazz.trees(instance, componentClazzes));
-		}
+	public static <T> Clazz<T> from(T instance, Class family, Component... components) {
+		Class klass = instance == null ? Void.class : instance.getClass();
+		return Clazz.of(klass, family, components);
 	}
 
 	/**
-	 * Get a clazz that represents the class {@link Object}, and have the given {@code trees}.
+	 * Get a clazz that represents the class {@link Object}, and have the given {@code components}.
 	 * <pre>
 	 *     Clazz.of(<font color="f1fc8f">TREE0, TREE1, TREE2, …</font>)
 	 *     <font color="a5edff">Object</font>&lt;<font color="f1fc8f">TREE0, TREE1, TREE2, …</font>&gt;
 	 * </pre>
 	 *
-	 * @param trees an array of trees of the clazzes specified foreach component to be held by an instance of the
-	 *              constructed clazz.
-	 * @return a clazz that represents the class {@link Object}, and have the given {@code trees}.
-	 * @throws NullPointerException if the given {@code trees} or any of its elements is null.
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
+	 * @return a clazz that represents the class {@link Object}, and have the given {@code components}.
+	 * @throws NullPointerException if the given {@code components} or any of its elements is null.
 	 * @since 0.1.5
 	 */
-	public static Clazz<Object> of(Map<Object, Clazz>... trees) {
-		Objects.requireNonNull(trees, "trees");
-		return new Clazz(Object.class, trees);
+	public static Clazz<Object> of(Component... components) {
+		Objects.requireNonNull(components, "components");
+		return new Clazz(Object.class, components);
 	}
 
 	/**
-	 * Get a clazz that represents the given {@code klass}, and have the given {@code trees}.
+	 * Get a clazz that represents the given {@code klass}, and have the given {@code components}.
 	 * <pre>
 	 *     Clazz.of(<font color="a5edff">KLASS</font>, <font color="f1fc8f">TREE0, TREE1, TREE2, …</font>)
 	 *     <font color="a5edff">KLASS</font>&lt;<font color="f1fc8f">TREE0, TREE1, TREE2, …</font>&gt;
 	 * </pre>
 	 *
-	 * @param klass the class to be represented by the returned clazz.
-	 * @param trees an array of trees of the clazzes specified foreach component to be held by an instance of the
-	 *              constructed clazz.
-	 * @param <T>   the type of the class represented by the returned clazz.
-	 * @return a clazz that represents the given {@code klass}, and have the given {@code trees}.
-	 * @throws NullPointerException if the given {@code klass} or {@code trees} or any of its elements is null.
+	 * @param klass      the class to be represented by the returned clazz.
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
+	 * @param <T>        the type of the class represented by the returned clazz.
+	 * @return a clazz that represents the given {@code klass}, and have the given {@code components}.
+	 * @throws NullPointerException if the given {@code klass} or {@code components} or any of its elements is null.
 	 * @since 0.1.5
 	 */
-	public static <T> Clazz<T> of(Class<T> klass, Map<Object, Clazz>... trees) {
+	public static <T> Clazz<T> of(Class<T> klass, Component... components) {
 		Objects.requireNonNull(klass, "klass");
-		Objects.requireNonNull(trees, "trees");
-		return new Clazz(klass, trees);
+		Objects.requireNonNull(components, "components");
+		return new Clazz(klass, components);
 	}
 
 	/**
-	 * Get a clazz that represents the given {@code klass}, and have the given {@code tree}, and should be treated as if
-	 * it was the given {@code family}.
+	 * Get a clazz that represents the given {@code klass}, and have the given {@code component}, and should be treated
+	 * as if it was the given {@code family}.
 	 * <pre>
 	 *     Clazz.of(<font color="a5edff">KLASS</font>, <font color="fc8fbb">FAMILY</font>, <font color="f1fc8f">TREE0, TREE1, TREE2, …</font>)
 	 *     <font color="a5edff">KLASS</font>:<font color="fc8fbb">FAMILY</font>&lt;<font color="f1fc8f">TREE0, TREE1, TREE2, …</font>&gt;
 	 * </pre>
 	 *
-	 * @param klass  the class to be represented by the returned clazz.
-	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
-	 * @param trees  an array of trees of the clazzes specified foreach component to be held by an instance of the
-	 *               constructed clazz.
-	 * @param <T>    the type of the class represented by the returned clazz.
-	 * @return a new clazz that represents the given {@code klass}, and have the given {@code tree}, and should be
+	 * @param klass      the class to be represented by the returned clazz.
+	 * @param family     the class that an instance of the returned clazz should be treated as if it was an instance of
+	 *                   it.
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
+	 * @param <T>        the type of the class represented by the returned clazz.
+	 * @return a new clazz that represents the given {@code klass}, and have the given {@code component}, and should be
 	 * 		treated as if it was the given {@code family}.
-	 * @throws NullPointerException if the given {@code klass} or {@code family} or {@code tree} is null.
+	 * @throws NullPointerException if the given {@code klass} or {@code family} or {@code component} is null.
 	 * @since 0.1.5
 	 */
-	public static <T> Clazz<T> of(Class<T> klass, Class family, Map<Object, Clazz>... trees) {
+	public static <T> Clazz<T> of(Class<T> klass, Class family, Component... components) {
 		Objects.requireNonNull(klass, "klass");
 		Objects.requireNonNull(family, "family");
-		Objects.requireNonNull(trees, "tree");
-		return new Clazz(klass, family, trees);
+		Objects.requireNonNull(components, "component");
+		return new Clazz(klass, family, components);
 	}
 
 	/**
-	 * Get a clazz that represents the class with the given {@code name}, and have the given {@code tree}.
+	 * Get a clazz that represents the class with the given {@code name}, and have the given {@code component}.
 	 * <pre>
 	 *     Clazz.of(<font color="a5edff">NAME</font>, <font color="f1fc8f">TREE0, TREE1, TREE2, …</font>)
 	 *     <font color="a5edff">KLASS</font>&lt;<font color="f1fc8f">TREE0, TREE1, TREE2, …</font>&gt;
 	 * </pre>
 	 *
-	 * @param name  the name of the class that to be represented by the returned clazz.
-	 * @param trees an array of trees of the clazzes specified foreach component to be held by an instance of the
-	 *              constructed clazz.
-	 * @return a clazz that represents the class with the given {@code name}, and have the given {@code tree}.
+	 * @param name       the name of the class that to be represented by the returned clazz.
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
+	 * @return a clazz that represents the class with the given {@code name}, and have the given {@code component}.
 	 * @throws ClassNotFoundException      if the class cannot be located.
 	 * @throws LinkageError                if the linkage fails.
 	 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
-	 * @throws NullPointerException        if the given {@code name} or {@code tree} is null.
+	 * @throws NullPointerException        if the given {@code name} or {@code component} is null.
 	 * @see Class#forName(String)
 	 * @since 0.1.5
 	 */
-	public static Clazz of(String name, Map<Object, Clazz>... trees) throws ClassNotFoundException {
+	public static Clazz of(String name, Component... components) throws ClassNotFoundException {
 		Objects.requireNonNull(name, "name");
-		Objects.requireNonNull(trees, "trees");
-		return Clazz.of(Class.forName(name), trees);
+		Objects.requireNonNull(components, "components");
+		return Clazz.of(Class.forName(name), components);
 	}
 
 	/**
-	 * Get a clazz that represents the class with the given {@code name}, and have the given {@code tree}, and should be
-	 * treated as if it was the given {@code family}.
+	 * Get a clazz that represents the class with the given {@code name}, and have the given {@code component}, and
+	 * should be treated as if it was the given {@code family}.
 	 * <pre>
 	 *     Clazz.of(<font color="a5edff">NAME</font>, <font color="fc8fbb">FAMILY</font>, <font color="f1fc8f">TREE0, TREE1, TREE2, …</font>)
 	 *     <font color="a5edff">KLASS</font>:<font color="fc8fbb">FAMILY</font>&lt;<font color="f1fc8f">TREE0, TREE1, TREE2, …</font>&gt;
 	 * </pre>
 	 *
-	 * @param name   the name of the class that to be represented by the returned clazz.
-	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
-	 * @param trees  an array of trees of the clazzes specified foreach component to be held by an instance of the
-	 *               constructed clazz.
-	 * @return a clazz that represents the class with the given {@code name}, and have the given {@code tree}, and
+	 * @param name       the name of the class that to be represented by the returned clazz.
+	 * @param family     the class that an instance of the returned clazz should be treated as if it was an instance of
+	 *                   it.
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
+	 * @return a clazz that represents the class with the given {@code name}, and have the given {@code component}, and
 	 * 		should be treated as if it was the given {@code family}.
 	 * @throws ClassNotFoundException      if the class cannot be located.
 	 * @throws LinkageError                if the linkage fails.
 	 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
-	 * @throws NullPointerException        if the given {@code name} or {@code family} or {@code tree} is null.
+	 * @throws NullPointerException        if the given {@code name} or {@code family} or {@code component} is null.
 	 * @see Class#forName(String)
 	 * @since 0.1.5
 	 */
-	public static Clazz of(String name, Class family, Map<Object, Clazz>... trees) throws ClassNotFoundException {
+	public static Clazz of(String name, Class family, Component... components) throws ClassNotFoundException {
 		Objects.requireNonNull(name, "name");
 		Objects.requireNonNull(family, "family");
-		Objects.requireNonNull(trees, "trees");
-		return Clazz.of(Class.forName(name), family, trees);
+		Objects.requireNonNull(components, "components");
+		return Clazz.of(Class.forName(name), family, components);
 	}
 
 	/**
 	 * Get a clazz that represents the class with the given {@code name} loaded using the given {@code loader}, and have
-	 * the given {@code tree}.
+	 * the given {@code component}.
 	 * <pre>
 	 *     Clazz.of(LOADER, INITIALIZE, <font color="a5edff">NAME</font>, <font color="f1fc8f">TREE0, TREE1, TREE2, …</font>)
 	 *     <font color="a5edff">KLASS</font>&lt;<font color="f1fc8f">TREE0, TREE1, TREE2, …</font>&gt;
@@ -357,27 +334,27 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @param loader     class loader from which the class must be loaded.
 	 * @param initialize if true the class will be initialized. See Section 12.4 of The Java Language.
 	 * @param name       the name of the class that to be represented by the returned clazz.
-	 * @param trees      an array of trees of the clazzes specified foreach component to be held by an instance of the
-	 *                   constructed clazz.
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
 	 * @return a clazz that represents the class with the given {@code name} loaded using the given {@code loader}, and
-	 * 		have the given {@code tree}.
+	 * 		have the given {@code component}.
 	 * @throws ClassNotFoundException      if the class cannot be located.
 	 * @throws LinkageError                if the linkage fails.
 	 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
-	 * @throws NullPointerException        if the given {@code loader} or {@code name} or {@code tree} is null.
+	 * @throws NullPointerException        if the given {@code loader} or {@code name} or {@code component} is null.
 	 * @see Class#forName(String, boolean, ClassLoader)
 	 * @since 0.1.5
 	 */
-	public static Clazz of(ClassLoader loader, boolean initialize, String name, Map<Object, Clazz>... trees) throws ClassNotFoundException {
+	public static Clazz of(ClassLoader loader, boolean initialize, String name, Component... components) throws ClassNotFoundException {
 		Objects.requireNonNull(loader, "loader");
 		Objects.requireNonNull(name, "name");
-		Objects.requireNonNull(trees, "trees");
-		return Clazz.of(Class.forName(name, initialize, loader), trees);
+		Objects.requireNonNull(components, "components");
+		return Clazz.of(Class.forName(name, initialize, loader), components);
 	}
 
 	/**
 	 * Get a clazz that represents the class with the given {@code name} loaded using the given {@code loader}, and have
-	 * the given {@code tree}, and should be treated as if it was the given {@code family}.
+	 * the given {@code component}, and should be treated as if it was the given {@code family}.
 	 * <pre>
 	 *     Clazz.of(LOADER, INITIALIZE, <font color="a5edff">NAME</font>, <font color="fc8fbb">FAMILY</font>, <font color="f1fc8f">TREE0, TREE1, TREE2, …</font>)
 	 *     <font color="a5edff">KLASS</font>:<font color="fc8fbb">FAMILY</font>&lt;<font color="f1fc8f">TREE0, TREE1, TREE2, …</font>&gt;
@@ -388,29 +365,29 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @param name       the name of the class that to be represented by the returned clazz.
 	 * @param family     the class that an instance of the returned clazz should be treated as if it was an instance of
 	 *                   it.
-	 * @param trees      an array of trees of the clazzes specified foreach component to be held by an instance of the
-	 *                   constructed clazz.
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
 	 * @return a clazz that represents the class with the given {@code name} loaded using the given {@code loader}, and
-	 * 		have the given {@code tree}, and should be treated as if it was the given {@code family}.
+	 * 		have the given {@code component}, and should be treated as if it was the given {@code family}.
 	 * @throws ClassNotFoundException      if the class cannot be located.
 	 * @throws LinkageError                if the linkage fails.
 	 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
-	 * @throws NullPointerException        if the given {@code loader} or {@code name} or {@code family} or {@code tree}
-	 *                                     is null.
+	 * @throws NullPointerException        if the given {@code loader} or {@code name} or {@code family} or {@code
+	 *                                     component} is null.
 	 * @see Class#forName(String, boolean, ClassLoader)
 	 * @since 0.1.5
 	 */
-	public static Clazz of(ClassLoader loader, boolean initialize, String name, Class family, Map<Object, Clazz>... trees) throws ClassNotFoundException {
+	public static Clazz of(ClassLoader loader, boolean initialize, String name, Class family, Component... components) throws ClassNotFoundException {
 		Objects.requireNonNull(loader, "loader");
 		Objects.requireNonNull(name, "name");
 		Objects.requireNonNull(family, "family");
-		Objects.requireNonNull(trees, "trees");
-		return Clazz.of(Class.forName(name, initialize, loader), family, trees);
+		Objects.requireNonNull(components, "components");
+		return Clazz.of(Class.forName(name, initialize, loader), family, components);
 	}
 
 	/**
-	 * Get a clazz that represents the {@code klass} of the given {@code klassSrc}, and have the {@code tree} of the
-	 * given {@code treeSrc}, and should be treated as if it was the {@code family} of the given {@code familySrc}.
+	 * Get a clazz that represents the {@code klass} of the given {@code klassSrc}, and have the {@code component} of
+	 * the given {@code treeSrc}, and should be treated as if it was the {@code family} of the given {@code familySrc}.
 	 * <pre>
 	 *     Clazz.of(<font color="a5edff">KLASS_SRC</font>, <font color="fc8fbb">FAMILY_SRC</font>, <font color="f1fc8f">TREES_SRC</font>)
 	 *     <font color="a5edff">KLASS</font>:<font color="fc8fbb">FAMILY</font>&lt;<font color="f1fc8f">TREES…</font>&gt;
@@ -419,11 +396,12 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @param klassSrc  the source of the class to be represented by the returned clazz.
 	 * @param familySrc the source of the class that an instance of the returned clazz should be treated as if it was an
 	 *                  instance of it.
-	 * @param treesSrc  the source of the array of trees of the clazzes specified foreach component to be held by an
-	 *                  instance of the constructed clazz.
+	 * @param treesSrc  the source of the array of components of the clazzes specified foreach component to be held by
+	 *                  an instance of the constructed clazz.
 	 * @param <T>       the type of the class represented by the returned clazz.
-	 * @return a clazz that represents the {@code klass} of the given {@code klassSrc}, and have the {@code tree} of the
-	 * 		given {@code treeSrc}, and should be treated as if it was the {@code family} of the given {@code familySrc}.
+	 * @return a clazz that represents the {@code klass} of the given {@code klassSrc}, and have the {@code component}
+	 * 		of the given {@code treeSrc}, and should be treated as if it was the {@code family} of the given {@code
+	 * 		familySrc}.
 	 * @throws NullPointerException if the given {@code familySrc} or {@code klassSrc} or {@code treeSrc} is null.
 	 * @since 0.1.5
 	 */
@@ -431,374 +409,7 @@ public final class Clazz<T> implements Type, Serializable {
 		Objects.requireNonNull(klassSrc, "klassSrc");
 		Objects.requireNonNull(familySrc, "familySrc");
 		Objects.requireNonNull(treesSrc, "treesSrc");
-		return Clazz.of(klassSrc.klass, familySrc.family, treesSrc.trees);
-	}
-
-	/**
-	 * Get a tree that its general clazz is the given {@code componentClazz}, and have no mappings.
-	 * <pre>
-	 *     Clazz.tree(<font color="d3c4ff">COMPONENT</font>)
-	 *     <font color="d3c4ff">TREE</font>
-	 * </pre>
-	 *
-	 * @param componentClazz the general clazz for the components that have no mapping in the returned tree.
-	 * @return a tree that its general clazz is the given {@code componentClazz}, and have no mappings.
-	 * @see Clazz#trees(Clazz[])
-	 * @see Clazz#trees(int, Clazz[])
-	 * @since 0.1.5
-	 */
-	public static Map<Object, Clazz> tree(Clazz componentClazz) {
-		return new HashMap<>(Collections.singletonMap(Clazz.COMPONENT, componentClazz));
-	}
-
-	/**
-	 * Get a linear tree of general component clazzes. The general clazzes specified in order representing the given
-	 * {@code componentClasses}.
-	 * <pre>
-	 *     Clazz.tree(<font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
-	 *     <font color="d3c4ff">TREE0</font>&lt;<font color="d3c4ff">TREE1</font>&lt;<font color="d3c4ff">TREE2…</font>&gt;&gt;
-	 * </pre>
-	 *
-	 * @param componentClasses an ordered list of the classes represented by the nested general component clazzes in
-	 *                         returned tree.
-	 * @return a linear tree of general component clazzes. The general clazzes specified in order representing the given
-	 *        {@code componentClasses}.
-	 * @throws NullPointerException if the given {@code componentClasses} or an element with index (? &gt; 0) in it is
-	 *                              null.
-	 * @see Clazz#trees(Class[][])
-	 * @since 0.1.5
-	 */
-	public static Map<Object, Clazz> tree(Class... componentClasses) {
-		Objects.requireNonNull(componentClasses, "componentClasses");
-		if (componentClasses.length == 0)
-			return new HashMap();
-		if (componentClasses.length == 1)
-			return componentClasses[0] == null ? new HashMap() : Clazz.tree(new Clazz(componentClasses[0]));
-		else
-			return Clazz.tree(Clazz.of(
-					//componentClazz's klass
-					componentClasses[0],
-					//componentClazz's tree (subTree)
-					Clazz.tree(Arrays.copyOfRange(componentClasses, 1, componentClasses.length))
-			));
-	}
-
-	/**
-	 * Get an array of trees that each one's general clazz is the clazz at the same as its position in the given {@code
-	 * componentClazzes}.
-	 * <pre>
-	 *     Clazz.trees(<font color="d3c4ff">COMPONENT0</font>, <font color="d3c4ff">COMPONENT1</font>, <font color="d3c4ff">COMPONENT2</font>, …)
-	 *     &lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, …&gt;
-	 * </pre>
-	 *
-	 * @param componentClazzes the general clazzes array for the components that have no mapping in the tree at the same
-	 *                         position as the clazz in returned trees array.
-	 * @return an array of trees that each one's general clazz is the clazz at the same as its position in the given
-	 *        {@code componentClazzes}.
-	 * @throws NullPointerException if the given {@code componentClazzes} is null.
-	 * @see Clazz#trees(int, Clazz[])
-	 * @see Clazz#tree(Clazz)
-	 * @since 0.1.5
-	 */
-	public static Map<Object, Clazz>[] trees(Clazz... componentClazzes) {
-		Objects.requireNonNull(componentClazzes, "componentClazzes");
-		Map<Object, Clazz>[] trees = new Map[componentClazzes.length];
-
-		for (int i = 0; i < componentClazzes.length; i++)
-			trees[i] = Clazz.tree(componentClazzes[i]);
-
-		return trees;
-	}
-
-	/**
-	 * Get linear trees of general component clazzes. The given {@code componentClasses} specifies each array for a tree
-	 * in the returned trees array.
-	 * <br>
-	 * Note: this is just an array version of {@link Clazz#tree(Class[])}.
-	 * <pre>
-	 *     Clazz.trees(<font color="d3c4ff">{TREE0, NESTED0, DEEP0, …}, {TREE1, NESTED1, DEEP1, …}, …</font>)
-	 *     &lt;<font color="d3c4ff">TREE0</font>&lt;<font color="d3c4ff">NESTED0</font>&lt;<font color="d3c4ff">DEEP0</font>…&gt;&gt;, <font color="d3c4ff">TREE1</font>&lt;<font color="d3c4ff">NESTED1</font>&lt;<font color="d3c4ff">DEEP1</font>…&gt;&gt;, …&gt;
-	 * </pre>
-	 *
-	 * @param componentClasses an array of component classes, each array goes to the same position tree in the returned
-	 *                         trees array.
-	 * @return linear trees of general component clazzes. The given {@code componentClasses} specifies each array for a
-	 * 		tree *in the returned trees array.
-	 * @throws NullPointerException if the given {@code componentClasses} or any of its elements is null.
-	 * @see Clazz#tree(Class[])
-	 * @since 0.1.5
-	 */
-	public static Map<Object, Clazz>[] trees(Class[]... componentClasses) {
-		Objects.requireNonNull(componentClasses, "componentClasses");
-		Map<Object, Clazz>[] trees = new Map[componentClasses.length];
-
-		for (int i = 0; i < componentClasses.length; i++)
-			trees[i] = Clazz.tree(componentClasses[i]);
-
-		return trees;
-	}
-
-	/**
-	 * Get an array of trees auto-generated for the given {@code instance}, Containing general component clazzes from
-	 * the given {@code componentClazzes}.
-	 * <pre>
-	 *     Clazz.trees(<font color="a5edff">INSTANCE</font>, <font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
-	 *     &lt;<font color="d3c4ff">TREE0, TREE1, TREE2, …</font>&gt;
-	 * </pre>
-	 *
-	 * @param instance         the instance the returned trees array is auto-generated from.
-	 * @param componentClazzes the general component clazzes for each tree in the returned tree array.
-	 * @return an array of trees auto-generated for the given {@code instance}, Containing general component clazzes
-	 * 		from the given {@code componentClazzes}.
-	 * @throws NullPointerException if the given {@code componentClazzes} is null.
-	 * @since 0.1.5
-	 */
-	public static Map<Object, Clazz>[] trees(Object instance, Clazz... componentClazzes) {
-		if (instance instanceof Clazzable)
-			return ((Clazzable) instance).getComponentTrees(componentClazzes);
-		else if (Clazzable.isClazzable(instance))
-			return Clazz.treesFrom(instance, componentClazzes);
-
-		return Clazz.trees(componentClazzes);
-	}
-
-	/**
-	 * Sign all the given {@code trees} as a {@link ComponentTree}. Once a {@code tree} is signed it can only be read. A
-	 * signed {@code tree} will not be signed twice. Signing a {@code tree} means cloning all the content of it into a
-	 * new {@link ComponentTree}. Singing a {@code tree} is unnecessary unless to prevent security holes, since any
-	 * clazz will sign its {@code tree} anyway when it gets constructed. A clazz will never use an unsigned {@code
-	 * tree}.
-	 * <br>
-	 * Note: a constructor of clazz will call this method anyway.
-	 *
-	 * @param trees the source mappings for the returned signed {@code trees}.
-	 * @return {@link ComponentTree}s that have clones of the mappings in the given {@code trees} each {@link
-	 *        ComponentTree} cloned a {@code tree} at the same order as the {@code trees} given.
-	 * @throws NullPointerException if the given {@code trees} or any of its elements is null.
-	 * @see Clazz#finalize(Map)
-	 */
-	static ComponentTree[] finalize(Map<Object, Clazz>... trees) {
-		if (trees.length == 0)
-			return Clazz.EMPTY_TREES;
-		else {
-			Objects.requireNonNull(trees, "trees");
-			ComponentTree[] r = new ComponentTree[trees.length];
-
-			for (int i = 0; i < trees.length; i++)
-				r[i] = Clazz.finalize(trees[i]);
-
-			return r;
-		}
-	}
-
-	/**
-	 * Sign the given {@code tree} as a {@link ComponentTree}. Once a {@code tree} is signed it can only be read. A
-	 * signed {@code tree} will not be signed twice. Signing a {@code tree} means cloning all the content of it into a
-	 * new {@link ComponentTree}. Singing a {@code tree} is unnecessary unless to prevent security holes, since any
-	 * clazz will sign its {@code tree} anyway when it gets constructed. A clazz will never use an unsigned {@code
-	 * tree}.
-	 *
-	 * @param tree the source mapping for the returned signed {@code tree}.
-	 * @return a {@link ComponentTree} that have a clone of the mappings in the given {@code tree}.
-	 * @throws NullPointerException if the given {@code tree} is null.
-	 * @see Clazz#finalize(Map[])
-	 */
-	static ComponentTree finalize(Map<Object, Clazz> tree) {
-		Objects.requireNonNull(tree, "tree");
-		return tree instanceof Clazz.ComponentTree ?
-			   (ComponentTree) tree :
-			   tree.isEmpty() ?
-			   Clazz.EMPTY_TREE :
-			   new ComponentTree(tree);
-	}
-
-	/**
-	 * Get a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the given
-	 * array's class.
-	 * <pre>
-	 *     Clazz.ofArray(<font color="a5edff">KLASS[][][]</font>)
-	 *     <font color="a5edff">KLASS[][][]</font>&lt;<font color="a5edff">KLASS[][]</font>&lt;<font color="a5edff">KLASS[]</font>&lt;<font color="a5edff">KLASS</font>&gt;&gt;&gt;
-	 * </pre>
-	 *
-	 * @param klass the array class to be represented by the returned clazz.
-	 * @param <T>   the type of the class represented by the returned clazz.
-	 * @return a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the given
-	 * 		array's class.
-	 * @throws NullPointerException if the given {@code klass} is null.
-	 */
-	static <T> Clazz<T> ofArray(Class<T> klass) {
-		Objects.requireNonNull(klass, "klass");
-		return klass.isArray() ?
-			   Clazz.of(klass, Clazz.tree(Clazz.ofArray(klass.getComponentType()))) :
-			   Clazz.of(klass);
-	}
-
-	/**
-	 * Get a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the given
-	 * array's class, and should be treated as if it was the given {@code family}.
-	 * <pre>
-	 *     Clazz.ofArray(<font color="a5edff">KLASS[][][]</font>, <font color="fc8fbb">FAMILY</font>)
-	 *     <font color="a5edff">KLASS[][][]</font>:<font color="fc8fbb">FAMILY</font>&lt;<font color="a5edff">KLASS[][]</font>&lt;<font color="a5edff">KLASS[]</font>&lt;<font color="a5edff">KLASS</font>&gt;&gt;&gt;
-	 * </pre>
-	 *
-	 * @param klass  the array class to be represented by the returned clazz.
-	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
-	 * @param <T>    the type of the class represented by the returned clazz.
-	 * @return a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the given
-	 * 		array's class, and should be treated as if it was the given {@code family}.
-	 * @throws NullPointerException if the given {@code klass} or {@code family} is null.
-	 */
-	static <T> Clazz<T> ofArray(Class<T> klass, Class family) {
-		Objects.requireNonNull(klass, "klass");
-		Objects.requireNonNull(family, "family");
-		return klass.isArray() ?
-			   Clazz.of(klass, family, Clazz.tree(Clazz.ofArray(klass.getComponentType()))) :
-			   Clazz.of(klass, family);
-	}
-
-	/**
-	 * Get an array of trees that each one's general clazz is the clazz at the same as its position in the given {@code
-	 * componentClazzes}.
-	 * <pre>
-	 *     Clazz.trees(<font color="fc888a">MIN_LENGTH</font>, <font color="d3c4ff">COMPONENT0</font>, <font color="d3c4ff">COMPONENT1</font>, <font color="d3c4ff">COMPONENT2</font>, …)
-	 *     &lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, <font color="fc888a">…</font>&gt;
-	 * </pre>
-	 *
-	 * @param ml               the minimum length the returned array will be
-	 * @param componentClazzes the general clazzes array for the components that have no mapping in the tree at the same
-	 *                         position as the clazz in returned trees array.
-	 * @return an array of trees that each one's general clazz is the clazz at the same as its position in the given
-	 *        {@code componentClazzes}.
-	 * @throws NullPointerException if the given {@code componentClazzes} is null.
-	 * @see Clazz#trees(Clazz[])
-	 * @see Clazz#tree(Clazz)
-	 */
-	static Map<Object, Clazz>[] trees(int ml, Clazz... componentClazzes) {
-		Objects.requireNonNull(componentClazzes, "componentClazzes");
-		Map<Object, Clazz>[] trees = new Map[Math.max(componentClazzes.length, ml)];
-
-		int i = 0;
-		for (; i < componentClazzes.length; i++)
-			trees[i] = Clazz.tree(componentClazzes[i]);
-		for (; i < ml; i++)
-			trees[i] = new HashMap();
-
-		return trees;
-	}
-
-	/**
-	 * Get an array of trees auto-generated for the given {@code instance}, Containing general component clazzes from
-	 * the given {@code componentClazzes}. This is the base method for {@link #trees(Object, Clazz[])}.
-	 * <pre>
-	 *     Clazz.trees0(<font color="a5edff">INSTANCE</font>, <font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
-	 *     &lt;<font color="d3c4ff">TREE0, TREE1, TREE2, …</font>&gt;
-	 * </pre>
-	 *
-	 * @param instance         the instance the returned trees array is auto-generated from.
-	 * @param componentClazzes the general component clazzes for each tree in the returned tree array.
-	 * @return an array of trees auto-generated for the given {@code instance}, Containing general component clazzes
-	 * 		from the given {@code componentClazzes}.
-	 * @throws NullPointerException if the given {@code componentClazzes} is null.
-	 */
-	static Map<Object, Clazz>[] treesFrom(Object instance, Clazz... componentClazzes) {
-		Objects.requireNonNull(instance, "instance");
-		if (instance instanceof Iterable)
-			Clazz.treesFromIterable((Iterable) instance, componentClazzes);
-		if (instance instanceof Map)
-			Clazz.treesFromMap((Map) instance, componentClazzes);
-		if (instance.getClass().isArray())
-			Clazz.treesFromArray(instance, componentClazzes);
-
-		return Clazz.trees(componentClazzes);
-	}
-
-	/**
-	 * Get an array of trees auto-generated for the given {@code array}, Containing general component clazzes from the
-	 * given {@code componentClazzes}.
-	 * <pre>
-	 *     Clazz.treesForArray(<font color="a5edff">INSTANCE</font>, <font color="d3c4ff">ELEMENT_CLAZZ, …</font>)
-	 *     &lt;<font color="d3c4ff">ELEMENT_TREE, …</font>&gt;
-	 * </pre>
-	 *
-	 * @param array            the array the returned trees array is auto-generated from.
-	 * @param componentClazzes the general component clazzes for each tree in the returned tree array.
-	 * @return an array of trees auto-generated for the given {@code array}, Containing general component clazzes from
-	 * 		the given {@code componentClazzes}.
-	 * @throws NullPointerException     if the given {@code array} or {@code componentClazzes} is null.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 */
-	static Map<Object, Clazz>[] treesFromArray(Object array, Clazz[] componentClazzes) {
-		Objects.requireNonNull(array, "array");
-		if (!array.getClass().isArray())
-			throw new IllegalArgumentException("Not an array " + array);
-
-		Map<Object, Clazz>[] trees = Clazz.trees(
-				componentClazzes.length > 0 ?
-				componentClazzes :
-				Clazz.ofArray(array.getClass().getComponentType())
-		);
-
-		Iterator iterator = Arrayz.iterator1(array);
-		for (int i = 0; iterator.hasNext(); i++)
-			trees[0].put(i, Clazz.from(iterator.next()));
-
-		return trees;
-	}
-
-	/**
-	 * Get an array of trees auto-generated for the given {@code iterable}, Containing general component clazzes from
-	 * the given {@code componentClazzes}.
-	 * <pre>
-	 *     Clazz.treesForIterable(<font color="a5edff">INSTANCE</font>, <font color="d3c4ff">ITEM_CLAZZ, …</font>)
-	 *     &lt;<font color="d3c4ff">ITEM_TREE, …</font>&gt;
-	 * </pre>
-	 *
-	 * @param iterable         the iterable the returned trees array is auto-generated from.
-	 * @param componentClazzes the general component clazzes for each tree in the returned tree array.
-	 * @return an array of trees auto-generated for the given {@code iterable}, Containing general component clazzes
-	 * 		from the given {@code componentClazzes}.
-	 * @throws NullPointerException if the given {@code iterable} or {@code componentClazzes} is null.
-	 */
-	static Map<Object, Clazz>[] treesFromIterable(Iterable iterable, Clazz[] componentClazzes) {
-		Objects.requireNonNull(iterable, "iterable");
-		Objects.requireNonNull(componentClazzes, "componentClazzes");
-		Map<Object, Clazz>[] trees = Clazz.trees(1, componentClazzes);
-
-		Iterator iterator = iterable.iterator();
-		for (int i = 0; iterator.hasNext(); i++)
-			trees[0].put(i, Clazz.from(iterator.next()));
-
-		return trees;
-	}
-
-	/**
-	 * Get an array of trees auto-generated for the given {@code map}, Containing general component clazzes from the
-	 * given {@code componentClazzes}.
-	 * <pre>
-	 *     Clazz.treesForMap(<font color="a5edff">INSTANCE</font>, <font color="d3c4ff">KEY_CLAZZ, VALUE_CLAZZ, …</font>)
-	 *     &lt;<font color="d3c4ff">KEY_TREE, VALUE_TREE, …</font>&gt;
-	 * </pre>
-	 *
-	 * @param map              the map the returned trees array is auto-generated from.
-	 * @param componentClazzes the general component clazzes for each tree in the returned tree array.
-	 * @return an array of trees auto-generated for the given {@code map}, Containing general component clazzes from the
-	 * 		given {@code componentClazzes}.
-	 * @throws NullPointerException if the given {@code map} or {@code componentClazzes} is null.
-	 */
-	static Map<Object, Clazz>[] treesFromMap(Map map, Clazz[] componentClazzes) {
-		Objects.requireNonNull(map, "map");
-		Objects.requireNonNull(componentClazzes, "componentClazzes");
-		Map<Object, Clazz>[] trees = Clazz.trees(2, componentClazzes);
-
-		for (Map.Entry entry : (Iterable<Map.Entry>) map.entrySet()) {
-			Object key = entry.getKey();
-			Object value = entry.getValue();
-
-			trees[0].put(key, Clazz.from(key));
-			trees[1].put(key, Clazz.from(value));
-		}
-
-		return trees;
+		return Clazz.of(klassSrc.klass, familySrc.family, treesSrc.components);
 	}
 
 	/**
@@ -964,9 +575,9 @@ public final class Clazz<T> implements Type, Serializable {
 		if (this.family != this.klass)
 			typeName.append(":").append(this.family.getTypeName());
 
-		if (this.trees.length != 0) {
+		if (this.components.length != 0) {
 			typeName.append("<");
-			Iterator<ComponentTree> iterator = Arrayz.iterator(this.trees);
+			Iterator<Component> iterator = Arrayz.iterator(this.components);
 			while (iterator.hasNext())
 				typeName.append(iterator.next().getTypeName())
 						.append(iterator.hasNext() ? ", " : ">");
@@ -978,7 +589,7 @@ public final class Clazz<T> implements Type, Serializable {
 	@Override
 	public int hashCode() {
 		//noinspection ObjectInstantiationInEqualsHashCode
-		return 31 * Objects.hash(this.family, this.klass) + Arrays.hashCode(this.trees);
+		return 31 * Objects.hash(this.family, this.klass) + Arrays.hashCode(this.components);
 	}
 
 	@Override
@@ -987,7 +598,7 @@ public final class Clazz<T> implements Type, Serializable {
 			   obj instanceof Clazz &&
 			   ((Clazz) obj).klass == this.klass &&
 			   ((Clazz) obj).family == this.family &&
-			   Arrays.equals(((Clazz) obj).trees, this.trees);
+			   Arrays.equals(((Clazz) obj).components, this.components);
 	}
 
 	@Override
@@ -996,63 +607,69 @@ public final class Clazz<T> implements Type, Serializable {
 	}
 
 	/**
-	 * Get the general clazz for all components in the specified {@code tree} to be held by an instance of this clazz.
+	 * Get the component of the clazzes specified foreach component to be held by an instance of this clazz that have
+	 * the given {@code component} index.
 	 * <br>
-	 * Note: This is like calling {@link Clazz#getComponentClazz(int, Object) getComponentClazz(}{@link Clazz#COMPONENT
-	 * Clazz.COMPONENT_TYPE)}.
+	 * Note: the returned component will always be unmodifiable. Trying to modify it will always throw an exception.
 	 *
-	 * @param tree the index of the tree in this clazz that have the returned component clazz.
-	 * @return the general clazz for all components in the specified {@code tree} to be held by an instance of this
-	 * 		clazz. Or null if no tree have the given position, or that tree don't have a general component clazz.
+	 * @param component the index of the returned component at this clazz.
+	 * @return the component of the clazzes specified foreach component to be held by an instance of this clazz. Or null
+	 * 		if no component have the given position.
 	 * @since 0.1.5
 	 */
-	public Clazz getComponentClazz(int tree) {
+	public Component getComponent(int component) {
 		//noinspection ReturnOfNull
-		return tree >= 0 && tree < this.trees.length ? this.trees[tree].getComponentClazz() : null;
+		return component >= 0 && component < this.components.length ? this.components[component] : null;
 	}
 
 	/**
-	 * Get the component clazz of this clazz that have the given {@code key} in the specified {@code tree}.
+	 * Get the general clazz for all components in the specified {@code component} to be held by an instance of this
+	 * clazz.
 	 * <br>
-	 * Note: the key {@link Clazz#COMPONENT} is the key for the general component clazz.
+	 * Note: This is like calling {@link Clazz#getComponentClazz(int, Object) getComponentClazz(}{@link
+	 * Component#DEFAULT_CLAZZ Clazz.COMPONENT_TYPE)}.
 	 *
-	 * @param tree the index of the tree in this clazz that have the returned component clazz.
-	 * @param key  the key associated to the returned clazz as a component in this clazz.
-	 * @return the component clazz of this clazz that have the given {@code key} in the specified {@code tree}. Or null
-	 * 		if no tree have the given position, or that tree don't have a clazz associated to the given {@code key} in it.
+	 * @param component the index of the component in this clazz that have the returned component clazz.
+	 * @return the general clazz for all components in the specified {@code component} to be held by an instance of this
+	 * 		clazz. Or null if no component have the given position, or that component don't have a general component
+	 * 		clazz.
 	 * @since 0.1.5
 	 */
-	public Clazz getComponentClazz(int tree, Object key) {
+	public Clazz getComponentClazz(int component) {
 		//noinspection ReturnOfNull
-		return tree >= 0 && tree < this.trees.length ? this.trees[tree].getComponentClazz(key) : null;
+		return component >= 0 && component < this.components.length ? this.components[component].getComponentClazz()
+																	: null;
 	}
 
 	/**
-	 * Get the tree of the clazzes specified foreach component to be held by an instance of this clazz that have the
-	 * given {@code tree} index.
+	 * Get the component clazz of this clazz that have the given {@code key} in the specified {@code component}.
 	 * <br>
-	 * Note: the returned tree will always be unmodifiable. Trying to modify it will always throw an exception.
+	 * Note: the key {@link Component#DEFAULT_CLAZZ} is the key for the general component clazz.
 	 *
-	 * @param tree the index of the returned tree at this clazz.
-	 * @return the tree of the clazzes specified foreach component to be held by an instance of this clazz. Or null if
-	 * 		no tree have the given position.
+	 * @param component the index of the component in this clazz that have the returned component clazz.
+	 * @param key       the key associated to the returned clazz as a component in this clazz.
+	 * @return the component clazz of this clazz that have the given {@code key} in the specified {@code component}. Or
+	 * 		null if no component have the given position, or that component don't have a clazz associated to the given
+	 *        {@code key} in it.
 	 * @since 0.1.5
 	 */
-	public ComponentTree getComponentTree(int tree) {
+	public Clazz getComponentClazz(int component, Object key) {
 		//noinspection ReturnOfNull
-		return tree >= 0 && tree < this.trees.length ? this.trees[tree] : null;
+		return component >= 0 && component < this.components.length ? this.components[component].getComponentClazz(key)
+																	: null;
 	}
 
 	/**
-	 * Get a clone of the array holding all the trees of this clazz.
+	 * Get a clone of the array holding all the components of this clazz.
 	 * <br>
-	 * Note: all the returned trees will always be unmodifiable. Trying to modify them will always throw an exception.
+	 * Note: all the returned components will always be unmodifiable. Trying to modify them will always throw an
+	 * exception.
 	 *
-	 * @return a clone of the array holding all the trees of this clazz.
+	 * @return a clone of the array holding all the components of this clazz.
 	 * @since 0.1.5
 	 */
-	public ComponentTree[] getComponentTrees() {
-		return Arrays.copyOf(this.trees, this.trees.length);
+	public Component[] getComponents() {
+		return Arrays.copyOf(this.components, this.components.length);
 	}
 
 	/**
@@ -1077,7 +694,7 @@ public final class Clazz<T> implements Type, Serializable {
 
 	/**
 	 * Get the name of this clazz. The name contains the name of the {@code family}, {@code klass}, and each {@code
-	 * componentClazz} of each {@code tree} in this clazz.
+	 * componentClazz} of each {@code component} in this clazz.
 	 *
 	 * @return the name of this clazz.
 	 * @since 0.1.5
@@ -1089,9 +706,9 @@ public final class Clazz<T> implements Type, Serializable {
 		if (this.family != this.klass)
 			name.append(":").append(this.family.getName());
 
-		if (this.trees.length != 0) {
+		if (this.components.length != 0) {
 			name.append("<");
-			Iterator<ComponentTree> iterator = Arrayz.iterator(this.trees);
+			Iterator<Component> iterator = Arrayz.iterator(this.components);
 			while (iterator.hasNext())
 				name.append(iterator.next().getName())
 						.append(iterator.hasNext() ? ", " : ">");
@@ -1102,7 +719,7 @@ public final class Clazz<T> implements Type, Serializable {
 
 	/**
 	 * Get the simple name of this clazz. The name contains the simple name of the {@code family}, {@code klass}, and
-	 * each {@code componentClazz} of each {@code tree} in this clazz.
+	 * each {@code componentClazz} of each {@code component} in this clazz.
 	 *
 	 * @return the simple name of this clazz.
 	 * @since 0.1.5
@@ -1114,9 +731,9 @@ public final class Clazz<T> implements Type, Serializable {
 		if (this.family != this.klass)
 			simpleName.append(":").append(this.family.getSimpleName());
 
-		if (this.trees.length != 0) {
+		if (this.components.length != 0) {
 			simpleName.append("<");
-			Iterator<ComponentTree> iterator = Arrayz.iterator(this.trees);
+			Iterator<Component> iterator = Arrayz.iterator(this.components);
 			while (iterator.hasNext())
 				simpleName.append(iterator.next().getSimpleName())
 						.append(iterator.hasNext() ? ", " : ">");
@@ -1164,79 +781,81 @@ public final class Clazz<T> implements Type, Serializable {
 
 	/**
 	 * Get a clazz that represents the {@code Object} version of the {@code klass} of this clazz, and have the {@code
-	 * tree} of this clazz, and should be treated as if it was the {@code family} of this clazz.
+	 * component} of this clazz, and should be treated as if it was the {@code family} of this clazz.
 	 *
 	 * @return a clazz that represents the {@code Object} version of the {@code klass} of this clazz, and have the
-	 *        {@code tree} of this clazz, and should be treated as if it was the {@code family} of this clazz.
+	 *        {@code component} of this clazz, and should be treated as if it was the {@code family} of this clazz.
 	 * @since 0.1.5
 	 */
 	public Clazz toObjectClazz() {
 		//noinspection ReturnOfThis
-		return this.klass.isPrimitive() ? Clazz.of(Reflection.asObjectClass(this.klass), this.family, this.trees)
+		return this.klass.isPrimitive() ? Clazz.of(Reflection.asObjectClass(this.klass), this.family, this.components)
 										: this;
 	}
 
 	/**
-	 * Get a clazz that represents the primitive version of the {@code klass} of this clazz, and have the {@code tree}
-	 * of this clazz, and should be treated as if it was the {@code family} of this clazz.
+	 * Get a clazz that represents the primitive version of the {@code klass} of this clazz, and have the {@code
+	 * component} of this clazz, and should be treated as if it was the {@code family} of this clazz.
 	 *
 	 * @return a clazz that represents the primitive version of the {@code klass} of this clazz, and have the {@code
-	 * 		tree} of this clazz, and should be treated as if it was the {@code family} of this clazz. Or null if there is
-	 * 		no primitive class of the {@code klass} of this clazz.
+	 * 		component} of this clazz, and should be treated as if it was the {@code family} of this clazz. Or null if there
+	 * 		is no primitive class of the {@code klass} of this clazz.
 	 * @since 0.1.5
 	 */
 	public Clazz toPrimitiveClazz() {
 		//noinspection ReturnOfNull
 		return Reflection.hasPrimitiveClass(this.klass)
-			   ? Clazz.of(Reflection.asPrimitiveClass(this.klass), this.family, this.trees) : null;
+			   ? Clazz.of(Reflection.asPrimitiveClass(this.klass), this.family, this.components) : null;
 	}
 
 	/**
-	 * Get a clazz that represents the {@code klass} of this clazz, and have the {@code tree} of this clazz, and should
-	 * be treated as if it was the given {@code family}.
+	 * Get a clazz that represents the {@code klass} of this clazz, and have the {@code component} of this clazz, and
+	 * should be treated as if it was the given {@code family}.
 	 *
 	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
-	 * @return a clazz that represents the {@code klass} of this clazz, and have the {@code tree} of this clazz, and
-	 * 		should be treated as if it was the given {@code family}.
+	 * @return a clazz that represents the {@code klass} of this clazz, and have the {@code component} of this clazz,
+	 * 		and should be treated as if it was the given {@code family}.
 	 * @throws NullPointerException if the given {@code family} is null.
 	 * @since 0.1.5
 	 */
 	public Clazz with(Class family) {
 		Objects.requireNonNull(family, "family");
-		return Clazz.of(family, this.klass, this.trees);
+		return Clazz.of(family, this.klass, this.components);
 	}
 
 	/**
-	 * Get a clazz that represents the {@code klass} of this clazz, and have the given {@code tree}, and should be
+	 * Get a clazz that represents the {@code klass} of this clazz, and have the given {@code components}, and should be
 	 * treated as if it was the {@code family} of this clazz.
 	 *
-	 * @param tree the tree of the clazzes specified foreach component to be held by an instance of the returned clazz.
-	 * @return a clazz that represents the {@code klass} of this clazz, and have the given {@code tree}, and should be
-	 * 		treated as if it was the {@code family} of this clazz.
-	 * @throws NullPointerException if the given {@code tree} is null.
+	 * @param components the components of the clazzes specified foreach component to be held by an instance of the
+	 *                   returned clazz.
+	 * @return a clazz that represents the {@code klass} of this clazz, and have the given {@code components}, and
+	 * 		should be treated as if it was the {@code family} of this clazz.
+	 * @throws NullPointerException if the given {@code component} is null.
 	 * @since 0.1.5
 	 */
-	public Clazz with(Map<Object, Clazz> tree) {
-		Objects.requireNonNull(tree, "tree");
-		return Clazz.of(this.klass, this.family, tree);
+	public Clazz with(Component... components) {
+		Objects.requireNonNull(components, "components");
+		return Clazz.of(this.klass, this.family, components);
 	}
 
 	/**
-	 * Get a clazz that represents the {@code klass} of this clazz, and have the given {@code tree}, and should be
+	 * Get a clazz that represents the {@code klass} of this clazz, and have the given {@code component}, and should be
 	 * treated as if it was the given {@code family}.
 	 *
-	 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of it.
-	 * @param trees  an array of trees of the clazzes specified foreach component to be held by an instance of the
-	 *               constructed clazz.
-	 * @return a clazz that represents the {@code klass} of this clazz, and have the given {@code tree}, and should be
-	 * 		treated as if it was the given {@code family}.
-	 * @throws NullPointerException if the given {@code family} or {@code tree} is null.
+	 * @param family     the class that an instance of the returned clazz should be treated as if it was an instance of
+	 *                   it.
+	 * @param components an array of components of the clazzes specified foreach component to be held by an instance of
+	 *                   the constructed clazz.
+	 * @return a clazz that represents the {@code klass} of this clazz, and have the given {@code component}, and should
+	 * 		be treated as if it was the given {@code family}.
+	 * @throws NullPointerException if the given {@code family} or {@code component} is null.
 	 * @since 0.1.5
 	 */
-	public Clazz with(Class family, Map<Object, Clazz>... trees) {
-		Objects.requireNonNull(trees, "trees");
+	public Clazz with(Class family, Component... components) {
+		Objects.requireNonNull(components, "components");
 		Objects.requireNonNull(family, "family");
-		return Clazz.of(this.klass, family, trees);
+		return Clazz.of(this.klass, family, components);
 	}
 
 	@SuppressWarnings("JavaDoc")
@@ -1246,12 +865,42 @@ public final class Clazz<T> implements Type, Serializable {
 		if (length < 3) {
 			this.klass = (Class) Object.class;
 			this.family = Object.class;
-			this.trees = Clazz.EMPTY_TREES;
+			this.components = Component.EMPTY_ARRAY;
 		} else {
 			this.klass = (Class) stream.readObject();
 			this.family = (Class) stream.readObject();
-			this.trees = (ComponentTree[]) stream.readObject();
+			this.components = (Component[]) stream.readObject();
 		}
+	}
+
+	/**
+	 * Backdoor to modify the {@code components} of this clazz.
+	 * <br>
+	 * Note: this method directly sets the given {@code components}, copy the array if it could be modified and {@link
+	 * Component#setModifiable setModifiable} to false with the given {@code components}.
+	 *
+	 * @param components the new {@code components} array to be set.
+	 */
+	private void setComponents(Component[] components) {
+		this.components = components;
+	}
+
+	/**
+	 * Backdoor to modify the {@code family} of this clazz.
+	 *
+	 * @param family the new {@code family} to be set.
+	 */
+	private void setFamily(Class family) {
+		this.family = family;
+	}
+
+	/**
+	 * Backdoor to modify the {@code klass} of this clazz.
+	 *
+	 * @param klass the new {@code klass} to be set.
+	 */
+	private void setKlass(Class klass) {
+		this.klass = klass;
 	}
 
 	@SuppressWarnings("JavaDoc")
@@ -1260,50 +909,240 @@ public final class Clazz<T> implements Type, Serializable {
 		stream.writeInt(/*length*/3);
 		stream.writeObject(this.klass);
 		stream.writeObject(this.family);
-		stream.writeObject(this.trees);
+		stream.writeObject(this.components);
 	}
 
 	/**
-	 * A component clazzes map that can't be modified and clazz consider it safe to be stored as its tree.
+	 * A component clazzes map that can't be modified and clazz consider it safe to be stored as its component.
 	 *
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5
 	 */
-	public static final class ComponentTree extends AbstractMap<Object, Clazz> {
+	public static final class Component extends AbstractMap<Object, Clazz> {
 		/**
-		 * An unmodifiable entry-set containing the {@link Map.Entry}s of this tree.
+		 * A key for a general clazz for all components to be held by an instance of a clazz.
 		 */
-		private final Set<Entry<Object, Clazz>> entrySet;
+		public static final Object DEFAULT_CLAZZ = new Object();
+		/**
+		 * A final empty component to reduce redundant component initializing.
+		 */
+		static final Component EMPTY = new Component();
+		/**
+		 * A final empty components array to reduce redundant array initializing.
+		 */
+		static final Component[] EMPTY_ARRAY = new Component[0];
 
 		/**
-		 * Construct a new empty clazzes tree that can't be modified and contains nothing.
+		 * An unmodifiable entry-set containing the {@link Entry}s of this component.
 		 */
-		private ComponentTree() {
+		private final Set<Entry<Object, Clazz>> entrySet;
+		/**
+		 * True, if this component can be modified.
+		 */
+		private boolean modifiable;
+
+		/**
+		 * Construct a new empty clazzes component that can't be modified and contains nothing.
+		 */
+		private Component() {
 			this.entrySet = Collections.emptySet();
 		}
 
 		/**
-		 * Construct a new clazzes tree that can't be modified and contains a clone of the mappings of the given tree.
+		 * Construct a new clazzes component that can't be modified and contains a clone of the mappings of the given
+		 * component.
 		 *
-		 * @param tree to clone the mappings of it to the constructed tree.
-		 * @throws NullPointerException     if the given {@code tree} is null.
-		 * @throws IllegalArgumentException if a value is stored in the given {@code tree} is not an instance of {@link
-		 *                                  Clazz}.
+		 * @param component to clone the mappings of it to the constructed component.
+		 * @throws NullPointerException     if the given {@code component} is null.
+		 * @throws IllegalArgumentException if a value is stored in the given {@code component} is not an instance of
+		 *                                  {@link Clazz}.
 		 */
-		private ComponentTree(Map<Object, Clazz> tree) {
-			if (tree instanceof Clazz.ComponentTree)
-				this.entrySet = ((ComponentTree) tree).entrySet;
+		private Component(Map<Object, Clazz> component) {
+			if (component instanceof Clazz.Component)
+				this.entrySet = ((Component) component).entrySet;
 			else {
 				Set entrySet = new HashSet();
-				tree.forEach((key, klazz) -> {
+				component.forEach((key, klazz) -> {
 					if (!(klazz instanceof Clazz))
 						throw new IllegalArgumentException("Not a clazz " + klazz);
 
-					entrySet.add(new SimpleImmutableEntry(key, klazz));
+					entrySet.add(new AbstractMap.SimpleEntry(key, klazz) {
+						@Override
+						public Object setValue(Object value) {
+							if (Component.this.isModifiable())
+								return super.setValue(value);
+
+							throw new UnsupportedOperationException("Unmodifiable Component!");
+						}
+					});
 				});
 				this.entrySet = Collections.unmodifiableSet(entrySet);
 			}
+		}
+
+		/**
+		 * Get an array of components that each one's general clazz is the clazz at the same as its position in the
+		 * given {@code componentClazzes}.
+		 * <pre>
+		 *     Clazz.components(<font color="d3c4ff">COMPONENT0</font>, <font color="d3c4ff">COMPONENT1</font>, <font color="d3c4ff">COMPONENT2</font>, …)
+		 *     &lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, …&gt;
+		 * </pre>
+		 *
+		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in returned components array.
+		 * @return an array of components that each one's general clazz is the clazz at the same as its position in the
+		 * 		given {@code componentClazzes}.
+		 * @throws NullPointerException if the given {@code componentClazzes} is null.
+		 * @see Component#as(int, Clazz[])
+		 * @see Component#of(Clazz)
+		 * @since 0.1.5
+		 */
+		public static Component[] as(Clazz... componentClazzes) {
+			Objects.requireNonNull(componentClazzes, "componentClazzes");
+			Component[] components = new Component[componentClazzes.length];
+
+			for (int i = 0; i < componentClazzes.length; i++)
+				components[i] = Component.of(componentClazzes[i]);
+
+			return components;
+		}
+
+		/**
+		 * Get linear components of general component clazzes. The given {@code componentClasses} specifies each array
+		 * for a component in the returned components array.
+		 * <br>
+		 * Note: this is just an array version of {@link Component#of(Class[])}.
+		 * <pre>
+		 *     Clazz.components(<font color="d3c4ff">{TREE0, NESTED0, DEEP0, …}, {TREE1, NESTED1, DEEP1, …}, …</font>)
+		 *     &lt;<font color="d3c4ff">TREE0</font>&lt;<font color="d3c4ff">NESTED0</font>&lt;<font color="d3c4ff">DEEP0</font>…&gt;&gt;, <font color="d3c4ff">TREE1</font>&lt;<font color="d3c4ff">NESTED1</font>&lt;<font color="d3c4ff">DEEP1</font>…&gt;&gt;, …&gt;
+		 * </pre>
+		 *
+		 * @param componentClasses an array of component classes, each array goes to the same position component in the
+		 *                         returned components array.
+		 * @return linear components of general component clazzes. The given {@code componentClasses} specifies each
+		 * 		array for a component *in the returned components array.
+		 * @throws NullPointerException if the given {@code componentClasses} or any of its elements is null.
+		 * @see Component#of(Class[])
+		 * @since 0.1.5
+		 */
+		public static Component[] as(Class[][] componentClasses) {
+			Objects.requireNonNull(componentClasses, "componentClasses");
+			Component[] components = new Component[componentClasses.length];
+
+			for (int i = 0; i < componentClasses.length; i++)
+				components[i] = Component.of(componentClasses[i]);
+
+			return components;
+		}
+
+		/**
+		 * Get an array of components that each one's general clazz is the clazz at the same as its position in the
+		 * given {@code componentClazzes}.
+		 * <pre>
+		 *     Clazz.components(<font color="fc888a">MIN_LENGTH</font>, <font color="d3c4ff">COMPONENT0</font>, <font color="d3c4ff">COMPONENT1</font>, <font color="d3c4ff">COMPONENT2</font>, …)
+		 *     &lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, <font color="fc888a">…</font>&gt;
+		 * </pre>
+		 *
+		 * @param ml               the minimum length the returned array will be
+		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in returned components array.
+		 * @return an array of components that each one's general clazz is the clazz at the same as its position in the
+		 * 		given {@code componentClazzes}.
+		 * @throws NullPointerException if the given {@code componentClazzes} is null.
+		 * @see Component#as(Clazz[])
+		 * @see Component#of(Clazz)
+		 */
+		public static Component[] as(int ml, Clazz... componentClazzes) {
+			Objects.requireNonNull(componentClazzes, "componentClazzes");
+			Component[] components = new Component[Math.max(componentClazzes.length, ml)];
+
+			int i = 0;
+			for (; i < componentClazzes.length; i++)
+				components[i] = Component.of(componentClazzes[i]);
+			for (; i < ml; i++)
+				components[i] = Component.EMPTY;
+
+			return components;
+		}
+
+		@SuppressWarnings("JavaDoc")
+		public static Component[] as(int ml, Class[][] componentClasses) {
+			Objects.requireNonNull(componentClasses, "componentClasses");
+			Component[] components = new Component[Math.max(componentClasses.length, ml)];
+
+			int i = 0;
+			for (; i < componentClasses.length; i++)
+				components[i] = Component.of(componentClasses[i]);
+			for (; i < ml; i++)
+				components[i] = Component.EMPTY;
+
+			return components;
+		}
+
+		/**
+		 * Get a linear component of general component clazzes. The general clazzes specified in order representing the
+		 * given {@code componentClasses}.
+		 * <pre>
+		 *     Clazz.component(<font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
+		 *     <font color="d3c4ff">TREE0</font>&lt;<font color="d3c4ff">TREE1</font>&lt;<font color="d3c4ff">TREE2…</font>&gt;&gt;
+		 * </pre>
+		 *
+		 * @param componentClasses an ordered list of the classes represented by the nested general component clazzes in
+		 *                         returned component.
+		 * @return a linear component of general component clazzes. The general clazzes specified in order representing
+		 * 		the given {@code componentClasses}.
+		 * @throws NullPointerException if the given {@code componentClasses} or an element with index (? &gt; 0) in it
+		 *                              is null.
+		 * @see Component#as(Class[][])
+		 * @since 0.1.5
+		 */
+		public static Component of(Class... componentClasses) {
+			Objects.requireNonNull(componentClasses, "componentClasses");
+			if (componentClasses.length == 0)
+				//length == 0 ? empty
+				return Component.EMPTY;
+
+			if (componentClasses.length == 1)
+				//length == 1 ? singleton
+				return componentClasses[0] == null ?
+					   Component.EMPTY :
+					   Component.of(Clazz.of(componentClasses[0]));
+			else //otherwise ? recursive
+				return Component.of(Clazz.of(
+						//componentClazz's klass
+						componentClasses[0],
+						//componentClazz's component (subTree)
+						Component.of(Arrays.copyOfRange(componentClasses, 1, componentClasses.length))
+				));
+		}
+
+		/**
+		 * Get a component that its general clazz is the given {@code componentClazz}, and have no mappings.
+		 * <pre>
+		 *     Clazz.component(<font color="d3c4ff">COMPONENT</font>)
+		 *     <font color="d3c4ff">TREE</font>
+		 * </pre>
+		 *
+		 * @param componentClazz the general clazz for the components that have no mapping in the returned component.
+		 * @return a component that its general clazz is the given {@code componentClazz}, and have no mappings.
+		 * @see Component#as(Clazz[])
+		 * @see Component#as(int, Clazz[])
+		 * @since 0.1.5
+		 */
+		public static Component of(Clazz componentClazz) {
+			return new Component(Collections.singletonMap(Component.DEFAULT_CLAZZ, componentClazz));
+		}
+
+		/**
+		 * Set the modification status of all the given {@code components} to the given {@code modifiable}.
+		 *
+		 * @param components the components to be updated to the given {@code modifiable} modifications status.
+		 * @param modifiable the new modification status to be set to all of the given {@code components}.
+		 */
+		private static void setModifiable(Component[] components, boolean modifiable) {
+			for (Component component : components)
+				component.setModifiable(modifiable);
 		}
 
 		@Override
@@ -1313,72 +1152,94 @@ public final class Clazz<T> implements Type, Serializable {
 
 		@Override
 		public String toString() {
-			return "tree " + this.getName();
+			return "component " + this.getName();
 		}
 
 		/**
-		 * Get the {@link #COMPONENT componentClazz} of this tree. The {@link #COMPONENT componentClazz} is the clazz
-		 * for the elements that have no clazz in the tree of the clazz representing it.
+		 * Get the {@link Component#DEFAULT_CLAZZ componentClazz} of this component. The {@link Component#DEFAULT_CLAZZ
+		 * componentClazz} is the clazz for the elements that have no clazz in the component of the clazz representing
+		 * it.
 		 *
-		 * @return the {@link #COMPONENT componentClazz} of this tree, Or null if this tree has no {@link #COMPONENT
-		 * 		componentClazz}.
+		 * @return the {@link Component#DEFAULT_CLAZZ componentClazz} of this component, Or null if this component has
+		 * 		no {@link Component#DEFAULT_CLAZZ componentClazz}.
 		 * @since 0.1.5
 		 */
 		public Clazz getComponentClazz() {
-			return this.get(Clazz.COMPONENT);
+			return this.get(Component.DEFAULT_CLAZZ);
 		}
 
 		/**
-		 * Get the {@code componentClazz} for the element with the given {@code key} in this tree.
+		 * Get the {@code componentClazz} for the element with the given {@code key} in this component.
 		 *
-		 * @param key the key of the returned clazz in this tree.
-		 * @return the {@code componentClazz} for the element with the given {@code key} in this tree, Or the {@link
-		 *        #COMPONENT componentClazz} of this tree if there is no {@code componentClazz} with the given key in this
-		 * 		tree.
+		 * @param key the key of the returned clazz in this component.
+		 * @return the {@code componentClazz} for the element with the given {@code key} in this component, Or the
+		 *        {@link Component#DEFAULT_CLAZZ componentClazz} of this component if there is no {@code componentClazz} with
+		 * 		the given key in this component.
 		 * @since 0.1.5
 		 */
 		public Clazz getComponentClazz(Object key) {
 			Clazz klazz = this.get(key);
-			return klazz == null ? this.get(Clazz.COMPONENT) : klazz;
+			return klazz == null ? this.get(Component.DEFAULT_CLAZZ) : klazz;
 		}
 
 		/**
-		 * Get the {@code Name} of this tree. The {@code Name} of a tree is the {@link #getName() Name} of its {@link
-		 * #COMPONENT componentClazz}, or {@code "?"} if it has no {@link #COMPONENT componentClazz}.
+		 * Get the {@code Name} of this component. The {@code Name} of a component is the {@link #getName() Name} of its
+		 * {@link Component#DEFAULT_CLAZZ componentClazz}, or {@code "?"} if it has no {@link Component#DEFAULT_CLAZZ
+		 * componentClazz}.
 		 *
-		 * @return the {@code Name} of this tree, Or {@code "?"} if this tree has no {@link #COMPONENT componentClazz}.
+		 * @return the {@code Name} of this component, Or {@code "?"} if this component has no {@link
+		 *        Component#DEFAULT_CLAZZ componentClazz}.
 		 * @since 0.1.5
 		 */
 		public String getName() {
-			Clazz component = this.get(Clazz.COMPONENT);
+			Clazz component = this.get(Component.DEFAULT_CLAZZ);
 			return component == null ? "?" : component.getName();
 		}
 
 		/**
-		 * Get the {@code SimpleName} of this tree. The {@code SimpleName} of a tree is the {@link #getSimpleName()
-		 * SimpleName} of its {@link #COMPONENT componentClazz}, or {@code "?"} if it has no {@link #COMPONENT
-		 * componentClazz}.
+		 * Get the {@code SimpleName} of this component. The {@code SimpleName} of a component is the {@link
+		 * #getSimpleName() SimpleName} of its {@link Component#DEFAULT_CLAZZ componentClazz}, or {@code "?"} if it has
+		 * no {@link Component#DEFAULT_CLAZZ componentClazz}.
 		 *
-		 * @return the {@code SimpleName} of this tree, Or {@code "?"} if this tree has no {@link #COMPONENT
-		 * 		componentClazz}.
+		 * @return the {@code SimpleName} of this component, Or {@code "?"} if this component has no {@link
+		 *        Component#DEFAULT_CLAZZ componentClazz}.
 		 * @since 0.1.5
 		 */
 		public String getSimpleName() {
-			Clazz component = this.get(Clazz.COMPONENT);
+			Clazz component = this.get(Component.DEFAULT_CLAZZ);
 			return component == null ? "?" : component.getSimpleName();
 		}
 
 		/**
-		 * Get the {@code TypeName} of this tree. The {@code TypeName} of a tree is the {@link #getTypeName() TypeName}
-		 * of its {@link #COMPONENT componentClazz}, or {@code "?"} if it has no {@link #COMPONENT componentClazz}.
+		 * Get the {@code TypeName} of this component. The {@code TypeName} of a component is the {@link #getTypeName()
+		 * TypeName} of its {@link Component#DEFAULT_CLAZZ componentClazz}, or {@code "?"} if it has no {@link
+		 * Component#DEFAULT_CLAZZ componentClazz}.
 		 *
-		 * @return the {@code TypeName} of this tree, Or {@code "?"} if this tree has no {@link #COMPONENT
-		 * 		componentClazz}.
+		 * @return the {@code TypeName} of this component, Or {@code "?"} if this component has no {@link
+		 *        Component#DEFAULT_CLAZZ componentClazz}.
 		 * @since 0.1.5
 		 */
 		public String getTypeName() {
-			Clazz component = this.get(Clazz.COMPONENT);
+			Clazz component = this.get(Component.DEFAULT_CLAZZ);
 			return component == null ? "?" : component.getTypeName();
+		}
+
+		/**
+		 * Determine if modifications allowed in this component.
+		 *
+		 * @return true, if modifications are allowed in this component.
+		 */
+		public synchronized boolean isModifiable() {
+			return this.modifiable;
+		}
+
+		/**
+		 * Set whether modifications allowed in this component or not.
+		 *
+		 * @param modifiable the new modification state.
+		 */
+		private synchronized void setModifiable(boolean modifiable) {
+			this.modifiable = modifiable;
 		}
 	}
 }
