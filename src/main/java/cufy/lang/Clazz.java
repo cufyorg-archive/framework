@@ -1280,12 +1280,12 @@ public final class Clazz<T> implements Type, Serializable {
 			return Generate.from0(new HashMap(), instance, family, componentClazzes);
 		}
 
-		static <T> Clazz<T> from0(Map<Object, Clazz> dejaVus, T instance, Clazz... componentClazzes) {
+		static <T> Clazz<T> from0(Map dejaVus, T instance, Clazz... componentClazzes) {
 			Class family = instance == null ? Void.class : instance.getClass();
 			return Generate.from0(dejaVus, instance, family, componentClazzes);
 		}
 
-		static <T> Clazz<T> from0(Map<Object, Clazz> dejaVus, T instance, Class family, Clazz... componentClazzes) {
+		static <T> Clazz<T> from0(Map dejaVus, T instance, Class family, Clazz... componentClazzes) {
 			Objects.requireNonNull(dejaVus, "dejaVus");
 			Objects.requireNonNull(family, "family");
 			Objects.requireNonNull(componentClazzes, "componentClazzes");
@@ -1315,36 +1315,26 @@ public final class Clazz<T> implements Type, Serializable {
 			Objects.requireNonNull(family, "family");
 			Objects.requireNonNull(componentClazzes, "componentClazzes");
 
-			if (dejaVus.containsKey(iterable))
-				//if already seen
-				return dejaVus.get(iterable);
-			else {
-				//the components of the returned clazz
-				Component[] components = Component.as(1, componentClazzes);
-				//the clazz that will be returned
-				Clazz klazz = Clazz.from(iterable, family);
+			Component[] components = Component.as(1, componentClazzes);
+			Clazz klazz = Clazz.from(iterable, family);
+			//assign for later use
+			dejaVus.put(iterable, klazz);
 
-				//assign for later use
-				dejaVus.put(iterable, klazz);
+			Iterator iterator = iterable.iterator();
+			for (int i = 0; iterator.hasNext(); i++) {
+				Object element = iterator.next();
 
-				Iterator iterator = iterable.iterator();
-				for (int i = 0; iterator.hasNext(); i++) {
-					Object element = iterator.next();
-
-					if (dejaVus.containsKey(element))
-						components[0].put(i, dejaVus.get(element));
-					else {
-						Clazz elementClazz = Generate.from0(dejaVus, element, componentClazzes);
-						components[0].put(i, elementClazz);
-						dejaVus.put(element, elementClazz);
-					}
-				}
-
-				//finalize everything
-				Component.setModifiable(components, false);
-				klazz.setComponents(components);
-				return klazz;
+				//if it has been solved before
+				if (dejaVus.containsKey(element))
+					components[0].put(i, dejaVus.get(element));
+				else
+					components[0].put(i, Generate.from0(dejaVus, element, componentClazzes));
 			}
+
+			//finalize everything
+			Component.setModifiable(components, false);
+			klazz.setComponents(components);
+			return klazz;
 		}
 
 		static <T> Clazz<T> fromMap(Map<Object, Clazz> dejaVus, Map map, Class family, Clazz[] componentClazzes) {
