@@ -15,7 +15,10 @@
  */
 package cufy.util;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
@@ -27,12 +30,12 @@ import java.util.function.Predicate;
  * @version 0.1.3
  * @since 0.1.3 ~2020.04.20
  */
-@SuppressWarnings({"CloneableClassWithoutClone", "ClassHasNoToStringMethod", "CloneableClassInSecureContext"})
+@SuppressWarnings({"UseOfClone", "CloneableClassInSecureContext"})
 public class HashGroup<E> extends HashSet<E> implements Group<E> {
 	/**
 	 * The subgroups of this group.
 	 */
-	private final Map<Object, Group<E>> subgroups = new HashMap<>();
+	private final HashMap<Object, Group<E>> subgroups = new HashMap<>();
 
 	/**
 	 * The default constructor.
@@ -73,6 +76,13 @@ public class HashGroup<E> extends HashSet<E> implements Group<E> {
 	}
 
 	@Override
+	public HashGroup<E> clone() {
+		HashGroup group = (HashGroup) super.clone();
+		group.subgroups.putAll(this.subgroups);
+		return group;
+	}
+
+	@Override
 	public boolean equals(Object object) {
 		return object == this ||
 			   object instanceof Group &&
@@ -82,7 +92,6 @@ public class HashGroup<E> extends HashSet<E> implements Group<E> {
 
 	@Override
 	public int hashCode() {
-		//noinspection ObjectInstantiationInEqualsHashCode
 		return Objects.hash(super.hashCode(), this.subgroups);
 	}
 
