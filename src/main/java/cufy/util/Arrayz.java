@@ -620,48 +620,7 @@ public final class Arrayz {
 	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static <T> List<T> asList(T... array) {
-		Objects.requireNonNull(array, "array");
-
-		return new AbstractList<T>() {
-			@Override
-			public T get(int index) {
-				return array[index];
-			}
-
-			@Override
-			public T set(int index, T element) {
-				T old = array[index];
-				array[index] = element;
-				return old;
-			}
-
-			@Override
-			public int size() {
-				return array.length;
-			}
-
-			@Override
-			public T[] toArray() {
-				return Arrayz.copyOf(array, array.length);
-			}
-
-			@Override
-			public Object[] toArray(Object[] a) {
-				Objects.requireNonNull(a, "a");
-				int length = a.length;
-
-				if (length < array.length)
-					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				else {
-					Arrayz.hardcopy(array, 0, a, 0, array.length);
-
-					if (length > array.length)
-						a[array.length] = null;
-
-					return a;
-				}
-			}
-		};
+		return new ArrayList(array);
 	}
 
 	/**
@@ -673,48 +632,7 @@ public final class Arrayz {
 	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Boolean> asList(boolean[] array) {
-		Objects.requireNonNull(array, "array");
-
-		return new AbstractList<Boolean>() {
-			@Override
-			public Boolean get(int index) {
-				return array[index];
-			}
-
-			@Override
-			public Boolean set(int index, Boolean element) {
-				Boolean old = array[index];
-				array[index] = element;
-				return old;
-			}
-
-			@Override
-			public int size() {
-				return array.length;
-			}
-
-			@Override
-			public Boolean[] toArray() {
-				return (Boolean[]) Arrayz.copyOf0(array, array.length, Boolean.class);
-			}
-
-			@Override
-			public Object[] toArray(Object[] a) {
-				Objects.requireNonNull(a, "a");
-				int length = a.length;
-
-				if (length < array.length)
-					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				else {
-					Arrayz.hardcopy(array, 0, a, 0, array.length);
-
-					if (length > array.length)
-						a[array.length] = null;
-
-					return a;
-				}
-			}
-		};
+		return new BooleanArrayList(array);
 	}
 
 	/**
@@ -726,48 +644,7 @@ public final class Arrayz {
 	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Byte> asList(byte[] array) {
-		Objects.requireNonNull(array, "array");
-
-		return new AbstractList<Byte>() {
-			@Override
-			public Byte get(int index) {
-				return array[index];
-			}
-
-			@Override
-			public Byte set(int index, Byte element) {
-				Byte old = array[index];
-				array[index] = element;
-				return old;
-			}
-
-			@Override
-			public int size() {
-				return array.length;
-			}
-
-			@Override
-			public Byte[] toArray() {
-				return (Byte[]) Arrayz.copyOf0(array, array.length, Byte.class);
-			}
-
-			@Override
-			public Object[] toArray(Object[] a) {
-				Objects.requireNonNull(a, "a");
-				int length = a.length;
-
-				if (length < array.length)
-					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				else {
-					Arrayz.hardcopy(array, 0, a, 0, array.length);
-
-					if (length > array.length)
-						a[array.length] = null;
-
-					return a;
-				}
-			}
-		};
+		return new ByteArrayList(array);
 	}
 
 	/**
@@ -779,48 +656,7 @@ public final class Arrayz {
 	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Character> asList(char[] array) {
-		Objects.requireNonNull(array, "array");
-
-		return new AbstractList<Character>() {
-			@Override
-			public Character get(int index) {
-				return array[index];
-			}
-
-			@Override
-			public Character set(int index, Character element) {
-				Character old = array[index];
-				array[index] = element;
-				return old;
-			}
-
-			@Override
-			public int size() {
-				return array.length;
-			}
-
-			@Override
-			public Character[] toArray() {
-				return (Character[]) Arrayz.copyOf0(array, array.length, Character.class);
-			}
-
-			@Override
-			public Object[] toArray(Object[] a) {
-				Objects.requireNonNull(a, "a");
-				int length = a.length;
-
-				if (length < array.length)
-					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				else {
-					Arrayz.hardcopy(array, 0, a, 0, array.length);
-
-					if (length > array.length)
-						a[array.length] = null;
-
-					return a;
-				}
-			}
-		};
+		return new CharacterArrayList(array);
 	}
 
 	/**
@@ -832,48 +668,7 @@ public final class Arrayz {
 	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Double> asList(double[] array) {
-		Objects.requireNonNull(array, "array");
-
-		return new AbstractList<Double>() {
-			@Override
-			public Double get(int index) {
-				return array[index];
-			}
-
-			@Override
-			public Double set(int index, Double element) {
-				Double old = array[index];
-				array[index] = element;
-				return old;
-			}
-
-			@Override
-			public int size() {
-				return array.length;
-			}
-
-			@Override
-			public Double[] toArray() {
-				return (Double[]) Arrayz.copyOf0(array, array.length, Double.class);
-			}
-
-			@Override
-			public Object[] toArray(Object[] a) {
-				Objects.requireNonNull(a, "a");
-				int length = a.length;
-
-				if (length < array.length)
-					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				else {
-					Arrayz.hardcopy(array, 0, a, 0, array.length);
-
-					if (length > array.length)
-						a[array.length] = null;
-
-					return a;
-				}
-			}
-		};
+		return new DoubleArrayList(array);
 	}
 
 	/**
@@ -885,48 +680,7 @@ public final class Arrayz {
 	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Float> asList(float[] array) {
-		Objects.requireNonNull(array, "array");
-
-		return new AbstractList<Float>() {
-			@Override
-			public Float get(int index) {
-				return array[index];
-			}
-
-			@Override
-			public Float set(int index, Float element) {
-				Float old = array[index];
-				array[index] = element;
-				return old;
-			}
-
-			@Override
-			public int size() {
-				return array.length;
-			}
-
-			@Override
-			public Float[] toArray() {
-				return (Float[]) Arrayz.copyOf0(array, array.length, Float.class);
-			}
-
-			@Override
-			public Object[] toArray(Object[] a) {
-				Objects.requireNonNull(a, "a");
-				int length = a.length;
-
-				if (length < array.length)
-					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				else {
-					Arrayz.hardcopy(array, 0, a, 0, array.length);
-
-					if (length > array.length)
-						a[array.length] = null;
-
-					return a;
-				}
-			}
-		};
+		return new FloatArrayList(array);
 	}
 
 	/**
@@ -938,48 +692,7 @@ public final class Arrayz {
 	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Integer> asList(int[] array) {
-		Objects.requireNonNull(array, "array");
-
-		return new AbstractList<Integer>() {
-			@Override
-			public Integer get(int index) {
-				return array[index];
-			}
-
-			@Override
-			public Integer set(int index, Integer element) {
-				Integer old = array[index];
-				array[index] = element;
-				return old;
-			}
-
-			@Override
-			public int size() {
-				return array.length;
-			}
-
-			@Override
-			public Integer[] toArray() {
-				return (Integer[]) Arrayz.copyOf0(array, array.length, Integer.class);
-			}
-
-			@Override
-			public Object[] toArray(Object[] a) {
-				Objects.requireNonNull(a, "a");
-				int length = a.length;
-
-				if (length < array.length)
-					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				else {
-					Arrayz.hardcopy(array, 0, a, 0, array.length);
-
-					if (length > array.length)
-						a[array.length] = null;
-
-					return a;
-				}
-			}
-		};
+		return new IntegerArrayList(array);
 	}
 
 	/**
@@ -991,48 +704,7 @@ public final class Arrayz {
 	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Long> asList(long[] array) {
-		Objects.requireNonNull(array, "array");
-
-		return new AbstractList<Long>() {
-			@Override
-			public Long get(int index) {
-				return array[index];
-			}
-
-			@Override
-			public Long set(int index, Long element) {
-				Long old = array[index];
-				array[index] = element;
-				return old;
-			}
-
-			@Override
-			public int size() {
-				return array.length;
-			}
-
-			@Override
-			public Long[] toArray() {
-				return (Long[]) Arrayz.copyOf0(array, array.length, Long.class);
-			}
-
-			@Override
-			public Object[] toArray(Object[] a) {
-				Objects.requireNonNull(a, "a");
-				int length = a.length;
-
-				if (length < array.length)
-					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				else {
-					Arrayz.hardcopy(array, 0, a, 0, array.length);
-
-					if (length > array.length)
-						a[array.length] = null;
-
-					return a;
-				}
-			}
-		};
+		return new LongArrayList(array);
 	}
 
 	/**
@@ -1044,48 +716,7 @@ public final class Arrayz {
 	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List<Short> asList(short[] array) {
-		Objects.requireNonNull(array, "array");
-
-		return new AbstractList<Short>() {
-			@Override
-			public Short get(int index) {
-				return array[index];
-			}
-
-			@Override
-			public Short set(int index, Short element) {
-				Short old = array[index];
-				array[index] = element;
-				return old;
-			}
-
-			@Override
-			public int size() {
-				return array.length;
-			}
-
-			@Override
-			public Short[] toArray() {
-				return (Short[]) Arrayz.copyOf0(array, array.length, Short.class);
-			}
-
-			@Override
-			public Object[] toArray(Object[] a) {
-				Objects.requireNonNull(a, "a");
-				int length = a.length;
-
-				if (length < array.length)
-					return (Object[]) Arrayz.copyOf0(array, array.length, a.getClass());
-				else {
-					Arrayz.hardcopy(array, 0, a, 0, array.length);
-
-					if (length > array.length)
-						a[array.length] = null;
-
-					return a;
-				}
-			}
-		};
+		return new ShortArrayList(array);
 	}
 
 	/**
@@ -1097,51 +728,7 @@ public final class Arrayz {
 	 * @throws IllegalArgumentException if the given 'array' isn't actually an array.
 	 */
 	public static List asList0(Object array) {
-		Objects.requireNonNull(array, "array");
-		if (!array.getClass().isArray())
-			throw new IllegalArgumentException(array + " isn't an array");
-
-		int size = Array.getLength(array);
-		return new AbstractList() {
-			@Override
-			public Object get(int index) {
-				return Array.get(array, index);
-			}
-
-			@Override
-			public Object set(int index, Object element) {
-				Object old = Array.get(array, index);
-				Array.set(array, index, element);
-				return old;
-			}
-
-			@Override
-			public int size() {
-				return size;
-			}
-
-			@Override
-			public Object[] toArray() {
-				return (Object[]) Arrayz.copyOf0(array, size, Object[].class);
-			}
-
-			@Override
-			public Object[] toArray(Object[] a) {
-				Objects.requireNonNull(a, "a");
-				int length = a.length;
-
-				if (length < size)
-					return (Object[]) Arrayz.copyOf0(array, size, a.getClass());
-				else {
-					Arrayz.hardcopy(array, 0, a, 0, size);
-
-					if (length > size)
-						a[size] = null;
-
-					return a;
-				}
-			}
-		};
+		return new ArrayList0(array);
 	}
 
 	/**
@@ -1156,263 +743,23 @@ public final class Arrayz {
 		Objects.requireNonNull(array, "array");
 
 		if (array instanceof Object[])
-			return Arrayz.asList((Object[]) array);
+			return new ArrayList((Object[]) array);
 		if (array instanceof boolean[])
-			return Arrayz.asList((boolean[]) array);
+			return new BooleanArrayList((boolean[]) array);
 		if (array instanceof byte[])
-			return Arrayz.asList((byte[]) array);
+			return new ByteArrayList((byte[]) array);
 		if (array instanceof char[])
-			return Arrayz.asList((char[]) array);
+			return new CharacterArrayList((char[]) array);
 		if (array instanceof double[])
-			return Arrayz.asList((double[]) array);
+			return new DoubleArrayList((double[]) array);
 		if (array instanceof float[])
-			return Arrayz.asList((float[]) array);
+			return new FloatArrayList((float[]) array);
 		if (array instanceof int[])
-			return Arrayz.asList((int[]) array);
+			return new IntegerArrayList((int[]) array);
 		if (array instanceof long[])
-			return Arrayz.asList((long[]) array);
+			return new LongArrayList((long[]) array);
 		if (array instanceof short[])
-			return Arrayz.asList((short[]) array);
-
-		throw new IllegalArgumentException("not an array");
-	}
-
-	//asMap
-
-	/**
-	 * Construct a new map from the given array.
-	 *
-	 * @param array the source array.
-	 * @param <K>   the type of the key of the returned map.
-	 * @param <V>   the type of the value of the returned map.
-	 * @param <E>   the type of the elements of the given array.
-	 * @return a new map from the given array.
-	 * @throws NullPointerException     if the given 'array' is null.
-	 * @throws IllegalArgumentException if the given 'array' has odd length.
-	 */
-	public static <K extends E, V extends E, E> Map<K, V> toMap(E... array) {
-		Objects.requireNonNull(array, "array");
-		if (array.length % 2 != 0)
-			throw new IllegalArgumentException("odd length array");
-
-		Map map = new HashMap();
-		for (int i = 0; i < array.length; i += 2)
-			map.put(array[i], array[i + 1]);
-
-		return map;
-	}
-
-	/**
-	 * Construct a new map from the given array.
-	 *
-	 * @param array the source array.
-	 * @return a new map from the given array.
-	 * @throws NullPointerException     if the given 'array' is null.
-	 * @throws IllegalArgumentException if the given 'array' has odd length.
-	 */
-	public static Map<Boolean, Boolean> toMap(boolean... array) {
-		Objects.requireNonNull(array, "array");
-		if (array.length % 2 != 0)
-			throw new IllegalArgumentException("odd length array");
-
-		Map map = new HashMap();
-		for (int i = 0; i < array.length; i += 2)
-			map.put(array[i], array[i + 1]);
-
-		return map;
-	}
-
-	/**
-	 * Construct a new map from the given array.
-	 *
-	 * @param array the source array.
-	 * @return a new map from the given array.
-	 * @throws NullPointerException     if the given 'array' is null.
-	 * @throws IllegalArgumentException if the given 'array' has odd length.
-	 */
-	public static Map<Byte, Byte> toMap(byte... array) {
-		Objects.requireNonNull(array, "array");
-		if (array.length % 2 != 0)
-			throw new IllegalArgumentException("odd length array");
-
-		Map map = new HashMap();
-		for (int i = 0; i < array.length; i += 2)
-			map.put(array[i], array[i + 1]);
-
-		return map;
-	}
-
-	/**
-	 * Construct a new map from the given array.
-	 *
-	 * @param array the source array.
-	 * @return a new map from the given array.
-	 * @throws NullPointerException     if the given 'array' is null.
-	 * @throws IllegalArgumentException if the given 'array' has odd length.
-	 */
-	public static Map<Character, Character> toMap(char... array) {
-		Objects.requireNonNull(array, "array");
-		if (array.length % 2 != 0)
-			throw new IllegalArgumentException("odd length array");
-
-		Map map = new HashMap();
-		for (int i = 0; i < array.length; i += 2)
-			map.put(array[i], array[i + 1]);
-
-		return map;
-	}
-
-	/**
-	 * Construct a new map from the given array.
-	 *
-	 * @param array the source array.
-	 * @return a new map from the given array.
-	 * @throws NullPointerException     if the given 'array' is null.
-	 * @throws IllegalArgumentException if the given 'array' has odd length.
-	 */
-	public static Map<Double, Double> toMap(double... array) {
-		Objects.requireNonNull(array, "array");
-		if (array.length % 2 != 0)
-			throw new IllegalArgumentException("odd length array");
-
-		Map map = new HashMap();
-		for (int i = 0; i < array.length; i += 2)
-			map.put(array[i], array[i + 1]);
-
-		return map;
-	}
-
-	/**
-	 * Construct a new map from the given array.
-	 *
-	 * @param array the source array.
-	 * @return a new map from the given array.
-	 * @throws NullPointerException     if the given 'array' is null.
-	 * @throws IllegalArgumentException if the given 'array' has odd length.
-	 */
-	public static Map<Float, Float> toMap(float... array) {
-		Objects.requireNonNull(array, "array");
-		if (array.length % 2 != 0)
-			throw new IllegalArgumentException("odd length array");
-
-		Map map = new HashMap();
-		for (int i = 0; i < array.length; i += 2)
-			map.put(array[i], array[i + 1]);
-
-		return map;
-	}
-
-	/**
-	 * Construct a new map from the given array.
-	 *
-	 * @param array the source array.
-	 * @return a new map from the given array.
-	 * @throws NullPointerException     if the given 'array' is null.
-	 * @throws IllegalArgumentException if the given 'array' has odd length.
-	 */
-	public static Map<Integer, Integer> toMap(int... array) {
-		Objects.requireNonNull(array, "array");
-		if (array.length % 2 != 0)
-			throw new IllegalArgumentException("odd length array");
-
-		Map map = new HashMap();
-		for (int i = 0; i < array.length; i += 2)
-			map.put(array[i], array[i + 1]);
-
-		return map;
-	}
-
-	/**
-	 * Construct a new map from the given array.
-	 *
-	 * @param array the source array.
-	 * @return a new map from the given array.
-	 * @throws NullPointerException     if the given 'array' is null.
-	 * @throws IllegalArgumentException if the given 'array' has odd length.
-	 */
-	public static Map<Long, Long> toMap(long... array) {
-		Objects.requireNonNull(array, "array");
-		if (array.length % 2 != 0)
-			throw new IllegalArgumentException("odd length array");
-
-		Map map = new HashMap();
-		for (int i = 0; i < array.length; i += 2)
-			map.put(array[i], array[i + 1]);
-
-		return map;
-	}
-
-	/**
-	 * Construct a new map from the given array.
-	 *
-	 * @param array the source array.
-	 * @return a new map from the given array.
-	 * @throws NullPointerException     if the given 'array' is null.
-	 * @throws IllegalArgumentException if the given 'array' has odd length.
-	 */
-	public static Map<Short, Short> toMap(short... array) {
-		Objects.requireNonNull(array, "array");
-		if (array.length % 2 != 0)
-			throw new IllegalArgumentException("odd length array");
-
-		Map map = new HashMap();
-		for (int i = 0; i < array.length; i += 2)
-			map.put(array[i], array[i + 1]);
-
-		return map;
-	}
-
-	/**
-	 * Construct a new map from the given array. Using reflection.
-	 *
-	 * @param array the source array.
-	 * @return a new map from the given array.
-	 * @throws NullPointerException     if the given 'array' is null.
-	 * @throws IllegalArgumentException if the given 'array' is not an array, or has an odd length.
-	 */
-	public static Map toMap0(Object array) {
-		Objects.requireNonNull(array, "array");
-		if (!array.getClass().isArray())
-			throw new IllegalArgumentException(array + " isn't an array");
-		if (Array.getLength(array) % 2 != 0)
-			throw new IllegalArgumentException("odd length array");
-
-		Map map = new HashMap();
-		for (int i = 0, l = Array.getLength(array); i < l; i += 2)
-			map.put(Array.get(array, i), Array.get(array, i + 1));
-
-		return map;
-	}
-
-	/**
-	 * Construct a new map from the given array. Using {@code if} statements.
-	 *
-	 * @param array the source array.
-	 * @return a new map from the given array.
-	 * @throws NullPointerException     if the given 'array' is null.
-	 * @throws IllegalArgumentException if the given 'array' is not an array, or has an odd length.
-	 */
-	public static Map toMap1(Object array) {
-		Objects.requireNonNull(array, "array");
-
-		if (array instanceof Object[])
-			return Arrayz.toMap((Object[]) array);
-		if (array instanceof boolean[])
-			return Arrayz.toMap((boolean[]) array);
-		if (array instanceof byte[])
-			return Arrayz.toMap((byte[]) array);
-		if (array instanceof char[])
-			return Arrayz.toMap((char[]) array);
-		if (array instanceof double[])
-			return Arrayz.toMap((double[]) array);
-		if (array instanceof float[])
-			return Arrayz.toMap((float[]) array);
-		if (array instanceof int[])
-			return Arrayz.toMap((int[]) array);
-		if (array instanceof long[])
-			return Arrayz.toMap((long[]) array);
-		if (array instanceof short[])
-			return Arrayz.toMap((short[]) array);
+			return new ShortArrayList((short[]) array);
 
 		throw new IllegalArgumentException("not an array");
 	}
@@ -2307,64 +1654,7 @@ public final class Arrayz {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public static <T> ListIterator<T> iterator(T... array) {
-		Objects.requireNonNull(array, "array");
-		return new ListIterator<T>() {
-			/**
-			 * The index of the next element.
-			 */
-			private int cursor;
-
-			@Override
-			public boolean hasNext() {
-				return this.cursor < array.length;
-			}
-
-			@Override
-			public T next() {
-				if (this.cursor >= array.length)
-					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
-
-				return array[this.cursor++];
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				return this.cursor > 0;
-			}
-
-			@Override
-			public T previous() {
-				if (this.cursor == 0)
-					throw new NoSuchElementException("cursor: 0");
-
-				return array[--this.cursor];
-			}
-
-			@Override
-			public int nextIndex() {
-				return this.cursor;
-			}
-
-			@Override
-			public int previousIndex() {
-				return this.cursor - 1;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("remove");
-			}
-
-			@Override
-			public void set(T t) {
-				array[this.cursor] = t;
-			}
-
-			@Override
-			public void add(T t) {
-				throw new UnsupportedOperationException("add");
-			}
-		};
+		return new ArrayIterator(array);
 	}
 
 	/**
@@ -2377,64 +1667,7 @@ public final class Arrayz {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public static ListIterator<Boolean> iterator(boolean[] array) {
-		Objects.requireNonNull(array, "array");
-		return new ListIterator<Boolean>() {
-			/**
-			 * The index of the next element.
-			 */
-			private int cursor;
-
-			@Override
-			public boolean hasNext() {
-				return this.cursor < array.length;
-			}
-
-			@Override
-			public Boolean next() {
-				if (this.cursor >= array.length)
-					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
-
-				return array[this.cursor++];
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				return this.cursor > 0;
-			}
-
-			@Override
-			public Boolean previous() {
-				if (this.cursor == 0)
-					throw new NoSuchElementException("cursor: 0");
-
-				return array[--this.cursor];
-			}
-
-			@Override
-			public int nextIndex() {
-				return this.cursor;
-			}
-
-			@Override
-			public int previousIndex() {
-				return this.cursor - 1;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("remove");
-			}
-
-			@Override
-			public void set(Boolean t) {
-				array[this.cursor] = t;
-			}
-
-			@Override
-			public void add(Boolean t) {
-				throw new UnsupportedOperationException("add");
-			}
-		};
+		return new BooleanArrayIterator(array);
 	}
 
 	/**
@@ -2447,64 +1680,7 @@ public final class Arrayz {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public static ListIterator<Byte> iterator(byte[] array) {
-		Objects.requireNonNull(array, "array");
-		return new ListIterator<Byte>() {
-			/**
-			 * The index of the next element.
-			 */
-			private int cursor;
-
-			@Override
-			public boolean hasNext() {
-				return this.cursor < array.length;
-			}
-
-			@Override
-			public Byte next() {
-				if (this.cursor >= array.length)
-					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
-
-				return array[this.cursor++];
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				return this.cursor > 0;
-			}
-
-			@Override
-			public Byte previous() {
-				if (this.cursor == 0)
-					throw new NoSuchElementException("cursor: 0");
-
-				return array[--this.cursor];
-			}
-
-			@Override
-			public int nextIndex() {
-				return this.cursor;
-			}
-
-			@Override
-			public int previousIndex() {
-				return this.cursor - 1;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("remove");
-			}
-
-			@Override
-			public void set(Byte t) {
-				array[this.cursor] = t;
-			}
-
-			@Override
-			public void add(Byte t) {
-				throw new UnsupportedOperationException("add");
-			}
-		};
+		return new ByteArrayIterator(array);
 	}
 
 	/**
@@ -2517,64 +1693,7 @@ public final class Arrayz {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public static ListIterator<Character> iterator(char[] array) {
-		Objects.requireNonNull(array, "array");
-		return new ListIterator<Character>() {
-			/**
-			 * The index of the next element.
-			 */
-			private int cursor;
-
-			@Override
-			public boolean hasNext() {
-				return this.cursor < array.length;
-			}
-
-			@Override
-			public Character next() {
-				if (this.cursor >= array.length)
-					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
-
-				return array[this.cursor++];
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				return this.cursor > 0;
-			}
-
-			@Override
-			public Character previous() {
-				if (this.cursor == 0)
-					throw new NoSuchElementException("cursor: 0");
-
-				return array[--this.cursor];
-			}
-
-			@Override
-			public int nextIndex() {
-				return this.cursor;
-			}
-
-			@Override
-			public int previousIndex() {
-				return this.cursor - 1;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("remove");
-			}
-
-			@Override
-			public void set(Character t) {
-				array[this.cursor] = t;
-			}
-
-			@Override
-			public void add(Character t) {
-				throw new UnsupportedOperationException("add");
-			}
-		};
+		return new CharacterArrayIterator(array);
 	}
 
 	/**
@@ -2587,64 +1706,7 @@ public final class Arrayz {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public static ListIterator<Double> iterator(double[] array) {
-		Objects.requireNonNull(array, "array");
-		return new ListIterator<Double>() {
-			/**
-			 * The index of the next element.
-			 */
-			private int cursor;
-
-			@Override
-			public boolean hasNext() {
-				return this.cursor < array.length;
-			}
-
-			@Override
-			public Double next() {
-				if (this.cursor >= array.length)
-					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
-
-				return array[this.cursor++];
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				return this.cursor > 0;
-			}
-
-			@Override
-			public Double previous() {
-				if (this.cursor == 0)
-					throw new NoSuchElementException("cursor: 0");
-
-				return array[--this.cursor];
-			}
-
-			@Override
-			public int nextIndex() {
-				return this.cursor;
-			}
-
-			@Override
-			public int previousIndex() {
-				return this.cursor - 1;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("remove");
-			}
-
-			@Override
-			public void set(Double t) {
-				array[this.cursor] = t;
-			}
-
-			@Override
-			public void add(Double t) {
-				throw new UnsupportedOperationException("add");
-			}
-		};
+		return new DoubleArrayIterator(array);
 	}
 
 	/**
@@ -2657,64 +1719,7 @@ public final class Arrayz {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public static ListIterator<Float> iterator(float[] array) {
-		Objects.requireNonNull(array, "array");
-		return new ListIterator<Float>() {
-			/**
-			 * The index of the next element.
-			 */
-			private int cursor;
-
-			@Override
-			public boolean hasNext() {
-				return this.cursor < array.length;
-			}
-
-			@Override
-			public Float next() {
-				if (this.cursor >= array.length)
-					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
-
-				return array[this.cursor++];
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				return this.cursor > 0;
-			}
-
-			@Override
-			public Float previous() {
-				if (this.cursor == 0)
-					throw new NoSuchElementException("cursor: 0");
-
-				return array[--this.cursor];
-			}
-
-			@Override
-			public int nextIndex() {
-				return this.cursor;
-			}
-
-			@Override
-			public int previousIndex() {
-				return this.cursor - 1;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("remove");
-			}
-
-			@Override
-			public void set(Float t) {
-				array[this.cursor] = t;
-			}
-
-			@Override
-			public void add(Float t) {
-				throw new UnsupportedOperationException("add");
-			}
-		};
+		return new FloatArrayIterator(array);
 	}
 
 	/**
@@ -2727,64 +1732,7 @@ public final class Arrayz {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public static ListIterator<Integer> iterator(int[] array) {
-		Objects.requireNonNull(array, "array");
-		return new ListIterator<Integer>() {
-			/**
-			 * The index of the next element.
-			 */
-			private int cursor;
-
-			@Override
-			public boolean hasNext() {
-				return this.cursor < array.length;
-			}
-
-			@Override
-			public Integer next() {
-				if (this.cursor >= array.length)
-					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
-
-				return array[this.cursor++];
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				return this.cursor > 0;
-			}
-
-			@Override
-			public Integer previous() {
-				if (this.cursor == 0)
-					throw new NoSuchElementException("cursor: 0");
-
-				return array[--this.cursor];
-			}
-
-			@Override
-			public int nextIndex() {
-				return this.cursor;
-			}
-
-			@Override
-			public int previousIndex() {
-				return this.cursor - 1;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("remove");
-			}
-
-			@Override
-			public void set(Integer t) {
-				array[this.cursor] = t;
-			}
-
-			@Override
-			public void add(Integer t) {
-				throw new UnsupportedOperationException("add");
-			}
-		};
+		return new IntegerArrayIterator(array);
 	}
 
 	/**
@@ -2797,64 +1745,7 @@ public final class Arrayz {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public static ListIterator<Long> iterator(long[] array) {
-		Objects.requireNonNull(array, "array");
-		return new ListIterator<Long>() {
-			/**
-			 * The index of the next element.
-			 */
-			private int cursor;
-
-			@Override
-			public boolean hasNext() {
-				return this.cursor < array.length;
-			}
-
-			@Override
-			public Long next() {
-				if (this.cursor >= array.length)
-					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
-
-				return array[this.cursor++];
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				return this.cursor > 0;
-			}
-
-			@Override
-			public Long previous() {
-				if (this.cursor == 0)
-					throw new NoSuchElementException("cursor: 0");
-
-				return array[--this.cursor];
-			}
-
-			@Override
-			public int nextIndex() {
-				return this.cursor;
-			}
-
-			@Override
-			public int previousIndex() {
-				return this.cursor - 1;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("remove");
-			}
-
-			@Override
-			public void set(Long t) {
-				array[this.cursor] = t;
-			}
-
-			@Override
-			public void add(Long t) {
-				throw new UnsupportedOperationException("add");
-			}
-		};
+		return new LongArrayIterator(array);
 	}
 
 	/**
@@ -2867,64 +1758,7 @@ public final class Arrayz {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 */
 	public static ListIterator<Short> iterator(short[] array) {
-		Objects.requireNonNull(array, "array");
-		return new ListIterator<Short>() {
-			/**
-			 * The index of the next element.
-			 */
-			private int cursor;
-
-			@Override
-			public boolean hasNext() {
-				return this.cursor < array.length;
-			}
-
-			@Override
-			public Short next() {
-				if (this.cursor >= array.length)
-					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + array.length);
-
-				return array[this.cursor++];
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				return this.cursor > 0;
-			}
-
-			@Override
-			public Short previous() {
-				if (this.cursor == 0)
-					throw new NoSuchElementException("cursor: 0");
-
-				return array[--this.cursor];
-			}
-
-			@Override
-			public int nextIndex() {
-				return this.cursor;
-			}
-
-			@Override
-			public int previousIndex() {
-				return this.cursor - 1;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("remove");
-			}
-
-			@Override
-			public void set(Short t) {
-				array[this.cursor] = t;
-			}
-
-			@Override
-			public void add(Short t) {
-				throw new UnsupportedOperationException("add");
-			}
-		};
+		return new ShortArrayIterator(array);
 	}
 
 	/**
@@ -2938,67 +1772,7 @@ public final class Arrayz {
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 */
 	public static ListIterator iterator0(Object array) {
-		Objects.requireNonNull(array, "array");
-		if (!array.getClass().isArray())
-			throw new IllegalArgumentException("Not an array " + array);
-		int length = Array.getLength(array);
-		return new ListIterator() {
-			/**
-			 * The index of the next element.
-			 */
-			private int cursor;
-
-			@Override
-			public boolean hasNext() {
-				return this.cursor < length;
-			}
-
-			@Override
-			public Object next() {
-				if (this.cursor >= length)
-					throw new NoSuchElementException("cursor: " + this.cursor + " length: " + length);
-
-				return Array.get(array, this.cursor++);
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				return this.cursor > 0;
-			}
-
-			@Override
-			public Object previous() {
-				if (this.cursor == 0)
-					throw new NoSuchElementException("cursor: 0");
-
-				return Array.get(array, --this.cursor);
-			}
-
-			@Override
-			public int nextIndex() {
-				return this.cursor;
-			}
-
-			@Override
-			public int previousIndex() {
-				return this.cursor - 1;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("remove");
-			}
-
-			@Override
-			public void set(Object t) {
-				Array.set(array, this.cursor, t);
-			}
-
-			@Override
-			public void add(Object t) {
-				throw new UnsupportedOperationException("add");
-			}
-		};
+		return new ArrayIterator0(array);
 	}
 
 	/**
@@ -3015,23 +1789,23 @@ public final class Arrayz {
 		Objects.requireNonNull(array, "array");
 
 		if (array instanceof Object[])
-			return Arrayz.iterator((Object[]) array);
+			return new ArrayIterator((Object[]) array);
 		if (array instanceof boolean[])
-			return Arrayz.iterator((boolean[]) array);
+			return new BooleanArrayIterator((boolean[]) array);
 		if (array instanceof byte[])
-			return Arrayz.iterator((byte[]) array);
+			return new ByteArrayIterator((byte[]) array);
 		if (array instanceof char[])
-			return Arrayz.iterator((char[]) array);
+			return new CharacterArrayIterator((char[]) array);
 		if (array instanceof double[])
-			return Arrayz.iterator((double[]) array);
+			return new DoubleArrayIterator((double[]) array);
 		if (array instanceof float[])
-			return Arrayz.iterator((float[]) array);
+			return new FloatArrayIterator((float[]) array);
 		if (array instanceof int[])
-			return Arrayz.iterator((int[]) array);
+			return new IntegerArrayIterator((int[]) array);
 		if (array instanceof long[])
-			return Arrayz.iterator((long[]) array);
+			return new LongArrayIterator((long[]) array);
 		if (array instanceof short[])
-			return Arrayz.iterator((short[]) array);
+			return new ShortArrayIterator((short[]) array);
 
 		throw new IllegalArgumentException("not an array");
 	}
@@ -3678,5 +2452,1627 @@ public final class Arrayz {
 			return Arrayz.sum((short[]) array, initialSum, function);
 
 		throw new IllegalArgumentException("not an array");
+	}
+
+	//toMap
+
+	/**
+	 * Construct a new map from the given array.
+	 *
+	 * @param array the source array.
+	 * @param <K>   the type of the key of the returned map.
+	 * @param <V>   the type of the value of the returned map.
+	 * @param <E>   the type of the elements of the given array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
+	 */
+	public static <K extends E, V extends E, E> Map<K, V> toMap(E... array) {
+		Objects.requireNonNull(array, "array");
+		if (array.length % 2 != 0)
+			throw new IllegalArgumentException("odd length array");
+
+		Map map = new HashMap();
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Construct a new map from the given array.
+	 *
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
+	 */
+	public static Map<Boolean, Boolean> toMap(boolean... array) {
+		Objects.requireNonNull(array, "array");
+		if (array.length % 2 != 0)
+			throw new IllegalArgumentException("odd length array");
+
+		Map map = new HashMap();
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Construct a new map from the given array.
+	 *
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
+	 */
+	public static Map<Byte, Byte> toMap(byte... array) {
+		Objects.requireNonNull(array, "array");
+		if (array.length % 2 != 0)
+			throw new IllegalArgumentException("odd length array");
+
+		Map map = new HashMap();
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Construct a new map from the given array.
+	 *
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
+	 */
+	public static Map<Character, Character> toMap(char... array) {
+		Objects.requireNonNull(array, "array");
+		if (array.length % 2 != 0)
+			throw new IllegalArgumentException("odd length array");
+
+		Map map = new HashMap();
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Construct a new map from the given array.
+	 *
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
+	 */
+	public static Map<Double, Double> toMap(double... array) {
+		Objects.requireNonNull(array, "array");
+		if (array.length % 2 != 0)
+			throw new IllegalArgumentException("odd length array");
+
+		Map map = new HashMap();
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Construct a new map from the given array.
+	 *
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
+	 */
+	public static Map<Float, Float> toMap(float... array) {
+		Objects.requireNonNull(array, "array");
+		if (array.length % 2 != 0)
+			throw new IllegalArgumentException("odd length array");
+
+		Map map = new HashMap();
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Construct a new map from the given array.
+	 *
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
+	 */
+	public static Map<Integer, Integer> toMap(int... array) {
+		Objects.requireNonNull(array, "array");
+		if (array.length % 2 != 0)
+			throw new IllegalArgumentException("odd length array");
+
+		Map map = new HashMap();
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Construct a new map from the given array.
+	 *
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
+	 */
+	public static Map<Long, Long> toMap(long... array) {
+		Objects.requireNonNull(array, "array");
+		if (array.length % 2 != 0)
+			throw new IllegalArgumentException("odd length array");
+
+		Map map = new HashMap();
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Construct a new map from the given array.
+	 *
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' has odd length.
+	 */
+	public static Map<Short, Short> toMap(short... array) {
+		Objects.requireNonNull(array, "array");
+		if (array.length % 2 != 0)
+			throw new IllegalArgumentException("odd length array");
+
+		Map map = new HashMap();
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Construct a new map from the given array. Using reflection.
+	 *
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' is not an array, or has an odd length.
+	 */
+	public static Map toMap0(Object array) {
+		Objects.requireNonNull(array, "array");
+		if (!array.getClass().isArray())
+			throw new IllegalArgumentException(array + " isn't an array");
+		if (Array.getLength(array) % 2 != 0)
+			throw new IllegalArgumentException("odd length array");
+
+		Map map = new HashMap();
+		for (int i = 0, l = Array.getLength(array); i < l; i += 2)
+			map.put(Array.get(array, i), Array.get(array, i + 1));
+
+		return map;
+	}
+
+	/**
+	 * Construct a new map from the given array. Using {@code if} statements.
+	 *
+	 * @param array the source array.
+	 * @return a new map from the given array.
+	 * @throws NullPointerException     if the given 'array' is null.
+	 * @throws IllegalArgumentException if the given 'array' is not an array, or has an odd length.
+	 */
+	public static Map toMap1(Object array) {
+		Objects.requireNonNull(array, "array");
+
+		if (array instanceof Object[])
+			return Arrayz.toMap((Object[]) array);
+		if (array instanceof boolean[])
+			return Arrayz.toMap((boolean[]) array);
+		if (array instanceof byte[])
+			return Arrayz.toMap((byte[]) array);
+		if (array instanceof char[])
+			return Arrayz.toMap((char[]) array);
+		if (array instanceof double[])
+			return Arrayz.toMap((double[]) array);
+		if (array instanceof float[])
+			return Arrayz.toMap((float[]) array);
+		if (array instanceof int[])
+			return Arrayz.toMap((int[]) array);
+		if (array instanceof long[])
+			return Arrayz.toMap((long[]) array);
+		if (array instanceof short[])
+			return Arrayz.toMap((short[]) array);
+
+		throw new IllegalArgumentException("not an array");
+	}
+
+	//classes
+
+	/**
+	 * An iterator that iterates the elements of an array.
+	 *
+	 * @param <E> the type of elements returned by this iterator
+	 */
+	public static final class ArrayIterator<E> implements ListIterator<E> {
+		/**
+		 * The array that this iterator is iterating its elements.
+		 */
+		private final E[] array;
+		/**
+		 * The index of the next element.
+		 */
+		private int cursor;
+
+		/**
+		 * Construct a new iterator that iterates the elements of the given {@code array}.
+		 *
+		 * @param array the array that the constructed iterator is iterating its elements.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private ArrayIterator(E... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.cursor < this.array.length;
+		}
+
+		@Override
+		public E next() {
+			if (this.cursor >= this.array.length)
+				throw new NoSuchElementException("cursor: " + this.cursor + " length: " + this.array.length);
+
+			return this.array[this.cursor++];
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return this.cursor > 0;
+		}
+
+		@Override
+		public E previous() {
+			if (this.cursor == 0)
+				throw new NoSuchElementException("cursor: 0");
+
+			return this.array[--this.cursor];
+		}
+
+		@Override
+		public int nextIndex() {
+			return this.cursor;
+		}
+
+		@Override
+		public int previousIndex() {
+			return this.cursor - 1;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public void set(E e) {
+			this.array[this.cursor] = e;
+		}
+
+		@Override
+		public void add(E e) {
+			throw new UnsupportedOperationException("add");
+		}
+	}
+
+	/**
+	 * An iterator that iterates the elements of an array.
+	 */
+	public static final class ArrayIterator0 implements ListIterator {
+		/**
+		 * The array that this iterator is iterating its elements.
+		 */
+		private final Object array;
+		/**
+		 * The length of the backing array.
+		 */
+		private final int length;
+		/**
+		 * The index of the next element.
+		 */
+		private int cursor;
+
+		/**
+		 * Construct a new iterator that iterates the elements of the given {@code array}.
+		 *
+		 * @param array the array that the constructed iterator is iterating its elements.
+		 * @throws NullPointerException     if the given {@code array} is null.
+		 * @throws IllegalArgumentException if the given {@code array} is not an array.
+		 */
+		private ArrayIterator0(Object array) {
+			Objects.requireNonNull(array, "array");
+			if (!array.getClass().isArray())
+				throw new IllegalArgumentException("Not an array " + array);
+			this.array = array;
+			this.length = Array.getLength(array);
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.cursor < this.length;
+		}
+
+		@Override
+		public Object next() {
+			if (this.cursor >= this.length)
+				throw new NoSuchElementException("cursor: " + this.cursor + " length: " + this.length);
+
+			return Array.get(this.array, this.cursor++);
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return this.cursor > 0;
+		}
+
+		@Override
+		public Object previous() {
+			if (this.cursor == 0)
+				throw new NoSuchElementException("cursor: 0");
+
+			return Array.get(this.array, --this.cursor);
+		}
+
+		@Override
+		public int nextIndex() {
+			return this.cursor;
+		}
+
+		@Override
+		public int previousIndex() {
+			return this.cursor - 1;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public void set(Object t) {
+			Array.set(this.array, this.cursor, t);
+		}
+
+		@Override
+		public void add(Object t) {
+			throw new UnsupportedOperationException("add");
+		}
+	}
+
+	/**
+	 * A list backed by an array.
+	 *
+	 * @param <T> the type of elements in this list
+	 */
+	public static final class ArrayList<T> extends AbstractList<T> {
+		/**
+		 * The array backing this list.
+		 */
+		private final T[] array;
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param array the array backing this list.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private ArrayList(T... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public T get(int index) {
+			return this.array[index];
+		}
+
+		@Override
+		public T set(int index, T element) {
+			T old = this.array[index];
+			this.array[index] = element;
+			return old;
+		}
+
+		@Override
+		public int size() {
+			return this.array.length;
+		}
+
+		@Override
+		public T[] toArray() {
+			return Arrayz.copyOf(this.array, this.array.length);
+		}
+
+		@Override
+		public Object[] toArray(Object[] a) {
+			Objects.requireNonNull(a, "a");
+			int length = a.length;
+
+			if (length < this.array.length)
+				return (Object[]) Arrayz.copyOf0(this.array, this.array.length, a.getClass());
+			else {
+				Arrayz.hardcopy(this.array, 0, a, 0, this.array.length);
+
+				if (length > this.array.length)
+					a[this.array.length] = null;
+
+				return a;
+			}
+		}
+	}
+
+	/**
+	 * A list backed by an array.
+	 */
+	public static final class ArrayList0 extends AbstractList {
+		/**
+		 * The array backing this list.
+		 */
+		private final Object array;
+		/**
+		 * The length of the backing array of this list.
+		 */
+		private final int length;
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param array the array backing this list.
+		 * @throws NullPointerException     if the given {@code array} is null.
+		 * @throws IllegalArgumentException if the given {@code array} isn't actually an array.
+		 */
+		private ArrayList0(Object array) {
+			Objects.requireNonNull(array, "array");
+			if (!array.getClass().isArray())
+				throw new IllegalArgumentException(array + " isn't an array");
+			this.array = array;
+			this.length = Array.getLength(array);
+		}
+
+		@Override
+		public Object get(int index) {
+			return Array.get(this.array, index);
+		}
+
+		@Override
+		public Object set(int index, Object element) {
+			Object old = Array.get(this.array, index);
+			Array.set(this.array, index, element);
+			return old;
+		}
+
+		@Override
+		public int size() {
+			return this.length;
+		}
+
+		@Override
+		public Object[] toArray() {
+			return (Object[]) Arrayz.copyOf0(this.array, this.length, Object[].class);
+		}
+
+		@Override
+		public Object[] toArray(Object[] a) {
+			Objects.requireNonNull(a, "a");
+			int length = a.length;
+
+			if (length < this.length)
+				return (Object[]) Arrayz.copyOf0(this.array, this.length, a.getClass());
+			else {
+				Arrayz.hardcopy(this.array, 0, a, 0, this.length);
+
+				if (length > this.length)
+					a[this.length] = null;
+
+				return a;
+			}
+		}
+	}
+
+	/**
+	 * An iterator that iterates the elements of an array.
+	 */
+	public static final class BooleanArrayIterator implements ListIterator<Boolean> {
+		/**
+		 * The array that this iterator is iterating its elements.
+		 */
+		private final boolean[] array;
+		/**
+		 * The index of the next element.
+		 */
+		private int cursor;
+
+		/**
+		 * Construct a new iterator that iterates the elements of the given {@code array}.
+		 *
+		 * @param array the array that the constructed iterator is iterating its elements.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private BooleanArrayIterator(boolean... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.cursor < this.array.length;
+		}
+
+		@Override
+		public Boolean next() {
+			if (this.cursor >= this.array.length)
+				throw new NoSuchElementException("cursor: " + this.cursor + " length: " + this.array.length);
+
+			return this.array[this.cursor++];
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return this.cursor > 0;
+		}
+
+		@Override
+		public Boolean previous() {
+			if (this.cursor == 0)
+				throw new NoSuchElementException("cursor: 0");
+
+			return this.array[--this.cursor];
+		}
+
+		@Override
+		public int nextIndex() {
+			return this.cursor;
+		}
+
+		@Override
+		public int previousIndex() {
+			return this.cursor - 1;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public void set(Boolean e) {
+			this.array[this.cursor] = e;
+		}
+
+		@Override
+		public void add(Boolean e) {
+			throw new UnsupportedOperationException("add");
+		}
+	}
+
+	/**
+	 * A list backed by an array.
+	 */
+	public static final class BooleanArrayList extends AbstractList<Boolean> {
+		/**
+		 * The array backing this list.
+		 */
+		private final boolean[] array;
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param array the array backing this list.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private BooleanArrayList(boolean... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public Boolean get(int index) {
+			return this.array[index];
+		}
+
+		@Override
+		public Boolean set(int index, Boolean element) {
+			Boolean old = this.array[index];
+			this.array[index] = element;
+			return old;
+		}
+
+		@Override
+		public int size() {
+			return this.array.length;
+		}
+
+		@Override
+		public Boolean[] toArray() {
+			return (Boolean[]) Arrayz.copyOf0(this.array, this.array.length, Boolean.class);
+		}
+
+		@Override
+		public Object[] toArray(Object[] a) {
+			Objects.requireNonNull(a, "a");
+			int length = a.length;
+
+			if (length < this.array.length)
+				return (Object[]) Arrayz.copyOf0(this.array, this.array.length, a.getClass());
+			else {
+				Arrayz.hardcopy(this.array, 0, a, 0, this.array.length);
+
+				if (length > this.array.length)
+					a[this.array.length] = null;
+
+				return a;
+			}
+		}
+	}
+
+	/**
+	 * An iterator that iterates the elements of an array.
+	 */
+	public static final class ByteArrayIterator implements ListIterator<Byte> {
+		/**
+		 * The array that this iterator is iterating its elements.
+		 */
+		private final byte[] array;
+		/**
+		 * The index of the next element.
+		 */
+		private int cursor;
+
+		/**
+		 * Construct a new iterator that iterates the elements of the given {@code array}.
+		 *
+		 * @param array the array that the constructed iterator is iterating its elements.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private ByteArrayIterator(byte... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.cursor < this.array.length;
+		}
+
+		@Override
+		public Byte next() {
+			if (this.cursor >= this.array.length)
+				throw new NoSuchElementException("cursor: " + this.cursor + " length: " + this.array.length);
+
+			return this.array[this.cursor++];
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return this.cursor > 0;
+		}
+
+		@Override
+		public Byte previous() {
+			if (this.cursor == 0)
+				throw new NoSuchElementException("cursor: 0");
+
+			return this.array[--this.cursor];
+		}
+
+		@Override
+		public int nextIndex() {
+			return this.cursor;
+		}
+
+		@Override
+		public int previousIndex() {
+			return this.cursor - 1;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public void set(Byte e) {
+			this.array[this.cursor] = e;
+		}
+
+		@Override
+		public void add(Byte e) {
+			throw new UnsupportedOperationException("add");
+		}
+	}
+
+	/**
+	 * A list backed by an array.
+	 */
+	public static final class ByteArrayList extends AbstractList<Byte> {
+		/**
+		 * The array backing this list.
+		 */
+		private final byte[] array;
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param array the array backing this list.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private ByteArrayList(byte... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public Byte get(int index) {
+			return this.array[index];
+		}
+
+		@Override
+		public Byte set(int index, Byte element) {
+			Byte old = this.array[index];
+			this.array[index] = element;
+			return old;
+		}
+
+		@Override
+		public int size() {
+			return this.array.length;
+		}
+
+		@Override
+		public Byte[] toArray() {
+			return (Byte[]) Arrayz.copyOf0(this.array, this.array.length, Byte.class);
+		}
+
+		@Override
+		public Object[] toArray(Object[] a) {
+			Objects.requireNonNull(a, "a");
+			int length = a.length;
+
+			if (length < this.array.length)
+				return (Object[]) Arrayz.copyOf0(this.array, this.array.length, a.getClass());
+			else {
+				Arrayz.hardcopy(this.array, 0, a, 0, this.array.length);
+
+				if (length > this.array.length)
+					a[this.array.length] = null;
+
+				return a;
+			}
+		}
+	}
+
+	/**
+	 * An iterator that iterates the elements of an array.
+	 */
+	public static final class CharacterArrayIterator implements ListIterator<Character> {
+		/**
+		 * The array that this iterator is iterating its elements.
+		 */
+		private final char[] array;
+		/**
+		 * The index of the next element.
+		 */
+		private int cursor;
+
+		/**
+		 * Construct a new iterator that iterates the elements of the given {@code array}.
+		 *
+		 * @param array the array that the constructed iterator is iterating its elements.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private CharacterArrayIterator(char... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.cursor < this.array.length;
+		}
+
+		@Override
+		public Character next() {
+			if (this.cursor >= this.array.length)
+				throw new NoSuchElementException("cursor: " + this.cursor + " length: " + this.array.length);
+
+			return this.array[this.cursor++];
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return this.cursor > 0;
+		}
+
+		@Override
+		public Character previous() {
+			if (this.cursor == 0)
+				throw new NoSuchElementException("cursor: 0");
+
+			return this.array[--this.cursor];
+		}
+
+		@Override
+		public int nextIndex() {
+			return this.cursor;
+		}
+
+		@Override
+		public int previousIndex() {
+			return this.cursor - 1;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public void set(Character e) {
+			this.array[this.cursor] = e;
+		}
+
+		@Override
+		public void add(Character e) {
+			throw new UnsupportedOperationException("add");
+		}
+	}
+
+	/**
+	 * A list backed by an array.
+	 */
+	public static final class CharacterArrayList extends AbstractList<Character> {
+		/**
+		 * The array backing this list.
+		 */
+		private final char[] array;
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param array the array backing this list.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private CharacterArrayList(char... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public Character get(int index) {
+			return this.array[index];
+		}
+
+		@Override
+		public Character set(int index, Character element) {
+			Character old = this.array[index];
+			this.array[index] = element;
+			return old;
+		}
+
+		@Override
+		public int size() {
+			return this.array.length;
+		}
+
+		@Override
+		public Character[] toArray() {
+			return (Character[]) Arrayz.copyOf0(this.array, this.array.length, Character.class);
+		}
+
+		@Override
+		public Object[] toArray(Object[] a) {
+			Objects.requireNonNull(a, "a");
+			int length = a.length;
+
+			if (length < this.array.length)
+				return (Object[]) Arrayz.copyOf0(this.array, this.array.length, a.getClass());
+			else {
+				Arrayz.hardcopy(this.array, 0, a, 0, this.array.length);
+
+				if (length > this.array.length)
+					a[this.array.length] = null;
+
+				return a;
+			}
+		}
+	}
+
+	/**
+	 * An iterator that iterates the elements of an array.
+	 */
+	public static final class DoubleArrayIterator implements ListIterator<Double> {
+		/**
+		 * The array that this iterator is iterating its elements.
+		 */
+		private final double[] array;
+		/**
+		 * The index of the next element.
+		 */
+		private int cursor;
+
+		/**
+		 * Construct a new iterator that iterates the elements of the given {@code array}.
+		 *
+		 * @param array the array that the constructed iterator is iterating its elements.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private DoubleArrayIterator(double... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.cursor < this.array.length;
+		}
+
+		@Override
+		public Double next() {
+			if (this.cursor >= this.array.length)
+				throw new NoSuchElementException("cursor: " + this.cursor + " length: " + this.array.length);
+
+			return this.array[this.cursor++];
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return this.cursor > 0;
+		}
+
+		@Override
+		public Double previous() {
+			if (this.cursor == 0)
+				throw new NoSuchElementException("cursor: 0");
+
+			return this.array[--this.cursor];
+		}
+
+		@Override
+		public int nextIndex() {
+			return this.cursor;
+		}
+
+		@Override
+		public int previousIndex() {
+			return this.cursor - 1;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public void set(Double e) {
+			this.array[this.cursor] = e;
+		}
+
+		@Override
+		public void add(Double e) {
+			throw new UnsupportedOperationException("add");
+		}
+	}
+
+	/**
+	 * A list backed by an array.
+	 */
+	public static final class DoubleArrayList extends AbstractList<Double> {
+		/**
+		 * The array backing this list.
+		 */
+		private final double[] array;
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param array the array backing this list.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private DoubleArrayList(double... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public Double get(int index) {
+			return this.array[index];
+		}
+
+		@Override
+		public Double set(int index, Double element) {
+			Double old = this.array[index];
+			this.array[index] = element;
+			return old;
+		}
+
+		@Override
+		public int size() {
+			return this.array.length;
+		}
+
+		@Override
+		public Double[] toArray() {
+			return (Double[]) Arrayz.copyOf0(this.array, this.array.length, Double.class);
+		}
+
+		@Override
+		public Object[] toArray(Object[] a) {
+			Objects.requireNonNull(a, "a");
+			int length = a.length;
+
+			if (length < this.array.length)
+				return (Object[]) Arrayz.copyOf0(this.array, this.array.length, a.getClass());
+			else {
+				Arrayz.hardcopy(this.array, 0, a, 0, this.array.length);
+
+				if (length > this.array.length)
+					a[this.array.length] = null;
+
+				return a;
+			}
+		}
+	}
+
+	/**
+	 * An iterator that iterates the elements of an array.
+	 */
+	public static final class FloatArrayIterator implements ListIterator<Float> {
+		/**
+		 * The array that this iterator is iterating its elements.
+		 */
+		private final float[] array;
+		/**
+		 * The index of the next element.
+		 */
+		private int cursor;
+
+		/**
+		 * Construct a new iterator that iterates the elements of the given {@code array}.
+		 *
+		 * @param array the array that the constructed iterator is iterating its elements.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private FloatArrayIterator(float... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.cursor < this.array.length;
+		}
+
+		@Override
+		public Float next() {
+			if (this.cursor >= this.array.length)
+				throw new NoSuchElementException("cursor: " + this.cursor + " length: " + this.array.length);
+
+			return this.array[this.cursor++];
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return this.cursor > 0;
+		}
+
+		@Override
+		public Float previous() {
+			if (this.cursor == 0)
+				throw new NoSuchElementException("cursor: 0");
+
+			return this.array[--this.cursor];
+		}
+
+		@Override
+		public int nextIndex() {
+			return this.cursor;
+		}
+
+		@Override
+		public int previousIndex() {
+			return this.cursor - 1;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public void set(Float e) {
+			this.array[this.cursor] = e;
+		}
+
+		@Override
+		public void add(Float e) {
+			throw new UnsupportedOperationException("add");
+		}
+	}
+
+	/**
+	 * A list backed by an array.
+	 */
+	public static final class FloatArrayList extends AbstractList<Float> {
+		/**
+		 * The array backing this list.
+		 */
+		private final float[] array;
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param array the array backing this list.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private FloatArrayList(float... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public Float get(int index) {
+			return this.array[index];
+		}
+
+		@Override
+		public Float set(int index, Float element) {
+			Float old = this.array[index];
+			this.array[index] = element;
+			return old;
+		}
+
+		@Override
+		public int size() {
+			return this.array.length;
+		}
+
+		@Override
+		public Float[] toArray() {
+			return (Float[]) Arrayz.copyOf0(this.array, this.array.length, Float.class);
+		}
+
+		@Override
+		public Object[] toArray(Object[] a) {
+			Objects.requireNonNull(a, "a");
+			int length = a.length;
+
+			if (length < this.array.length)
+				return (Object[]) Arrayz.copyOf0(this.array, this.array.length, a.getClass());
+			else {
+				Arrayz.hardcopy(this.array, 0, a, 0, this.array.length);
+
+				if (length > this.array.length)
+					a[this.array.length] = null;
+
+				return a;
+			}
+		}
+	}
+
+	/**
+	 * An iterator that iterates the elements of an array.
+	 */
+	public static final class IntegerArrayIterator implements ListIterator<Integer> {
+		/**
+		 * The array that this iterator is iterating its elements.
+		 */
+		private final int[] array;
+		/**
+		 * The index of the next element.
+		 */
+		private int cursor;
+
+		/**
+		 * Construct a new iterator that iterates the elements of the given {@code array}.
+		 *
+		 * @param array the array that the constructed iterator is iterating its elements.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private IntegerArrayIterator(int... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.cursor < this.array.length;
+		}
+
+		@Override
+		public Integer next() {
+			if (this.cursor >= this.array.length)
+				throw new NoSuchElementException("cursor: " + this.cursor + " length: " + this.array.length);
+
+			return this.array[this.cursor++];
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return this.cursor > 0;
+		}
+
+		@Override
+		public Integer previous() {
+			if (this.cursor == 0)
+				throw new NoSuchElementException("cursor: 0");
+
+			return this.array[--this.cursor];
+		}
+
+		@Override
+		public int nextIndex() {
+			return this.cursor;
+		}
+
+		@Override
+		public int previousIndex() {
+			return this.cursor - 1;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public void set(Integer e) {
+			this.array[this.cursor] = e;
+		}
+
+		@Override
+		public void add(Integer e) {
+			throw new UnsupportedOperationException("add");
+		}
+	}
+
+	/**
+	 * A list backed by an array.
+	 */
+	public static final class IntegerArrayList extends AbstractList<Integer> {
+		/**
+		 * The array backing this list.
+		 */
+		private final int[] array;
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param array the array backing this list.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private IntegerArrayList(int... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public Integer get(int index) {
+			return this.array[index];
+		}
+
+		@Override
+		public Integer set(int index, Integer element) {
+			Integer old = this.array[index];
+			this.array[index] = element;
+			return old;
+		}
+
+		@Override
+		public int size() {
+			return this.array.length;
+		}
+
+		@Override
+		public Integer[] toArray() {
+			return (Integer[]) Arrayz.copyOf0(this.array, this.array.length, Integer.class);
+		}
+
+		@Override
+		public Object[] toArray(Object[] a) {
+			Objects.requireNonNull(a, "a");
+			int length = a.length;
+
+			if (length < this.array.length)
+				return (Object[]) Arrayz.copyOf0(this.array, this.array.length, a.getClass());
+			else {
+				Arrayz.hardcopy(this.array, 0, a, 0, this.array.length);
+
+				if (length > this.array.length)
+					a[this.array.length] = null;
+
+				return a;
+			}
+		}
+	}
+
+	/**
+	 * An iterator that iterates the elements of an array.
+	 */
+	public static final class LongArrayIterator implements ListIterator<Long> {
+		/**
+		 * The array that this iterator is iterating its elements.
+		 */
+		private final long[] array;
+		/**
+		 * The index of the next element.
+		 */
+		private int cursor;
+
+		/**
+		 * Construct a new iterator that iterates the elements of the given {@code array}.
+		 *
+		 * @param array the array that the constructed iterator is iterating its elements.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private LongArrayIterator(long... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.cursor < this.array.length;
+		}
+
+		@Override
+		public Long next() {
+			if (this.cursor >= this.array.length)
+				throw new NoSuchElementException("cursor: " + this.cursor + " length: " + this.array.length);
+
+			return this.array[this.cursor++];
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return this.cursor > 0;
+		}
+
+		@Override
+		public Long previous() {
+			if (this.cursor == 0)
+				throw new NoSuchElementException("cursor: 0");
+
+			return this.array[--this.cursor];
+		}
+
+		@Override
+		public int nextIndex() {
+			return this.cursor;
+		}
+
+		@Override
+		public int previousIndex() {
+			return this.cursor - 1;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public void set(Long e) {
+			this.array[this.cursor] = e;
+		}
+
+		@Override
+		public void add(Long e) {
+			throw new UnsupportedOperationException("add");
+		}
+	}
+
+	/**
+	 * A list backed by an array.
+	 */
+	public static final class LongArrayList extends AbstractList<Long> {
+		/**
+		 * The array backing this list.
+		 */
+		private final long[] array;
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param array the array backing this list.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private LongArrayList(long... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public Long get(int index) {
+			return this.array[index];
+		}
+
+		@Override
+		public Long set(int index, Long element) {
+			Long old = this.array[index];
+			this.array[index] = element;
+			return old;
+		}
+
+		@Override
+		public int size() {
+			return this.array.length;
+		}
+
+		@Override
+		public Long[] toArray() {
+			return (Long[]) Arrayz.copyOf0(this.array, this.array.length, Long.class);
+		}
+
+		@Override
+		public Object[] toArray(Object[] a) {
+			Objects.requireNonNull(a, "a");
+			int length = a.length;
+
+			if (length < this.array.length)
+				return (Object[]) Arrayz.copyOf0(this.array, this.array.length, a.getClass());
+			else {
+				Arrayz.hardcopy(this.array, 0, a, 0, this.array.length);
+
+				if (length > this.array.length)
+					a[this.array.length] = null;
+
+				return a;
+			}
+		}
+	}
+
+	/**
+	 * An iterator that iterates the elements of an array.
+	 */
+	public static final class ShortArrayIterator implements ListIterator<Short> {
+		/**
+		 * The array that this iterator is iterating its elements.
+		 */
+		private final short[] array;
+		/**
+		 * The index of the next element.
+		 */
+		private int cursor;
+
+		/**
+		 * Construct a new iterator that iterates the elements of the given {@code array}.
+		 *
+		 * @param array the array that the constructed iterator is iterating its elements.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private ShortArrayIterator(short... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.cursor < this.array.length;
+		}
+
+		@Override
+		public Short next() {
+			if (this.cursor >= this.array.length)
+				throw new NoSuchElementException("cursor: " + this.cursor + " length: " + this.array.length);
+
+			return this.array[this.cursor++];
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return this.cursor > 0;
+		}
+
+		@Override
+		public Short previous() {
+			if (this.cursor == 0)
+				throw new NoSuchElementException("cursor: 0");
+
+			return this.array[--this.cursor];
+		}
+
+		@Override
+		public int nextIndex() {
+			return this.cursor;
+		}
+
+		@Override
+		public int previousIndex() {
+			return this.cursor - 1;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public void set(Short e) {
+			this.array[this.cursor] = e;
+		}
+
+		@Override
+		public void add(Short e) {
+			throw new UnsupportedOperationException("add");
+		}
+	}
+
+	/**
+	 * A list backed by an array.
+	 */
+	public static final class ShortArrayList extends AbstractList<Short> {
+		/**
+		 * The array backing this list.
+		 */
+		private final short[] array;
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param array the array backing this list.
+		 * @throws NullPointerException if the given {@code array} is null.
+		 */
+		private ShortArrayList(short... array) {
+			Objects.requireNonNull(array, "array");
+			this.array = array;
+		}
+
+		@Override
+		public Short get(int index) {
+			return this.array[index];
+		}
+
+		@Override
+		public Short set(int index, Short element) {
+			Short old = this.array[index];
+			this.array[index] = element;
+			return old;
+		}
+
+		@Override
+		public int size() {
+			return this.array.length;
+		}
+
+		@Override
+		public Short[] toArray() {
+			return (Short[]) Arrayz.copyOf0(this.array, this.array.length, Short.class);
+		}
+
+		@Override
+		public Object[] toArray(Object[] a) {
+			Objects.requireNonNull(a, "a");
+			int length = a.length;
+
+			if (length < this.array.length)
+				return (Object[]) Arrayz.copyOf0(this.array, this.array.length, a.getClass());
+			else {
+				Arrayz.hardcopy(this.array, 0, a, 0, this.array.length);
+
+				if (length > this.array.length)
+					a[this.array.length] = null;
+
+				return a;
+			}
+		}
 	}
 }
