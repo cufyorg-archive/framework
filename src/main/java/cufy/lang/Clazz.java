@@ -69,9 +69,7 @@ public final class Clazz<T> implements Type, Serializable {
 		Objects.requireNonNull(components, "components");
 		this.klass = (Class<T>) Object.class;
 		this.family = Object.class;
-		this.components = Arrayz.copyOf(components, components.length);
-
-		Component.setModifiable(this.components, false);
+		this.components = Component.finalize(components);
 	}
 
 	/**
@@ -87,9 +85,7 @@ public final class Clazz<T> implements Type, Serializable {
 		Objects.requireNonNull(components, "components");
 		this.klass = klass;
 		this.family = klass;
-		this.components = Arrayz.copyOf(components, components.length);
-
-		Component.setModifiable(this.components, false);
+		this.components = Component.finalize(components);
 	}
 
 	/**
@@ -110,9 +106,7 @@ public final class Clazz<T> implements Type, Serializable {
 		Objects.requireNonNull(components, "components");
 		this.klass = klass;
 		this.family = family;
-		this.components = Arrayz.copyOf(components, components.length);
-
-		Component.setModifiable(this.components, false);
+		this.components = Component.finalize(components);
 	}
 
 	/**
@@ -144,13 +138,14 @@ public final class Clazz<T> implements Type, Serializable {
 	 *
 	 * @param klass            the class to be represented by the returned clazz.
 	 * @param componentClasses the component clazzes of the components of the returned clazz.
+	 * @param <T>              the type of the class represented by the returned clazz.
 	 * @return a clazz that represents teh given {@code klass}, and have components with the given {@code
 	 * 		componentClasses}.
 	 * @throws NullPointerException if the given {@code klass} or {@code componentClasses} is null.
 	 * @since 0.1.5
 	 */
-	public static Clazz as(Class klass, Class... componentClasses) {
-		return Clazz.of(klass, Component.as(Clazz.array(componentClasses)));
+	public static <T> Clazz<T> as(Class<T> klass, Class... componentClasses) {
+		return Clazz.of(klass, Component.of(Clazz.array(componentClasses)));
 	}
 
 	/**
@@ -165,13 +160,14 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @param family           the class that an instance of the returned clazz should be treated as if it was an
 	 *                         instance of it.
 	 * @param componentClasses the component clazzes of the components of the returned clazz.
+	 * @param <T>              the type of the class represented by the returned clazz.
 	 * @return a clazz that represents teh given {@code klass}, and have components with the given {@code
 	 * 		componentClasses}, and should be treated as if it was the given {@code family}.
 	 * @throws NullPointerException if the given {@code klass} or {@code family} or {@code componentClasses} is null.
 	 * @since 0.1.5
 	 */
-	public static Clazz as(Class klass, Class family, Class[] componentClasses) {
-		return Clazz.of(klass, family, Component.as(Clazz.array(componentClasses)));
+	public static <T> Clazz<T> as(Class<T> klass, Class family, Class[] componentClasses) {
+		return Clazz.of(klass, family, Component.of(Clazz.array(componentClasses)));
 	}
 
 	/**
@@ -634,8 +630,9 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @since 0.1.5
 	 */
 	public Component getComponent(int component) {
-		//noinspection ReturnOfNull
-		return component >= 0 && component < this.components.length ? this.components[component] : null;
+		return component >= 0 && component < this.components.length ?
+			   this.components[component] :
+			   null;
 	}
 
 	/**
@@ -652,9 +649,11 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @since 0.1.5
 	 */
 	public Clazz getComponentClazz(int component) {
-		//noinspection ReturnOfNull
-		return component >= 0 && component < this.components.length ? this.components[component].getComponentClazz()
-																	: null;
+		return component >= 0 && component < this.components.length ?
+			   this.components[component] != null ?
+			   this.components[component].get(Component.DEFAULT_CLAZZ) :
+			   null :
+			   null;
 	}
 
 	/**
@@ -670,9 +669,13 @@ public final class Clazz<T> implements Type, Serializable {
 	 * @since 0.1.5
 	 */
 	public Clazz getComponentClazz(int component, Object key) {
-		//noinspection ReturnOfNull
-		return component >= 0 && component < this.components.length ? this.components[component].getComponentClazz(key)
-																	: null;
+		return component >= 0 && component < this.components.length ?
+			   this.components[component] != null ?
+			   this.components[component].containsKey(key) ?
+			   this.components[component].get(key) :
+			   this.components[component].get(Component.DEFAULT_CLAZZ) :
+			   null :
+			   null;
 	}
 
 	/**
@@ -825,6 +828,16 @@ public final class Clazz<T> implements Type, Serializable {
 	}
 
 	/**
+	 * Get this clazz.
+	 *
+	 * @return this clazz.
+	 */
+	public Clazz with() {
+		//noinspection ReturnOfThis
+		return this;
+	}
+
+	/**
 	 * Get a clazz that represents the {@code klass} of this clazz, and have the {@code component} of this clazz, and
 	 * should be treated as if it was the given {@code family}.
 	 *
@@ -891,22 +904,23 @@ public final class Clazz<T> implements Type, Serializable {
 
 	/**
 	 * Backdoor to modify the {@code components} of this clazz.
-	 * <br>
-	 * Note: this method directly sets the given {@code components}, copy the array if it could be modified and {@link
-	 * Component#setModifiable setModifiable} to false with the given {@code components}.
 	 *
 	 * @param components the new {@code components} array to be set.
+	 * @throws NullPointerException if the given {@code components} is null.
 	 */
 	private void setComponents(Component[] components) {
-		this.components = components;
+		Objects.requireNonNull(components, "components");
+		this.components = Component.finalize(components);
 	}
 
 	/**
 	 * Backdoor to modify the {@code family} of this clazz.
 	 *
 	 * @param family the new {@code family} to be set.
+	 * @throws NullPointerException if the given {@code family} is null.
 	 */
 	private void setFamily(Class family) {
+		Objects.requireNonNull(family, "family");
 		this.family = family;
 	}
 
@@ -914,8 +928,10 @@ public final class Clazz<T> implements Type, Serializable {
 	 * Backdoor to modify the {@code klass} of this clazz.
 	 *
 	 * @param klass the new {@code klass} to be set.
+	 * @throws NullPointerException if the given {@code klass} is null.
 	 */
 	private void setKlass(Class klass) {
+		Objects.requireNonNull(klass, "klass");
 		this.klass = klass;
 	}
 
@@ -946,13 +962,13 @@ public final class Clazz<T> implements Type, Serializable {
 		static final Component[] EMPTY_ARRAY = new Component[0];
 
 		/**
-		 * An unmodifiable entry-set containing the {@link Entry}s of this component.
+		 * An unmodifiable entry-set containing the {@link Map.Entry}s of this component.
 		 */
-		private final Set<ComponentEntry> entrySet = new HashSet();
+		private final EntrySet entrySet = new EntrySet();
 		/**
-		 * True, if this component can be modified.
+		 * True, if this component has been finalized and can't be modified.
 		 */
-		private boolean modifiable = true;
+		private boolean finalized;
 
 		/**
 		 * Initialize a new empty component.
@@ -961,102 +977,12 @@ public final class Clazz<T> implements Type, Serializable {
 		}
 
 		/**
-		 * Get an array of components that each one's general clazz is the clazz at the same as its position in the
-		 * given {@code componentClazzes}.
-		 * <pre>
-		 *     Clazz.components(<font color="d3c4ff">COMPONENT0</font>, <font color="d3c4ff">COMPONENT1</font>, <font color="d3c4ff">COMPONENT2</font>, …)
-		 *     &lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, …&gt;
-		 * </pre>
+		 * Return an empty component.
 		 *
-		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
-		 *                         the same position as the clazz in returned components array.
-		 * @return an array of components that each one's general clazz is the clazz at the same as its position in the
-		 * 		given {@code componentClazzes}.
-		 * @throws NullPointerException if the given {@code componentClazzes} is null.
-		 * @see Component#as(int, Clazz[])
-		 * @see Component#of(Clazz)
-		 * @since 0.1.5
+		 * @return an empty component.
 		 */
-		public static Component[] as(Clazz... componentClazzes) {
-			Objects.requireNonNull(componentClazzes, "componentClazzes");
-			Component[] components = new Component[componentClazzes.length];
-
-			for (int i = 0; i < componentClazzes.length; i++)
-				components[i] = Component.of(componentClazzes[i]);
-
-			return components;
-		}
-
-		/**
-		 * Get linear components of general component clazzes. The given {@code componentClasses} specifies each array
-		 * for a component in the returned components array.
-		 * <br>
-		 * Note: this is just an array version of {@link Component#of(Class[])}.
-		 * <pre>
-		 *     Clazz.components(<font color="d3c4ff">{TREE0, NESTED0, DEEP0, …}, {TREE1, NESTED1, DEEP1, …}, …</font>)
-		 *     &lt;<font color="d3c4ff">TREE0</font>&lt;<font color="d3c4ff">NESTED0</font>&lt;<font color="d3c4ff">DEEP0</font>…&gt;&gt;, <font color="d3c4ff">TREE1</font>&lt;<font color="d3c4ff">NESTED1</font>&lt;<font color="d3c4ff">DEEP1</font>…&gt;&gt;, …&gt;
-		 * </pre>
-		 *
-		 * @param componentClasses an array of component classes, each array goes to the same position component in the
-		 *                         returned components array.
-		 * @return linear components of general component clazzes. The given {@code componentClasses} specifies each
-		 * 		array for a component *in the returned components array.
-		 * @throws NullPointerException if the given {@code componentClasses} or any of its elements is null.
-		 * @see Component#of(Class[])
-		 * @since 0.1.5
-		 */
-		public static Component[] as(Class[][] componentClasses) {
-			Objects.requireNonNull(componentClasses, "componentClasses");
-			Component[] components = new Component[componentClasses.length];
-
-			for (int i = 0; i < componentClasses.length; i++)
-				components[i] = Component.of(componentClasses[i]);
-
-			return components;
-		}
-
-		/**
-		 * Get an array of components that each one's general clazz is the clazz at the same as its position in the
-		 * given {@code componentClazzes}.
-		 * <pre>
-		 *     Clazz.components(<font color="fc888a">MIN_LENGTH</font>, <font color="d3c4ff">COMPONENT0</font>, <font color="d3c4ff">COMPONENT1</font>, <font color="d3c4ff">COMPONENT2</font>, …)
-		 *     &lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, <font color="fc888a">…</font>&gt;
-		 * </pre>
-		 *
-		 * @param ml               the minimum length the returned array will be
-		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
-		 *                         the same position as the clazz in returned components array.
-		 * @return an array of components that each one's general clazz is the clazz at the same as its position in the
-		 * 		given {@code componentClazzes}.
-		 * @throws NullPointerException if the given {@code componentClazzes} is null.
-		 * @see Component#as(Clazz[])
-		 * @see Component#of(Clazz)
-		 */
-		public static Component[] as(int ml, Clazz... componentClazzes) {
-			Objects.requireNonNull(componentClazzes, "componentClazzes");
-			Component[] components = new Component[Math.max(componentClazzes.length, ml)];
-
-			int i = 0;
-			for (; i < componentClazzes.length; i++)
-				components[i] = Component.of(componentClazzes[i]);
-			for (; i < ml; i++)
-				components[i] = new Component();
-
-			return components;
-		}
-
-		@SuppressWarnings("JavaDoc")
-		public static Component[] as(int ml, Class[][] componentClasses) {
-			Objects.requireNonNull(componentClasses, "componentClasses");
-			Component[] components = new Component[Math.max(componentClasses.length, ml)];
-
-			int i = 0;
-			for (; i < componentClasses.length; i++)
-				components[i] = Component.of(componentClasses[i]);
-			for (; i < ml; i++)
-				components[i] = new Component();
-
-			return components;
+		public static Component linear() {
+			return new Component();
 		}
 
 		/**
@@ -1073,10 +999,10 @@ public final class Clazz<T> implements Type, Serializable {
 		 * 		the given {@code componentClasses}.
 		 * @throws NullPointerException if the given {@code componentClasses} or an element with index (? &gt; 0) in it
 		 *                              is null.
-		 * @see Component#as(Class[][])
+		 * @see Component#linear(Class[][])
 		 * @since 0.1.5
 		 */
-		public static Component of(Class... componentClasses) {
+		public static Component linear(Class... componentClasses) {
 			Objects.requireNonNull(componentClasses, "componentClasses");
 			if (componentClasses.length == 0)
 				//length == 0 ? empty
@@ -1091,8 +1017,156 @@ public final class Clazz<T> implements Type, Serializable {
 						//componentClazz's klass
 						componentClasses[0],
 						//componentClazz's component (subTree)
-						Component.of(Arrays.copyOfRange(componentClasses, 1, componentClasses.length))
+						Component.linear(Arrays.copyOfRange(componentClasses, 1, componentClasses.length))
 				));
+		}
+
+		/**
+		 * Get linear components of general component clazzes. The given {@code componentClasses} specifies each array
+		 * for a component in the returned components array.
+		 * <br>
+		 * Note: this is just an array version of {@link Component#linear(Class[])}.
+		 * <pre>
+		 *     Clazz.components(<font color="d3c4ff">{TREE0, NESTED0, DEEP0, …}, {TREE1, NESTED1, DEEP1, …}, …</font>)
+		 *     &lt;<font color="d3c4ff">TREE0</font>&lt;<font color="d3c4ff">NESTED0</font>&lt;<font color="d3c4ff">DEEP0</font>…&gt;&gt;, <font color="d3c4ff">TREE1</font>&lt;<font color="d3c4ff">NESTED1</font>&lt;<font color="d3c4ff">DEEP1</font>…&gt;&gt;, …&gt;
+		 * </pre>
+		 *
+		 * @param componentClasses an array of component classes, each array goes to the same position component in the
+		 *                         returned components array.
+		 * @return linear components of general component clazzes. The given {@code componentClasses} specifies each
+		 * 		array for a component *in the returned components array.
+		 * @throws NullPointerException if the given {@code componentClasses} or any of its elements is null.
+		 * @see Component#linear(Class[])
+		 * @since 0.1.5
+		 */
+		public static Component[] linear(Class[]... componentClasses) {
+			Objects.requireNonNull(componentClasses, "componentClasses");
+			Component[] components = new Component[componentClasses.length];
+
+			for (int i = 0; i < componentClasses.length; i++)
+				components[i] = Component.linear(componentClasses[i]);
+
+			return components;
+		}
+
+		/**
+		 * Get linear components of general component clazzes. The given {@code componentClasses} specifies each array
+		 * for a component in the returned components array.
+		 * <br>
+		 * Note: this is just an array version of {@link Component#linear(Class[])}.
+		 * <pre>
+		 *     Clazz.components(<font color="d3c4ff">{TREE0, NESTED0, DEEP0, …}, {TREE1, NESTED1, DEEP1, …}, …</font>)
+		 *     &lt;<font color="d3c4ff">TREE0</font>&lt;<font color="d3c4ff">NESTED0</font>&lt;<font color="d3c4ff">DEEP0</font>…&gt;&gt;, <font color="d3c4ff">TREE1</font>&lt;<font color="d3c4ff">NESTED1</font>&lt;<font color="d3c4ff">DEEP1</font>…&gt;&gt;, …&gt;
+		 * </pre>
+		 *
+		 * @param componentClasses an array of component classes, each array goes to the same position component in the
+		 *                         returned components array.
+		 * @param length           the minimum length the returned array will be.
+		 * @return linear components of general component clazzes. The given {@code componentClasses} specifies each
+		 * 		array for a component *in the returned components array.
+		 * @throws NullPointerException if the given {@code componentClasses} or any of its elements is null.
+		 * @see Component#linear(Class[])
+		 * @since 0.1.5
+		 */
+		public static Component[] linear(Class[][] componentClasses, int length) {
+			Objects.requireNonNull(componentClasses, "componentClasses");
+			Component[] components = new Component[Math.max(componentClasses.length, length)];
+
+			int i = 0;
+			for (; i < componentClasses.length; i++)
+				components[i] = Component.linear(componentClasses[i]);
+			for (; i < length; i++)
+				components[i] = new Component();
+
+			return components;
+		}
+
+		/**
+		 * Get an empty component.
+		 *
+		 * @return an empty component.
+		 */
+		public static Component of() {
+			return new Component();
+		}
+
+		/**
+		 * Get a component that its general clazz is the class of the given {@code componentClazz}, and have no
+		 * mappings.
+		 * <pre>
+		 *     Clazz.component(<font color="d3c4ff">COMPONENT</font>)
+		 *     <font color="d3c4ff">TREE</font>
+		 * </pre>
+		 *
+		 * @param componentClazz the general clazz for the components that have no mapping in the returned component.
+		 * @return a component that its general clazz is the class of the given {@code componentClazz}, and have no
+		 * 		mappings.
+		 * @see Component#of(Clazz[])
+		 * @see Component#of(Clazz[], int)
+		 * @since 0.1.5
+		 */
+		public static Component of(Class componentClazz) {
+			Component component = new Component();
+			component.put(Component.DEFAULT_CLAZZ, Clazz.of(componentClazz));
+			return component;
+		}
+
+		/**
+		 * Get an array of components that each one's general clazz is the clazz of the class at the same as its
+		 * position in the given {@code componentClasses}.
+		 * <pre>
+		 *     Clazz.components(<font color="d3c4ff">COMPONENT0</font>, <font color="d3c4ff">COMPONENT1</font>, <font color="d3c4ff">COMPONENT2</font>, …)
+		 *     &lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, …&gt;
+		 * </pre>
+		 *
+		 * @param componentClasses the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in returned components array.
+		 * @return an array of components that each one's general clazz is the clazz of the class at the same as its *
+		 * 		position in the given {@code componentClasses}.
+		 * @throws NullPointerException if the given {@code componentClasses} is null.
+		 * @see Component#of(Clazz[], int)
+		 * @see Component#of(Clazz)
+		 * @since 0.1.5
+		 */
+		public static Component[] of(Class... componentClasses) {
+			Objects.requireNonNull(componentClasses, "componentClasses");
+			Component[] components = new Component[componentClasses.length];
+
+			for (int i = 0; i < componentClasses.length; i++)
+				components[i] = Component.of(componentClasses[i]);
+
+			return components;
+		}
+
+		/**
+		 * Get an array of components that each one's general clazz is the clazz of the class at the same as its
+		 * position in the given {@code componentClasses}.
+		 * <pre>
+		 *     Clazz.components(<font color="d3c4ff">COMPONENT0</font>, <font color="d3c4ff">COMPONENT1</font>, <font color="d3c4ff">COMPONENT2</font>, …)
+		 *     &lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, …&gt;
+		 * </pre>
+		 *
+		 * @param componentClasses the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in returned components array.
+		 * @param length           the minimum length the returned array will be.
+		 * @return an array of components that each one's general clazz is the clazz of the class at the same as its *
+		 * 		position in the given {@code componentClasses}.
+		 * @throws NullPointerException if the given {@code componentClasses} is null.
+		 * @see Component#of(Clazz[], int)
+		 * @see Component#of(Clazz)
+		 * @since 0.1.5
+		 */
+		public static Component[] of(Class[] componentClasses, int length) {
+			Objects.requireNonNull(componentClasses, "componentClasses");
+			Component[] components = new Component[Math.max(componentClasses.length, length)];
+
+			int i = 0;
+			for (; i < componentClasses.length; i++)
+				components[i] = Component.of(componentClasses[i]);
+			for (; i < length; i++)
+				components[i] = new Component();
+
+			return components;
 		}
 
 		/**
@@ -1104,8 +1178,8 @@ public final class Clazz<T> implements Type, Serializable {
 		 *
 		 * @param componentClazz the general clazz for the components that have no mapping in the returned component.
 		 * @return a component that its general clazz is the given {@code componentClazz}, and have no mappings.
-		 * @see Component#as(Clazz[])
-		 * @see Component#as(int, Clazz[])
+		 * @see Component#of(Clazz[])
+		 * @see Component#of(Clazz[], int)
 		 * @since 0.1.5
 		 */
 		public static Component of(Clazz componentClazz) {
@@ -1115,24 +1189,101 @@ public final class Clazz<T> implements Type, Serializable {
 		}
 
 		/**
-		 * Set the modification status of all the given {@code components} to the given {@code modifiable}.
+		 * Get an array of components that each one's general clazz is the clazz at the same as its position in the
+		 * given {@code componentClazzes}.
+		 * <pre>
+		 *     Clazz.components(<font color="d3c4ff">COMPONENT0</font>, <font color="d3c4ff">COMPONENT1</font>, <font color="d3c4ff">COMPONENT2</font>, …)
+		 *     &lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, …&gt;
+		 * </pre>
 		 *
-		 * @param components the components to be updated to the given {@code modifiable} modifications status.
-		 * @param modifiable the new modification status to be set to all of the given {@code components}.
+		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in returned components array.
+		 * @return an array of components that each one's general clazz is the clazz at the same as its position in the
+		 * 		given {@code componentClazzes}.
+		 * @throws NullPointerException if the given {@code componentClazzes} is null.
+		 * @see Component#of(Clazz[], int)
+		 * @see Component#of(Clazz)
+		 * @since 0.1.5
 		 */
-		private static void setModifiable(Component[] components, boolean modifiable) {
-			for (Component component : components)
-				component.setModifiable(modifiable);
+		public static Component[] of(Clazz... componentClazzes) {
+			Objects.requireNonNull(componentClazzes, "componentClazzes");
+			Component[] components = new Component[componentClazzes.length];
+
+			for (int i = 0; i < componentClazzes.length; i++)
+				components[i] = Component.of(componentClazzes[i]);
+
+			return components;
+		}
+
+		/**
+		 * Get an array of components that each one's general clazz is the clazz at the same as its position in the
+		 * given {@code componentClazzes}.
+		 * <pre>
+		 *     Clazz.components(<font color="fc888a">MIN_LENGTH</font>, <font color="d3c4ff">COMPONENT0</font>, <font color="d3c4ff">COMPONENT1</font>, <font color="d3c4ff">COMPONENT2</font>, …)
+		 *     &lt;<font color="d3c4ff">TREE0</font>, <font color="d3c4ff">TREE1</font>, <font color="d3c4ff">TREE2</font>, <font color="fc888a">…</font>&gt;
+		 * </pre>
+		 *
+		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in returned components array.
+		 * @param length           the minimum length the returned array will be.
+		 * @return an array of components that each one's general clazz is the clazz at the same as its position in the
+		 * 		given {@code componentClazzes}.
+		 * @throws NullPointerException if the given {@code componentClazzes} is null.
+		 * @see Component#of(Clazz[])
+		 * @see Component#of(Clazz)
+		 */
+		public static Component[] of(Clazz[] componentClazzes, int length) {
+			Objects.requireNonNull(componentClazzes, "componentClazzes");
+			Component[] components = new Component[Math.max(componentClazzes.length, length)];
+
+			int i = 0;
+			for (; i < componentClazzes.length; i++)
+				components[i] = Component.of(componentClazzes[i]);
+			for (; i < length; i++)
+				components[i] = new Component();
+
+			return components;
+		}
+
+		/**
+		 * Finalize the given {@code component} and make it unmodifiable.
+		 *
+		 * @param component the component to be finalized.
+		 * @return the given {@code component}.
+		 */
+		static Component finalize(Component component) {
+			if (component != null)
+				component.finalized = true;
+			return component;
+		}
+
+		/**
+		 * Finalize the given {@code components} and make them unmodifiable.
+		 *
+		 * @param components the components to be finalized.
+		 * @return a copy of the given {@code components}.
+		 * @throws NullPointerException if the given {@code components} is null.
+		 */
+		static Component[] finalize(Component... components) {
+			Objects.requireNonNull(components, "components");
+			Component[] finalized = new Component[components.length];
+
+			for (int i = 0; i < components.length; i++)
+				Component.finalize(finalized[i] = components[i]);
+
+			return finalized;
 		}
 
 		@Override
 		public Clazz put(Object key, Clazz klazz) {
-			if (this.modifiable)
-				for (ComponentEntry entry : this.entrySet)
-					if (entry.getKey().equals(key))
-						return entry.setValue(klazz);
+			if (this.finalized)
+				throw new UnsupportedOperationException("Finalized Component");
 
-			this.entrySet.add(new ComponentEntry(key, klazz));
+			for (Entry entry : this.entrySet)
+				if (entry.getKey().equals(key))
+					return entry.setValue(klazz);
+
+			this.entrySet.add(new Entry(key, klazz));
 			//noinspection ReturnOfNull
 			return null;
 		}

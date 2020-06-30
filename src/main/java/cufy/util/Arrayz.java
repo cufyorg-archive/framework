@@ -1190,7 +1190,7 @@ public final class Arrayz {
 	 * @throws NullPointerException     if the given 'array' is null.
 	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
-	public static <K extends E, V extends E, E> Map<K, V> asMap(E... array) {
+	public static <K extends E, V extends E, E> Map<K, V> toMap(E... array) {
 		Objects.requireNonNull(array, "array");
 		if (array.length % 2 != 0)
 			throw new IllegalArgumentException("odd length array");
@@ -1210,7 +1210,7 @@ public final class Arrayz {
 	 * @throws NullPointerException     if the given 'array' is null.
 	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
-	public static Map<Boolean, Boolean> asMap(boolean... array) {
+	public static Map<Boolean, Boolean> toMap(boolean... array) {
 		Objects.requireNonNull(array, "array");
 		if (array.length % 2 != 0)
 			throw new IllegalArgumentException("odd length array");
@@ -1230,7 +1230,7 @@ public final class Arrayz {
 	 * @throws NullPointerException     if the given 'array' is null.
 	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
-	public static Map<Byte, Byte> asMap(byte... array) {
+	public static Map<Byte, Byte> toMap(byte... array) {
 		Objects.requireNonNull(array, "array");
 		if (array.length % 2 != 0)
 			throw new IllegalArgumentException("odd length array");
@@ -1250,7 +1250,7 @@ public final class Arrayz {
 	 * @throws NullPointerException     if the given 'array' is null.
 	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
-	public static Map<Character, Character> asMap(char... array) {
+	public static Map<Character, Character> toMap(char... array) {
 		Objects.requireNonNull(array, "array");
 		if (array.length % 2 != 0)
 			throw new IllegalArgumentException("odd length array");
@@ -1270,7 +1270,7 @@ public final class Arrayz {
 	 * @throws NullPointerException     if the given 'array' is null.
 	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
-	public static Map<Double, Double> asMap(double... array) {
+	public static Map<Double, Double> toMap(double... array) {
 		Objects.requireNonNull(array, "array");
 		if (array.length % 2 != 0)
 			throw new IllegalArgumentException("odd length array");
@@ -1290,7 +1290,7 @@ public final class Arrayz {
 	 * @throws NullPointerException     if the given 'array' is null.
 	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
-	public static Map<Float, Float> asMap(float... array) {
+	public static Map<Float, Float> toMap(float... array) {
 		Objects.requireNonNull(array, "array");
 		if (array.length % 2 != 0)
 			throw new IllegalArgumentException("odd length array");
@@ -1310,7 +1310,7 @@ public final class Arrayz {
 	 * @throws NullPointerException     if the given 'array' is null.
 	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
-	public static Map<Integer, Integer> asMap(int... array) {
+	public static Map<Integer, Integer> toMap(int... array) {
 		Objects.requireNonNull(array, "array");
 		if (array.length % 2 != 0)
 			throw new IllegalArgumentException("odd length array");
@@ -1330,7 +1330,7 @@ public final class Arrayz {
 	 * @throws NullPointerException     if the given 'array' is null.
 	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
-	public static Map<Long, Long> asMap(long... array) {
+	public static Map<Long, Long> toMap(long... array) {
 		Objects.requireNonNull(array, "array");
 		if (array.length % 2 != 0)
 			throw new IllegalArgumentException("odd length array");
@@ -1350,7 +1350,7 @@ public final class Arrayz {
 	 * @throws NullPointerException     if the given 'array' is null.
 	 * @throws IllegalArgumentException if the given 'array' has odd length.
 	 */
-	public static Map<Short, Short> asMap(short... array) {
+	public static Map<Short, Short> toMap(short... array) {
 		Objects.requireNonNull(array, "array");
 		if (array.length % 2 != 0)
 			throw new IllegalArgumentException("odd length array");
@@ -1370,7 +1370,7 @@ public final class Arrayz {
 	 * @throws NullPointerException     if the given 'array' is null.
 	 * @throws IllegalArgumentException if the given 'array' is not an array, or has an odd length.
 	 */
-	public static Map asMap0(Object array) {
+	public static Map toMap0(Object array) {
 		Objects.requireNonNull(array, "array");
 		if (!array.getClass().isArray())
 			throw new IllegalArgumentException(array + " isn't an array");
@@ -1392,27 +1392,27 @@ public final class Arrayz {
 	 * @throws NullPointerException     if the given 'array' is null.
 	 * @throws IllegalArgumentException if the given 'array' is not an array, or has an odd length.
 	 */
-	public static Map asMap1(Object array) {
+	public static Map toMap1(Object array) {
 		Objects.requireNonNull(array, "array");
 
 		if (array instanceof Object[])
-			return Arrayz.asMap((Object[]) array);
+			return Arrayz.toMap((Object[]) array);
 		if (array instanceof boolean[])
-			return Arrayz.asMap((boolean[]) array);
+			return Arrayz.toMap((boolean[]) array);
 		if (array instanceof byte[])
-			return Arrayz.asMap((byte[]) array);
+			return Arrayz.toMap((byte[]) array);
 		if (array instanceof char[])
-			return Arrayz.asMap((char[]) array);
+			return Arrayz.toMap((char[]) array);
 		if (array instanceof double[])
-			return Arrayz.asMap((double[]) array);
+			return Arrayz.toMap((double[]) array);
 		if (array instanceof float[])
-			return Arrayz.asMap((float[]) array);
+			return Arrayz.toMap((float[]) array);
 		if (array instanceof int[])
-			return Arrayz.asMap((int[]) array);
+			return Arrayz.toMap((int[]) array);
 		if (array instanceof long[])
-			return Arrayz.asMap((long[]) array);
+			return Arrayz.toMap((long[]) array);
 		if (array instanceof short[])
-			return Arrayz.asMap((short[]) array);
+			return Arrayz.toMap((short[]) array);
 
 		throw new IllegalArgumentException("not an array");
 	}
