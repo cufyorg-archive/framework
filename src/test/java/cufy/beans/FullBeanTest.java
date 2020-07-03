@@ -1,5 +1,5 @@
 package cufy.beans;
 
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings("ALL")
 public class FullBeanTest {
 }

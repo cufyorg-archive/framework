@@ -15,8 +15,6 @@
  */
 package cufy.beans;
 
-import cufy.util.Reflection;
-
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -26,141 +24,383 @@ import java.util.*;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  * @author LSafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 0.0.1 ~2019.12.09
  */
 public interface FullBean<K, V> extends Bean<K, V> {
 	@Override
 	default int size() {
-		Set<Entry<K, V>> entrySet = this.entrySet();
-		return entrySet.size();
+		return FullBean.Methods.size(this, this);
 	}
 
 	@Override
 	default boolean isEmpty() {
-		Set<Entry<K, V>> entrySet = this.entrySet();
-		return entrySet.isEmpty();
+		return FullBean.Methods.isEmpty(this, this);
 	}
 
 	@Override
 	default boolean containsKey(Object key) {
-		for (Entry entry : this.entrySet()) {
-			Object entryKey = entry.getKey();
-
-			if (Objects.equals(key, entryKey))
-				return true;
-		}
-
-		return false;
+		return FullBean.Methods.containsKey(this, this, key);
 	}
 
 	@Override
 	default boolean containsValue(Object value) {
-		for (Entry entry : this.entrySet()) {
-			Object entryValue = entry.getValue();
-
-			if (Objects.equals(value, entryValue))
-				return true;
-		}
-		return false;
+		return FullBean.Methods.containsValue(this, this, value);
 	}
 
 	@Override
 	default V get(Object key) {
-		for (Entry<K, V> entry : this.entrySet()) {
-			K entryKey = entry.getKey();
-
-			if (Objects.equals(entryKey, key))
-				return entry.getValue();
-		}
-
-		//noinspection ReturnOfNull
-		return null;
+		return FullBean.Methods.get(this, this, key);
 	}
 
 	@Override
 	default V put(K key, V value) {
-		Set<Entry<K, V>> entrySet = this.entrySet();
-
-		//looking in the existing entries
-		for (Entry<K, V> entry : entrySet) {
-			K entryKey = entry.getKey();
-
-			if (Objects.equals(entryKey, key))
-				return entry.setValue(value);
-		}
-
-		//looking in the fields with removed entries, Or add a simple entry
-		Object instance = this.getInstance();
-		FieldEntry<K, V> entry = Bean.entry(instance, key, value);
-		entrySet.add(entry != null ? entry : new AbstractMap.SimpleEntry<>(key, value));
-		return null;
+		return FullBean.Methods.put(this, this, key, value);
 	}
 
 	@Override
 	default V remove(Object key) {
-		Set<Entry<K, V>> entrySet = this.entrySet();
-
-		Iterator<Entry<K, V>> iterator = entrySet.iterator();
-		while (iterator.hasNext()) {
-			Entry<K, V> entry = iterator.next();
-			K entryKey = entry.getKey();
-
-			if (Objects.equals(key, entryKey)) {
-				V old = entry.getValue();
-				iterator.remove();
-				return old;
-			}
-		}
-
-		//noinspection ReturnOfNull
-		return null;
+		return FullBean.Methods.remove(this, this, key);
 	}
 
 	@Override
 	default void putAll(Map<? extends K, ? extends V> map) {
-		//DON'T replace it with something like map.forEach(this::put)!
-		Objects.requireNonNull(map, "map");
-		//noinspection NestedMethodCall
-		Set<K> keys = new HashSet<>(map.keySet());
-		Set<Entry<K, V>> entrySet = this.entrySet();
-
-		//looking in the existing entries
-		for (Entry<K, V> entry : entrySet) {
-			K entryKey = entry.getKey();
-
-			if (keys.remove(entryKey)) {
-				V value = map.get(entryKey);
-				entry.setValue(value);
-			}
-		}
-
-		//looking in the fields with removed entries
-		Object instance = this.getInstance();
-		Class<?> klass = instance.getClass();
-
-		for (Field field : Reflection.getAllFields(klass))
-			if (field.isAnnotationPresent(Property.class))
-				for (K key : (K[]) Bean.Util.getKeys(field))
-					if (keys.remove(key)) {
-						V value = map.get(key);
-						FieldEntry<K, V> entry = Bean.entry(instance, field, key, value);
-						entrySet.add(entry);
-					}
-
-		//adding simple entries
-		for (K key : keys) {
-			V value = map.get(key);
-			entrySet.add(new AbstractMap.SimpleEntry(key, value));
-		}
+		FullBean.Methods.putAll(this, this, map);
 	}
 
 	@Override
 	default void clear() {
-		Set<Entry<K, V>> entrySet = this.entrySet();
-		entrySet.clear();
+		FullBean.Methods.clear(this, this);
 	}
 
 	@Override
-	Set<Entry<K, V>> entrySet();
+	Set<K> keySet();
+
+	@Override
+	Collection<V> values();
+
+	@Override
+	Set<Map.Entry<K, V>> entrySet();
+
+	/**
+	 * An entrySet for fullBeans.
+	 *
+	 * @param <K> the type of the keys.
+	 * @param <V> the type of the values.
+	 */
+	final class FullBeanEntrySet<K, V> extends HashSet<Map.Entry<K, V>> {
+		/**
+		 * Construct a new entrySet for the given {@code bean} that have the given {@code instance}.
+		 *
+		 * @param bean     the bean this entrySet is for.
+		 * @param instance the instance the given {@code bean} is for.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		private FullBeanEntrySet(FullBean<K, V> bean, Object instance) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+			this.addAll(Bean.Methods.entrySet(instance));
+		}
+	}
+
+	/**
+	 * A keySet for fullBeans.
+	 *
+	 * @param <K> the type of the keys.
+	 */
+	final class FullBeanKeySet<K> extends AbstractSet<K> {
+		/**
+		 * The bean this keySet is for.
+		 */
+		private final FullBean<K, ?> bean;
+
+		/**
+		 * Construct a new keySet for the given {@code bean} that have the given {@code instance}.
+		 *
+		 * @param bean     the bean this keySet is for.
+		 * @param instance the instance the given {@code bean} is for.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		private FullBeanKeySet(FullBean<K, ?> bean, Object instance) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+			this.bean = bean;
+		}
+
+		@Override
+		public Iterator<K> iterator() {
+			return new FullBeanKeySetIterator();
+		}
+
+		@Override
+		public int size() {
+			return this.bean.size();
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.bean.isEmpty();
+		}
+
+		@Override
+		public boolean contains(Object k) {
+			return this.bean.containsKey(k);
+		}
+
+		@Override
+		public void clear() {
+			this.bean.clear();
+		}
+
+		/**
+		 * An iterator for the keySet of a fullBean.
+		 */
+		public final class FullBeanKeySetIterator implements Iterator<K> {
+			/**
+			 * The iterator backing this iterator.
+			 */
+			private final Iterator<Map.Entry<K, ?>> iterator = (Iterator) FullBeanKeySet.this.bean.entrySet().iterator();
+
+			/**
+			 * Construct a new fullBean keySet iterator.
+			 */
+			private FullBeanKeySetIterator() {
+			}
+
+			@Override
+			public boolean hasNext() {
+				return this.iterator.hasNext();
+			}
+
+			@Override
+			public K next() {
+				return this.iterator.next().getKey();
+			}
+
+			@Override
+			public void remove() {
+				this.iterator.remove();
+			}
+		}
+	}
+
+	/**
+	 * A values-collection for fullBeans.
+	 *
+	 * @param <V> the type of the values.
+	 */
+	final class FullBeanValues<V> extends AbstractCollection<V> {
+		/**
+		 * The bean this values-collection is for.
+		 */
+		private final FullBean<?, V> bean;
+
+		/**
+		 * Construct a new values-collection for the given {@code bean} that have the given {@code instance}.
+		 *
+		 * @param bean     the bean this values-collection is for.
+		 * @param instance the instance the given {@code bean} is for.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		private FullBeanValues(FullBean<?, V> bean, Object instance) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+			this.bean = bean;
+		}
+
+		@Override
+		public Iterator<V> iterator() {
+			return new FullBeanValuesIterator();
+		}
+
+		@Override
+		public int size() {
+			return this.bean.size();
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.bean.isEmpty();
+		}
+
+		@Override
+		public boolean contains(Object v) {
+			return this.bean.containsValue(v);
+		}
+
+		@Override
+		public void clear() {
+			this.bean.clear();
+		}
+
+		/**
+		 * An iterator that iterates the values of a fullBean.
+		 */
+		public final class FullBeanValuesIterator implements Iterator<V> {
+			/**
+			 * The iterator backing this iterator.
+			 */
+			private final Iterator<Map.Entry<?, V>> iterator = (Iterator) FullBeanValues.this.bean.entrySet().iterator();
+
+			/**
+			 * Construct a new fullBean values iterator.
+			 */
+			private FullBeanValuesIterator() {
+			}
+
+			@Override
+			public boolean hasNext() {
+				return this.iterator.hasNext();
+			}
+
+			@Override
+			public V next() {
+				return this.iterator.next().getValue();
+			}
+
+			@Override
+			public void remove() {
+				this.iterator.remove();
+			}
+		}
+	}
+
+	@SuppressWarnings("JavaDoc")
+	final class Methods {
+		public static void clear(FullBean bean, Object instance) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+			bean.entrySet().clear();
+		}
+
+		public static boolean containsKey(FullBean bean, Object instance, Object key) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+
+			for (Map.Entry entry : (Set<Map.Entry>) bean.entrySet())
+				if (Objects.equals(key, entry.getKey()))
+					return true;
+
+			return false;
+		}
+
+		public static boolean containsValue(FullBean bean, Object instance, Object value) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+
+			for (Map.Entry entry : (Set<Map.Entry>) bean.entrySet())
+				if (Objects.equals(value, entry.getValue()))
+					return true;
+
+			return false;
+		}
+
+		public static <K, V> FullBeanEntrySet<K, V> entrySet(FullBean<K, V> bean, Object instance) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+			return new FullBeanEntrySet(bean, instance);
+		}
+
+		public static <V> V get(FullBean<?, V> bean, Object instance, Object key) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+
+			for (Map.Entry<?, V> entry : bean.entrySet())
+				if (Objects.equals(key, entry.getKey()))
+					return entry.getValue();
+
+			return null;
+		}
+
+		public static boolean isEmpty(FullBean bean, Object instance) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+			return bean.entrySet().isEmpty();
+		}
+
+		public static <K> FullBeanKeySet<K> keySet(FullBean<K, ?> bean, Object instance) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+			return new FullBeanKeySet(bean, instance);
+		}
+
+		public static <V> V put(FullBean<?, V> bean, Object instance, Object key, V value) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+
+			Set<Map.Entry<?, V>> entrySet = (Set) bean.entrySet();
+
+			//looking in the existing entries
+			for (Map.Entry<?, V> entry : entrySet) {
+				Object entryKey = entry.getKey();
+
+				if (Objects.equals(entryKey, key))
+					return entry.setValue(value);
+			}
+
+			//looking in the fields with removed entries, Or add a simple entry
+			Bean.PropertyEntry<Object, V> entry = Bean.PropertyEntry.from(instance, key, value);
+			entrySet.add(entry != null ? entry : new AbstractMap.SimpleEntry(key, value));
+			return null;
+		}
+
+		public static void putAll(FullBean bean, Object instance, Map map) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+			Objects.requireNonNull(map, "map");
+
+			Set keys = new HashSet(map.keySet());
+			Set<Map.Entry> entrySet = bean.entrySet();
+
+			//looking in the existing entries
+			for (Map.Entry entry : entrySet) {
+				Object entryKey = entry.getKey();
+
+				if (keys.remove(entryKey))
+					entry.setValue(map.get(entryKey));
+			}
+
+			//looking in the fields with removed entries
+			for (Field field : Bean.Reflection.getPropertyFields(instance))
+				if (field.isAnnotationPresent(Bean.Property.class))
+					for (Object key : new Bean.PropertyKeySet(field))
+						if (keys.remove(key))
+							entrySet.add(Bean.PropertyEntry.from(instance, field, key, map.get(key)));
+
+			//adding simple entries
+			for (Object key : keys)
+				entrySet.add(new AbstractMap.SimpleEntry(key, map.get(key)));
+		}
+
+		public static <V> V remove(FullBean<?, V> bean, Object instance, Object key) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+
+			Iterator<Map.Entry<?, V>> iterator = (Iterator) bean.entrySet().iterator();
+
+			while (iterator.hasNext()) {
+				Map.Entry<?, V> entry = iterator.next();
+
+				if (Objects.equals(key, entry.getKey())) {
+					V old = entry.getValue();
+					iterator.remove();
+					return old;
+				}
+			}
+
+			return null;
+		}
+
+		public static int size(FullBean bean, Object instance) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+			return bean.entrySet().size();
+		}
+
+		public static <V> FullBeanValues<V> values(FullBean<?, V> bean, Object instance) {
+			Objects.requireNonNull(bean, "bean");
+			Objects.requireNonNull(instance, "instance");
+			return new FullBeanValues(bean, instance);
+		}
+	}
 }

@@ -30,7 +30,7 @@ import java.util.Set;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  * @author LSafer
- * @version 0.1.3
+ * @version 0.1.5
  * @since 0.0.1 ~2019.06.11
  **/
 public abstract class AbstractBean<K, V> implements FullBean<K, V>, Serializable {
@@ -48,19 +48,9 @@ public abstract class AbstractBean<K, V> implements FullBean<K, V>, Serializable
 	protected transient Collection<V> values;
 
 	@Override
-	public Set<Entry<K, V>> entrySet() {
-		if (this.entrySet == null) {
-			Object instance = this.getInstance();
-			this.entrySet = Bean.entrySet(instance);
-		}
-
-		return this.entrySet;
-	}
-
-	@Override
 	public Set<K> keySet() {
 		if (this.keySet == null)
-			this.keySet = FullBean.super.keySet();
+			this.keySet = FullBean.Methods.keySet(this, this);
 
 		return this.keySet;
 	}
@@ -68,9 +58,17 @@ public abstract class AbstractBean<K, V> implements FullBean<K, V>, Serializable
 	@Override
 	public Collection<V> values() {
 		if (this.values == null)
-			this.values = FullBean.super.values();
+			this.values = FullBean.Methods.values(this, this);
 
 		return this.values;
+	}
+
+	@Override
+	public Set<Entry<K, V>> entrySet() {
+		if (this.entrySet == null)
+			this.entrySet = FullBean.Methods.entrySet(this, this);
+
+		return this.entrySet;
 	}
 
 	@Override
@@ -94,8 +92,9 @@ public abstract class AbstractBean<K, V> implements FullBean<K, V>, Serializable
 			}
 
 			return builder.toString();
-		} else
-			return "{}";
+		}
+
+		return "{}";
 	}
 
 	@SuppressWarnings("JavaDoc")
