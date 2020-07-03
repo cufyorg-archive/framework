@@ -600,8 +600,7 @@ public final class Clazz<T> implements Type, Serializable {
 
 	@Override
 	public int hashCode() {
-		//noinspection ObjectInstantiationInEqualsHashCode
-		return 31 * Objects.hash(this.family, this.klass) + Arrays.hashCode(this.components);
+		return Objects.hash(this.family, this.klass) + Arrays.hashCode(this.components);
 	}
 
 	@Override
@@ -964,7 +963,7 @@ public final class Clazz<T> implements Type, Serializable {
 		/**
 		 * An unmodifiable entry-set containing the {@link Map.Entry}s of this component.
 		 */
-		private final EntrySet entrySet = new EntrySet();
+		private final ComponentEntrySet entrySet = new ComponentEntrySet();
 		/**
 		 * True, if this component has been finalized and can't be modified.
 		 */
@@ -1279,18 +1278,30 @@ public final class Clazz<T> implements Type, Serializable {
 			if (this.finalized)
 				throw new UnsupportedOperationException("Finalized Component");
 
-			for (Entry entry : this.entrySet)
+			for (ComponentEntry entry : this.entrySet)
 				if (entry.getKey().equals(key))
 					return entry.setValue(klazz);
 
-			this.entrySet.add(new Entry(key, klazz));
+			this.entrySet.add(new ComponentEntry(key, klazz));
 			//noinspection ReturnOfNull
 			return null;
 		}
 
 		@Override
-		public Set<Entry<Object, Clazz>> entrySet() {
-			return Collections.unmodifiableSet(this.entrySet);
+		public Set<Map.Entry<Object, Clazz>> entrySet() {
+			return (Set) this.entrySet;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			return o == this ||
+				   o instanceof Component &&
+				   Objects.equals(((Component) o).entrySet, this.entrySet);
+		}
+
+		@Override
+		public int hashCode() {
+			return this.entrySet.hashCode();
 		}
 
 		@Override
@@ -1368,34 +1379,16 @@ public final class Clazz<T> implements Type, Serializable {
 		}
 
 		/**
-		 * Determine if modifications allowed in this component.
-		 *
-		 * @return true, if modifications are allowed in this component.
-		 */
-		public boolean isModifiable() {
-			return this.modifiable;
-		}
-
-		/**
-		 * Set whether modifications allowed in this component or not.
-		 *
-		 * @param modifiable the new modification state.
-		 */
-		private void setModifiable(boolean modifiable) {
-			this.modifiable = modifiable;
-		}
-
-		/**
 		 * An {@link Map.Entry} implementation for {@link Component}s.
 		 */
-		private final class ComponentEntry extends AbstractMap.SimpleEntry<Object, Clazz> {
+		public final class ComponentEntry extends AbstractMap.SimpleEntry<Object, Clazz> {
 			/**
 			 * Construct a new component-entry.
 			 *
 			 * @param key   the key of this entry.
 			 * @param klazz the klazz (value) to this entry.
 			 */
-			private ComponentEntry(Object key, Clazz klazz) {
+			public ComponentEntry(Object key, Clazz klazz) {
 				super(key, klazz);
 			}
 
