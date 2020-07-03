@@ -18,7 +18,6 @@ package cufy.concurrent;
 import cufy.util.Arrayz;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -54,7 +53,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	 */
 	public Foreach(boolean[] array) {
 		Objects.requireNonNull(array, "array");
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -65,7 +64,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	 */
 	public Foreach(byte[] array) {
 		Objects.requireNonNull(array, "array");
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -76,7 +75,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	 */
 	public Foreach(char[] array) {
 		Objects.requireNonNull(array, "array");
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -87,7 +86,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	 */
 	public Foreach(double[] array) {
 		Objects.requireNonNull(array, "array");
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -98,7 +97,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	 */
 	public Foreach(float[] array) {
 		Objects.requireNonNull(array, "array");
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -109,7 +108,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	 */
 	public Foreach(int[] array) {
 		Objects.requireNonNull(array, "array");
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -120,7 +119,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	 */
 	public Foreach(long[] array) {
 		Objects.requireNonNull(array, "array");
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -131,7 +130,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 	 */
 	public Foreach(short[] array) {
 		Objects.requireNonNull(array, "array");
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -170,7 +169,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
 		this.append((Code) code);
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -184,7 +183,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
 		this.append((Code) code);
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -198,7 +197,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
 		this.append((Code) code);
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -212,7 +211,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
 		this.append((Code) code);
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -226,7 +225,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
 		this.append((Code) code);
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -240,7 +239,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
 		this.append((Code) code);
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -254,7 +253,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
 		this.append((Code) code);
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
@@ -268,7 +267,7 @@ public class Foreach<I> extends Loop<Foreach.Code<I>> {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(code, "code");
 		this.append((Code) code);
-		this.iterable = (List) Arrayz.asList(array);
+		this.iterable = (Iterable) Arrayz.asList(array);
 	}
 
 	/**
