@@ -1401,10 +1401,72 @@ public final class Clazz<T> implements Type, Serializable {
 
 			@Override
 			public Clazz setValue(Clazz value) {
-				if (Component.this.isModifiable())
-					return super.setValue(value);
+				if (Component.this.finalized)
+					throw new UnsupportedOperationException("Finalized Component");
 
-				throw new UnsupportedOperationException("Unmodifiable Component");
+				return super.setValue(value);
+			}
+		}
+
+		/**
+		 * An {@link Map#entrySet} implementation for {@link Component}s.
+		 */
+		public final class ComponentEntrySet extends AbstractSet<ComponentEntry> {
+			/**
+			 * The backing hashset.
+			 */
+			private final Set<ComponentEntry> set = new HashSet();
+
+			@Override
+			public ComponentEntrySetIterator iterator() {
+				return new ComponentEntrySetIterator();
+			}
+
+			@Override
+			public int size() {
+				return this.set.size();
+			}
+
+			@Override
+			public boolean add(ComponentEntry entry) {
+				if (Component.this.finalized)
+					throw new UnsupportedOperationException("Finalized Component");
+
+				return this.set.add(entry);
+			}
+
+			/**
+			 * An iterator for component-entry sets.
+			 */
+			public final class ComponentEntrySetIterator implements Iterator<ComponentEntry> {
+				/**
+				 * The backing iterator.
+				 */
+				private final Iterator<ComponentEntry> iterator = ComponentEntrySet.this.set.iterator();
+
+				/**
+				 * Construct new iterator.
+				 */
+				private ComponentEntrySetIterator() {
+				}
+
+				@Override
+				public boolean hasNext() {
+					return this.iterator.hasNext();
+				}
+
+				@Override
+				public ComponentEntry next() {
+					return this.iterator.next();
+				}
+
+				@Override
+				public void remove() {
+					if (Component.this.finalized)
+						throw new UnsupportedOperationException("Finalized Component");
+
+					this.iterator.remove();
+				}
 			}
 		}
 	}
@@ -1412,7 +1474,6 @@ public final class Clazz<T> implements Type, Serializable {
 	/**
 	 * A util class for auto-generating clazzes.
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static final class Generate {
 		/**
 		 * This is an util class and must not be instanced as an object.
@@ -1423,76 +1484,318 @@ public final class Clazz<T> implements Type, Serializable {
 			throw new AssertionError("No instance for you!");
 		}
 
+		/**
+		 * Get a clazz auto-generated to be representing the given {@code instance}. The {@link Component#DEFAULT_CLAZZ
+		 * componentClazz}s of the {@link Component components} of the returned clazz are the given {@code
+		 * componentClazz}, each clazz is for the component at the same position as its position.
+		 *
+		 * @param instance         the instance the returned clazz are representing.
+		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in the components array of the returned clazz.
+		 * @param <T>              the type of the class represented by the returned clazz.
+		 * @return a clazz auto-generated to be representing the given {@code instance}. The {@link
+		 *        Component#DEFAULT_CLAZZ componentClazz}s of the {@link Component components} of the returned clazz are the
+		 * 		given {@code componentClazz}, each clazz is for the component at the same position as its position.
+		 * @throws NullPointerException if the given {@code componentClazzes} is null.
+		 */
 		public static <T> Clazz<T> from(T instance, Clazz... componentClazzes) {
-			return Generate.from0(new HashMap(), instance, componentClazzes);
+			Objects.requireNonNull(componentClazzes, "componentClazzes");
+			return Generate.from(new HashMap(), instance, componentClazzes);
 		}
 
+		/**
+		 * Get a clazz auto-generated to be representing the given {@code instance}, and should be treated as if it was
+		 * the given {@code family}. The {@link Component#DEFAULT_CLAZZ componentClazz}s of the {@link Component
+		 * components} of the returned clazz are the given {@code componentClazz}, each clazz is for the component at
+		 * the same position as its position.
+		 *
+		 * @param instance         the instance the returned clazz are representing.
+		 * @param family           the class that an instance of the returned clazz should be treated as if it was an
+		 *                         instance of it.
+		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in the components array of the returned clazz.
+		 * @param <T>              the type of the class represented by the returned clazz.
+		 * @return a clazz auto-generated to be representing the given {@code instance}, and should be treated as if it
+		 * 		was the given {@code family}. The {@link Component#DEFAULT_CLAZZ componentClazz}s of the {@link Component
+		 * 		components} of the returned clazz are the given {@code componentClazz}, each clazz is for the component at
+		 * 		the same position as its position.
+		 * @throws NullPointerException if the given {@code family} or {@code componentClazzes} is null.
+		 */
 		public static <T> Clazz<T> from(T instance, Class family, Clazz... componentClazzes) {
-			return Generate.from0(new HashMap(), instance, family, componentClazzes);
+			Objects.requireNonNull(family, "family");
+			Objects.requireNonNull(componentClazzes, "componentClazzes");
+			return Generate.from(new HashMap(), instance, family, componentClazzes);
 		}
 
-		static <T> Clazz<T> from0(Map dejaVus, T instance, Clazz... componentClazzes) {
+		/**
+		 * The backing method for the method {@link Generate#from(Object, Clazz...)}.
+		 *
+		 * @param dejaVus          a map associates instances to their clazzes, so any instance included in the map will
+		 *                         not be clazzified, instead this method will take the clazz associated to it in the
+		 *                         map.
+		 * @param instance         the instance the returned clazz are representing.
+		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in the components array of the returned clazz.
+		 * @param <T>              the type of the class represented by the returned clazz.
+		 * @return a clazz auto-generated to be representing the given {@code instance}. The {@link
+		 *        Component#DEFAULT_CLAZZ componentClazz}s of the {@link Component components} of the returned clazz are the
+		 * 		given {@code componentClazz}, each clazz is for the component at the same position as its position.
+		 * @throws NullPointerException if the given {@code dejaVus} or {@code componentClazzes} is null.
+		 */
+		static <T> Clazz<T> from(Map dejaVus, T instance, Clazz... componentClazzes) {
+			Objects.requireNonNull(dejaVus, "dejaVus");
+			Objects.requireNonNull(componentClazzes, "componentClazzes");
 			Class family = instance == null ? Void.class : instance.getClass();
-			return Generate.from0(dejaVus, instance, family, componentClazzes);
+			return Generate.from(dejaVus, instance, family, componentClazzes);
 		}
 
-		static <T> Clazz<T> from0(Map dejaVus, T instance, Class family, Clazz... componentClazzes) {
+		/**
+		 * The backing method for the method {@link Generate#from(Object, Class, Clazz[])}.
+		 *
+		 * @param dejaVus          a map associates instances to their clazzes, so any instance included in the map will
+		 *                         not be clazzified, instead this method will take the clazz associated to it in the
+		 *                         map.
+		 * @param instance         the instance the returned clazz are representing.
+		 * @param family           the class that an instance of the returned clazz should be treated as if it was an
+		 *                         instance of it.
+		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in the components array of the returned clazz.
+		 * @param <T>              the type of the class represented by the returned clazz.
+		 * @return a clazz auto-generated to be representing the given {@code instance}, and should be treated as if it
+		 * 		was the given {@code family}. The {@link Component#DEFAULT_CLAZZ componentClazz}s of the {@link Component
+		 * 		components} of the returned clazz are the given {@code componentClazz}, each clazz is for the component at
+		 * 		the same position as its position.
+		 * @throws NullPointerException if the given {@code dejaVus} or {@code family} or {@code componentClazzes} is
+		 *                              null.
+		 */
+		static <T> Clazz<T> from(Map dejaVus, T instance, Class family, Clazz... componentClazzes) {
 			Objects.requireNonNull(dejaVus, "dejaVus");
 			Objects.requireNonNull(family, "family");
 			Objects.requireNonNull(componentClazzes, "componentClazzes");
 
 			if (instance != null)
-				if (instance instanceof Map)
-					return Generate.fromMap(dejaVus, (Map) instance, family, componentClazzes);
+				if (instance.getClass().isArray())
+					return Generate.fromArray(dejaVus, instance, family, componentClazzes);
 				else if (instance instanceof Iterable)
 					return Generate.fromIterable(dejaVus, (Iterable) instance, family, componentClazzes);
-				else if (instance.getClass().isArray())
-					return Generate.fromArray(dejaVus, instance, family, componentClazzes);
+				else if (instance instanceof Map)
+					return Generate.fromMap(dejaVus, (Map) instance, family, componentClazzes);
 
-			return Clazz.from(instance, family, Component.as(componentClazzes));
+			return Clazz.from(instance, family, Component.of(componentClazzes));
 		}
 
+		/**
+		 * Get a clazz auto-generated to be representing the given {@code array}, and should be treated as if it was the
+		 * given {@code family}. The {@link Component#DEFAULT_CLAZZ componentClazz}s of the {@link Component components}
+		 * of the returned clazz are the given {@code componentClazz}, each clazz is for the component at the same
+		 * position as its position.
+		 *
+		 * @param dejaVus          a map associates instances to their clazzes, so any instance included in the map will
+		 *                         not be clazzified, instead this method will take the clazz associated to it in the
+		 *                         map.
+		 * @param array            the array the returned clazz are representing.
+		 * @param family           the class that an instance of the returned clazz should be treated as if it was an
+		 *                         instance of it.
+		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in the components array of the returned clazz.
+		 * @param <T>              the type of the class represented by the returned clazz.
+		 * @return a clazz auto-generated to be representing the given {@code array}, and should be treated as if it was
+		 * 		the given {@code family}. The {@link Component#DEFAULT_CLAZZ componentClazz}s of the {@link Component
+		 * 		components} of the returned clazz are the given {@code componentClazz}, each clazz is for the component at
+		 * 		the same position as its position.
+		 * @throws NullPointerException if the given {@code dejaVus} or {@code array} or {@code family} or {@code
+		 *                              componentClazzes} is null.
+		 */
 		static <T> Clazz<T> fromArray(Map<Object, Clazz> dejaVus, Object array, Class family, Clazz[] componentClazzes) {
+			Objects.requireNonNull(dejaVus, "dejaVus");
 			Objects.requireNonNull(array, "array");
+			Objects.requireNonNull(family, "family");
 			Objects.requireNonNull(componentClazzes, "componentClazzes");
 
-			Clazz klazz = new Clazz();
-			return null;
+			Clazz elementComponentClazz;
+			Component[] components;
+			if (componentClazzes.length < 1) {
+				elementComponentClazz = Generate.ofArray(array.getClass().getComponentType());
+				components = Component.of(new Clazz[]{elementComponentClazz});
+			} else if (componentClazzes[0] != null) {
+				elementComponentClazz = componentClazzes[0];
+				components = Component.of(componentClazzes);
+			} else {
+				elementComponentClazz = Generate.ofArray(array.getClass().getComponentType());
+				Clazz[] modified = Arrayz.copyOf(componentClazzes, componentClazzes.length);
+				modified[0] = elementComponentClazz;
+				components = Component.of(modified);
+			}
+
+			Clazz klazz = Clazz.from(array, family);
+			dejaVus.put(array, klazz);
+
+			Iterator iterator = Arrayz.iterator(array);
+			for (int i = 0; iterator.hasNext(); i++) {
+				Object element = iterator.next();
+
+				if (dejaVus.containsKey(element))
+					//if it has been solved before
+					components[0].put(i, dejaVus.get(element));
+				else
+					components[0].put(i, Generate.from(dejaVus, element, elementComponentClazz));
+			}
+
+			//finalize everything
+			klazz.setComponents(components);
+			return klazz;
 		}
 
+		/**
+		 * Get a clazz auto-generated to be representing the given {@code iterable}, and should be treated as if it was
+		 * the given {@code family}. The {@link Component#DEFAULT_CLAZZ componentClazz}s of the {@link Component
+		 * components} of the returned clazz are the given {@code componentClazz}, each clazz is for the component at
+		 * the same position as its position.
+		 *
+		 * @param dejaVus          a map associates instances to their clazzes, so any instance included in the map will
+		 *                         not be clazzified, instead this method will take the clazz associated to it in the
+		 *                         map.
+		 * @param iterable         the iterable the returned clazz are representing.
+		 * @param family           the class that an instance of the returned clazz should be treated as if it was an
+		 *                         instance of it.
+		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in the components array of the returned clazz.
+		 * @param <T>              the type of the class represented by the returned clazz.
+		 * @return a clazz auto-generated to be representing the given {@code iterable}, and should be treated as if it
+		 * 		was the given {@code family}. The {@link Component#DEFAULT_CLAZZ componentClazz}s of the {@link Component
+		 * 		components} of the returned clazz are the given {@code componentClazz}, each clazz is for the component at
+		 * 		the same position as its position.
+		 * @throws NullPointerException if the given {@code dejaVus} or {@code iterable} or {@code family} or {@code
+		 *                              componentClazzes} is null.
+		 */
 		static <T> Clazz<T> fromIterable(Map<Object, Clazz> dejaVus, Iterable iterable, Class family, Clazz[] componentClazzes) {
 			Objects.requireNonNull(dejaVus, "dejaVus");
 			Objects.requireNonNull(iterable, "iterable");
 			Objects.requireNonNull(family, "family");
 			Objects.requireNonNull(componentClazzes, "componentClazzes");
 
-			Component[] components = Component.as(1, componentClazzes);
+			Clazz elementComponentClazz = componentClazzes.length < 1 ? null : componentClazzes[0];
+			Component[] components = Component.of(componentClazzes, 1);
+
 			Clazz klazz = Clazz.from(iterable, family);
-			//assign for later use
 			dejaVus.put(iterable, klazz);
 
 			Iterator iterator = iterable.iterator();
 			for (int i = 0; iterator.hasNext(); i++) {
 				Object element = iterator.next();
 
-				//if it has been solved before
 				if (dejaVus.containsKey(element))
+					//if it has been solved before
 					components[0].put(i, dejaVus.get(element));
 				else
-					components[0].put(i, Generate.from0(dejaVus, element, componentClazzes));
+					components[0].put(i, Generate.from(dejaVus, element, elementComponentClazz));
 			}
 
 			//finalize everything
-			Component.setModifiable(components, false);
 			klazz.setComponents(components);
 			return klazz;
 		}
 
+		/**
+		 * Get a clazz auto-generated to be representing the given {@code map}, and should be treated as if it was the
+		 * given {@code family}. The {@link Component#DEFAULT_CLAZZ componentClazz}s of the {@link Component components}
+		 * of the returned clazz are the given {@code componentClazz}, each clazz is for the component at the same
+		 * position as its position.
+		 *
+		 * @param dejaVus          a map associates instances to their clazzes, so any instance included in the map will
+		 *                         not be clazzified, instead this method will take the clazz associated to it in the
+		 *                         map.
+		 * @param map              the map the returned clazz are representing.
+		 * @param family           the class that an instance of the returned clazz should be treated as if it was an
+		 *                         instance of it.
+		 * @param componentClazzes the general clazzes array for the components that have no mapping in the component at
+		 *                         the same position as the clazz in the components array of the returned clazz.
+		 * @param <T>              the type of the class represented by the returned clazz.
+		 * @return a clazz auto-generated to be representing the given {@code map}, and should be treated as if it was
+		 * 		the given {@code family}. The {@link Component#DEFAULT_CLAZZ componentClazz}s of the {@link Component
+		 * 		components} of the returned clazz are the given {@code componentClazz}, each clazz is for the component at
+		 * 		the same position as its position.
+		 * @throws NullPointerException if the given {@code dejaVus} or {@code map} or {@code family} or {@code
+		 *                              componentClazzes} is null.
+		 */
 		static <T> Clazz<T> fromMap(Map<Object, Clazz> dejaVus, Map map, Class family, Clazz[] componentClazzes) {
+			Objects.requireNonNull(dejaVus, "dejaVus");
 			Objects.requireNonNull(map, "map");
+			Objects.requireNonNull(family, "family");
 			Objects.requireNonNull(componentClazzes, "componentClazzes");
 
-			return null;
+			Clazz keyComponentClazz = componentClazzes.length < 1 ? null : componentClazzes[0];
+			Clazz valueComponentClazz = componentClazzes.length < 2 ? null : componentClazzes[1];
+			Component[] components = Component.of(componentClazzes, 2);
+
+			Clazz klazz = Clazz.from(map, family);
+			dejaVus.put(map, klazz);
+
+			for (Map.Entry entry : (Set<Map.Entry>) map.entrySet()) {
+				Object key = entry.getKey();
+				Object value = entry.getValue();
+
+				if (dejaVus.containsKey(key))
+					//if it has been solved before
+					components[0].put(key, dejaVus.get(key));
+				else
+					components[0].put(key, Generate.from(dejaVus, key, keyComponentClazz));
+
+				if (dejaVus.containsKey(value))
+					//if it has been solved before
+					components[1].put(key, dejaVus.get(value));
+				else
+					components[1].put(key, Generate.from(dejaVus, value, valueComponentClazz));
+			}
+
+			//finalize everything
+			klazz.setComponents(components);
+			return klazz;
+		}
+
+		/**
+		 * Get a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the given
+		 * array's class.
+		 * <pre>
+		 *     Clazz.ofArray(<font color="a5edff">KLASS[][][]</font>)
+		 *     <font color="a5edff">KLASS[][][]</font>&lt;<font color="a5edff">KLASS[][]</font>&lt;<font color="a5edff">KLASS[]</font>&lt;<font color="a5edff">KLASS</font>&gt;&gt;&gt;
+		 * </pre>
+		 *
+		 * @param klass the array class to be represented by the returned clazz.
+		 * @param <T>   the type of the class represented by the returned clazz.
+		 * @return a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the
+		 * 		given array's class.
+		 * @throws NullPointerException if the given {@code klass} is null.
+		 */
+		static <T> Clazz<T> ofArray(Class<T> klass) {
+			Objects.requireNonNull(klass, "klass");
+			return klass.isArray() ?
+				   Clazz.of(klass, Clazz.Component.of(Generate.ofArray(klass.getComponentType()))) :
+				   Clazz.of(klass);
+		}
+
+		/**
+		 * Get a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the given
+		 * array's class, and should be treated as if it was the given {@code family}.
+		 * <pre>
+		 *     Clazz.ofArray(<font color="a5edff">KLASS[][][]</font>, <font color="fc8fbb">FAMILY</font>)
+		 *     <font color="a5edff">KLASS[][][]</font>:<font color="fc8fbb">FAMILY</font>&lt;<font color="a5edff">KLASS[][]</font>&lt;<font color="a5edff">KLASS[]</font>&lt;<font color="a5edff">KLASS</font>&gt;&gt;&gt;
+		 * </pre>
+		 *
+		 * @param klass  the array class to be represented by the returned clazz.
+		 * @param family the class that an instance of the returned clazz should be treated as if it was an instance of
+		 *               it.
+		 * @param <T>    the type of the class represented by the returned clazz.
+		 * @return a clazz that represents the given {@code klass}, and with a {@code tree} auto generated from the
+		 * 		given array's class, and should be treated as if it was the given {@code family}.
+		 * @throws NullPointerException if the given {@code klass} or {@code family} is null.
+		 */
+		static <T> Clazz<T> ofArray(Class<T> klass, Class family) {
+			Objects.requireNonNull(klass, "klass");
+			Objects.requireNonNull(family, "family");
+			return klass.isArray() ?
+				   Clazz.of(klass, family, Clazz.Component.of(Generate.ofArray(klass.getComponentType()))) :
+				   Clazz.of(klass, family);
 		}
 	}
 }
