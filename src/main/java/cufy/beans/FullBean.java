@@ -128,7 +128,7 @@ public interface FullBean<K, V> extends Bean<K, V> {
 		}
 
 		@Override
-		public Iterator<K> iterator() {
+		public FullBeanKeySetIterator iterator() {
 			return new FullBeanKeySetIterator();
 		}
 
@@ -209,7 +209,7 @@ public interface FullBean<K, V> extends Bean<K, V> {
 		}
 
 		@Override
-		public Iterator<V> iterator() {
+		public FullBeanValuesIterator iterator() {
 			return new FullBeanValuesIterator();
 		}
 
@@ -265,92 +265,194 @@ public interface FullBean<K, V> extends Bean<K, V> {
 		}
 	}
 
-	@SuppressWarnings("JavaDoc")
+	/**
+	 * The default methods of the interface {@link FullBean}.
+	 */
 	final class Methods {
-		public static void clear(FullBean bean, Object instance) {
+		/**
+		 * This is an util class and must not be instanced as an object.
+		 *
+		 * @throws AssertionError when called.
+		 */
+		private Methods() {
+			throw new AssertionError("No instance for you!");
+		}
+
+		/**
+		 * Perform the default {@link Map#clear()} to the given {@code bean}.
+		 *
+		 * @param bean     the bean to perform the method to.
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code bean}.
+		 * @param <V>      the type of the values in the given {@code bean}.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		public static <K, V> void clear(FullBean<K, V> bean, Object instance) {
 			Objects.requireNonNull(bean, "bean");
 			Objects.requireNonNull(instance, "instance");
 			bean.entrySet().clear();
 		}
 
-		public static boolean containsKey(FullBean bean, Object instance, Object key) {
+		/**
+		 * Perform the default {@link Map#containsKey(Object)} to the given {@code bean}.
+		 *
+		 * @param bean     the bean to perform the method to.
+		 * @param instance the instance the bean is having.
+		 * @param key      the key to be checked
+		 * @param <K>      the type of the keys in the given {@code bean}.
+		 * @param <V>      the type of the values in the given {@code bean}.
+		 * @return true, if the given {@code bean} has the given {@code key}.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		public static <K, V> boolean containsKey(FullBean<K, V> bean, Object instance, Object key) {
 			Objects.requireNonNull(bean, "bean");
 			Objects.requireNonNull(instance, "instance");
 
-			for (Map.Entry entry : (Set<Map.Entry>) bean.entrySet())
+			for (Map.Entry<K, V> entry : bean.entrySet())
 				if (Objects.equals(key, entry.getKey()))
 					return true;
 
 			return false;
 		}
 
-		public static boolean containsValue(FullBean bean, Object instance, Object value) {
+		/**
+		 * Perform the default {@link Map#containsValue(Object)} to the given {@code bean}.
+		 *
+		 * @param bean     the bean to perform the method to.
+		 * @param instance the instance the bean is having.
+		 * @param value    the value to be checked
+		 * @param <K>      the type of the keys in the given {@code bean}.
+		 * @param <V>      the type of the values in the given {@code bean}.
+		 * @return true, if the given {@code bean} has the given {@code value}.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		public static <K, V> boolean containsValue(FullBean<K, V> bean, Object instance, Object value) {
 			Objects.requireNonNull(bean, "bean");
 			Objects.requireNonNull(instance, "instance");
 
-			for (Map.Entry entry : (Set<Map.Entry>) bean.entrySet())
+			for (Map.Entry<K, V> entry : bean.entrySet())
 				if (Objects.equals(value, entry.getValue()))
 					return true;
 
 			return false;
 		}
 
+		/**
+		 * Perform the default {@link Map#entrySet()} to the given {@code bean}.
+		 *
+		 * @param bean     the bean to perform the method to.
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code bean}.
+		 * @param <V>      the type of the values in the given {@code bean}.
+		 * @return an entrySet for the given {@code bean}.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
 		public static <K, V> FullBeanEntrySet<K, V> entrySet(FullBean<K, V> bean, Object instance) {
 			Objects.requireNonNull(bean, "bean");
 			Objects.requireNonNull(instance, "instance");
 			return new FullBeanEntrySet(bean, instance);
 		}
 
-		public static <V> V get(FullBean<?, V> bean, Object instance, Object key) {
+		/**
+		 * Perform the default {@link Map#get(Object)} to the given {@code bean}.
+		 *
+		 * @param bean     the bean to perform the method to.
+		 * @param instance the instance the bean is having.
+		 * @param key      the key of the returned value.
+		 * @param <K>      the type of the keys in the given {@code bean}.
+		 * @param <V>      the type of the values in the given {@code bean}.
+		 * @return the value associated to the given {@code key} in the given {@code bean}.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		public static <K, V> V get(FullBean<K, V> bean, Object instance, Object key) {
 			Objects.requireNonNull(bean, "bean");
 			Objects.requireNonNull(instance, "instance");
 
-			for (Map.Entry<?, V> entry : bean.entrySet())
+			for (Map.Entry<K, V> entry : bean.entrySet())
 				if (Objects.equals(key, entry.getKey()))
 					return entry.getValue();
 
 			return null;
 		}
 
-		public static boolean isEmpty(FullBean bean, Object instance) {
+		/**
+		 * Perform the default {@link Map#isEmpty()} to the given {@code bean}.
+		 *
+		 * @param bean     the bean to perform the method to.
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code bean}.
+		 * @param <V>      the type of the values in the given {@code bean}.
+		 * @return true, if the given {@code bean} is empty.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		public static <K, V> boolean isEmpty(FullBean<K, V> bean, Object instance) {
 			Objects.requireNonNull(bean, "bean");
 			Objects.requireNonNull(instance, "instance");
 			return bean.entrySet().isEmpty();
 		}
 
-		public static <K> FullBeanKeySet<K> keySet(FullBean<K, ?> bean, Object instance) {
+		/**
+		 * Perform the default {@link Map#keySet()} to the given {@code bean}.
+		 *
+		 * @param bean     the bean to perform the method to.
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code bean}.
+		 * @param <V>      the type of the values in the given {@code bean}.
+		 * @return a keySet for the given {@code bean}.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		public static <K, V> FullBeanKeySet<K> keySet(FullBean<K, V> bean, Object instance) {
 			Objects.requireNonNull(bean, "bean");
 			Objects.requireNonNull(instance, "instance");
 			return new FullBeanKeySet(bean, instance);
 		}
 
-		public static <V> V put(FullBean<?, V> bean, Object instance, Object key, V value) {
+		/**
+		 * Perform the default {@link Map#put(Object, Object)} to the given {@code bean}.
+		 *
+		 * @param bean     the bean to perform the method to.
+		 * @param instance the instance the bean is having.
+		 * @param key      the key to associate the given {@code value} in the given {@code bean}.
+		 * @param value    the value to be associated to the given {@code key} in the given {@code bean}.
+		 * @param <K>      the type of the keys in the given {@code bean}.
+		 * @param <V>      the type of the values in the given {@code bean}.
+		 * @return the previous value associated to the given {@code key} in the given {@code bean}.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		public static <K, V> V put(FullBean<K, V> bean, Object instance, K key, V value) {
 			Objects.requireNonNull(bean, "bean");
 			Objects.requireNonNull(instance, "instance");
 
-			Set<Map.Entry<?, V>> entrySet = (Set) bean.entrySet();
+			Set<Map.Entry<K, V>> entrySet = bean.entrySet();
 
 			//looking in the existing entries
-			for (Map.Entry<?, V> entry : entrySet) {
-				Object entryKey = entry.getKey();
-
-				if (Objects.equals(entryKey, key))
+			for (Map.Entry<K, V> entry : entrySet)
+				if (Objects.equals(key, entry.getKey()))
 					return entry.setValue(value);
-			}
 
 			//looking in the fields with removed entries, Or add a simple entry
-			Bean.PropertyEntry<Object, V> entry = Bean.PropertyEntry.from(instance, key, value);
+			Bean.PropertyEntry<K, V> entry = Bean.PropertyEntry.from(instance, key, value);
 			entrySet.add(entry != null ? entry : new AbstractMap.SimpleEntry(key, value));
 			return null;
 		}
 
-		public static void putAll(FullBean bean, Object instance, Map map) {
+		/**
+		 * Perform the default {@link Map#putAll(Map)} to the given {@code bean}.
+		 *
+		 * @param bean     the bean to perform the method to.
+		 * @param instance the instance the bean is having.
+		 * @param map      the mappings to be copied to the given {@code bean}.
+		 * @param <K>      the type of the keys in the given {@code bean}.
+		 * @param <V>      the type of the values in the given {@code bean}.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		public static <K, V> void putAll(FullBean<K, V> bean, Object instance, Map<? extends K, ? extends V> map) {
 			Objects.requireNonNull(bean, "bean");
 			Objects.requireNonNull(instance, "instance");
 			Objects.requireNonNull(map, "map");
 
 			Set keys = new HashSet(map.keySet());
-			Set<Map.Entry> entrySet = bean.entrySet();
+			Set<Map.Entry<K, V>> entrySet = bean.entrySet();
 
 			//looking in the existing entries
 			for (Map.Entry entry : entrySet) {
@@ -363,7 +465,7 @@ public interface FullBean<K, V> extends Bean<K, V> {
 			//looking in the fields with removed entries
 			for (Field field : Bean.Reflection.getPropertyFields(instance))
 				if (field.isAnnotationPresent(Bean.Property.class))
-					for (Object key : new Bean.PropertyKeySet(field))
+					for (K key : new Bean.PropertyKeySet<K>(field))
 						if (keys.remove(key))
 							entrySet.add(Bean.PropertyEntry.from(instance, field, key, map.get(key)));
 
@@ -372,14 +474,25 @@ public interface FullBean<K, V> extends Bean<K, V> {
 				entrySet.add(new AbstractMap.SimpleEntry(key, map.get(key)));
 		}
 
-		public static <V> V remove(FullBean<?, V> bean, Object instance, Object key) {
+		/**
+		 * Perform the default {@link Map#remove(Object)} to the given {@code bean}.
+		 *
+		 * @param bean     the bean to perform the method to.
+		 * @param instance the instance the bean is having.
+		 * @param key      the key to be removed from the given {@code bean}.
+		 * @param <K>      the type of the keys in the given {@code bean}.
+		 * @param <V>      the type of the values in the given {@code bean}.
+		 * @return the previous value associated to the given {@code key} in the given {@code bean}.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		public static <K, V> V remove(FullBean<K, V> bean, Object instance, Object key) {
 			Objects.requireNonNull(bean, "bean");
 			Objects.requireNonNull(instance, "instance");
 
-			Iterator<Map.Entry<?, V>> iterator = (Iterator) bean.entrySet().iterator();
+			Iterator<Map.Entry<K, V>> iterator = bean.entrySet().iterator();
 
 			while (iterator.hasNext()) {
-				Map.Entry<?, V> entry = iterator.next();
+				Map.Entry<K, V> entry = iterator.next();
 
 				if (Objects.equals(key, entry.getKey())) {
 					V old = entry.getValue();
@@ -391,13 +504,33 @@ public interface FullBean<K, V> extends Bean<K, V> {
 			return null;
 		}
 
-		public static int size(FullBean bean, Object instance) {
+		/**
+		 * Perform the default {@link Map#size()} to the given {@code bean}.
+		 *
+		 * @param bean     the bean to perform the method to.
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code bean}.
+		 * @param <V>      the type of the values in the given {@code bean}.
+		 * @return the size of the given {@code bean}.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		public static <K, V> int size(FullBean<K, V> bean, Object instance) {
 			Objects.requireNonNull(bean, "bean");
 			Objects.requireNonNull(instance, "instance");
 			return bean.entrySet().size();
 		}
 
-		public static <V> FullBeanValues<V> values(FullBean<?, V> bean, Object instance) {
+		/**
+		 * Perform the default {@link Map#values()} to the given {@code bean}.
+		 *
+		 * @param bean     the bean to perform the method to.
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code bean}.
+		 * @param <V>      the type of the values in the given {@code bean}.
+		 * @return a values-collection for the given {@code bean}.
+		 * @throws NullPointerException if the given {@code bean} or {@code instance} is null.
+		 */
+		public static <K, V> FullBeanValues<V> values(FullBean<K, V> bean, Object instance) {
 			Objects.requireNonNull(bean, "bean");
 			Objects.requireNonNull(instance, "instance");
 			return new FullBeanValues(bean, instance);

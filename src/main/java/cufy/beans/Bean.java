@@ -171,7 +171,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
-		public Iterator<Map.Entry<K, V>> iterator() {
+		public BeanEntrySetIterator iterator() {
 			return new BeanEntrySetIterator();
 		}
 
@@ -187,7 +187,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * <pre>
 		 *     for(Field field : instance.fields)
 		 *         for(Object key : field.keys)
-		 *             return new Entry(key);
+		 *             next <- new Entry(key);
 		 * </pre>
 		 */
 		public final class BeanEntrySetIterator implements Iterator<Map.Entry<K, V>> {
@@ -273,7 +273,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
-		public Iterator<K> iterator() {
+		public BeanKeySetIterator iterator() {
 			return new BeanKeySetIterator();
 		}
 
@@ -359,7 +359,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
-		public Iterator<V> iterator() {
+		public BeanValuesIterator iterator() {
 			return new BeanValuesIterator();
 		}
 
@@ -422,14 +422,43 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 	}
 
-	@SuppressWarnings("JavaDoc")
+	/**
+	 * The default methods of the interface {@link Bean}.
+	 */
 	final class Methods {
-		public static void clear(Object instance) {
+		/**
+		 * This is an util class and must not be instanced as an object.
+		 *
+		 * @throws AssertionError when called.
+		 */
+		private Methods() {
+			throw new AssertionError("No instance for you!");
+		}
+
+		/**
+		 * Perform the default {@link Map#clear()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> void clear(Object instance) {
 			Objects.requireNonNull(instance, "instance");
 			throw new UnsupportedOperationException("clear");
 		}
 
-		public static boolean containsKey(Object instance, Object key) {
+		/**
+		 * Perform the default {@link Map#containsKey(Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      the key to be checked
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return true, if the given {@code instance} has the given {@code key}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> boolean containsKey(Object instance, Object key) {
 			Objects.requireNonNull(instance, "instance");
 
 			for (Field field : Reflection.getPropertyFields(instance))
@@ -441,7 +470,17 @@ public interface Bean<K, V> extends Map<K, V> {
 			return false;
 		}
 
-		public static boolean containsValue(Object instance, Object value) {
+		/**
+		 * Perform the default {@link Map#containsValue(Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param value    the value to be checked
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return true, if the given {@code instance} has the given {@code value}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> boolean containsValue(Object instance, Object value) {
 			Objects.requireNonNull(instance, "instance");
 
 			for (Field field : Reflection.getPropertyFields(instance))
@@ -452,12 +491,31 @@ public interface Bean<K, V> extends Map<K, V> {
 			return false;
 		}
 
+		/**
+		 * Perform the default {@link Map#entrySet()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return an entrySet for the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
 		public static <K, V> BeanEntrySet<K, V> entrySet(Object instance) {
 			Objects.requireNonNull(instance, "instance");
 			return new BeanEntrySet(instance);
 		}
 
-		public static <V> V get(Object instance, Object key) {
+		/**
+		 * Perform the default {@link Map#get(Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      the key of the returned value.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the value associated to the given {@code key} in the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> V get(Object instance, Object key) {
 			Objects.requireNonNull(instance, "instance");
 
 			for (Field field : Reflection.getPropertyFields(instance))
@@ -466,11 +524,19 @@ public interface Bean<K, V> extends Map<K, V> {
 						if (Objects.equals(key, fieldKey))
 							return Reflection.getValue0(instance, field);
 
-			//noinspection ReturnOfNull
 			return null;
 		}
 
-		public static boolean isEmpty(Object instance) {
+		/**
+		 * Perform the default {@link Map#isEmpty()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return true, if the given {@code instance} is empty.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> boolean isEmpty(Object instance) {
 			Objects.requireNonNull(instance, "instance");
 
 			for (Field field : Reflection.getPropertyFields(instance))
@@ -480,12 +546,32 @@ public interface Bean<K, V> extends Map<K, V> {
 			return true;
 		}
 
-		public static <K> BeanKeySet<K> keySet(Object instance) {
+		/**
+		 * Perform the default {@link Map#keySet()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return a keySet for the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> BeanKeySet<K> keySet(Object instance) {
 			Objects.requireNonNull(instance, "instance");
 			return new BeanKeySet(instance);
 		}
 
-		public static <V> V put(Object instance, Object key, V value) {
+		/**
+		 * Perform the default {@link Map#put(Object, Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      the key to associate the given {@code value} in the given {@code instance}.
+		 * @param value    the value to be associated to the given {@code key} in the given {@code instance}.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the previous value associated to the given {@code key} in the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> V put(Object instance, Object key, V value) {
 			Objects.requireNonNull(instance, "instance");
 
 			for (Field field : Reflection.getPropertyFields(instance))
@@ -497,7 +583,16 @@ public interface Bean<K, V> extends Map<K, V> {
 			throw new UnsupportedOperationException("Can't store the key: " + key);
 		}
 
-		public static void putAll(Object instance, Map map) {
+		/**
+		 * Perform the default {@link Map#putAll(Map)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param map      the mappings to be copied to the given {@code instance}.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> void putAll(Object instance, Map map) {
 			Objects.requireNonNull(instance, "instance");
 			Objects.requireNonNull(map, "map");
 			Set keySet = new HashSet(map.keySet());
@@ -523,12 +618,31 @@ public interface Bean<K, V> extends Map<K, V> {
 				throw new UnsupportedOperationException("Can't store all the keys in: " + map);
 		}
 
-		public static <V> V remove(Object instance, Object key) {
+		/**
+		 * Perform the default {@link Map#remove(Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      the key to be removed from the given {@code instance}.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the previous value associated to the given {@code key} in the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> V remove(Object instance, Object key) {
 			Objects.requireNonNull(instance, "instance");
 			throw new UnsupportedOperationException("remove");
 		}
 
-		public static int size(Object instance) {
+		/**
+		 * Perform the default {@link Map#size()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the size of the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> int size(Object instance) {
 			Objects.requireNonNull(instance, "instance");
 
 			int size = 0;
@@ -540,7 +654,16 @@ public interface Bean<K, V> extends Map<K, V> {
 			return size;
 		}
 
-		public static <V> BeanValues<V> values(Object instance) {
+		/**
+		 * Perform the default {@link Map#values()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return a values-collection for the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> BeanValues<V> values(Object instance) {
 			Objects.requireNonNull(instance, "instance");
 			return new BeanValues(instance);
 		}
@@ -630,6 +753,80 @@ public interface Bean<K, V> extends Map<K, V> {
 			this.field = field;
 			this.key = key;
 			this.setValue(value);
+		}
+
+		/**
+		 * Get a {@link PropertyEntry} with the key at with the {@code key} index in the given {@code field}.
+		 *
+		 * @param instance the instance that the returned entry is for a field in it.
+		 * @param field    the field where the returned entry is reading/writing its value.
+		 * @param key      the index of the key in the field to be the key of the returned entry.
+		 * @param <K>      the type of the key of the returned entry.
+		 * @param <V>      the type of the value of the returned entry.
+		 * @return a {@link PropertyEntry} with the key at with the {@code key} index in the given {@code field}
+		 * @throws NullPointerException     if the given {@code instance} or {@code field} is null.
+		 * @throws IllegalArgumentException if the given {@code field} is not annotated with {@link Property}. Or if the
+		 *                                  given {@code field} is not in the given {@code instance}. Or if the given
+		 *                                  {@code field} don't have a key at the given {@code key} index.
+		 */
+		static <K, V> PropertyEntry<K, V> from(Object instance, Field field, int key) {
+			Objects.requireNonNull(instance, "instance");
+
+			Class dKlass = field.getDeclaringClass();
+			Class iKlass = instance.getClass();
+			if (!dKlass.isAssignableFrom(iKlass))
+				throw new IllegalArgumentException(field + " isn't in the instance: " + instance);
+			if (!field.isAnnotationPresent(Property.class))
+				throw new IllegalArgumentException(field + " is not annotated with " + Property.class);
+
+			Recipe[] recipes = field.getAnnotation(Property.class).key();
+
+			if (key < recipes.length)
+				//if the field have custom keys, and the given key is within the bounds
+				return new PropertyEntry(instance, field, recipes[key]);
+			if (key == 0)
+				//if the field don't have specified keys, and the given key is 0
+				return new PropertyEntry(instance, field, field.getName());
+
+			throw new IllegalArgumentException("Field does not have such key index: " + key);
+		}
+
+		/**
+		 * Get a {@link PropertyEntry} with the key at with the {@code key} index in the given {@code field}. Then set
+		 * the value of the given {@code field} to the given {@code value}.
+		 *
+		 * @param instance the instance that the returned entry is for a field in it.
+		 * @param field    the field where the returned entry is reading/writing its value.
+		 * @param key      the index of the key in the field to be the key of the returned entry.
+		 * @param value    the value to be set to the given {@code field}.
+		 * @param <K>      the type of the key of the returned entry.
+		 * @param <V>      the type of the value of the returned entry.
+		 * @return a {@link PropertyEntry} with the key at with the {@code key} index in the given {@code field}
+		 * @throws NullPointerException     if the given {@code instance} or {@code field} is null.
+		 * @throws IllegalArgumentException if the given {@code field} is not annotated with {@link Property}. Or if the
+		 *                                  given {@code field} is not in the given {@code instance}. Or if the given
+		 *                                  {@code field} don't have a key at the given {@code key} index.
+		 */
+		static <K, V> PropertyEntry<K, V> from(Object instance, Field field, int key, V value) {
+			Objects.requireNonNull(instance, "instance");
+
+			Class dKlass = field.getDeclaringClass();
+			Class iKlass = instance.getClass();
+			if (!dKlass.isAssignableFrom(iKlass))
+				throw new IllegalArgumentException(field + " isn't in the instance: " + instance);
+			if (!field.isAnnotationPresent(Property.class))
+				throw new IllegalArgumentException(field + " is not annotated with " + Property.class);
+
+			Recipe[] recipes = field.getAnnotation(Property.class).key();
+
+			if (key < recipes.length)
+				//if the field have custom keys, and the given key is within the bounds
+				return new PropertyEntry(instance, field, recipes[key], value);
+			if (key == 0)
+				//if the field don't have specified keys, and the given key is 0
+				return new PropertyEntry(instance, field, field.getName(), value);
+
+			throw new IllegalArgumentException("Field does not have such key index: " + key);
 		}
 
 		/**
@@ -754,52 +951,6 @@ public interface Bean<K, V> extends Map<K, V> {
 			throw new IllegalArgumentException(field + " don't have the key: " + key);
 		}
 
-		@SuppressWarnings("JavaDoc")
-		static <K, V> PropertyEntry<K, V> from(Object instance, Field field, int key) {
-			Objects.requireNonNull(instance, "instance");
-
-			Class dKlass = field.getDeclaringClass();
-			Class iKlass = instance.getClass();
-			if (!dKlass.isAssignableFrom(iKlass))
-				throw new IllegalArgumentException(field + " isn't in the instance: " + instance);
-			if (!field.isAnnotationPresent(Property.class))
-				throw new IllegalArgumentException(field + " is not annotated with " + Property.class);
-
-			Recipe[] recipes = field.getAnnotation(Property.class).key();
-
-			if (key < recipes.length)
-				//if the field have custom keys, and the given key is within the bounds
-				return new PropertyEntry(instance, field, recipes[key]);
-			if (key == 0)
-				//if the field don't have specified keys, and the given key is 0
-				return new PropertyEntry(instance, field, field.getName());
-
-			throw new IllegalArgumentException("Field does not have such key index: " + key);
-		}
-
-		@SuppressWarnings("JavaDoc")
-		static <K, V> PropertyEntry<K, V> from(Object instance, Field field, int key, V value) {
-			Objects.requireNonNull(instance, "instance");
-
-			Class dKlass = field.getDeclaringClass();
-			Class iKlass = instance.getClass();
-			if (!dKlass.isAssignableFrom(iKlass))
-				throw new IllegalArgumentException(field + " isn't in the instance: " + instance);
-			if (!field.isAnnotationPresent(Property.class))
-				throw new IllegalArgumentException(field + " is not annotated with " + Property.class);
-
-			Recipe[] recipes = field.getAnnotation(Property.class).key();
-
-			if (key < recipes.length)
-				//if the field have custom keys, and the given key is within the bounds
-				return new PropertyEntry(instance, field, recipes[key], value);
-			if (key == 0)
-				//if the field don't have specified keys, and the given key is 0
-				return new PropertyEntry(instance, field, field.getName(), value);
-
-			throw new IllegalArgumentException("Field does not have such key index: " + key);
-		}
-
 		@Override
 		public K getKey() {
 			return this.key;
@@ -889,7 +1040,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		 */
 		public Clazz<V> getType() {
 			return this.type == null ?
-				   (this.type = Reflection.getType0(this.field, this.getMeta().type())) :
+				   (this.type = Reflection.getType0(this.field)) :
 				   this.type;
 		}
 	}
@@ -939,7 +1090,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
-		public Iterator<K> iterator() {
+		public PropertyKeySetIterator iterator() {
 			return new PropertyKeySetIterator();
 		}
 
@@ -992,7 +1143,13 @@ public interface Bean<K, V> extends Map<K, V> {
 			throw new AssertionError("No instance for you!");
 		}
 
-		@SuppressWarnings("JavaDoc")
+		/**
+		 * Get a set of all fields annotated with {@link Property} in the given {@code klass}.
+		 *
+		 * @param klass the class to get all the property-fields of it.
+		 * @return a set of all fields annotated with {@link Property} in the given {@code klass}.
+		 * @throws NullPointerException if the given {@code klass} is null.
+		 */
 		public static Set<Field> getPropertyFields(Class klass) {
 			Objects.requireNonNull(klass, "klass");
 			return Collectionz.filteredSet(
@@ -1001,7 +1158,13 @@ public interface Bean<K, V> extends Map<K, V> {
 			);
 		}
 
-		@SuppressWarnings("JavaDoc")
+		/**
+		 * Get a set of all fields annotated with {@link Property} in the class of the given {@code instance}.
+		 *
+		 * @param instance the instance of the class to get all the property-fields of it.
+		 * @return a set of all fields annotated with {@link Property} in the class of the given {@code instance}.
+		 * @throws NullPointerException if the given {@code klass} is null.
+		 */
 		public static Set<Field> getPropertyFields(Object instance) {
 			Objects.requireNonNull(instance, "instance");
 			return Reflection.getPropertyFields(instance.getClass());
@@ -1078,16 +1241,18 @@ public interface Bean<K, V> extends Map<K, V> {
 			return Reflection.setValue0(instance, field, value);
 		}
 
-		@SuppressWarnings("JavaDoc")
+		/**
+		 * The backing method for the method {@link #getType(Field)}.
+		 *
+		 * @param field the field that the returned type is required for a value to be stored to it using a bean.
+		 * @param <V>   the type of the returned clazz.
+		 * @return the type of the given {@code field}.
+		 * @throws NullPointerException if the given {@code field} is null.
+		 */
 		private static <V> Clazz<V> getType0(Field field) {
 			Objects.requireNonNull(field, "field");
-			return Reflection.getType0(field, field.getAnnotation(Property.class).type());
-		}
 
-		@SuppressWarnings("JavaDoc")
-		private static <V> Clazz<V> getType0(Field field, Type[] type) {
-			Objects.requireNonNull(field, "field");
-			Objects.requireNonNull(type, "type");
+			Type[] type = field.getAnnotation(Property.class).type();
 
 			if (type.length == 0)
 				return (Clazz<V>) Clazz.of(field.getType());
@@ -1139,7 +1304,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			Property property = field.getAnnotation(Property.class);
 			Where where = property.converter();
 			Converter converter = Where.Util.getValue(where);
-			Clazz<V> type = Reflection.getType0(field, property.type());
+			Clazz<V> type = Reflection.getType0(field);
 
 			return Reflection.setValue0(instance, field, value, converter, type);
 		}
