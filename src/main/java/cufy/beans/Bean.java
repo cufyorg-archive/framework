@@ -57,7 +57,7 @@ import java.util.function.Function;
  * @since 0.0.a ~2019.06.11
  */
 public interface Bean<K, V> extends Map<K, V> {
-	//All in inner classes for better security!
+	//All in inner classes, for better security!
 
 	@Override
 	default int size() {
