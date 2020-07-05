@@ -57,6 +57,8 @@ import java.util.function.Function;
  * @since 0.0.a ~2019.06.11
  */
 public interface Bean<K, V> extends Map<K, V> {
+	//All in inner classes for better security!
+
 	@Override
 	default int size() {
 		return Methods.Raw.size(this);
@@ -1461,7 +1463,7 @@ public interface Bean<K, V> extends Map<K, V> {
 
 				//add all the missing entries
 				entrySet.addAll(
-						Concrete.getTemporaryEntrySet(instance, keys)
+						Concrete.getTemporaryEntrySet(instance, keys, (k, v) -> map.get(k))
 				);
 			}
 
@@ -2161,7 +2163,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			 * @throws UnsupportedOperationException if the given {@code map} has keys that the given {@code instance}
 			 *                                       does not have.
 			 */
-			public static <K, V> void putAll(Object instance, Map<? super K, ? super V> map) {
+			public static <K, V> void putAll(Object instance, Map<? extends K, ? extends V> map) {
 				Objects.requireNonNull(instance, "instance");
 				Objects.requireNonNull(map, "map");
 
@@ -3519,24 +3521,36 @@ public interface Bean<K, V> extends Map<K, V> {
 			/**
 			 * An iterator for the unsolved keys.
 			 */
-			private Iterator<K> unsolvedEntriesIterator;
+			private Iterator<K> unsolvedKeysIterator;
 
 			@Override
 			public boolean hasNext() {
 				//if there is still keys not resolved
-				return this.unsolvedEntriesIterator != null && this.unsolvedEntriesIterator.hasNext() ||
-					   //or if there is still solved-entries not consumed
-					   this.solvedEntriesIterator != null && this.solvedEntriesIterator.hasNext();
+				if (!TemporaryEntrySet.this.unsolvedKeys.isEmpty())
+					//there is keys not solved means it will be solved in the next invoke of next()
+					return true;
+
+				//100% dependent stage; once achieved, it will stay forever!
+				//if it is the first-time no more unsolved-keys.
+				if (this.solvedEntriesIterator == null)
+					//start iterating the over solved-entries
+					this.solvedEntriesIterator = TemporaryEntrySet.this.solvedEntries.iterator();
+
+				//it depends now 100% on the solved-entries
+				return this.solvedEntriesIterator.hasNext();
 			}
 
 			@Override
 			public Entry<K, V> next() {
-				while (true)
+				//while there is unsolved-keys. Otherwise, this block is redundant!
+				while (!TemporaryEntrySet.this.unsolvedKeys.isEmpty()) {
+					//only if there is a leftover keys from the last field
 					if (TemporaryEntrySet.this.unsolvedFieldKeysIterator != null &&
 						TemporaryEntrySet.this.unsolvedFieldKeysIterator.hasNext()) {
 						//if still there is unseen keys from the last field
 						K fieldKey = TemporaryEntrySet.this.unsolvedFieldKeysIterator.next();
 
+						//only if there is a matching key in the unsolvedKeys set
 						if (TemporaryEntrySet.this.unsolvedKeys.remove(fieldKey)) {
 							//there is a matching key
 							PropertyEntry<K, V> entry =
@@ -3561,46 +3575,66 @@ public interface Bean<K, V> extends Map<K, V> {
 											)
 									);
 
+							//add the new entry; don't worry, the key already removed above!
 							TemporaryEntrySet.this.solvedEntries.add(entry);
 							return entry;
 						}
-					} else if (TemporaryEntrySet.this.unsolvedFieldsIterator.hasNext()) {
+
+						//no key matched in the last field's keys; to the next field!
+						continue;
+					}
+					//only if there is fields not have been solved
+					if (TemporaryEntrySet.this.unsolvedFieldsIterator.hasNext()) {
 						//if no keys remaining from the last field
 						Field field = TemporaryEntrySet.this.unsolvedFieldsIterator.next();
 						TemporaryEntrySet.this.unsolvedField = field;
 						TemporaryEntrySet.this.unsolvedFieldKeysIterator = Methods.PrivateConcrete.<K>getKeys(field).iterator();
-					} else {
-						//if no more fields to be resolved
-						if (this.unsolvedEntriesIterator == null)
-							this.unsolvedEntriesIterator = TemporaryEntrySet.this.unsolvedKeys.iterator();
-						if (this.unsolvedEntriesIterator.hasNext()) {
-							//if no more fields to be resolved,
-							//but still there is keys to be resolved
-							K key = this.unsolvedEntriesIterator.next();
-
-							Entry<K, V> entry =
-									TemporaryEntrySet.this.values == null ?
-									//with initial value
-									Methods.PrivateConcrete.getPropertylessEntry(
-											key
-									) :
-									//without initial value
-									Methods.PrivateConcrete.getPropertylessEntry(
-											key,
-											TemporaryEntrySet.this.values.apply(
-													key,
-													null
-											)
-									);
-							TemporaryEntrySet.this.solvedEntries.add(entry);
-							return entry;
-						}
-
-						//if no more fields, nor keys to be resolved
-						if (this.solvedEntriesIterator == null)
-							this.solvedEntriesIterator = TemporaryEntrySet.this.solvedEntries.iterator();
-						return this.solvedEntriesIterator.next();
+						//continue to consume the keys of the new unsolved-field
+						continue;
 					}
+
+					//if it is the first-time no more fields nor last-field's keys.
+					if (this.unsolvedKeysIterator == null)
+						//start iterating over the unsolved-keys
+						this.unsolvedKeysIterator = TemporaryEntrySet.this.unsolvedKeys.iterator();
+					//if there is still unsolved-keys
+					if (this.unsolvedKeysIterator.hasNext()) {
+						//if no more fields to be resolved,
+						//but still there is keys to be resolved
+						K key = this.unsolvedKeysIterator.next();
+
+						//create a new entry
+						Entry<K, V> entry =
+								TemporaryEntrySet.this.values == null ?
+								//with initial value
+								Methods.PrivateConcrete.getPropertylessEntry(
+										key
+								) :
+								//without initial value
+								Methods.PrivateConcrete.getPropertylessEntry(
+										key,
+										TemporaryEntrySet.this.values.apply(
+												key,
+												null
+										)
+								);
+
+						//remove it, because it has been solved
+						this.unsolvedKeysIterator.remove();
+						//add the solved entry
+						TemporaryEntrySet.this.solvedEntries.add(entry);
+						return entry;
+					}
+				}
+
+				//100% dependent stage; once achieved, it will stay forever!
+				//if it is the first-time no more unsolved-keys.
+				if (this.solvedEntriesIterator == null)
+					//start iterating the over solved-entries
+					this.solvedEntriesIterator = TemporaryEntrySet.this.solvedEntries.iterator();
+
+				//it depends now 100% on the solved-entries
+				return this.solvedEntriesIterator.next();
 			}
 		}
 	}
