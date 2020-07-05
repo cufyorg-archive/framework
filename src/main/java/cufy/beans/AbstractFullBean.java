@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * An abstraction for the interface {@link Bean}.
+ * An abstraction for the interface {@link FullBean}.
  *
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
@@ -32,39 +32,39 @@ import java.util.Set;
  * @version 0.1.5
  * @since 0.0.1 ~2019.06.11
  **/
-public abstract class AbstractBean<K, V> implements Bean<K, V>, Serializable {
+public abstract class AbstractFullBean<K, V> implements FullBean<K, V>, Serializable {
 	/**
 	 * A set of the entries of this.
 	 */
-	private transient RawEntrySet<K, V> entrySet;
+	private transient DelegateEntrySet<K, V> entrySet;
 	/**
 	 * A set of the keys in this.
 	 */
-	private transient RawKeySet<K> keySet;
+	private transient DelegateKeySet<K> keySet;
 	/**
 	 * A set of the values in this.
 	 */
-	private transient RawValues<V> values;
+	private transient DelegateValues<V> values;
 
 	@Override
 	public int hashCode() {
-		return Methods.Raw.hashCode(this);
+		return Methods.Delegate.hashCode(this, this);
 	}
 
 	@Override
 	public boolean equals(Object object) {
-		return Methods.Raw.equals(this, object);
+		return Methods.Delegate.equals(this, this, object);
 	}
 
 	@Override
 	public String toString() {
-		return Methods.Raw.toString(this);
+		return Methods.Delegate.toString(this, this);
 	}
 
 	@Override
 	public Set<K> keySet() {
 		if (this.keySet == null)
-			this.keySet = Methods.Raw.keySet(this);
+			this.keySet = Methods.Delegate.keySet(this, this);
 
 		return this.keySet;
 	}
@@ -72,7 +72,7 @@ public abstract class AbstractBean<K, V> implements Bean<K, V>, Serializable {
 	@Override
 	public Collection<V> values() {
 		if (this.values == null)
-			this.values = Methods.Raw.values(this);
+			this.values = Methods.Delegate.values(this, this);
 
 		return this.values;
 	}
@@ -80,18 +80,18 @@ public abstract class AbstractBean<K, V> implements Bean<K, V>, Serializable {
 	@Override
 	public Set<Map.Entry<K, V>> entrySet() {
 		if (this.entrySet == null)
-			this.entrySet = Methods.Raw.entrySet(this);
+			this.entrySet = Methods.Delegate.entrySet(this, this);
 
 		return (Set) this.entrySet;
 	}
 
 	@SuppressWarnings("JavaDoc")
 	private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
-		Methods.Raw.readObject(this, stream);
+		Methods.Delegate.readObject(this, this, stream);
 	}
 
 	@SuppressWarnings("JavaDoc")
 	private void writeObject(ObjectOutputStream stream) throws IOException {
-		Methods.Raw.writeObject(this, stream);
+		Methods.Delegate.writeObject(this, this, stream);
 	}
 }
