@@ -16,6 +16,7 @@
 package cufy.beans;
 
 import cufy.convert.BaseConverter;
+import cufy.convert.ConvertException;
 import cufy.convert.ConvertToken;
 import cufy.convert.Converter;
 import cufy.lang.Clazz;
@@ -33,6 +34,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -182,12 +185,46 @@ public interface Bean<K, V> extends Map<K, V> {
 	@Target(ElementType.FIELD)
 	@interface Property {
 		/**
+		 * Determine whether the {@code annotated field}'s value can be replaced or should be set remotely. If the
+		 * returned array is empty, Then the constancy of the field will depend on if the {@code annotated field} is
+		 * {@link Modifier#FINAL final} or not.
+		 *
+		 * @return true, if the {@code annotated field}'s value should be set remotely and not replaced.
+		 * @throws IllegalMetaException if the array's length is more than 1.
+		 */
+		boolean[] constant() default {};
+
+		/**
+		 * Determine if a value should be converted to the annotated field's {@link #type()} before been {@link
+		 * PropertyEntry#setValue(Object) set}.
+		 *
+		 * @return true, if the value should be converted before been set to the {@code annotated field}.
+		 */
+		boolean convert() default false;
+
+		/**
 		 * Get a reference to a converter for the {@code annotated field} to use when it is about to set a value that is
 		 * not an instance of the specified type.
 		 *
 		 * @return a reference to the {@code annotated field}'s converter.
 		 */
 		Where converter() default @Where(BaseConverter.class);
+
+		/**
+		 * The name of the getter method for the {@code annotated field}. If the returned array is empty, Then the
+		 * default {@link Bean}s getter will be used.
+		 * <pre>
+		 *     The signature of a real getter method should be like:
+		 *     ANY_VISIBILITY NOT_VOID ANY_NAME(Property.Meta meta)
+		 *     <br/>
+		 *     The signature of a listener getter method should be like:
+		 *     ANY_VISIBILITY VOID ANY_NAME(Property.Meta meta)
+		 * </pre>
+		 *
+		 * @return the name of the getter method.
+		 * @throws IllegalMetaException if the array's length is larger than 1.
+		 */
+		String[] get() default {};
 
 		/**
 		 * An array of keys to be used as the keys for the {@code annotated field}. If the returned array is empty, then
@@ -199,13 +236,32 @@ public interface Bean<K, V> extends Map<K, V> {
 		Recipe[] keys() default {};
 
 		/**
+		 * The name of the setter method for the {@code annotated field}. If the returned array is empty, Then the
+		 * default {@link Bean}s setter will be used.
+		 * <pre>
+		 *     The signature of a real setter method should be like:
+		 *     ANY_VISIBILITY boolean ANY_NAME(Property.Meta meta, Object value)
+		 *     <br/>
+		 *     The signature of a listener getter method should be like:
+		 *     ANY_VISIBILITY VOID ANY_NAME(Property.Meta meta, Object value)
+		 *     <br/>
+		 *     Note that if a real setter returns {@code false},
+		 *     then the invoker will treat the call as if the method was just a listener.
+		 * </pre>
+		 *
+		 * @return the name of the setter method.
+		 * @throws IllegalMetaException if the array's length is larger than 1.
+		 */
+		String[] set() default {};
+
+		/**
 		 * An array containing the type of the {@code annotated field}. If the returned array is empty, then the {@code
 		 * annotated field} have the type found in its signature. Otherwise, the first element in the returned array is
 		 * the type of the {@code annotated field}.
 		 * <br>
 		 *
 		 * @return the type of the {@code annotated field}
-		 * @throws IllegalMetaException if the array's length is more than 1
+		 * @throws IllegalMetaException if the array's length is more than 1.
 		 */
 		Type[] type() default {};
 
@@ -233,7 +289,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			private KeySet(Field field) {
 				Objects.requireNonNull(field, "field");
 				this.field = field;
-				this.recipes = field.getAnnotation(Property.class).keys();
+				this.recipes = Methods.PrivateConcrete.getProperty(field).keys();
 			}
 
 			@Override
@@ -274,6 +330,225 @@ public interface Bean<K, V> extends Map<K, V> {
 
 					throw new NoSuchElementException("No more elements");
 				}
+			}
+		}
+
+		/**
+		 * An object that gives a quicker access to a propery.
+		 */
+		final class Meta<K, V> {
+			/**
+			 * The field that have been annotated with the {@code property} of this object.
+			 */
+			private final Field field;
+			/**
+			 * Cached value for {@link Property#constant()}.
+			 */
+			private Boolean constant;
+			/**
+			 * Cached value for {@link Property#convert()}.
+			 */
+			private Boolean convert;
+			/**
+			 * Cached value for {@link Property#converter()}.
+			 */
+			private Converter converter;
+			/**
+			 * Cached value for {@link Property#get()}.
+			 */
+			private Method get;
+			/**
+			 * Cached value for {@link Property#keys()}.
+			 */
+			private Property.KeySet<K> keys;
+			/**
+			 * The property this object is accessing.
+			 */
+			private Property property;
+			/**
+			 * Cached value for {@link Property#set()}.
+			 */
+			private Method set;
+			/**
+			 * Cached value for {@link Property#type()}.
+			 */
+			private Clazz<V> type;
+
+			/**
+			 * Construct a new object that givens a quicker access to the given {@code field}'s {@link Property}.
+			 *
+			 * @param field the field that have been annotated to the {@link Property} used by the constructed object.
+			 * @throws NullPointerException if the given {@code field} is null.
+			 */
+			private Meta(Field field) {
+				Objects.requireNonNull(field, "field");
+				this.field = field;
+			}
+
+			@Override
+			public int hashCode() {
+				return this.property().hashCode();
+			}
+
+			@Override
+			public boolean equals(Object object) {
+				return object == this ||
+					   object instanceof Meta &&
+					   ((Meta) object).property() == this.property();
+			}
+
+			@Override
+			public String toString() {
+				return "meta " + this.property();
+			}
+
+			/**
+			 * Determine if the {@code annotated field} is {@link Property#constant() constant} or not.
+			 *
+			 * @return true, if the {@code annotated field} is {@link Property#constant() constant}.
+			 */
+			public boolean constant() {
+				if (this.constant == null) {
+					boolean[] array = this.property().constant();
+
+					if (array.length == 0)
+						this.constant = Modifier.isFinal(this.field().getModifiers());
+					else if (array.length == 1)
+						this.constant = array[0];
+					else
+						throw new IllegalMetaException("Bean.Property.constant().length > 1");
+				}
+
+				return this.constant;
+			}
+
+			/**
+			 * Determine if a value should be converted to the annotated field's {@link Property#type()} before been
+			 * {@link PropertyEntry#setValue(Object) set}.
+			 *
+			 * @return true, if the value should be converted before been set to teh annotated field.
+			 */
+			public boolean convert() {
+				if (this.convert == null)
+					this.convert = this.property().convert();
+
+				return this.convert;
+			}
+
+			/**
+			 * Get the converter specified in the {@code annotated field}'s {@link Property} annotation.
+			 *
+			 * @return the converter specified in the {@code annotated field}'s {@link Property} annotation.
+			 */
+			public Converter converter() {
+				if (this.converter == null)
+					this.converter = Where.Util.getValue(this.property().converter());
+
+				return this.converter;
+			}
+
+			/**
+			 * Get the {@link Field annotated field}.
+			 *
+			 * @return the annotated field.
+			 */
+			public Field field() {
+				return this.field;
+			}
+
+			/**
+			 * Get the getter method of the {@code annotated field}.
+			 *
+			 * @return the getter method of the {@code annotated field}, Or null if the {@code annotated field} does not
+			 * 		specify a getter method.
+			 */
+			public Method get() {
+				if (this.get == null) {
+					String[] array = this.property().get();
+
+					if (array.length == 0)
+						this.get = null;
+					else if (array.length == 1)
+						try {
+							this.get = this.field().getDeclaringClass().getMethod(array[0], Property.Meta.class);
+						} catch (NoSuchMethodException e) {
+							throw new IllegalMetaException("Method not found: " + array[0], e);
+						}
+					else
+						throw new IllegalMetaException("Bean.Property.get().length > 1");
+				}
+
+				return this.get;
+			}
+
+			/**
+			 * Get a set of the keys the {@code annotated field} does have.
+			 *
+			 * @return a set of the keys the {@code annotated field} does have.
+			 */
+			public Set<K> keys() {
+				if (this.keys == null)
+					this.keys = new Property.KeySet(this.field());
+
+				return this.keys;
+			}
+
+			/**
+			 * Get the {@link Property} annotation that have been annotated to the {@code field} of this.
+			 *
+			 * @return the property annotation.
+			 */
+			public Property property() {
+				if (this.property == null)
+					this.property = this.field().getAnnotation(Property.class);
+
+				return this.property;
+			}
+
+			/**
+			 * Get the setter method of the {@code annotated field}.
+			 *
+			 * @return the setter method of the {@code annotated field}, Or null if the {@code annotated field} does not
+			 * 		specify a setter method.
+			 */
+			public Method set() {
+				if (this.set == null) {
+					String[] array = this.property().set();
+
+					if (array.length == 0)
+						this.set = null;
+					else if (array.length == 1)
+						try {
+							this.set = this.field().getDeclaringClass().getMethod(array[0], Property.Meta.class, Object.class);
+						} catch (NoSuchMethodException e) {
+							throw new IllegalMetaException("Method not found: " + array[0], e);
+						}
+					else
+						throw new IllegalMetaException("Bean.Property.set().length > 1");
+				}
+
+				return this.set;
+			}
+
+			/**
+			 * Get the type of the {@code annotated field}. The type means the {@link Clazz} specified for the values to
+			 * be store at the {@code annotated field}.
+			 *
+			 * @return the type of the {@code annotated field}.
+			 */
+			public Clazz<V> type() {
+				if (this.type == null) {
+					Type[] array = this.property().type();
+
+					if (array.length == 0)
+						this.type = (Clazz<V>) Clazz.of(this.field().getType());
+					else if (array.length == 1)
+						this.type = Type.Util.get(array[0]);
+					else
+						throw new IllegalMetaException("Bean.Property.type().length > 1");
+				}
+
+				return this.type;
 			}
 		}
 	}
@@ -553,23 +828,6 @@ public interface Bean<K, V> extends Map<K, V> {
 			}
 
 			/**
-			 * Get the converter specified in the given {@code field}'s {@link Property} annotation.
-			 *
-			 * @param field to get its converter.
-			 * @return the converter specified in the given {@code field}'s {@link Property} annotation.
-			 * @throws NullPointerException     if the given {@code field} is null.
-			 * @throws IllegalArgumentException if the given {@code field} is not annotated with {@link Property}
-			 *                                  annotation.
-			 */
-			public static Converter getConverter(Field field) {
-				Objects.requireNonNull(field, "field");
-				if (!field.isAnnotationPresent(Property.class))
-					throw new IllegalArgumentException(field + " is not annotated with " + Property.class);
-
-				return PrivateConcrete.getConverter(field);
-			}
-
-			/**
 			 * Get a {@link PropertyEntry} for a field that have the given key in the given instance. Or a {@link
 			 * PropertylessEntry} if there is no such field having the given {@code key} in the given {@code instance}.
 			 * This method don't trust the given {@code key}. The given {@code key} will not be used. The key
@@ -635,22 +893,6 @@ public interface Bean<K, V> extends Map<K, V> {
 						cufy.util.Reflection.fieldsSet(klass),
 						field -> field.isAnnotationPresent(Property.class)
 				);
-			}
-
-			/**
-			 * Get a set of the keys the given {@code field} does have.
-			 *
-			 * @param field the field to return the keys that it have.
-			 * @param <K>   the type of the keys returned.
-			 * @return a set of the keys the given {@code field} does have.
-			 * @throws NullPointerException     if the given {@code field} is null.
-			 * @throws IllegalArgumentException if the given {@code field} is not annotated with {@link Property}.
-			 */
-			public static <K> Set<K> getKeys(Field field) {
-				Objects.requireNonNull(field, "field");
-				if (!field.isAnnotationPresent(Property.class))
-					throw new IllegalArgumentException("Field is not annotated with @Property: " + field);
-				return PrivateConcrete.getKeys(field);
 			}
 
 			/**
@@ -726,7 +968,7 @@ public interface Bean<K, V> extends Map<K, V> {
 					!field.isAnnotationPresent(Property.class))
 					throw new IllegalArgumentException("Field rejected: " + field);
 
-				for (Recipe recipe : field.getAnnotation(Property.class).keys())
+				for (Recipe recipe : PrivateConcrete.getProperty(field).keys())
 					if (key == recipe)
 						return PrivateConcrete.getPropertyEntry(instance, field, recipe);
 
@@ -758,7 +1000,7 @@ public interface Bean<K, V> extends Map<K, V> {
 					!field.isAnnotationPresent(Property.class))
 					throw new IllegalArgumentException("Field rejected: " + field);
 
-				for (Recipe recipe : field.getAnnotation(Property.class).keys())
+				for (Recipe recipe : PrivateConcrete.getProperty(field).keys())
 					if (key == recipe)
 						return PrivateConcrete.getPropertyEntry(instance, field, recipe, value);
 
@@ -790,7 +1032,7 @@ public interface Bean<K, V> extends Map<K, V> {
 					!field.isAnnotationPresent(Property.class))
 					throw new IllegalArgumentException("Field rejected: " + field);
 
-				for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+				for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 					if (Objects.equals(key, fieldKey))
 						return PrivateConcrete.getPropertyEntry(instance, field, fieldKey);
 
@@ -823,7 +1065,7 @@ public interface Bean<K, V> extends Map<K, V> {
 					!field.isAnnotationPresent(Property.class))
 					throw new IllegalArgumentException("Field rejected: " + field);
 
-				for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+				for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 					if (Objects.equals(key, fieldKey))
 						return PrivateConcrete.getPropertyEntry(instance, field, fieldKey, value);
 
@@ -867,24 +1109,6 @@ public interface Bean<K, V> extends Map<K, V> {
 			}
 
 			/**
-			 * Get the type of the given {@code field}. The type means the {@link Clazz} specified for the values to be
-			 * store at the given {@code field}.
-			 *
-			 * @param field the field that the returned type is required for a value to be stored to it using a bean.
-			 * @param <V>   the type of the returned clazz.
-			 * @return the type of the given {@code field}.
-			 * @throws NullPointerException     if the given {@code field} is null.
-			 * @throws IllegalArgumentException if the given {@code field} is not annotated with {@link Property}.
-			 */
-			public static <V> Clazz<V> getType(Field field) {
-				Objects.requireNonNull(field, "field");
-				if (!field.isAnnotationPresent(Property.class))
-					throw new IllegalArgumentException(field + " is not annotated with " + Property.class);
-
-				return PrivateConcrete.getType(field);
-			}
-
-			/**
 			 * Get the value stored at the given {@code field} in the given {@code instance}.
 			 *
 			 * @param instance the instance that the returned value is stored at in the given {@code field}.
@@ -920,8 +1144,6 @@ public interface Bean<K, V> extends Map<K, V> {
 			 * @throws NullPointerException     if the given {@code instance} or {@code field} is null.
 			 * @throws IllegalArgumentException if the given {@code field} is not annotated with {@link Property}. Or if
 			 *                                  the given {@code field} is not in the given {@code instance}.
-			 * @see PrivateConcrete#setValue(Object, Field, Object)
-			 * @see PrivateConcrete#setValue(Object, Field, Object, Converter, Clazz)
 			 */
 			public static <V> void setValue(Object instance, Field field, V value) {
 				Objects.requireNonNull(instance, "instance");
@@ -1797,7 +2019,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				Objects.requireNonNull(function, "function");
 
 				for (Field field : Concrete.getFields(instance))
-					for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+					for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (Objects.equals(key, fieldKey)) {
 							V value = function.apply(key, PrivateConcrete.getValue(instance, field));
 
@@ -1830,7 +2052,7 @@ public interface Bean<K, V> extends Map<K, V> {
 
 				for (Field field : Concrete.getFields(instance))
 					if (PrivateConcrete.getValue(instance, field) == null)
-						for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+						for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 							if (Objects.equals(key, fieldKey)) {
 								V value = function.apply(key);
 
@@ -1863,7 +2085,7 @@ public interface Bean<K, V> extends Map<K, V> {
 					V fieldValue = PrivateConcrete.getValue(instance, field);
 
 					if (fieldValue != null)
-						for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+						for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 							if (Objects.equals(key, fieldKey)) {
 								V value = function.apply(key, fieldValue);
 
@@ -1892,7 +2114,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				Objects.requireNonNull(instance, "instance");
 
 				for (Field field : Concrete.getFields(instance))
-					for (Object fieldKey : PrivateConcrete.getKeys(field))
+					for (Object fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (Objects.equals(key, fieldKey))
 							return true;
 
@@ -1982,7 +2204,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				for (Field field : Concrete.getFields(instance)) {
 					V value = PrivateConcrete.getValue(instance, field);
 
-					for (K key : PrivateConcrete.<K>getKeys(field))
+					for (K key : PrivateConcrete.<K, V>getMeta(field).keys())
 						consumer.accept(key, value);
 				}
 			}
@@ -2002,7 +2224,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				Objects.requireNonNull(instance, "instance");
 
 				for (Field field : Concrete.getFields(instance))
-					for (Object fieldKey : PrivateConcrete.getKeys(field))
+					for (Object fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (Objects.equals(key, fieldKey))
 							return PrivateConcrete.getValue(instance, field);
 
@@ -2025,7 +2247,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				Objects.requireNonNull(instance, "instance");
 
 				for (Field field : Concrete.getFields(instance))
-					for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+					for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (Objects.equals(key, fieldKey))
 							return PrivateConcrete.getValue(instance, field);
 
@@ -2050,7 +2272,7 @@ public interface Bean<K, V> extends Map<K, V> {
 					Object value = PrivateConcrete.getValue(instance, field);
 					int valueHash = Objects.hashCode(value);
 
-					for (K key : PrivateConcrete.<K>getKeys(field)) {
+					for (K key : PrivateConcrete.<K, V>getMeta(field).keys()) {
 						int keyHash = Objects.hashCode(key);
 
 						hashCode += keyHash ^ valueHash;
@@ -2109,7 +2331,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				Objects.requireNonNull(function, "function");
 
 				for (Field field : Concrete.getFields(instance))
-					for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+					for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (Objects.equals(key, fieldKey)) {
 							V fieldValue = PrivateConcrete.getValue(instance, field);
 							V newValue = fieldValue == null ? value : function.apply(fieldValue, value);
@@ -2142,7 +2364,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				Objects.requireNonNull(instance, "instance");
 
 				for (Field field : Concrete.getFields(instance))
-					for (Object fieldKey : PrivateConcrete.getKeys(field))
+					for (Object fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (Objects.equals(key, fieldKey)) {
 							V oldValue = PrivateConcrete.getValue(instance, field);
 							PrivateConcrete.setValue(instance, field, value);
@@ -2174,7 +2396,7 @@ public interface Bean<K, V> extends Map<K, V> {
 					boolean put = true;
 
 					//first key in the Property annotation has more priority that other keys!
-					for (K key : PrivateConcrete.<K>getKeys(field))
+					for (K key : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (keySet.remove(key) && put) {
 							//found a key that can be put!
 							//only if the field haven't been set by previous key.
@@ -2208,7 +2430,7 @@ public interface Bean<K, V> extends Map<K, V> {
 
 				for (Field field : Concrete.getFields(instance))
 					if (PrivateConcrete.getValue(instance, field) == null)
-						for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+						for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 							if (Objects.equals(key, fieldKey)) {
 								V oldValue = PrivateConcrete.getValue(instance, field);
 								PrivateConcrete.setValue(instance, field, value);
@@ -2271,7 +2493,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				for (Field field : Concrete.getFields(instance)) {
 					V fieldValue = PrivateConcrete.getValue(instance, field);
 
-					for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+					for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (Objects.equals(key, fieldKey))
 							if (Objects.equals(value, fieldValue))
 								throw new UnsupportedOperationException("remove");
@@ -2298,7 +2520,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				Objects.requireNonNull(instance, "instance");
 
 				for (Field field : Concrete.getFields(instance))
-					for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+					for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (Objects.equals(key, fieldKey))
 							throw new UnsupportedOperationException("remove");
 
@@ -2321,7 +2543,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				Objects.requireNonNull(instance, "instance");
 
 				for (Field field : Concrete.getFields(instance))
-					for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+					for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (Objects.equals(key, fieldKey)) {
 							V oldValue = PrivateConcrete.getValue(instance, field);
 							PrivateConcrete.setValue(instance, field, value);
@@ -2349,7 +2571,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				for (Field field : Concrete.getFields(instance)) {
 					V fieldValue = PrivateConcrete.getValue(instance, field);
 
-					for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+					for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (Objects.equals(key, fieldKey))
 							if (Objects.equals(oldValue, fieldValue)) {
 								PrivateConcrete.setValue(instance, field, newValue);
@@ -2378,7 +2600,7 @@ public interface Bean<K, V> extends Map<K, V> {
 					V value = PrivateConcrete.getValue(instance, field);
 
 					//redundant reassignment to the field will be skipped
-					for (K key : PrivateConcrete.<K>getKeys(field))
+					for (K key : PrivateConcrete.<K, V>getMeta(field).keys())
 						value = function.apply(key, value);
 
 					PrivateConcrete.setValue(instance, field, value);
@@ -2400,7 +2622,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				int size = 0;
 				for (Field field : Concrete.getFields(instance))
 					//don't forget "zero keys = singular key that is the name of the field"
-					size += Math.max(1, field.getAnnotation(Property.class).keys().length);
+					size += Math.max(1, PrivateConcrete.getProperty(field).keys().length);
 
 				return size;
 			}
@@ -2427,7 +2649,7 @@ public interface Bean<K, V> extends Map<K, V> {
 						Object value = PrivateConcrete.getValue(instance, field);
 						String valueString = value == instance ? "(this Bean)" : String.valueOf(value);
 
-						Iterator<K> keys = PrivateConcrete.<K>getKeys(field).iterator();
+						Iterator<K> keys = PrivateConcrete.<K, V>getMeta(field).keys().iterator();
 
 						while (keys.hasNext()) {
 							Object key = iterator.next();
@@ -2483,7 +2705,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				for (Field field : Concrete.getFields(instance)) {
 					Object value = PrivateConcrete.getValue(instance, field);
 
-					for (K key : PrivateConcrete.<K>getKeys(field)) {
+					for (K key : PrivateConcrete.<K, V>getMeta(field).keys()) {
 						stream.writeObject(key);
 						stream.writeObject(value);
 					}
@@ -2508,18 +2730,6 @@ public interface Bean<K, V> extends Map<K, V> {
 			}
 
 			/**
-			 * Get the converter specified in the given {@code field}'s {@link Property} annotation.
-			 *
-			 * @param field to get its converter.
-			 * @return the converter specified in the given {@code field}'s {@link Property} annotation.
-			 * @throws NullPointerException if the given {@code field} is null.
-			 */
-			private static Converter getConverter(Field field) {
-				Objects.requireNonNull(field, "field");
-				return Where.Util.getValue(field.getAnnotation(Property.class).converter());
-			}
-
-			/**
 			 * a {@link PropertyEntry} for a field that have the given key in the given instance. Or a {@link
 			 * PropertylessEntry} if there is no such field having the given {@code key} in the given {@code instance}.
 			 * This method don't trust the given {@code key} for a {@link PropertyEntry}. The given {@code key} will not
@@ -2539,7 +2749,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				Objects.requireNonNull(instance, "instance");
 
 				for (Field field : Concrete.getFields(instance))
-					for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+					for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (Objects.equals(key, fieldKey))
 							return new PropertyEntry(instance, field, fieldKey);
 
@@ -2567,7 +2777,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				Objects.requireNonNull(instance, "instance");
 
 				for (Field field : Concrete.getFields(instance))
-					for (K fieldKey : PrivateConcrete.<K>getKeys(field))
+					for (K fieldKey : PrivateConcrete.<K, V>getMeta(field).keys())
 						if (Objects.equals(key, fieldKey))
 							return new PropertyEntry(instance, field, fieldKey, value);
 
@@ -2575,16 +2785,29 @@ public interface Bean<K, V> extends Map<K, V> {
 			}
 
 			/**
-			 * Get a set of the keys the given {@code property} does have.
+			 * Get the meta-data of the given {@code field}.
 			 *
-			 * @param property the field to return the keys that it have.
-			 * @param <K>      the type of the keys returned.
-			 * @return a set of the keys the given {@code property} does have.
-			 * @throws NullPointerException if the given {@code property} is null.
+			 * @param field to get the meta-data of.
+			 * @param <K>   the type of the keys of the returned meta.
+			 * @param <V>   the type of the value of the returned meta.
+			 * @return the {@link Property} annotation that is annotated at the given {@code field}.
+			 * @throws NullPointerException if the given {@code field} is null.
 			 */
-			private static <K> Set<K> getKeys(Field property) {
-				Objects.requireNonNull(property, "property");
-				return new Property.KeySet(property);
+			private static <K, V> Property.Meta<K, V> getMeta(Field field) {
+				Objects.requireNonNull(field, "field");
+				return new Property.Meta(field);
+			}
+
+			/**
+			 * Get the {@link Property} annotated to the given {@code field}.
+			 *
+			 * @param field to get the {@link Property} annotation of it.
+			 * @return the {@link Property} annotated to the given {@code field}.
+			 * @throws NullPointerException if the given {@code field} is null.
+			 */
+			private static Property getProperty(Field field) {
+				Objects.requireNonNull(field, "field");
+				return field.getAnnotation(Property.class);
 			}
 
 			/**
@@ -2606,7 +2829,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				if (key < 0)
 					throw new IllegalArgumentException("negative key index");
 
-				Recipe[] recipes = field.getAnnotation(Property.class).keys();
+				Recipe[] recipes = PrivateConcrete.getProperty(field).keys();
 
 				if (key < recipes.length)
 					//if the field have custom keys, and the given key is within the bounds
@@ -2639,7 +2862,7 @@ public interface Bean<K, V> extends Map<K, V> {
 				if (key < 0)
 					throw new IllegalArgumentException("negative key index");
 
-				Recipe[] recipes = field.getAnnotation(Property.class).keys();
+				Recipe[] recipes = PrivateConcrete.getProperty(field).keys();
 
 				if (key < recipes.length)
 					//if the field have custom keys, and the given key is within the bounds
@@ -2751,28 +2974,6 @@ public interface Bean<K, V> extends Map<K, V> {
 			}
 
 			/**
-			 * Get the type of the given {@code field}. The type means the {@link Clazz} specified for the values to be
-			 * store at the given {@code field}.
-			 *
-			 * @param field the field that the returned type is required for a value to be stored to it using a bean.
-			 * @param <V>   the type of the returned clazz.
-			 * @return the type of the given {@code field}.
-			 * @throws NullPointerException if the given {@code field} is null.
-			 */
-			private static <V> Clazz<V> getType(Field field) {
-				Objects.requireNonNull(field, "field");
-
-				Type[] type = field.getAnnotation(Property.class).type();
-
-				if (type.length == 0)
-					return (Clazz<V>) Clazz.of(field.getType());
-				if (type.length == 1)
-					return (Clazz<V>) Type.Util.get(type[0]);
-
-				throw new IllegalMetaException("Bean.Property.type().length > 1");
-			}
-
-			/**
 			 * Get the value stored at the given {@code field} in the given {@code instance}.
 			 *
 			 * @param instance the instance that the returned value is stored at in the given {@code field}.
@@ -2784,9 +2985,45 @@ public interface Bean<K, V> extends Map<K, V> {
 			private static <V> V getValue(Object instance, Field field) {
 				Objects.requireNonNull(instance, "instance");
 				Objects.requireNonNull(field, "field");
+				return PrivateConcrete.getValue(
+						instance,
+						PrivateConcrete.getMeta(field)
+				);
+			}
+
+			/**
+			 * Get the value stored at the {@code annotated field} of the given {@code meta} in the given {@code
+			 * instance}.
+			 *
+			 * @param instance the instance that the returned value is stored at in the given {@code field}.
+			 * @param meta     the meta-data of the {@code annotated field}.
+			 * @param <V>      the type of the returned value.
+			 * @return the value stored at the {@code annotated field} of the given {@code meta} in the given {@code
+			 * 		instance}.
+			 * @throws NullPointerException if the given {@code instance} or {@code meta} is null.
+			 */
+			private static <V> V getValue(Object instance, Property.Meta meta) {
+				Objects.requireNonNull(instance, "instance");
+				Objects.requireNonNull(meta, "meta");
+
+				if (meta.get() != null)
+					try {
+						if (meta.get().getReturnType() == Void.class)
+							//if the method has 'Void' type, then it is just a listener
+							meta.get().invoke(instance, meta);
+						else //otherwise, it is a getter
+							return (V) meta.get().invoke(instance, meta);
+					} catch (IllegalAccessException e) {
+						IllegalAccessError error = new IllegalAccessError(e.getMessage());
+						error.initCause(e);
+						throw error;
+					} catch (InvocationTargetException e) {
+						throw new InternalError("Thrown in getter: " + e.getMessage(), e);
+					}
+
 				try {
-					field.setAccessible(true);
-					return (V) field.get(instance);
+					meta.field().setAccessible(true);
+					return (V) meta.field().get(instance);
 				} catch (IllegalAccessException e) {
 					IllegalAccessError error = new IllegalAccessError();
 					error.initCause(e);
@@ -2808,55 +3045,74 @@ public interface Bean<K, V> extends Map<K, V> {
 				Objects.requireNonNull(instance, "instance");
 				Objects.requireNonNull(field, "field");
 
-				Property property = field.getAnnotation(Property.class);
-				Where where = property.converter();
-				Converter converter = Where.Util.getValue(where);
-				Clazz<V> type = PrivateConcrete.getType(field);
-
-				PrivateConcrete.setValue(instance, field, value, converter, type);
+				PrivateConcrete.setValue(
+						instance,
+						value,
+						PrivateConcrete.getMeta(field)
+				);
 			}
 
 			/**
-			 * Set the value stored at the given {@code field} on the given {@code instance} to the given {@code value}
-			 * Using the given parameters.
+			 * Set the value stored at the {@code annotated field} of the given {@code meta} on the given {@code
+			 * instance} to the given {@code value}.
 			 *
-			 * @param <V>       the type of the value
-			 * @param instance  to set the value to
-			 * @param field     that holds the value
-			 * @param value     to be set
-			 * @param converter the converter of the field
-			 * @param type      the type of the field
-			 * @throws NullPointerException     if the given {@code field} or {@code instance} or {@code converter} or
-			 *                                  {@code type} is null.
-			 * @throws IllegalArgumentException if the given {@code field} is not annotated with {@link Property}. Or if
-			 *                                  the given {@code value} can't be set to the given {@code field}.
-			 * @throws IllegalAccessError       if the given {@code field} object is enforcing Java language access
-			 *                                  control, and the underlying field is either inaccessible or final.
+			 * @param instance to set the value to.
+			 * @param value    to be set.
+			 * @param meta     the meta-data of the {@code annotated field}.
+			 * @param <V>      the type of the value.
+			 * @throws NullPointerException if the given {@code instance} or {@code meta} is null.
 			 */
-			private static <V> void setValue(Object instance, Field field, V value, Converter converter, Clazz<V> type) {
-				Objects.requireNonNull(field, "field");
+			private static <V> void setValue(Object instance, V value, Property.Meta meta) {
 				Objects.requireNonNull(instance, "instance");
-				Objects.requireNonNull(type, "type");
-				try {
-					field.setAccessible(true);
+				Objects.requireNonNull(meta, "meta");
 
-					int modifiers = field.getModifiers();
-					Clazz<V> valueType = Clazz.Generate.from(value);
-
-					if (Modifier.isFinal(modifiers)) {
-						//skip unnecessary reassignment by convert remotely
-						V old = (V) field.get(instance);
-
-						if (converter.convert(new ConvertToken(value, old, valueType, type)) != old)
-							//when the converter can't convert to the provided instance, it will replace it with a new one
-							throw new IllegalAccessError("can't assign the value to the final field: " + field);
+				if (meta.set() != null)
+					try {
+						if (meta.set().getReturnType() == Void.class)
+							//if the method return type is 'Void', then it is just a listener.
+							meta.set().invoke(instance, meta, value);
+						if ((boolean) meta.set().invoke(instance, meta, value))
+							//if the method returned 'false', then it wants this method to perform the default 'set' algorithm
+							return;
+					} catch (IllegalAccessException e) {
+						IllegalAccessError error = new IllegalAccessError(e.getMessage());
+						error.initCause(e);
+						throw error;
+					} catch (InvocationTargetException e) {
+						throw new InternalError("Thrown in Setter: " + e.getMessage(), e);
 					}
 
-					V newValue = converter.convert(new ConvertToken<>(value, value, valueType, type));
-					//
-					field.set(instance, newValue);
+				try {
+					meta.field().setAccessible(true);
+					Clazz<V> valueType = Clazz.Generate.from(value);
+
+					if (meta.constant())
+						try {
+							//set remotely
+							V oldValue = (V) meta.field().get(instance);
+
+							if (oldValue !=
+								meta.converter().convert(new ConvertToken<>(value, oldValue, valueType, meta.type())))
+								//when the converter can't convert to the provided instance, it will replace it with a new one
+								throw new IllegalArgumentException("Constant field!");
+						} catch (ConvertException e) {
+							throw new IllegalArgumentException("Constant field!", e);
+						}
+					else if (meta.convert())
+						try {
+							//set after converting
+							V newValue = meta.converter().convert(new ConvertToken<>(value, value, valueType, meta.type()));
+							meta.field().set(instance, newValue);
+						} catch (ConvertException e) {
+							//as specified in the Map interface
+							ClassCastException exception = new ClassCastException(e.getMessage());
+							exception.initCause(e);
+							throw exception;
+						}
+					else //direct set
+						meta.field().set(instance, value);
 				} catch (IllegalAccessException e) {
-					IllegalAccessError error = new IllegalAccessError();
+					IllegalAccessError error = new IllegalAccessError(e.getMessage());
 					error.initCause(e);
 					throw error;
 				}
@@ -2884,18 +3140,9 @@ public interface Bean<K, V> extends Map<K, V> {
 		 */
 		private final K key;
 		/**
-		 * The converter to be used when this entry is about to set a value that is not an instance of the specified
-		 * type.
-		 */
-		private Converter converter;
-		/**
 		 * The metadata of this entry.
 		 */
-		private Property meta;
-		/**
-		 * The type of the value of this entry.
-		 */
-		private Clazz<V> type;
+		private Property.Meta meta;
 
 		/**
 		 * Construct a new field entry that edits the given instance at the given field.
@@ -2905,6 +3152,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @param recipe   the recipe to construct the key of the constructed entry.
 		 * @throws NullPointerException if the given {@code instance} or {@code field} is null.
 		 */
+		@Deprecated
 		private PropertyEntry(Object instance, Field field, Recipe recipe) {
 			Objects.requireNonNull(instance, "instance");
 			Objects.requireNonNull(field, "field");
@@ -2924,6 +3172,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @param value    the value to be set to the given {@code field} after constructing the entry.
 		 * @throws NullPointerException if the given {@code instance} or {@code field} is null.
 		 */
+		@Deprecated
 		private PropertyEntry(Object instance, Field field, Recipe recipe, V value) {
 			Objects.requireNonNull(instance, "instance");
 			Objects.requireNonNull(field, "field");
@@ -2942,6 +3191,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @param key      the key of the constructed entry.
 		 * @throws NullPointerException if the given {@code instance} or {@code field} is null.
 		 */
+		@Deprecated
 		private PropertyEntry(Object instance, Field field, K key) {
 			Objects.requireNonNull(instance, "instance");
 			Objects.requireNonNull(field, "field");
@@ -2961,6 +3211,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @throws NullPointerException     if the given {@code instance} or {@code field} is null.
 		 * @throws IllegalArgumentException if the given {@code field} is not annotated with {@link Property}.
 		 */
+		@Deprecated
 		private PropertyEntry(Object instance, Field field, K key, V value) {
 			Objects.requireNonNull(instance, "instance");
 			Objects.requireNonNull(field, "field");
@@ -2984,16 +3235,19 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
-		public V setValue(V value) {
-			V oldValue = this.getValue();
-			Methods.PrivateConcrete.setValue(
-					this.instance,
-					this.field,
-					value,
-					this.getConverter(),
-					this.getType()
-			);
-			return oldValue;
+		public boolean equals(Object obj) {
+			if (obj == this)
+				//quick match
+				return true;
+			if (obj instanceof Bean.PropertyEntry)
+				//field match
+				return ((PropertyEntry) obj).instance == this.instance &&
+					   Objects.equals(((PropertyEntry) obj).getMeta(), this.getMeta()) &&
+					   Objects.equals(((PropertyEntry) obj).getKey(), this.getKey());
+			//entry match
+			return obj instanceof Map.Entry &&
+				   Objects.equals(((Map.Entry) obj).getKey(), this.getKey()) &&
+				   Objects.equals(((Map.Entry) obj).getValue(), this.getValue());
 		}
 
 		@Override
@@ -3003,19 +3257,14 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
-		public boolean equals(Object obj) {
-			if (obj == this)
-				//quick match
-				return true;
-			if (obj instanceof Bean.PropertyEntry)
-				//field match
-				return ((PropertyEntry) obj).instance == this.instance &&
-					   ((PropertyEntry) obj).field == this.field &&
-					   Objects.equals(((PropertyEntry) obj).key, this.key);
-			//entry match
-			return obj instanceof Map.Entry &&
-				   Objects.equals(((Map.Entry) obj).getKey(), this.getKey()) &&
-				   Objects.equals(((Map.Entry) obj).getValue(), this.getValue());
+		public V setValue(V value) {
+			V oldValue = this.getValue();
+			Methods.PrivateConcrete.setValue(
+					this.instance,
+					value,
+					this.getMeta()
+			);
+			return oldValue;
 		}
 
 		@Override
@@ -3024,49 +3273,15 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		/**
-		 * Get the converter to be used when this entry is about to set a value that is not an instance of the specified
-		 * type.
-		 *
-		 * @return the converter used by this entry.
-		 */
-		public Converter getConverter() {
-			if (this.converter == null)
-				this.converter = Methods.PrivateConcrete.getConverter(this.field);
-
-			return this.converter;
-		}
-
-		/**
-		 * Get the field where this entry should edit its {@code instance}.
-		 *
-		 * @return the field of this entry.
-		 */
-		public Field getField() {
-			return this.field;
-		}
-
-		/**
 		 * Get the {@link Property} annotation from the field of this entry.
 		 *
 		 * @return the metadata of this entry.
 		 */
-		public Property getMeta() {
+		public Property.Meta getMeta() {
 			if (this.meta == null)
-				this.meta = this.field.getAnnotation(Property.class);
+				this.meta = Methods.PrivateConcrete.getMeta(this.field);
 
 			return this.meta;
-		}
-
-		/**
-		 * Get the type of the value of this entry.
-		 *
-		 * @return the type of the value of this entry.
-		 */
-		public Clazz<V> getType() {
-			if (this.type == null)
-				this.type = Methods.PrivateConcrete.getType(this.field);
-
-			return this.type;
 		}
 	}
 
@@ -3188,7 +3403,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			 */
 			private final Iterator<Field> iterator = Methods.Concrete.getFields(RawEntrySet.this.instance).iterator();
 			/**
-			 * The position of the next key in the current {@link #property}.
+			 * The position of the next key in the current {@link #field}.
 			 */
 			private int cursor;
 			/**
@@ -3196,13 +3411,9 @@ public interface Bean<K, V> extends Map<K, V> {
 			 */
 			private Field field;
 			/**
-			 * The keys of the current {@link #property}.
+			 * The keys of the current {@link #field}.
 			 */
 			private Recipe[] keys;
-			/**
-			 * The property of the current field.
-			 */
-			private Property property;
 
 			/**
 			 * Construct a new iterator for the enclosing entrySet.
@@ -3226,16 +3437,16 @@ public interface Bean<K, V> extends Map<K, V> {
 						return Methods.PrivateConcrete.getPropertyEntry(RawEntrySet.this.instance, this.field, this.keys[this.cursor++]);
 
 					//the next field!
-					this.field = this.iterator.next();
-					this.property = this.field.getAnnotation(Property.class);
-					this.keys = this.property.keys();
+					Field field = this.iterator.next();
+					this.field = field;
+					this.keys = Methods.PrivateConcrete.getProperty(field).keys();
 					this.cursor = 0;
 
 					//don't forget "zero keys = singular key that is the name of the field"
 					if (this.keys.length == 0)
 						//that is the contract!; don't worry the next call will change the field,
 						//since the keys size is zero while the cursor also zero!.
-						return Methods.PrivateConcrete.getPropertyEntry(RawEntrySet.this.instance, this.field, (K) this.field.getName());
+						return Methods.PrivateConcrete.getPropertyEntry(RawEntrySet.this.instance, field, (K) field.getName());
 				}
 			}
 		}
@@ -3314,7 +3525,7 @@ public interface Bean<K, V> extends Map<K, V> {
 
 					//the next field!
 					Field field = this.iterator.next();
-					this.keys = field.getAnnotation(Property.class).keys();
+					this.keys = Methods.PrivateConcrete.getProperty(field).keys();
 					this.cursor = 0;
 
 					//don't forget "zero keys = singular key that is the name of the field"
@@ -3420,10 +3631,11 @@ public interface Bean<K, V> extends Map<K, V> {
 						return Methods.PrivateConcrete.getValue(RawValues.this.instance, this.field);
 
 					//the next field!
-					this.field = this.iterator.next();
+					Field field = this.iterator.next();
+					this.field = field;
 					//don't forget "zero keys = singular key that is the name of the field"
 					//and since we don't care about the keys, we just max its length with 1
-					this.keys = Math.max(1, this.field.getAnnotation(Property.class).keys().length);
+					this.keys = Math.max(1, Methods.PrivateConcrete.getProperty(field).keys().length);
 					this.cursor = 0;
 				}
 			}
@@ -3588,7 +3800,7 @@ public interface Bean<K, V> extends Map<K, V> {
 						//if no keys remaining from the last field
 						Field field = TemporaryEntrySet.this.unsolvedFieldsIterator.next();
 						TemporaryEntrySet.this.unsolvedField = field;
-						TemporaryEntrySet.this.unsolvedFieldKeysIterator = Methods.PrivateConcrete.<K>getKeys(field).iterator();
+						TemporaryEntrySet.this.unsolvedFieldKeysIterator = Methods.PrivateConcrete.<K, V>getMeta(field).keys().iterator();
 						//continue to consume the keys of the new unsolved-field
 						continue;
 					}
