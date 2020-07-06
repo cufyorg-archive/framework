@@ -48,23 +48,23 @@ public abstract class AbstractFullBean<K, V> implements FullBean<K, V>, Serializ
 
 	@Override
 	public int hashCode() {
-		return Methods.Delegate.hashCode(this, this);
+		return DelegateMethods.hashCode(this, this);
 	}
 
 	@Override
 	public boolean equals(Object object) {
-		return Methods.Delegate.equals(this, this, object);
+		return DelegateMethods.equals(this, this, object);
 	}
 
 	@Override
 	public String toString() {
-		return Methods.Delegate.toString(this, this);
+		return DelegateMethods.toString(this, this);
 	}
 
 	@Override
 	public Set<K> keySet() {
 		if (this.keySet == null)
-			this.keySet = Methods.Delegate.keySet(this, this);
+			this.keySet = DelegateMethods.keySet(this, this);
 
 		return this.keySet;
 	}
@@ -72,7 +72,7 @@ public abstract class AbstractFullBean<K, V> implements FullBean<K, V>, Serializ
 	@Override
 	public Collection<V> values() {
 		if (this.values == null)
-			this.values = Methods.Delegate.values(this, this);
+			this.values = DelegateMethods.values(this, this);
 
 		return this.values;
 	}
@@ -80,18 +80,18 @@ public abstract class AbstractFullBean<K, V> implements FullBean<K, V>, Serializ
 	@Override
 	public Set<Map.Entry<K, V>> entrySet() {
 		if (this.entrySet == null)
-			this.entrySet = Methods.Delegate.entrySet(this, this);
+			this.entrySet = DelegateMethods.entrySet(this, this);
 
 		return (Set) this.entrySet;
 	}
 
 	@SuppressWarnings("JavaDoc")
 	private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
-		Methods.Delegate.readObject(this, this, stream);
+		DelegateMethods.readObject(this, this, stream);
 	}
 
 	@SuppressWarnings("JavaDoc")
 	private void writeObject(ObjectOutputStream stream) throws IOException {
-		Methods.Delegate.writeObject(this, this, stream);
+		DelegateMethods.writeObject(this, this, stream);
 	}
 }

@@ -48,23 +48,23 @@ public abstract class AbstractBean<K, V> implements Bean<K, V>, Serializable {
 
 	@Override
 	public int hashCode() {
-		return Methods.Raw.hashCode(this);
+		return RawMethods.hashCode(this);
 	}
 
 	@Override
 	public boolean equals(Object object) {
-		return Methods.Raw.equals(this, object);
+		return RawMethods.equals(this, object);
 	}
 
 	@Override
 	public String toString() {
-		return Methods.Raw.toString(this);
+		return RawMethods.toString(this);
 	}
 
 	@Override
 	public Set<K> keySet() {
 		if (this.keySet == null)
-			this.keySet = Methods.Raw.keySet(this);
+			this.keySet = RawMethods.keySet(this);
 
 		return this.keySet;
 	}
@@ -72,7 +72,7 @@ public abstract class AbstractBean<K, V> implements Bean<K, V>, Serializable {
 	@Override
 	public Collection<V> values() {
 		if (this.values == null)
-			this.values = Methods.Raw.values(this);
+			this.values = RawMethods.values(this);
 
 		return this.values;
 	}
@@ -80,18 +80,18 @@ public abstract class AbstractBean<K, V> implements Bean<K, V>, Serializable {
 	@Override
 	public Set<Map.Entry<K, V>> entrySet() {
 		if (this.entrySet == null)
-			this.entrySet = Methods.Raw.entrySet(this);
+			this.entrySet = RawMethods.entrySet(this);
 
 		return (Set) this.entrySet;
 	}
 
 	@SuppressWarnings("JavaDoc")
 	private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
-		Methods.Raw.readObject(this, stream);
+		RawMethods.readObject(this, stream);
 	}
 
 	@SuppressWarnings("JavaDoc")
 	private void writeObject(ObjectOutputStream stream) throws IOException {
-		Methods.Raw.writeObject(this, stream);
+		RawMethods.writeObject(this, stream);
 	}
 }

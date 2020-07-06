@@ -34,47 +34,47 @@ import java.util.function.Function;
 public interface FullBean<K, V> extends Bean<K, V> {
 	@Override
 	default int size() {
-		return Methods.Delegate.size(this, this);
+		return DelegateMethods.size(this, this);
 	}
 
 	@Override
 	default boolean isEmpty() {
-		return Methods.Delegate.isEmpty(this, this);
+		return DelegateMethods.isEmpty(this, this);
 	}
 
 	@Override
 	default boolean containsKey(Object key) {
-		return Methods.Delegate.containsKey(this, this, key);
+		return DelegateMethods.containsKey(this, this, key);
 	}
 
 	@Override
 	default boolean containsValue(Object value) {
-		return Methods.Delegate.containsValue(this, this, value);
+		return DelegateMethods.containsValue(this, this, value);
 	}
 
 	@Override
 	default V get(Object key) {
-		return Methods.Delegate.get(this, this, key);
+		return DelegateMethods.get(this, this, key);
 	}
 
 	@Override
 	default V put(K key, V value) {
-		return Methods.Delegate.put(this, this, key, value);
+		return DelegateMethods.put(this, this, key, value);
 	}
 
 	@Override
 	default V remove(Object key) {
-		return Methods.Delegate.remove(this, this, key);
+		return DelegateMethods.remove(this, this, key);
 	}
 
 	@Override
 	default void putAll(Map<? extends K, ? extends V> map) {
-		Methods.Delegate.putAll(this, this, map);
+		DelegateMethods.putAll(this, this, map);
 	}
 
 	@Override
 	default void clear() {
-		Methods.Delegate.clear(this, this);
+		DelegateMethods.clear(this, this);
 	}
 
 	@Override
@@ -91,56 +91,56 @@ public interface FullBean<K, V> extends Bean<K, V> {
 
 	@Override
 	default V getOrDefault(Object key, V defaultValue) {
-		return Methods.Delegate.getOrDefault(this, this, key, defaultValue);
+		return DelegateMethods.getOrDefault(this, this, key, defaultValue);
 	}
 
 	@Override
 	default void forEach(BiConsumer<? super K, ? super V> consumer) {
-		Methods.Delegate.forEach(this, this, consumer);
+		DelegateMethods.forEach(this, this, consumer);
 	}
 
 	@Override
 	default void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
-		Methods.Delegate.replaceAll(this, this, function);
+		DelegateMethods.replaceAll(this, this, function);
 	}
 
 	@Override
 	default V putIfAbsent(K key, V value) {
-		return Methods.Delegate.putIfAbsent(this, this, key, value);
+		return DelegateMethods.putIfAbsent(this, this, key, value);
 	}
 
 	@Override
 	default boolean remove(Object key, Object value) {
-		return Methods.Delegate.remove(this, this, key, value);
+		return DelegateMethods.remove(this, this, key, value);
 	}
 
 	@Override
 	default boolean replace(K key, V oldValue, V newValue) {
-		return Methods.Delegate.replace(this, this, key, oldValue, newValue);
+		return DelegateMethods.replace(this, this, key, oldValue, newValue);
 	}
 
 	@Override
 	default V replace(K key, V value) {
-		return Methods.Delegate.replace(this, this, key, value);
+		return DelegateMethods.replace(this, this, key, value);
 	}
 
 	@Override
 	default V computeIfAbsent(K key, Function<? super K, ? extends V> function) {
-		return Methods.Delegate.computeIfAbsent(this, this, key, function);
+		return DelegateMethods.computeIfAbsent(this, this, key, function);
 	}
 
 	@Override
 	default V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> function) {
-		return Methods.Delegate.computeIfPresent(this, this, key, function);
+		return DelegateMethods.computeIfPresent(this, this, key, function);
 	}
 
 	@Override
 	default V compute(K key, BiFunction<? super K, ? super V, ? extends V> function) {
-		return Methods.Delegate.compute(this, this, key, function);
+		return DelegateMethods.compute(this, this, key, function);
 	}
 
 	@Override
 	default V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> function) {
-		return Methods.Delegate.merge(this, this, key, value, function);
+		return DelegateMethods.merge(this, this, key, value, function);
 	}
 }

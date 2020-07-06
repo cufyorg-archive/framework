@@ -67,68 +67,68 @@ public class DelegateBean<K, V> implements FullBean<K, V>, Serializable {
 
 	@Override
 	public int hashCode() {
-		return Methods.Delegate.hashCode(this, this.instance);
+		return DelegateMethods.hashCode(this, this.instance);
 	}
 
 	@Override
 	public boolean equals(Object object) {
-		return Methods.Delegate.equals(this, this.instance, object);
+		return DelegateMethods.equals(this, this.instance, object);
 	}
 
 	@Override
 	public String toString() {
-		return Methods.Delegate.toString(this, this.instance);
+		return DelegateMethods.toString(this, this.instance);
 	}
 
 	@Override
 	public int size() {
-		return Methods.Delegate.size(this, this.instance);
+		return DelegateMethods.size(this, this.instance);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return Methods.Delegate.isEmpty(this, this.instance);
+		return DelegateMethods.isEmpty(this, this.instance);
 	}
 
 	@Override
 	public boolean containsKey(Object key) {
-		return Methods.Delegate.containsKey(this, this.instance, key);
+		return DelegateMethods.containsKey(this, this.instance, key);
 	}
 
 	@Override
 	public boolean containsValue(Object value) {
-		return Methods.Delegate.containsValue(this, this.instance, value);
+		return DelegateMethods.containsValue(this, this.instance, value);
 	}
 
 	@Override
 	public V get(Object key) {
-		return Methods.Delegate.get(this, this.instance, key);
+		return DelegateMethods.get(this, this.instance, key);
 	}
 
 	@Override
 	public V put(K key, V value) {
-		return Methods.Delegate.put(this, this.instance, key, value);
+		return DelegateMethods.put(this, this.instance, key, value);
 	}
 
 	@Override
 	public V remove(Object key) {
-		return Methods.Delegate.remove(this, this.instance, key);
+		return DelegateMethods.remove(this, this.instance, key);
 	}
 
 	@Override
 	public void putAll(Map<? extends K, ? extends V> map) {
-		Methods.Delegate.putAll(this, this.instance, map);
+		DelegateMethods.putAll(this, this.instance, map);
 	}
 
 	@Override
 	public void clear() {
-		Methods.Delegate.clear(this, this.instance);
+		DelegateMethods.clear(this, this.instance);
 	}
 
 	@Override
 	public Set<K> keySet() {
 		if (this.keySet == null)
-			this.keySet = Methods.Delegate.keySet(this, this.instance);
+			this.keySet = DelegateMethods.keySet(this, this.instance);
 
 		return this.keySet;
 	}
@@ -136,7 +136,7 @@ public class DelegateBean<K, V> implements FullBean<K, V>, Serializable {
 	@Override
 	public Collection<V> values() {
 		if (this.values == null)
-			this.values = Methods.Delegate.values(this, this.instance);
+			this.values = DelegateMethods.values(this, this.instance);
 
 		return this.values;
 	}
@@ -144,73 +144,73 @@ public class DelegateBean<K, V> implements FullBean<K, V>, Serializable {
 	@Override
 	public Set<Map.Entry<K, V>> entrySet() {
 		if (this.entrySet == null)
-			this.entrySet = Methods.Delegate.entrySet(this, this.instance);
+			this.entrySet = DelegateMethods.entrySet(this, this.instance);
 
 		return (Set) this.entrySet;
 	}
 
 	@Override
 	public V getOrDefault(Object key, V defaultValue) {
-		return Methods.Delegate.getOrDefault(this, this.instance, key, defaultValue);
+		return DelegateMethods.getOrDefault(this, this.instance, key, defaultValue);
 	}
 
 	@Override
 	public void forEach(BiConsumer<? super K, ? super V> consumer) {
-		Methods.Delegate.forEach(this, this.instance, consumer);
+		DelegateMethods.forEach(this, this.instance, consumer);
 	}
 
 	@Override
 	public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
-		Methods.Delegate.replaceAll(this, this.instance, function);
+		DelegateMethods.replaceAll(this, this.instance, function);
 	}
 
 	@Override
 	public V putIfAbsent(K key, V value) {
-		return Methods.Delegate.putIfAbsent(this, this.instance, key, value);
+		return DelegateMethods.putIfAbsent(this, this.instance, key, value);
 	}
 
 	@Override
 	public boolean remove(Object key, Object value) {
-		return Methods.Delegate.remove(this, this.instance, key, value);
+		return DelegateMethods.remove(this, this.instance, key, value);
 	}
 
 	@Override
 	public boolean replace(K key, V oldValue, V newValue) {
-		return Methods.Delegate.replace(this, this.instance, key, oldValue, newValue);
+		return DelegateMethods.replace(this, this.instance, key, oldValue, newValue);
 	}
 
 	@Override
 	public V replace(K key, V value) {
-		return Methods.Delegate.replace(this, this.instance, key, value);
+		return DelegateMethods.replace(this, this.instance, key, value);
 	}
 
 	@Override
 	public V computeIfAbsent(K key, Function<? super K, ? extends V> function) {
-		return Methods.Delegate.computeIfAbsent(this, this.instance, key, function);
+		return DelegateMethods.computeIfAbsent(this, this.instance, key, function);
 	}
 
 	@Override
 	public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> function) {
-		return Methods.Delegate.computeIfPresent(this, this.instance, key, function);
+		return DelegateMethods.computeIfPresent(this, this.instance, key, function);
 	}
 
 	@Override
 	public V compute(K key, BiFunction<? super K, ? super V, ? extends V> function) {
-		return Methods.Delegate.compute(this, this.instance, key, function);
+		return DelegateMethods.compute(this, this.instance, key, function);
 	}
 
 	@Override
 	public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> function) {
-		return Methods.Delegate.merge(this, this.instance, key, value, function);
+		return DelegateMethods.merge(this, this.instance, key, value, function);
 	}
 
 	@SuppressWarnings("JavaDoc")
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-		Methods.Delegate.readObject(this, this, stream);
+		DelegateMethods.readObject(this, this, stream);
 	}
 
 	@SuppressWarnings("JavaDoc")
 	private void writeObject(ObjectOutputStream stream) throws IOException {
-		Methods.Delegate.writeObject(this, this, stream);
+		DelegateMethods.writeObject(this, this, stream);
 	}
 }
