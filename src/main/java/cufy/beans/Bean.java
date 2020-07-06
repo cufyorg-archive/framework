@@ -267,7 +267,7 @@ public interface Bean<K, V> extends Map<K, V> {
 	}
 
 	/**
-	 * An entrySet for fullBeans.
+	 * An entrySet for delegate beans.
 	 *
 	 * @param <K> the type of the keys.
 	 * @param <V> the type of the values.
@@ -317,7 +317,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		/**
-		 * An iterator for iterating the entries of a full-bean.
+		 * An iterator for iterating the entries of a delegate bean.
 		 */
 		private final class Iterator implements java.util.Iterator<Entry<K, V>> {
 			/**
@@ -343,7 +343,7 @@ public interface Bean<K, V> extends Map<K, V> {
 	}
 
 	/**
-	 * A keySet for fullBeans.
+	 * An entrySet for delegate beans.
 	 *
 	 * @param <K> the type of the keys.
 	 */
@@ -397,7 +397,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		/**
-		 * An iterator for the keySet of a fullBean.
+		 * An iterator for the keySet of a delegate beans.
 		 */
 		public final class Iterator implements java.util.Iterator<K> {
 			/**
@@ -406,7 +406,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			private final java.util.Iterator<Map.Entry<K, ?>> iterator = (java.util.Iterator) DelegateKeySet.this.delegate.entrySet().iterator();
 
 			/**
-			 * Construct a new fullBean keySet iterator.
+			 * Construct a new delegate beans keySet iterator.
 			 */
 			private Iterator() {
 			}
@@ -453,7 +453,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		public static <K, V> void clear(Bean<K, V> delegate, Object instance) {
 			Objects.requireNonNull(delegate, "delegate");
 			Objects.requireNonNull(instance, "instance");
-			//full-beans depends on their entrySets
+			//delegate beans depends on their entrySets
 			delegate.entrySet().clear();
 		}
 
@@ -1235,7 +1235,7 @@ public interface Bean<K, V> extends Map<K, V> {
 	}
 
 	/**
-	 * A values-collection for fullBeans.
+	 * An entrySet for delegate beans.
 	 *
 	 * @param <V> the type of the values.
 	 */
@@ -1289,7 +1289,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		/**
-		 * An iterator that iterates the values of a fullBean.
+		 * An iterator that iterates the values of a delegate beans.
 		 */
 		public final class Iterator implements java.util.Iterator<V> {
 			/**
@@ -1298,7 +1298,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			private final java.util.Iterator<Map.Entry<?, V>> iterator = (java.util.Iterator) DelegateValues.this.delegate.entrySet().iterator();
 
 			/**
-			 * Construct a new fullBean values iterator.
+			 * Construct a new delegate beans values iterator.
 			 */
 			private Iterator() {
 			}
@@ -1979,18 +1979,6 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
-		public boolean equals(Object obj) {
-			return /*quick match*/ obj == this ||
-					/*property match*/ obj instanceof Bean.PropertyEntry &&
-									   ((PropertyEntry) obj).instance == this.instance &&
-									   Objects.equals(((PropertyEntry) obj).index, this.index) &&
-									   Objects.equals(((PropertyEntry) obj).descriptor, this.descriptor) ||
-					/*entry match*/ obj instanceof Map.Entry &&
-									Objects.equals(((Map.Entry) obj).getKey(), this.getKey()) &&
-									Objects.equals(((Map.Entry) obj).getValue(), this.getValue());
-		}
-
-		@Override
 		public K getKey() {
 			if (this.key == null)
 				this.key = this.descriptor.keys().get(this.index);
@@ -2004,16 +1992,28 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
+		public V setValue(V value) {
+			V oldValue = this.getValue();
+			this.descriptor.setValue(this.instance, value);
+			return oldValue;
+		}
+
+		@Override
 		public int hashCode() {
 			return Objects.hashCode(this.getKey()) ^
 				   Objects.hashCode(this.getValue());
 		}
 
 		@Override
-		public V setValue(V value) {
-			V oldValue = this.getValue();
-			this.descriptor.setValue(this.instance, value);
-			return oldValue;
+		public boolean equals(Object obj) {
+			return /*quick match*/ obj == this ||
+					/*property match*/ obj instanceof Bean.PropertyEntry &&
+									   ((PropertyEntry) obj).instance == this.instance &&
+									   Objects.equals(((PropertyEntry) obj).index, this.index) &&
+									   Objects.equals(((PropertyEntry) obj).descriptor, this.descriptor) ||
+					/*entry match*/ obj instanceof Map.Entry &&
+									Objects.equals(((Map.Entry) obj).getKey(), this.getKey()) &&
+									Objects.equals(((Map.Entry) obj).getValue(), this.getValue());
 		}
 
 		@Override
