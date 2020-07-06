@@ -43,15 +43,103 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * An interface that changes the act of the fields of the class implementing it. The classes that implement this
- * interface change to be used as a map. All the fields of that class will be like {@link Map.Entry entries} on maps.
- * <br>
- * To enhance the security of the beans. Only the field that annotated with {@link Property} will be used as fields.
- * <br>
- * Since this is an interface. It can't have fields. So it can't store its entrySet, so it will be so heavy to create a
- * new entrySet each time it requires it. So all the methods have been designed not to use the entrySet. Witch is way
- * back in performance compared to do it with a final entrySet. Also since it can't have a final entrySet, so it can't
- * store keys that it haven't a field for it.
+ * The <b>{@code Bean}</b> interface is a {@link Map} and can be treated just like a regular map.
+ * <p>
+ * <p>
+ * <p>
+ * A <font color="orange"><b>{@code Bean}</b></font> is an object that inherit the {@link Bean} interface, or have any
+ * {@link Field field} annotated with the {@link Property} annotation.
+ * <p>
+ * <sub>{@code Beans} could be accessed in three different ways (All should result the same default behaviour):</sub>
+ * <ul>
+ *     <li><b>{@code Official Methods}</b> using the direct {@link Map} methods.</li>
+ *     <li><b>{@code Default Methods}</b> using the static {@link DisposingMethods default-methods} or {@link PersistingMethods delegate-methods}.</li>
+ *     <li>
+ *         <b>{@code Utility Classes}</b> using the utility classes:
+ *         <ul>
+ *             <li>
+ *                 <b>{@code Disposal}</b>, one time use utilities:
+ *                 <ul>
+ *                     <li>{@link DisposableEntrySet} helps with getting the entries from a specified {@code Bean}.</li>
+ *                     <li>{@link DisposableKeySet} helps with getting the keys from a specified {@code Bean}.</li>
+ *                     <li>{@link DisposableValues} helps with getting the values from a specified {@code Bean}.</li>
+ *                 </ul>
+ *             </li>
+ *             <li>
+ *                 <b>{@code Persistent}</b>, lifetime use utilities:
+ *                 <ul>
+ *                      <li>{@link PersistentEntrySet} helps with constructing a new entry set for a {@code DelegateBean}.</li>
+ *                      <li>{@link PersistentKeySet} helps with constructing a new key set for a {@code DelegateBean}.</li>
+ *                      <li>{@link PersistentValues} helps with constructing a new values collection for a {@code DelegateBean}.</li>
+ *                 </ul>
+ *             </li>
+ *             <li>
+ *                 <b>{@code Property-Based}</b>, utilities with targeted property/s:
+ *                 <ul>
+ *                     <li>{@link ConstantEntrySet} helps with updating an existing entrySet.</li>
+ *                     <li>{@link PropertiesDescriptors} helps with describing the fields of a specified {@code Bean}.</li>
+ *                     <li>{@link PropertyDescriptor} helps with describing a specified {@code Property}.</li>
+ *                     <li>{@link PropertyEntry} helps dealing with a property as an {@code Entry}.</li>
+ *                     <li>{@link PropertyKeys} helps getting the keys from a property.</li>
+ *                     <li>{@link PropertylessEntry} helps storing pairs that don't have a field.</li>
+ *                 </ul>
+ *             </li>
+ *             <li>
+ *                 <b>{@code Abstractions}</b>, standard {@code Bean} Components:
+ *                 <ul>
+ *                     <li>{@link Entry} helps with standardizing {@code Entries}.</li>
+ *                     <li>{@link EntrySet} helps with standardizing {@code EntrySets}.</li>
+ *                     <li>{@link KeySet} helps with standardizing {@code KeySets}.</li>
+ *                     <li>{@link Values} helps with standardizing {@code Values} Collections.</li>
+ *                 </ul>
+ *             </li>
+ *         </ul>
+ *     </li>
+ * </ul>
+ * A <font color="orange">{@code DefaultBean}</font> is a bean that inherits the interface {@link Bean} and is not a {@code DelegateBean} nor a {@code FullBean}.
+ * <p>
+ * An <font color="orange">{@code AnonymousBean}</font> is a bean that does not inherit the interface {@link Bean}.
+ * <p>
+ * <sub>The utilities allowed to be used for {@code DefaultBeans} and {@code AnonymousBeans}:</sub>
+ * <ul>
+ *     <li><b>{@code Official Methods}</b> using the direct {@link Map} methods.</li>
+ *     <li><b>{@code Default Methods}</b> using the static {@link DisposingMethods default-methods} only.</li>
+ *     <li>
+ *         <b>{@code Utility Classes}</b> using the utility classes, limited to:
+ *         <ul>
+ *             <li>{@link DisposableEntrySet} helps with getting the entries from a specified {@code Bean}.</li>
+ *             <li>{@link DisposableKeySet} helps with getting the keys from a specified {@code Bean}.</li>
+ *             <li>{@link DisposableValues} helps with getting the values from a specified {@code Bean}.</li>
+ *             <li>{@link PropertiesDescriptors} helps with describing the fields of a specified {@code Bean}.</li>
+ *             <li>{@link PropertyDescriptor} helps with describing a specified {@code Property}.</li>
+ *             <li>{@link PropertyEntry} helps dealing with a property as an {@code Entry}.</li>
+ *             <li>{@link PropertyKeys} helps getting the keys from a property.</li>
+ *         </ul>
+ *     </li>
+ * </ul>
+ * A <font color="orange">{@code FullBean}</font> is a bean that inherits the {@link FullBean} interface, and/or can store entries that it does not has a {@link Field fields} for it.
+ * <p>
+ * A <font color="orange">{@code DelegateBean}</font> is a bean that inherits the {@link DelegateBean}, and/or it is delegation to another {@code Bean}.
+ * <p>
+ * <sub>The utilities allowed to be used for {@code FullBeans} and {@code DelegateBean}:</sub>
+ * <ul>
+ *     <li><b>{@code Official Methods}</b> using the direct {@link Map} methods.</li>
+ *     <li><b>{@code Default Methods}</b> using the static {@link PersistingMethods delegate-methods}.</li>
+ *     <li>
+ *         <b>{@code Utility Classes}</b> using the utility classes:
+ *         <ul>
+ *             <li>{@link PersistentEntrySet} helps with constructing a new entry set for a {@code DelegateBean}.</li>
+ *             <li>{@link PersistentKeySet} helps with constructing a new key set for a {@code DelegateBean}.</li>
+ *             <li>{@link PersistentValues} helps with constructing a new values collection for a {@code DelegateBean}.</li>
+ *             <li>{@link ConstantEntrySet} helps with updating an existing entrySet.</li>
+ *             <li>{@link PropertiesDescriptors} helps with describing the fields of a specified {@code Bean}.</li>
+ *             <li>{@link PropertyDescriptor} helps with describing a specified {@code Property}.</li>
+ *             <li>{@link PropertyEntry} helps dealing with a property as an {@code Entry}.</li>
+ *             <li>{@link PropertyKeys} helps getting the keys from a property.</li>
+ *             <li>{@link PropertylessEntry} helps storing pairs that don't have a field.</li>
+ *         </ul>
+ *     </li>
+ * </ul>
  *
  * @param <K> the type of keys maintained by this map.
  * @param <V> the type of mapped values.
@@ -60,121 +148,119 @@ import java.util.function.Function;
  * @since 0.0.a ~2019.06.11
  */
 public interface Bean<K, V> extends Map<K, V> {
-	//All in inner classes, for better security!
-
-	@Override
-	default int size() {
-		return RawMethods.size(this);
-	}
-
-	@Override
-	default boolean isEmpty() {
-		return RawMethods.isEmpty(this);
-	}
-
-	@Override
-	default boolean containsKey(Object key) {
-		return RawMethods.containsKey(this, key);
-	}
-
-	@Override
-	default boolean containsValue(Object value) {
-		return RawMethods.containsValue(this, value);
-	}
-
-	@Override
-	default V get(Object key) {
-		return RawMethods.get(this, key);
-	}
-
-	@Override
-	default V put(K key, V value) {
-		return RawMethods.put(this, key, value);
-	}
-
-	@Override
-	default V remove(Object key) {
-		return RawMethods.remove(this, key);
-	}
-
-	@Override
-	default void putAll(Map<? extends K, ? extends V> map) {
-		RawMethods.putAll(this, map);
-	}
-
 	@Override
 	default void clear() {
-		RawMethods.clear(this);
-	}
-
-	@Override
-	default Set<K> keySet() {
-		return RawMethods.keySet(this);
-	}
-
-	@Override
-	default Collection<V> values() {
-		return RawMethods.values(this);
-	}
-
-	@Override
-	default Set<Map.Entry<K, V>> entrySet() {
-		return (Set) RawMethods.entrySet(this);
-	}
-
-	@Override
-	default V getOrDefault(Object key, V defaultValue) {
-		return RawMethods.getOrDefault(this, key, defaultValue);
-	}
-
-	@Override
-	default void forEach(BiConsumer<? super K, ? super V> consumer) {
-		RawMethods.forEach(this, consumer);
-	}
-
-	@Override
-	default void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
-		RawMethods.replaceAll(this, function);
-	}
-
-	@Override
-	default V putIfAbsent(K key, V value) {
-		return RawMethods.putIfAbsent(this, key, value);
-	}
-
-	@Override
-	default boolean remove(Object key, Object value) {
-		return RawMethods.remove(key, value);
-	}
-
-	@Override
-	default boolean replace(K key, V oldValue, V newValue) {
-		return RawMethods.replace(this, key, oldValue, newValue);
-	}
-
-	@Override
-	default V replace(K key, V value) {
-		return RawMethods.replace(this, key, value);
-	}
-
-	@Override
-	default V computeIfAbsent(K key, Function<? super K, ? extends V> function) {
-		return RawMethods.computeIfAbsent(this, key, function);
-	}
-
-	@Override
-	default V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> function) {
-		return RawMethods.computeIfPresent(this, key, function);
+		DisposingMethods.clear(this);
 	}
 
 	@Override
 	default V compute(K key, BiFunction<? super K, ? super V, ? extends V> function) {
-		return RawMethods.compute(this, key, function);
+		return DisposingMethods.compute(this, key, function);
+	}
+
+	@Override
+	default V computeIfAbsent(K key, Function<? super K, ? extends V> function) {
+		return DisposingMethods.computeIfAbsent(this, key, function);
+	}
+
+	@Override
+	default V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> function) {
+		return DisposingMethods.computeIfPresent(this, key, function);
+	}
+
+	@Override
+	default boolean containsKey(Object key) {
+		return DisposingMethods.containsKey(this, key);
+	}
+
+	@Override
+	default boolean containsValue(Object value) {
+		return DisposingMethods.containsValue(this, value);
+	}
+
+	@Override
+	default Bean.EntrySet<K, V> entrySet() {
+		return DisposingMethods.entrySet(this);
+	}
+
+	@Override
+	default void forEach(BiConsumer<? super K, ? super V> consumer) {
+		DisposingMethods.forEach(this, consumer);
+	}
+
+	@Override
+	default V get(Object key) {
+		return DisposingMethods.get(this, key);
+	}
+
+	@Override
+	default V getOrDefault(Object key, V defaultValue) {
+		return DisposingMethods.getOrDefault(this, key, defaultValue);
+	}
+
+	@Override
+	default boolean isEmpty() {
+		return DisposingMethods.isEmpty(this);
+	}
+
+	@Override
+	default KeySet<K> keySet() {
+		return DisposingMethods.keySet(this);
 	}
 
 	@Override
 	default V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> function) {
-		return RawMethods.merge(this, key, value, function);
+		return DisposingMethods.merge(this, key, value, function);
+	}
+
+	@Override
+	default V put(K key, V value) {
+		return DisposingMethods.put(this, key, value);
+	}
+
+	@Override
+	default void putAll(Map<? extends K, ? extends V> map) {
+		DisposingMethods.putAll(this, map);
+	}
+
+	@Override
+	default V putIfAbsent(K key, V value) {
+		return DisposingMethods.putIfAbsent(this, key, value);
+	}
+
+	@Override
+	default V remove(Object key) {
+		return DisposingMethods.remove(this, key);
+	}
+
+	@Override
+	default boolean remove(Object key, Object value) {
+		return DisposingMethods.remove(key, value);
+	}
+
+	@Override
+	default boolean replace(K key, V oldValue, V newValue) {
+		return DisposingMethods.replace(this, key, oldValue, newValue);
+	}
+
+	@Override
+	default V replace(K key, V value) {
+		return DisposingMethods.replace(this, key, value);
+	}
+
+	@Override
+	default void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+		DisposingMethods.replaceAll(this, function);
+	}
+
+	@Override
+	default int size() {
+		return DisposingMethods.size(this);
+	}
+
+	@Override
+	default Values<V> values() {
+		return DisposingMethods.values(this);
 	}
 
 	/**
@@ -267,12 +353,1249 @@ public interface Bean<K, V> extends Map<K, V> {
 	}
 
 	/**
+	 * An entrySet containing {@link Entry}s for specific keys.
+	 *
+	 * @param <K> the type of the keys.
+	 * @param <V> the type of the values.
+	 */
+	final class ConstantEntrySet<K, V> extends EntrySet<K, V> {
+		/**
+		 * The fields that have not been checked by this.
+		 */
+		private final PropertiesDescriptors<K, V>.Iterator descriptors;
+		/**
+		 * The solved entries.
+		 */
+		private final Set<Entry<K, V>> entries = new HashSet();
+		/**
+		 * The instance this entrySet is for.
+		 */
+		private final Object instance;
+		/**
+		 * The keys allowed in this entrySet.
+		 */
+		private final Set<K> keys;
+		/**
+		 * A function to get the value of a key in the {@link #keys} set.
+		 */
+		private final BiFunction<? super K, ? super V, ? extends V> values;
+		/**
+		 * The index of the next unsolved-key in the last unsolved-descriptor.
+		 */
+		private int cursor;
+		/**
+		 * The last field gotten by the {@link #descriptors} iterator.
+		 */
+		private PropertyDescriptor<K, V> descriptor;
+		/**
+		 * How many unsolved-keys are available.
+		 */
+		private int fieldKeys;
+
+		/**
+		 * Construct a new entrySet containing entries for the specified {@code keys}.
+		 *
+		 * @param instance the instance of the constructed entrySet.
+		 * @param keys     the keys contained in the constructed entrySet (the constructed set will modify this set!).
+		 * @throws NullPointerException if the given {@code keys} is null.
+		 */
+		public ConstantEntrySet(Object instance, Set<K> keys) {
+			Objects.requireNonNull(instance, "instance");
+			Objects.requireNonNull(keys, "keys");
+			this.instance = instance;
+			this.keys = keys;
+			this.values = null;
+			this.descriptors = new PropertiesDescriptors<K, V>(instance).iterator();
+		}
+
+		/**
+		 * Construct a new entrySet containing entries for the specified {@code keys}.
+		 *
+		 * @param instance the instance of the constructed entrySet.
+		 * @param keys     the keys contained in the constructed entrySet (the constructed set will modify this set!).
+		 * @param values   a function to get the value of a key in the returned entrySet.
+		 * @throws NullPointerException if the given {@code keys} is null.
+		 */
+		public ConstantEntrySet(Object instance, Set<K> keys, BiFunction<? super K, ? super V, ? extends V> values) {
+			Objects.requireNonNull(instance, "instance");
+			Objects.requireNonNull(keys, "keys");
+			Objects.requireNonNull(values, "values");
+			this.instance = instance;
+			this.keys = keys;
+			this.values = values;
+			this.descriptors = new PropertiesDescriptors<K, V>(instance).iterator();
+		}
+
+		@Override
+		public Iterator iterator() {
+			return new Iterator();
+		}
+
+		@Override
+		public int size() {
+			return this.keys.size();
+		}
+
+		/**
+		 * An iterator iterating a set of entries specified by a set of keys.
+		 */
+		public final class Iterator implements java.util.Iterator<Map.Entry<K, V>> {
+			/**
+			 * An iterator for the previously solved entries.
+			 */
+			private java.util.Iterator<Entry<K, V>> entries;
+			/**
+			 * An iterator for the unsolved keys.
+			 */
+			private java.util.Iterator<K> keys;
+
+			/**
+			 * Private access constructor.
+			 */
+			private Iterator() {
+			}
+
+			@Override
+			public boolean hasNext() {
+				//if there is still keys not resolved
+				if (!ConstantEntrySet.this.keys.isEmpty())
+					//there is keys not solved means it will be solved in the next invoke of next()
+					return true;
+
+				//100% dependent stage; once achieved, it will stay forever!
+				//if it is the first-time no more unsolved-keys.
+				if (this.entries == null)
+					//start iterating the over solved-entries
+					this.entries = ConstantEntrySet.this.entries.iterator();
+
+				//it depends now 100% on the solved-entries
+				return this.entries.hasNext();
+			}
+
+			@Override
+			public Bean.Entry<K, V> next() {
+				//while there is unsolved-keys. Otherwise, this block is redundant!
+				while (!ConstantEntrySet.this.keys.isEmpty()) {
+					int cursor = ConstantEntrySet.this.cursor++;
+					int fieldKeys = ConstantEntrySet.this.fieldKeys;
+
+					//only if there is a leftover keys from the last field
+					if (cursor < fieldKeys) {
+						PropertyDescriptor<K, V> descriptor = ConstantEntrySet.this.descriptor;
+
+						//if still there is unseen keys from the last field
+						K fieldKey = descriptor.keys().get(cursor);
+
+						//only if there is a matching key in the unsolvedKeys set
+						if (ConstantEntrySet.this.keys.remove(fieldKey)) {
+							//there is a matching key
+							PropertyEntry<K, V> entry =
+									ConstantEntrySet.this.values == null ?
+									//without initial-value
+									descriptor.getEntry(
+											ConstantEntrySet.this.instance,
+											fieldKey,
+											cursor
+									) :
+									//with initial-value
+									descriptor.getEntry(
+											ConstantEntrySet.this.instance,
+											fieldKey,
+											cursor,
+											ConstantEntrySet.this.values.apply(
+													fieldKey,
+													descriptor.getValue(ConstantEntrySet.this.instance)
+											)
+									);
+
+							//add the new entry; don't worry, the key already removed above!
+							ConstantEntrySet.this.entries.add(entry);
+							return entry;
+						}
+
+						//no key matched in the last field's keys; to the next field!
+						continue;
+					}
+					//only if there is fields not have been solved
+					if (ConstantEntrySet.this.descriptors.hasNext()) {
+						//if no keys remaining from the last field
+						PropertyDescriptor<K, V> descriptor = ConstantEntrySet.this.descriptors.next();
+						ConstantEntrySet.this.descriptor = descriptor;
+						ConstantEntrySet.this.fieldKeys = descriptor.keys().size();
+						ConstantEntrySet.this.cursor = 0;
+						//continue to consume the keys of the new unsolved-field
+						continue;
+					}
+
+					//if it is the first-time no more fields nor last-field's keys.
+					if (this.keys == null)
+						//start iterating over the unsolved-keys
+						this.keys = ConstantEntrySet.this.keys.iterator();
+					//if there is still unsolved-keys
+					if (this.keys.hasNext()) {
+						//if no more fields to be resolved, but still there is keys to be resolved
+						K key = this.keys.next();
+
+						//create a new entry
+						Entry<K, V> entry =
+								ConstantEntrySet.this.values == null ?
+								//with initial value
+								new PropertylessEntry(
+										key
+								) :
+								//without initial value
+								new PropertylessEntry(
+										key,
+										ConstantEntrySet.this.values.apply(
+												key,
+												null
+										)
+								);
+
+						//remove it, because it has been solved
+						this.keys.remove();
+						//add the solved entry
+						ConstantEntrySet.this.entries.add(entry);
+						return entry;
+					}
+				}
+
+				//100% dependent stage; once achieved, it will stay forever!
+				//if it is the first-time no more unsolved-keys.
+				if (this.entries == null)
+					//start iterating the over solved-entries
+					this.entries = ConstantEntrySet.this.entries.iterator();
+
+				//it depends now 100% on the solved-entries
+				return this.entries.next();
+			}
+		}
+	}
+
+	/**
+	 * The simplest entrySet for beans.
+	 *
+	 * @param <K> the type of the keys.
+	 * @param <V> the type of the values.
+	 */
+	final class DisposableEntrySet<K, V> extends EntrySet<K, V> {
+		/**
+		 * The instance this entrySet is dealing with.
+		 */
+		private final Object instance;
+
+		/**
+		 * Construct a new entrySet for the given bean's {@code instance}.
+		 *
+		 * @param instance the instance the constructed entrySet is dealing with.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public DisposableEntrySet(Object instance) {
+			Objects.requireNonNull(instance, "instance");
+			this.instance = instance;
+		}
+
+		@Override
+		public Iterator iterator() {
+			return new Iterator();
+		}
+
+		@Override
+		public int size() {
+			return DisposingMethods.size(this.instance);
+		}
+
+		/**
+		 * An iterator for beans' entrySets. This iterator iterating over two levels. It iterates the fields of the
+		 * class of the instance that its entrySet is representing. It sub-iterate over the keys of the field at a
+		 * first-iterating-position.
+		 * <pre>
+		 *     for(Field field : instance.fields)
+		 *         for(Object key : field.keys)
+		 *             next <- new Entry(key);
+		 * </pre>
+		 */
+		public final class Iterator implements java.util.Iterator<Map.Entry<K, V>> {
+			/**
+			 * The backing iterator of this iterator for iterating the fields of the class of the instance of the
+			 * entrySet of this iterator.
+			 */
+			private final java.util.Iterator<PropertyDescriptor<K, V>> iterator =
+					new PropertiesDescriptors<K, V>(DisposableEntrySet.this.instance).iterator();
+			/**
+			 * The position of the next key in the current {@link #descriptor}.
+			 */
+			private int cursor;
+			/**
+			 * The current field.
+			 */
+			private PropertyDescriptor<K, V> descriptor;
+			/**
+			 * How many keys the current {@link #descriptor} is having.
+			 */
+			private int keys;
+
+			/**
+			 * Construct a new iterator for the enclosing entrySet.
+			 */
+			private Iterator() {
+			}
+
+			@Override
+			public boolean hasNext() {
+				//fields always have more than 1 key
+				return this.iterator.hasNext() || this.cursor < this.keys;
+			}
+
+			@Override
+			public PropertyEntry<K, V> next() {
+				//the iterator.next() will do the job breaking the loop if no more fields available
+				while (true) {
+					//if there is a field previously partially solved
+					if (this.cursor < this.keys)
+						//continue the to the next key of that field
+						return this.descriptor.getEntry(
+								DisposableEntrySet.this.instance,
+								this.cursor++
+						);
+
+					//the next field!
+					PropertyDescriptor<K, V> descriptor = this.iterator.next();
+					this.descriptor = descriptor;
+					this.keys = descriptor.keys().size();
+					this.cursor = 0;
+				}
+			}
+		}
+	}
+
+	/**
+	 * A keySet for beans.
+	 *
+	 * @param <K> the type of the keys.
+	 */
+	final class DisposableKeySet<K> extends KeySet<K> {
+		/**
+		 * The instance this keySet is representing.
+		 */
+		private final Object instance;
+
+		/**
+		 * Construct a new keySet for the given {@code instance}.
+		 *
+		 * @param instance to be represented by this keySet.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public DisposableKeySet(Object instance) {
+			Objects.requireNonNull(instance, "instance");
+			this.instance = instance;
+		}
+
+		@Override
+		public Iterator iterator() {
+			return new Iterator();
+		}
+
+		@Override
+		public int size() {
+			return DisposingMethods.size(this.instance);
+		}
+
+		/**
+		 * An iterator for beans' keySets.
+		 */
+		public final class Iterator implements java.util.Iterator<K> {
+			/**
+			 * The backing iterator of this iterator for iterating the fields of the class of the instance of the keySet
+			 * of this iterator.
+			 */
+			private final java.util.Iterator<PropertyDescriptor<K, Object>> iterator =
+					new PropertiesDescriptors<K, Object>(DisposableKeySet.this.instance).iterator();
+			/**
+			 * The position of the next key at the current {@link #keys}.
+			 */
+			private int cursor;
+			/**
+			 * The keys of the current field.
+			 */
+			private java.util.Iterator<K> keys;
+
+			/**
+			 * Construct a new iterator for the enclosing entrySet.
+			 */
+			private Iterator() {
+			}
+
+			@Override
+			public boolean hasNext() {
+				//fields always have more than 1 key
+				return this.iterator.hasNext() || this.keys != null && this.keys.hasNext();
+			}
+
+			@Override
+			public K next() {
+				//the iterator.next() will do the job breaking the loop if no more fields available
+				while (true) {
+					//if there is a field previously partially solved
+					if (this.keys != null && this.keys.hasNext())
+						//continue the to the next key of that field
+						return this.keys.next();
+
+					//the next field!
+					this.keys = this.iterator.next().keys().iterator();
+					this.cursor = 0;
+				}
+			}
+		}
+	}
+
+	/**
+	 * A values-collection for beans.
+	 *
+	 * @param <V> the type of the values.
+	 */
+	final class DisposableValues<V> extends Values<V> {
+		/**
+		 * The instance this keySet is representing.
+		 */
+		private final Object instance;
+
+		/**
+		 * Construct a new values-collection for the given {@code instance}.
+		 *
+		 * @param instance to be represented by this values-collection.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public DisposableValues(Object instance) {
+			Objects.requireNonNull(instance, "instance");
+			this.instance = instance;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			return object == this ||
+				   object instanceof Bean.DisposableValues &&
+				   ((DisposableValues) object).instance == this.instance;
+		}
+
+		@Override
+		public int hashCode() {
+			int hashCode = 0;
+
+			for (V value : this)
+				hashCode += Objects.hashCode(value);
+
+			return hashCode;
+		}
+
+		@Override
+		public Iterator iterator() {
+			return new Iterator();
+		}
+
+		@Override
+		public int size() {
+			return DisposingMethods.size(this.instance);
+		}
+
+		/**
+		 * An iterator for beans' values-collections.
+		 */
+		public final class Iterator implements java.util.Iterator<V> {
+			/**
+			 * The backing iterator of this iterator for iterating the fields of the class of the instance of the
+			 * entrySet of this iterator.
+			 */
+			private final java.util.Iterator<PropertyDescriptor<Object, V>> iterator =
+					new PropertiesDescriptors<Object, V>(DisposableValues.this.instance).iterator();
+			/**
+			 * The current position in the keys of the current {@link #descriptor}.
+			 */
+			private int cursor;
+			/**
+			 * The current field.
+			 */
+			private PropertyDescriptor<?, V> descriptor;
+			/**
+			 * How many keys in the current {@link #descriptor}.
+			 */
+			private int keys;
+
+			/**
+			 * Construct a new bean's values-collection iterator.
+			 */
+			private Iterator() {
+			}
+
+			@Override
+			public boolean hasNext() {
+				//fields always have more than 1 key
+				return this.iterator.hasNext() || this.descriptor != null && this.cursor < this.keys;
+			}
+
+			@Override
+			public V next() {
+				//the iterator.next() will do the job breaking the loop if no more fields available
+				while (true) {
+					//if there is a field previously partially solved
+					if (this.descriptor != null && this.cursor++ < this.keys)
+						//continue the to the next key of that field
+						return this.descriptor.getValue(DisposableValues.this.instance);
+
+					//the next field!
+					PropertyDescriptor<Object, V> descriptor = this.iterator.next();
+					this.descriptor = descriptor;
+					//don't forget "zero keys = singular key that is the name of the field"
+					//and since we don't care about the keys, we just max its length with 1
+					this.keys = descriptor.keys().size();
+					this.cursor = 0;
+				}
+			}
+		}
+	}
+
+	/**
+	 * The methods for any instance that considered to be a {@link Bean}.
+	 */
+	final class DisposingMethods {
+		/**
+		 * This is an util class and must not be instanced as an object.
+		 *
+		 * @throws AssertionError when called.
+		 */
+		private DisposingMethods() {
+			throw new AssertionError("No instance for you!");
+		}
+
+		/**
+		 * Perform the default {@link Map#clear()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @throws NullPointerException          if the given {@code instance} is null.
+		 * @throws UnsupportedOperationException if the given {@code instance} has any property-field.
+		 */
+		public static <K, V> void clear(Object instance) {
+			Objects.requireNonNull(instance, "instance");
+			if (!new PropertiesDescriptors(instance).isEmpty())
+				throw new UnsupportedOperationException("clear");
+		}
+
+		/**
+		 * Perform the default {@link Map#compute(Object, BiFunction)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      key with which the specified value is to be associated.
+		 * @param function the function to compute a value.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the new value associated with the specified key, or null if none.
+		 * @throws NullPointerException          if the given {@code instance} or {@code function} is null.
+		 * @throws UnsupportedOperationException if the given {@code function} returned null, Or if the given {@code
+		 *                                       instance} don't have the given {@code key} (bean-wise).
+		 */
+		public static <K, V> V compute(Object instance, K key, BiFunction<? super K, ? super V, ? extends V> function) {
+			Objects.requireNonNull(instance, "instance");
+			Objects.requireNonNull(function, "function");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				for (K propertyKey : property.keys())
+					if (Objects.equals(key, propertyKey)) {
+						V value = function.apply(key, property.getValue(instance));
+
+						if (value == null)
+							throw new UnsupportedOperationException("remove");
+
+						property.setValue(instance, value);
+						return value;
+					}
+
+			throw new UnsupportedOperationException("put: " + key);
+		}
+
+		/**
+		 * Perform the default {@link Map#computeIfAbsent(Object, Function)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      key with which the specified value is to be associated.
+		 * @param function the function to compute a value.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the current (existing or computed) value associated with the specified key, or null if the computed
+		 * 		value is null.
+		 * @throws NullPointerException          if the given {@code instance} or {@code function} is null.
+		 * @throws UnsupportedOperationException if the given {@code instance} don't have the given {@code key}.
+		 */
+		public static <K, V> V computeIfAbsent(Object instance, K key, Function<? super K, ? extends V> function) {
+			Objects.requireNonNull(instance, "instance");
+			Objects.requireNonNull(function, "function");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				if (property.getValue(instance) == null)
+					for (K propertyKey : property.keys())
+						if (Objects.equals(key, propertyKey)) {
+							V value = function.apply(key);
+
+							if (value != null)
+								property.setValue(instance, value);
+
+							return value;
+						}
+
+			throw new UnsupportedOperationException("put: " + key);
+		}
+
+		/**
+		 * Perform the default {@link Map#computeIfPresent(Object, BiFunction)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      key with which the specified value is to be associated.
+		 * @param function the function to compute a value.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the new value associated with the specified key, or null if none.
+		 * @throws NullPointerException          if the given {@code instance} or {@code function} is null.
+		 * @throws UnsupportedOperationException if the given {@code function} returned null.
+		 */
+		public static <K, V> V computeIfPresent(Object instance, K key, BiFunction<? super K, ? super V, ? extends V> function) {
+			Objects.requireNonNull(instance, "instance");
+			Objects.requireNonNull(function, "function");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				for (K propertyKey : property.keys())
+					if (Objects.equals(key, propertyKey)) {
+						V propertyValue = property.getValue(instance);
+
+						if (propertyValue != null) {
+							V value = function.apply(key, propertyValue);
+
+							if (value == null)
+								throw new UnsupportedOperationException("remove");
+
+							property.setValue(instance, value);
+							return value;
+						}
+
+						return null;
+					}
+
+			return null;
+		}
+
+		/**
+		 * Perform the default {@link Map#containsKey(Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      key whose presence in the given {@code instance} is to be tested.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return true, if the given {@code instance} contains a mapping for the specified key.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> boolean containsKey(Object instance, Object key) {
+			Objects.requireNonNull(instance, "instance");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				for (Object propertyKey : property.keys())
+					if (Objects.equals(key, propertyKey))
+						return true;
+
+			return false;
+		}
+
+		/**
+		 * Perform the default {@link Map#containsValue(Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param value    value whose presence in the given {@code instance} is to be tested.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return true, if the given {@code instance} maps one or more keys to the specified value.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> boolean containsValue(Object instance, Object value) {
+			Objects.requireNonNull(instance, "instance");
+
+			for (PropertyDescriptor<K, V> descriptor : new PropertiesDescriptors<K, V>(instance))
+				if (Objects.equals(value, descriptor.getValue(instance)))
+					return true;
+
+			return false;
+		}
+
+		/**
+		 * Perform the default {@link Map#entrySet()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return a set view of the mappings contained in the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> DisposableEntrySet<K, V> entrySet(Object instance) {
+			Objects.requireNonNull(instance, "instance");
+			return new DisposableEntrySet(instance);
+		}
+
+		/**
+		 * Perform the default {@link Map#equals(Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param object   object to be compared for equality with this map.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return true, if the specified object is equal to this map.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> boolean equals(Object instance, Object object) {
+			Objects.requireNonNull(instance, "instance");
+			if (instance == object)
+				return true;
+			if (object == null)
+				return false;
+			if (object instanceof Map)
+				//map match
+				return Objects.equals(
+						DisposingMethods.entrySet(instance),
+						((Map) object).entrySet()
+				);
+
+			//bean match
+			Set<K> keys = new HashSet(DisposingMethods.keySet(instance));
+
+			for (K key : DisposingMethods.<K, Object>keySet(object))
+				if (!keys.remove(key))
+					return false;
+
+			return keys.isEmpty();
+		}
+
+		/**
+		 * Perform the default {@link Map#forEach(BiConsumer)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param consumer the action to be performed for each entry.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} or {@code consumer} is null.
+		 */
+		public static <K, V> void forEach(Object instance, BiConsumer<? super K, ? super V> consumer) {
+			Objects.requireNonNull(instance, "instance");
+			Objects.requireNonNull(consumer, "consumer");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance)) {
+				V propertyValue = property.getValue(instance);
+
+				for (K key : property.keys())
+					consumer.accept(key, propertyValue);
+			}
+		}
+
+		/**
+		 * Perform the default {@link Map#get(Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      the key whose associated value is to be returned.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the value to which the specified key is mapped, or {@code null} if the given {@code instance}
+		 * 		contains no mapping for the key.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> V get(Object instance, Object key) {
+			Objects.requireNonNull(instance, "instance");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				for (Object propertyKey : property.keys())
+					if (Objects.equals(key, propertyKey))
+						return property.getValue(instance);
+
+			return null;
+		}
+
+		/**
+		 * Perform the default {@link Map#getOrDefault(Object, Object)} to the given {@code instance}.
+		 *
+		 * @param instance     the instance the bean is having.
+		 * @param key          the key whose associated value is to be returned.
+		 * @param defaultValue the default mapping of the key.
+		 * @param <K>          the type of the keys in the given {@code instance}.
+		 * @param <V>          the type of the values in the given {@code instance}.
+		 * @return the value to which the specified key is mapped, or {@code defaultValue} if the given {@code instance}
+		 * 		contains no mapping for the key.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> V getOrDefault(Object instance, K key, V defaultValue) {
+			Objects.requireNonNull(instance, "instance");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				for (K propertyKey : property.keys())
+					if (Objects.equals(key, propertyKey))
+						return property.getValue(instance);
+
+			return defaultValue;
+		}
+
+		/**
+		 * Perform the default {@link Map#hashCode()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the hash code value for the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> int hashCode(Object instance) {
+			Objects.requireNonNull(instance, "instance");
+
+			int hashCode = 0;
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance)) {
+				Object value = property.getValue(instance);
+				int valueHash = Objects.hashCode(value);
+
+				for (K key : property.keys()) {
+					int keyHash = Objects.hashCode(key);
+
+					hashCode += keyHash ^ valueHash;
+				}
+			}
+
+			return hashCode;
+		}
+
+		/**
+		 * Perform the default {@link Map#isEmpty()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return true, if the given {@code instance} contains no key-value mappings.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> boolean isEmpty(Object instance) {
+			Objects.requireNonNull(instance, "instance");
+			return new PropertiesDescriptors(instance).isEmpty();
+		}
+
+		/**
+		 * Perform the default {@link Map#keySet()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return a set view of the keys contained in the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> DisposableKeySet<K> keySet(Object instance) {
+			Objects.requireNonNull(instance, "instance");
+			return new DisposableKeySet(instance);
+		}
+
+		/**
+		 * Perform the default {@link Map#merge(Object, Object, BiFunction)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      key with which the resulting value is to be associated.
+		 * @param value    the non-null value to be merged with the existing value associated with the key or, if no
+		 *                 existing value or a null value is associated with the key, to be associated with the key.
+		 * @param function the function to recompute a value if present.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the new value associated with the specified key, or null if no value is associated with the key.
+		 * @throws NullPointerException          if the given {@code instance} or {@code function} is null.
+		 * @throws UnsupportedOperationException if the given {@code function} returned null, Or if the given {@code
+		 *                                       instance} don't have the given {@code key}.
+		 */
+		public static <V, K> V merge(Object instance, K key, V value, BiFunction<? super V, ? super V, ? extends V> function) {
+			Objects.requireNonNull(instance, "instance");
+			Objects.requireNonNull(function, "function");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				for (K propertyKey : property.keys())
+					if (Objects.equals(key, propertyKey)) {
+						V propertyValue = property.getValue(instance);
+						V newValue = propertyValue == null ? value : function.apply(propertyValue, value);
+
+						if (newValue == null)
+							throw new UnsupportedOperationException("remove");
+
+						property.setValue(instance, newValue);
+						return newValue;
+					}
+
+			throw new UnsupportedOperationException("put: " + key);
+		}
+
+		/**
+		 * Perform the default {@link Map#put(Object, Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      key with which the specified value is to be associated.
+		 * @param value    value to be associated with the specified key.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the previous value associated with given {@code key}, or null if there was no mapping for the given
+		 *        {@code key}. (A null return can also indicate that the given {@code instance} previously associated null
+		 * 		with the given {@code key}).
+		 * @throws NullPointerException          if the given {@code instance} is null.
+		 * @throws UnsupportedOperationException if the given {@code instance} don't have the given {@code key}.
+		 */
+		public static <K, V> V put(Object instance, K key, V value) {
+			Objects.requireNonNull(instance, "instance");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				for (Object propertyKey : property.keys())
+					if (Objects.equals(key, propertyKey)) {
+						V oldValue = property.getValue(instance);
+						property.setValue(instance, value);
+						return oldValue;
+					}
+
+			throw new UnsupportedOperationException("put: " + key);
+		}
+
+		/**
+		 * Perform the default {@link Map#putAll(Map)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param map      mappings to be stored in the given {@code instance}.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @throws NullPointerException          if the given {@code instance} or {@code map} is null.
+		 * @throws UnsupportedOperationException if the given {@code map} has keys that the given {@code instance} does
+		 *                                       not have.
+		 */
+		public static <K, V> void putAll(Object instance, Map<? extends K, ? extends V> map) {
+			Objects.requireNonNull(instance, "instance");
+			Objects.requireNonNull(map, "map");
+
+			Set keySet = new HashSet(map.keySet());
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance)) {
+				//no need to reassign the same field
+				boolean put = true;
+
+				//first key in the Property annotation has more priority that other keys!
+				for (K key : property.keys())
+					if (keySet.remove(key) && put) {
+						//found a key that can be put!
+						//only if the field haven't been set by previous key.
+						property.setValue(instance, map.get(key));
+						//block next assignments to the field!
+						put = false;
+					}
+			}
+
+			//the bean can't handle the map! too large for it.
+			if (!keySet.isEmpty())
+				throw new UnsupportedOperationException("putAll: " + map);
+		}
+
+		/**
+		 * Perform the default {@link Map#putIfAbsent(Object, Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      key with which the specified value is to be associated.
+		 * @param value    value to be associated with the specified key.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the previous value associated with the specified key, or null if there was no mapping for the key. (A
+		 * 		null return can also indicate that the given {@code instance} previously associated null with the key).
+		 * @throws NullPointerException          if the given {@code instance} is null.
+		 * @throws UnsupportedOperationException if the given {@code instance} don't have the given {@code key}.
+		 */
+		public static <K, V> V putIfAbsent(Object instance, K key, V value) {
+			Objects.requireNonNull(instance, "instance");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				for (K propertyKey : property.keys())
+					//found a matching entry
+					if (Objects.equals(key, propertyKey)) {
+						V propertyValue = property.getValue(instance);
+
+						if (propertyValue == null)
+							property.setValue(instance, value);
+
+						return propertyValue;
+					}
+
+			throw new UnsupportedOperationException("put: " + key);
+		}
+
+		/**
+		 * Perform the default {@code readObject} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 */
+		@SuppressWarnings("JavaDoc")
+		public static <K, V> void readObject(Object instance, ObjectInputStream stream) throws IOException, ClassNotFoundException {
+			Objects.requireNonNull(stream, "stream");
+
+			if (instance != null)
+				//the instance already has been read!
+				stream.readObject();
+
+			int length = stream.readInt();
+			PropertiesDescriptors<K, V> properties = new PropertiesDescriptors(instance);
+			for0:
+			for (int i = 0; i < length; i++) {
+				K key = (K) stream.readObject();
+				V value = (V) stream.readObject();
+
+				for (PropertyDescriptor<K, V> property : properties)
+					for (K propertyKey : property.keys())
+						if (Objects.equals(key, propertyKey)) {
+							property.setValue(instance, value);
+							continue for0;
+						}
+
+				throw new IllegalArgumentException("Invalid key: " + key);
+			}
+		}
+
+		/**
+		 * Perform the default {@link Map#remove(Object, Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      key with which the specified value is associated.
+		 * @param value    value expected to be associated with the specified key.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return true, if the value was removed.
+		 * @throws NullPointerException          if the given {@code instance} is null.
+		 * @throws UnsupportedOperationException if the given {@code key} is associated to the given {@code value} in
+		 *                                       the given {@code instance}.
+		 */
+		public static <K, V> boolean remove(Object instance, K key, V value) {
+			Objects.requireNonNull(instance, "instance");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				for (K propertyKey : property.keys())
+					if (Objects.equals(key, propertyKey))
+						if (Objects.equals(value, property.getValue(instance)))
+							throw new UnsupportedOperationException("remove");
+						else
+							return false;
+
+			return false;
+		}
+
+		/**
+		 * Perform the default {@link Map#remove(Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      key whose mapping is to be removed from the map
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the previous value associated with the given {@code key}, or null if there was no mapping for the
+		 * 		given {@code key}.
+		 * @throws NullPointerException          if the given {@code instance} is null.
+		 * @throws UnsupportedOperationException if the given {@code instance} has the given {@code key}.
+		 */
+		public static <K, V> V remove(Object instance, Object key) {
+			Objects.requireNonNull(instance, "instance");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				for (K fieldKey : property.keys())
+					if (Objects.equals(key, fieldKey))
+						throw new UnsupportedOperationException("remove");
+
+			return null;
+		}
+
+		/**
+		 * Perform the default {@link Map#replace(Object, Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      key with which the specified value is associated.
+		 * @param value    value to be associated with the specified key.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the previous value associated with the specified key, or null if there was no mapping for the key. (A
+		 * 		null return can also indicate that the map previously associated null with the key).
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> V replace(Object instance, K key, V value) {
+			Objects.requireNonNull(instance, "instance");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				for (K propertyKey : property.keys())
+					if (Objects.equals(key, propertyKey)) {
+						V oldValue = property.getValue(instance);
+						property.setValue(instance, value);
+						return oldValue;
+					}
+
+			return null;
+		}
+
+		/**
+		 * Perform the default {@link Map#replace(Object, Object, Object)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param key      key with which the specified value is associated.
+		 * @param oldValue value expected to be associated with the specified key.
+		 * @param newValue value to be associated with the specified key.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return {@code true} if the value was replaced.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> boolean replace(Object instance, K key, V oldValue, V newValue) {
+			Objects.requireNonNull(instance, "instance");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
+				for (K propertyKey : property.keys())
+					if (Objects.equals(key, propertyKey))
+						if (Objects.equals(oldValue, property.getValue(instance))) {
+							property.setValue(instance, newValue);
+							return true;
+						} else
+							return false;
+
+			return false;
+		}
+
+		/**
+		 * Perform the default {@link Map#replaceAll(BiFunction)} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param function the function to apply to each entry.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} or {@code function} is null.
+		 */
+		public static <K, V> void replaceAll(Object instance, BiFunction<? super K, ? super V, ? extends V> function) {
+			Objects.requireNonNull(instance, "instance");
+			Objects.requireNonNull(function, "function");
+
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance)) {
+				V value = property.getValue(instance);
+
+				for (K key : property.keys())
+					value = function.apply(key, value);
+
+				property.setValue(instance, value);
+			}
+		}
+
+		/**
+		 * Perform the default {@link Map#size()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return the number of key-value mappings in the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> int size(Object instance) {
+			Objects.requireNonNull(instance, "instance");
+
+			int size = 0;
+			for (PropertyDescriptor<K, V> descriptor : new PropertiesDescriptors<K, V>(instance))
+				//don't forget "zero keys = singular key that is the name of the field"
+				size += descriptor.keys().size();
+
+			return size;
+		}
+
+		/**
+		 * Perform the default {@link Map#toString()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return a string representation of the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> String toString(Object instance) {
+			Objects.requireNonNull(instance, "instance");
+
+			Iterator<PropertyDescriptor<K, V>> iterator = new PropertiesDescriptors<K, V>(instance).iterator();
+
+			if (iterator.hasNext()) {
+				StringBuilder builder = new StringBuilder("{");
+
+				while (iterator.hasNext()) {
+					PropertyDescriptor<K, V> descriptor = iterator.next();
+					Object value = descriptor.getValue(instance);
+					String valueString = value == instance ? "(this Bean)" : String.valueOf(value);
+
+					Iterator<K> keys = descriptor.keys().iterator();
+					while (keys.hasNext()) {
+						Object key = iterator.next();
+						String keyString = key == instance ? "(this Bean)" : String.valueOf(key);
+
+						builder.append(keyString)
+								.append('=')
+								.append(valueString);
+
+						if (keys.hasNext())
+							builder.append(", ");
+					}
+
+					if (iterator.hasNext())
+						builder.append(", ");
+				}
+
+				return builder.append("}").toString();
+			}
+
+			return "{}";
+		}
+
+		/**
+		 * Perform the default {@link Map#values()} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @return a collection view of the values contained in the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		public static <K, V> DisposableValues<V> values(Object instance) {
+			Objects.requireNonNull(instance, "instance");
+			return new DisposableValues(instance);
+		}
+
+		/**
+		 * Perform the default {@code writeObject} to the given {@code instance}.
+		 *
+		 * @param instance the instance the bean is having.
+		 * @param <K>      the type of the keys in the given {@code instance}.
+		 * @param <V>      the type of the values in the given {@code instance}.
+		 * @throws NullPointerException if the given {@code instance} is null.
+		 */
+		@SuppressWarnings("JavaDoc")
+		public static <K, V> void writeObject(Object instance, ObjectOutputStream stream) throws IOException {
+			Objects.requireNonNull(instance, "instance");
+			Objects.requireNonNull(stream, "stream");
+
+			stream.writeObject(instance instanceof Bean ? null : instance);
+
+			stream.writeInt(DisposingMethods.size(instance));
+			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance)) {
+				V value = property.getValue(instance);
+
+				for (K key : property.keys()) {
+					stream.writeObject(key);
+					stream.writeObject(value);
+				}
+			}
+		}
+	}
+
+	/**
 	 * An entrySet for delegate beans.
 	 *
 	 * @param <K> the type of the keys.
 	 * @param <V> the type of the values.
 	 */
-	final class DelegateEntrySet<K, V> extends EntrySet<Entry<K, V>> {
+	final class PersistentEntrySet<K, V> extends EntrySet<K, V> {
 		/**
 		 * The bean this entrySet is for.
 		 */
@@ -293,12 +1616,17 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @param instance the instance the given {@code delegate} is for.
 		 * @throws NullPointerException if the given {@code delegate} or {@code instance} is null.
 		 */
-		public DelegateEntrySet(Bean<K, V> delegate, Object instance) {
+		public PersistentEntrySet(Bean<K, V> delegate, Object instance) {
 			Objects.requireNonNull(delegate, "delegate");
 			Objects.requireNonNull(instance, "instance");
 			this.delegate = delegate;
 			this.instance = instance;
-			this.addAll(RawMethods.entrySet(instance));
+			this.addAll(DisposingMethods.entrySet(instance));
+		}
+
+		@Override
+		public boolean add(Map.Entry<K, V> entry) {
+			return !this.list.contains(entry) && this.list.add(entry);
 		}
 
 		@Override
@@ -311,19 +1639,14 @@ public interface Bean<K, V> extends Map<K, V> {
 			return this.list.size();
 		}
 
-		@Override
-		public boolean add(Entry<K, V> entry) {
-			return !this.list.contains(entry) && this.list.add(entry);
-		}
-
 		/**
 		 * An iterator for iterating the entries of a delegate bean.
 		 */
-		private final class Iterator implements java.util.Iterator<Entry<K, V>> {
+		private final class Iterator implements java.util.Iterator<Map.Entry<K, V>> {
 			/**
 			 * The iterator backing this iterator.
 			 */
-			private final java.util.Iterator<Entry<K, V>> iterator = DelegateEntrySet.this.list.iterator();
+			private final java.util.Iterator<Entry<K, V>> iterator = PersistentEntrySet.this.list.iterator();
 
 			@Override
 			public boolean hasNext() {
@@ -331,7 +1654,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			}
 
 			@Override
-			public Entry<K, V> next() {
+			public Bean.Entry<K, V> next() {
 				return this.iterator.next();
 			}
 
@@ -347,7 +1670,7 @@ public interface Bean<K, V> extends Map<K, V> {
 	 *
 	 * @param <K> the type of the keys.
 	 */
-	final class DelegateKeySet<K> extends KeySet<K> {
+	final class PersistentKeySet<K> extends KeySet<K> {
 		/**
 		 * The bean this keySet is for.
 		 */
@@ -364,11 +1687,26 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @param instance the instance the given {@code delegate} is for.
 		 * @throws NullPointerException if the given {@code delegate} or {@code instance} is null.
 		 */
-		public DelegateKeySet(Bean<K, ?> delegate, Object instance) {
+		public PersistentKeySet(Bean<K, ?> delegate, Object instance) {
 			Objects.requireNonNull(delegate, "delegate");
 			Objects.requireNonNull(instance, "instance");
 			this.delegate = delegate;
 			this.instance = instance;
+		}
+
+		@Override
+		public void clear() {
+			this.delegate.clear();
+		}
+
+		@Override
+		public boolean contains(Object k) {
+			return this.delegate.containsKey(k);
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.delegate.isEmpty();
 		}
 
 		@Override
@@ -381,21 +1719,6 @@ public interface Bean<K, V> extends Map<K, V> {
 			return this.delegate.size();
 		}
 
-		@Override
-		public boolean isEmpty() {
-			return this.delegate.isEmpty();
-		}
-
-		@Override
-		public boolean contains(Object k) {
-			return this.delegate.containsKey(k);
-		}
-
-		@Override
-		public void clear() {
-			this.delegate.clear();
-		}
-
 		/**
 		 * An iterator for the keySet of a delegate beans.
 		 */
@@ -403,7 +1726,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			/**
 			 * The iterator backing this iterator.
 			 */
-			private final java.util.Iterator<Map.Entry<K, ?>> iterator = (java.util.Iterator) DelegateKeySet.this.delegate.entrySet().iterator();
+			private final java.util.Iterator<Map.Entry<K, ?>> iterator = (java.util.Iterator) PersistentKeySet.this.delegate.entrySet().iterator();
 
 			/**
 			 * Construct a new delegate beans keySet iterator.
@@ -429,15 +1752,101 @@ public interface Bean<K, V> extends Map<K, V> {
 	}
 
 	/**
+	 * An entrySet for delegate beans.
+	 *
+	 * @param <V> the type of the values.
+	 */
+	final class PersistentValues<V> extends Values<V> {
+		/**
+		 * The bean this values-collection is for.
+		 */
+		private final Bean<?, V> delegate;
+		/**
+		 * The instance this values-collection is for.
+		 */
+		private final Object instance;
+
+		/**
+		 * Construct a new values-collection for the given {@code delegate} that have the given {@code instance}.
+		 *
+		 * @param delegate the bean this values-collection is for.
+		 * @param instance the instance the given {@code delegate} is for.
+		 * @throws NullPointerException if the given {@code delegate} or {@code instance} is null.
+		 */
+		public PersistentValues(Bean<?, V> delegate, Object instance) {
+			Objects.requireNonNull(delegate, "delegate");
+			Objects.requireNonNull(instance, "instance");
+			this.delegate = delegate;
+			this.instance = instance;
+		}
+
+		@Override
+		public void clear() {
+			this.delegate.clear();
+		}
+
+		@Override
+		public boolean contains(Object v) {
+			return this.delegate.containsValue(v);
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.delegate.isEmpty();
+		}
+
+		@Override
+		public Iterator iterator() {
+			return new Iterator();
+		}
+
+		@Override
+		public int size() {
+			return this.delegate.size();
+		}
+
+		/**
+		 * An iterator that iterates the values of a delegate beans.
+		 */
+		public final class Iterator implements java.util.Iterator<V> {
+			/**
+			 * The iterator backing this iterator.
+			 */
+			private final java.util.Iterator<Map.Entry<?, V>> iterator = (java.util.Iterator) PersistentValues.this.delegate.entrySet().iterator();
+
+			/**
+			 * Construct a new delegate beans values iterator.
+			 */
+			private Iterator() {
+			}
+
+			@Override
+			public boolean hasNext() {
+				return this.iterator.hasNext();
+			}
+
+			@Override
+			public V next() {
+				return this.iterator.next().getValue();
+			}
+
+			@Override
+			public void remove() {
+				this.iterator.remove();
+			}
+		}
+	}
+
+	/**
 	 * The methods for the {@link Bean}s that are delegating to an instance.
 	 */
-	final class DelegateMethods {
+	final class PersistingMethods {
 		/**
 		 * This is an util class and must not be instanced as an object.
 		 *
 		 * @throws AssertionError when called.
 		 */
-		private DelegateMethods() {
+		private PersistingMethods() {
 			throw new AssertionError("No instance for you!");
 		}
 
@@ -628,7 +2037,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			Objects.requireNonNull(instance, "instance");
 
 			//looking in existing entries
-			for (Map.Entry entry : delegate.entrySet())
+			for (Map.Entry<K, V> entry : delegate.entrySet())
 				//target a matching entry
 				if (Objects.equals(key, entry.getKey()))
 					//matching entry found
@@ -674,10 +2083,10 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @return a set view of the mappings contained in the given {@code delegate}.
 		 * @throws NullPointerException if the given {@code delegate} or {@code instance} is null.
 		 */
-		public static <K, V> DelegateEntrySet<K, V> entrySet(Bean<K, V> delegate, Object instance) {
+		public static <K, V> PersistentEntrySet<K, V> entrySet(Bean<K, V> delegate, Object instance) {
 			Objects.requireNonNull(delegate, "delegate");
 			Objects.requireNonNull(instance, "instance");
-			return new DelegateEntrySet(delegate, instance);
+			return new PersistentEntrySet(delegate, instance);
 		}
 
 		/**
@@ -707,7 +2116,7 @@ public interface Bean<K, V> extends Map<K, V> {
 			//delegate match
 			Set<K> keys = new HashSet(delegate.keySet());
 
-			for (K key : RawMethods.<K, Object>keySet(object))
+			for (K key : DisposingMethods.<K, Object>keySet(object))
 				if (!keys.remove(key))
 					return false;
 
@@ -828,10 +2237,10 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @return a set view of the keys contained in the given {@code delegate}.
 		 * @throws NullPointerException if the given {@code delegate} or {@code instance} is null.
 		 */
-		public static <K, V> DelegateKeySet<K> keySet(Bean<K, V> delegate, Object instance) {
+		public static <K, V> PersistentKeySet<K> keySet(Bean<K, V> delegate, Object instance) {
 			Objects.requireNonNull(delegate, "delegate");
 			Objects.requireNonNull(instance, "instance");
-			return new DelegateKeySet(delegate, instance);
+			return new PersistentKeySet(delegate, instance);
 		}
 
 		/**
@@ -947,9 +2356,8 @@ public interface Bean<K, V> extends Map<K, V> {
 			}
 
 			//add all the missing entries
-			entrySet.addAll(
-					new TemporaryEntrySet(instance, keys, (k, v) -> map.get(k))
-			);
+			//TODO remove lambda
+			entrySet.addAll(new ConstantEntrySet(instance, keys, (k, v) -> map.get(k)));
 		}
 
 		/**
@@ -983,13 +2391,15 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @param instance the instance the delegate is having.
 		 * @param <K>      the type of the keys in the given {@code delegate}.
 		 * @param <V>      the type of the values in the given {@code delegate}.
-		 * @throws NullPointerException if the given {@code delegate} or {@code instance} is null.
+		 * @throws NullPointerException if the given {@code delegate} is null.
 		 */
 		@SuppressWarnings("JavaDoc")
 		public static <K, V> void readObject(Bean<K, V> delegate, Object instance, ObjectInputStream stream) throws IOException, ClassNotFoundException {
 			Objects.requireNonNull(delegate, "delegate");
-			Objects.requireNonNull(instance, "instance");
 			Objects.requireNonNull(stream, "stream");
+
+			if (instance != null)
+				stream.readObject();
 
 			int length = stream.readInt();
 			for (int i = 0; i < length; i++) {
@@ -998,9 +2408,6 @@ public interface Bean<K, V> extends Map<K, V> {
 
 				delegate.put(key, value);
 			}
-
-			if (stream.readInt() != 0)
-				throw new IOException("Not null-terminated");
 		}
 
 		/**
@@ -1201,10 +2608,10 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @return a collection view of the values contained in the given {@code delegate}.
 		 * @throws NullPointerException if the given {@code delegate} or {@code instance} is null.
 		 */
-		public static <K, V> DelegateValues<V> values(Bean<K, V> delegate, Object instance) {
+		public static <K, V> PersistentValues<V> values(Bean<K, V> delegate, Object instance) {
 			Objects.requireNonNull(delegate, "delegate");
 			Objects.requireNonNull(instance, "instance");
-			return new DelegateValues(delegate, instance);
+			return new PersistentValues(delegate, instance);
 		}
 
 		/**
@@ -1220,102 +2627,14 @@ public interface Bean<K, V> extends Map<K, V> {
 		public static <K, V> void writeObject(Bean<K, V> delegate, Object instance, ObjectOutputStream stream) throws IOException {
 			Objects.requireNonNull(delegate, "delegate");
 			Objects.requireNonNull(instance, "instance");
-
 			Set<Map.Entry<K, V>> entrySet = delegate.entrySet();
+
+			stream.writeObject(instance instanceof Bean ? null : instance);
 
 			stream.writeInt(entrySet.size());
 			for (Map.Entry entry : entrySet) {
 				stream.writeObject(entry.getKey());
 				stream.writeObject(entry.getValue());
-			}
-
-			//null-termination
-			stream.writeInt(0);
-		}
-	}
-
-	/**
-	 * An entrySet for delegate beans.
-	 *
-	 * @param <V> the type of the values.
-	 */
-	final class DelegateValues<V> extends Values<V> {
-		/**
-		 * The bean this values-collection is for.
-		 */
-		private final Bean<?, V> delegate;
-		/**
-		 * The instance this values-collection is for.
-		 */
-		private final Object instance;
-
-		/**
-		 * Construct a new values-collection for the given {@code delegate} that have the given {@code instance}.
-		 *
-		 * @param delegate the bean this values-collection is for.
-		 * @param instance the instance the given {@code delegate} is for.
-		 * @throws NullPointerException if the given {@code delegate} or {@code instance} is null.
-		 */
-		public DelegateValues(Bean<?, V> delegate, Object instance) {
-			Objects.requireNonNull(delegate, "delegate");
-			Objects.requireNonNull(instance, "instance");
-			this.delegate = delegate;
-			this.instance = instance;
-		}
-
-		@Override
-		public Iterator iterator() {
-			return new Iterator();
-		}
-
-		@Override
-		public int size() {
-			return this.delegate.size();
-		}
-
-		@Override
-		public boolean isEmpty() {
-			return this.delegate.isEmpty();
-		}
-
-		@Override
-		public boolean contains(Object v) {
-			return this.delegate.containsValue(v);
-		}
-
-		@Override
-		public void clear() {
-			this.delegate.clear();
-		}
-
-		/**
-		 * An iterator that iterates the values of a delegate beans.
-		 */
-		public final class Iterator implements java.util.Iterator<V> {
-			/**
-			 * The iterator backing this iterator.
-			 */
-			private final java.util.Iterator<Map.Entry<?, V>> iterator = (java.util.Iterator) DelegateValues.this.delegate.entrySet().iterator();
-
-			/**
-			 * Construct a new delegate beans values iterator.
-			 */
-			private Iterator() {
-			}
-
-			@Override
-			public boolean hasNext() {
-				return this.iterator.hasNext();
-			}
-
-			@Override
-			public V next() {
-				return this.iterator.next().getValue();
-			}
-
-			@Override
-			public void remove() {
-				this.iterator.remove();
 			}
 		}
 	}
@@ -1339,11 +2658,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		 * @throws NullPointerException if the given {@code instance} is null.
 		 */
 		public PropertiesDescriptors(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-			this.fields = Collectionz.filteredSet(
-					cufy.util.Reflection.fieldsSet(instance.getClass()),
-					field -> field.isAnnotationPresent(Property.class)
-			);
+			this(Objects.requireNonNull(instance, "instance").getClass());
 		}
 
 		/**
@@ -1354,6 +2669,7 @@ public interface Bean<K, V> extends Map<K, V> {
 		 */
 		public PropertiesDescriptors(Class klass) {
 			Objects.requireNonNull(klass, "klass");
+			//TODO remove lambda
 			this.fields = Collectionz.filteredSet(
 					cufy.util.Reflection.fieldsSet(klass),
 					field -> field.isAnnotationPresent(Property.class)
@@ -1456,15 +2772,15 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
-		public int hashCode() {
-			return this.property().hashCode();
-		}
-
-		@Override
 		public boolean equals(Object object) {
 			return object == this ||
 				   object instanceof Bean.PropertyDescriptor &&
 				   ((PropertyDescriptor) object).property() == this.property();
+		}
+
+		@Override
+		public int hashCode() {
+			return this.property().hashCode();
 		}
 
 		@Override
@@ -1979,6 +3295,18 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
+		public boolean equals(Object obj) {
+			return /*quick match*/ obj == this ||
+					/*property match*/ obj instanceof Bean.PropertyEntry &&
+									   ((PropertyEntry) obj).instance == this.instance &&
+									   Objects.equals(((PropertyEntry) obj).index, this.index) &&
+									   Objects.equals(((PropertyEntry) obj).descriptor, this.descriptor) ||
+					/*entry match*/ obj instanceof Map.Entry &&
+									Objects.equals(((Map.Entry) obj).getKey(), this.getKey()) &&
+									Objects.equals(((Map.Entry) obj).getValue(), this.getValue());
+		}
+
+		@Override
 		public K getKey() {
 			if (this.key == null)
 				this.key = this.descriptor.keys().get(this.index);
@@ -1992,28 +3320,16 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
-		public V setValue(V value) {
-			V oldValue = this.getValue();
-			this.descriptor.setValue(this.instance, value);
-			return oldValue;
-		}
-
-		@Override
 		public int hashCode() {
 			return Objects.hashCode(this.getKey()) ^
 				   Objects.hashCode(this.getValue());
 		}
 
 		@Override
-		public boolean equals(Object obj) {
-			return /*quick match*/ obj == this ||
-					/*property match*/ obj instanceof Bean.PropertyEntry &&
-									   ((PropertyEntry) obj).instance == this.instance &&
-									   Objects.equals(((PropertyEntry) obj).index, this.index) &&
-									   Objects.equals(((PropertyEntry) obj).descriptor, this.descriptor) ||
-					/*entry match*/ obj instanceof Map.Entry &&
-									Objects.equals(((Map.Entry) obj).getKey(), this.getKey()) &&
-									Objects.equals(((Map.Entry) obj).getValue(), this.getValue());
+		public V setValue(V value) {
+			V oldValue = this.getValue();
+			this.descriptor.setValue(this.instance, value);
+			return oldValue;
 		}
 
 		@Override
@@ -2175,6 +3491,14 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
+		public boolean equals(Object o) {
+			return /*quick match*/ o == this ||
+					/*entry match*/ o instanceof Map.Entry &&
+									Objects.equals(((Map.Entry) o).getKey(), this.getKey()) &&
+									Objects.equals(((Map.Entry) o).getValue(), this.getValue());
+		}
+
+		@Override
 		public K getKey() {
 			return this.key;
 		}
@@ -2185,1265 +3509,16 @@ public interface Bean<K, V> extends Map<K, V> {
 		}
 
 		@Override
-		public V setValue(V value) {
-			V old = this.value;
-			this.value = value;
-			return old;
-		}
-
-		@Override
 		public int hashCode() {
 			return Objects.hashCode(this.getKey()) ^
 				   Objects.hashCode(this.getValue());
 		}
 
 		@Override
-		public boolean equals(Object o) {
-			return /*quick match*/ o == this ||
-					/*entry match*/ o instanceof Map.Entry &&
-									Objects.equals(((Map.Entry) o).getKey(), this.getKey()) &&
-									Objects.equals(((Map.Entry) o).getValue(), this.getValue());
-		}
-	}
-
-	/**
-	 * The simplest entrySet for beans.
-	 *
-	 * @param <K> the type of the keys.
-	 * @param <V> the type of the values.
-	 */
-	final class RawEntrySet<K, V> extends EntrySet<PropertyEntry<K, V>> {
-		/**
-		 * The instance this entrySet is dealing with.
-		 */
-		private final Object instance;
-
-		/**
-		 * Construct a new entrySet for the given bean's {@code instance}.
-		 *
-		 * @param instance the instance the constructed entrySet is dealing with.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public RawEntrySet(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-			this.instance = instance;
-		}
-
-		@Override
-		public Iterator iterator() {
-			return new Iterator();
-		}
-
-		@Override
-		public int size() {
-			return RawMethods.size(this.instance);
-		}
-
-		/**
-		 * An iterator for beans' entrySets. This iterator iterating over two levels. It iterates the fields of the
-		 * class of the instance that its entrySet is representing. It sub-iterate over the keys of the field at a
-		 * first-iterating-position.
-		 * <pre>
-		 *     for(Field field : instance.fields)
-		 *         for(Object key : field.keys)
-		 *             next <- new Entry(key);
-		 * </pre>
-		 */
-		public final class Iterator implements java.util.Iterator<PropertyEntry<K, V>> {
-			/**
-			 * The backing iterator of this iterator for iterating the fields of the class of the instance of the
-			 * entrySet of this iterator.
-			 */
-			private final java.util.Iterator<PropertyDescriptor<K, V>> iterator =
-					new PropertiesDescriptors<K, V>(RawEntrySet.this.instance).iterator();
-			/**
-			 * The position of the next key in the current {@link #descriptor}.
-			 */
-			private int cursor;
-			/**
-			 * The current field.
-			 */
-			private PropertyDescriptor<K, V> descriptor;
-			/**
-			 * How many keys the current {@link #descriptor} is having.
-			 */
-			private int keys;
-
-			/**
-			 * Construct a new iterator for the enclosing entrySet.
-			 */
-			private Iterator() {
-			}
-
-			@Override
-			public boolean hasNext() {
-				//fields always have more than 1 key
-				return this.iterator.hasNext() || this.cursor < this.keys;
-			}
-
-			@Override
-			public PropertyEntry<K, V> next() {
-				//the iterator.next() will do the job breaking the loop if no more fields available
-				while (true) {
-					//if there is a field previously partially solved
-					if (this.cursor < this.keys)
-						//continue the to the next key of that field
-						return this.descriptor.getEntry(
-								RawEntrySet.this.instance,
-								this.cursor++
-						);
-
-					//the next field!
-					PropertyDescriptor<K, V> descriptor = this.iterator.next();
-					this.descriptor = descriptor;
-					this.keys = descriptor.keys().size();
-					this.cursor = 0;
-				}
-			}
-		}
-	}
-
-	/**
-	 * A keySet for beans.
-	 *
-	 * @param <K> the type of the keys.
-	 */
-	final class RawKeySet<K> extends KeySet<K> {
-		/**
-		 * The instance this keySet is representing.
-		 */
-		private final Object instance;
-
-		/**
-		 * Construct a new keySet for the given {@code instance}.
-		 *
-		 * @param instance to be represented by this keySet.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public RawKeySet(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-			this.instance = instance;
-		}
-
-		@Override
-		public Iterator iterator() {
-			return new Iterator();
-		}
-
-		@Override
-		public int size() {
-			return RawMethods.size(this.instance);
-		}
-
-		/**
-		 * An iterator for beans' keySets.
-		 */
-		public final class Iterator implements java.util.Iterator<K> {
-			/**
-			 * The backing iterator of this iterator for iterating the fields of the class of the instance of the keySet
-			 * of this iterator.
-			 */
-			private final java.util.Iterator<PropertyDescriptor<K, Object>> iterator =
-					new PropertiesDescriptors<K, Object>(RawKeySet.this.instance).iterator();
-			/**
-			 * The position of the next key at the current {@link #keys}.
-			 */
-			private int cursor;
-			/**
-			 * The keys of the current field.
-			 */
-			private java.util.Iterator<K> keys;
-
-			/**
-			 * Construct a new iterator for the enclosing entrySet.
-			 */
-			private Iterator() {
-			}
-
-			@Override
-			public boolean hasNext() {
-				//fields always have more than 1 key
-				return this.iterator.hasNext() || this.keys != null && this.keys.hasNext();
-			}
-
-			@Override
-			public K next() {
-				//the iterator.next() will do the job breaking the loop if no more fields available
-				while (true) {
-					//if there is a field previously partially solved
-					if (this.keys != null && this.keys.hasNext())
-						//continue the to the next key of that field
-						return this.keys.next();
-
-					//the next field!
-					this.keys = this.iterator.next().keys().iterator();
-					this.cursor = 0;
-				}
-			}
-		}
-	}
-
-	/**
-	 * The methods for any instance that considered to be a {@link Bean}.
-	 */
-	final class RawMethods {
-		/**
-		 * This is an util class and must not be instanced as an object.
-		 *
-		 * @throws AssertionError when called.
-		 */
-		private RawMethods() {
-			throw new AssertionError("No instance for you!");
-		}
-
-		/**
-		 * Perform the default {@link Map#clear()} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @throws NullPointerException          if the given {@code instance} is null.
-		 * @throws UnsupportedOperationException if the given {@code instance} has any property-field.
-		 */
-		public static <K, V> void clear(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-			if (!new PropertiesDescriptors(instance).isEmpty())
-				throw new UnsupportedOperationException("clear");
-		}
-
-		/**
-		 * Perform the default {@link Map#compute(Object, BiFunction)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param key      key with which the specified value is to be associated.
-		 * @param function the function to compute a value.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return the new value associated with the specified key, or null if none.
-		 * @throws NullPointerException          if the given {@code instance} or {@code function} is null.
-		 * @throws UnsupportedOperationException if the given {@code function} returned null, Or if the given {@code
-		 *                                       instance} don't have the given {@code key} (bean-wise).
-		 */
-		public static <K, V> V compute(Object instance, K key, BiFunction<? super K, ? super V, ? extends V> function) {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(function, "function");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				for (K propertyKey : property.keys())
-					if (Objects.equals(key, propertyKey)) {
-						V value = function.apply(key, property.getValue(instance));
-
-						if (value == null)
-							throw new UnsupportedOperationException("remove");
-
-						property.setValue(instance, value);
-						return value;
-					}
-
-			throw new UnsupportedOperationException("put: " + key);
-		}
-
-		/**
-		 * Perform the default {@link Map#computeIfAbsent(Object, Function)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param key      key with which the specified value is to be associated.
-		 * @param function the function to compute a value.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return the current (existing or computed) value associated with the specified key, or null if the computed
-		 * 		value is null.
-		 * @throws NullPointerException          if the given {@code instance} or {@code function} is null.
-		 * @throws UnsupportedOperationException if the given {@code instance} don't have the given {@code key}.
-		 */
-		public static <K, V> V computeIfAbsent(Object instance, K key, Function<? super K, ? extends V> function) {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(function, "function");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				if (property.getValue(instance) == null)
-					for (K propertyKey : property.keys())
-						if (Objects.equals(key, propertyKey)) {
-							V value = function.apply(key);
-
-							if (value != null)
-								property.setValue(instance, value);
-
-							return value;
-						}
-
-			throw new UnsupportedOperationException("put: " + key);
-		}
-
-		/**
-		 * Perform the default {@link Map#computeIfPresent(Object, BiFunction)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param key      key with which the specified value is to be associated.
-		 * @param function the function to compute a value.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return the new value associated with the specified key, or null if none.
-		 * @throws NullPointerException          if the given {@code instance} or {@code function} is null.
-		 * @throws UnsupportedOperationException if the given {@code function} returned null.
-		 */
-		public static <K, V> V computeIfPresent(Object instance, K key, BiFunction<? super K, ? super V, ? extends V> function) {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(function, "function");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				for (K propertyKey : property.keys())
-					if (Objects.equals(key, propertyKey)) {
-						V propertyValue = property.getValue(instance);
-
-						if (propertyValue != null) {
-							V value = function.apply(key, propertyValue);
-
-							if (value == null)
-								throw new UnsupportedOperationException("remove");
-
-							property.setValue(instance, value);
-							return value;
-						}
-
-						return null;
-					}
-
-			return null;
-		}
-
-		/**
-		 * Perform the default {@link Map#containsKey(Object)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param key      key whose presence in the given {@code instance} is to be tested.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return true, if the given {@code instance} contains a mapping for the specified key.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> boolean containsKey(Object instance, Object key) {
-			Objects.requireNonNull(instance, "instance");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				for (Object propertyKey : property.keys())
-					if (Objects.equals(key, propertyKey))
-						return true;
-
-			return false;
-		}
-
-		/**
-		 * Perform the default {@link Map#containsValue(Object)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param value    value whose presence in the given {@code instance} is to be tested.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return true, if the given {@code instance} maps one or more keys to the specified value.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> boolean containsValue(Object instance, Object value) {
-			Objects.requireNonNull(instance, "instance");
-
-			for (PropertyDescriptor<K, V> descriptor : new PropertiesDescriptors<K, V>(instance))
-				if (Objects.equals(value, descriptor.getValue(instance)))
-					return true;
-
-			return false;
-		}
-
-		/**
-		 * Perform the default {@link Map#entrySet()} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return a set view of the mappings contained in the given {@code instance}.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> RawEntrySet<K, V> entrySet(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-			return new RawEntrySet(instance);
-		}
-
-		/**
-		 * Perform the default {@link Map#equals(Object)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param object   object to be compared for equality with this map.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return true, if the specified object is equal to this map.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> boolean equals(Object instance, Object object) {
-			Objects.requireNonNull(instance, "instance");
-			if (instance == object)
-				return true;
-			if (object == null)
-				return false;
-			if (object instanceof Map)
-				//map match
-				return Objects.equals(
-						RawMethods.entrySet(instance),
-						((Map) object).entrySet()
-				);
-
-			//bean match
-			Set<K> keys = new HashSet(RawMethods.keySet(instance));
-
-			for (K key : RawMethods.<K, Object>keySet(object))
-				if (!keys.remove(key))
-					return false;
-
-			return keys.isEmpty();
-		}
-
-		/**
-		 * Perform the default {@link Map#forEach(BiConsumer)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param consumer the action to be performed for each entry.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @throws NullPointerException if the given {@code instance} or {@code consumer} is null.
-		 */
-		public static <K, V> void forEach(Object instance, BiConsumer<? super K, ? super V> consumer) {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(consumer, "consumer");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance)) {
-				V propertyValue = property.getValue(instance);
-
-				for (K key : property.keys())
-					consumer.accept(key, propertyValue);
-			}
-		}
-
-		/**
-		 * Perform the default {@link Map#get(Object)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param key      the key whose associated value is to be returned.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return the value to which the specified key is mapped, or {@code null} if the given {@code instance}
-		 * 		contains no mapping for the key.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> V get(Object instance, Object key) {
-			Objects.requireNonNull(instance, "instance");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				for (Object propertyKey : property.keys())
-					if (Objects.equals(key, propertyKey))
-						return property.getValue(instance);
-
-			return null;
-		}
-
-		/**
-		 * Perform the default {@link Map#getOrDefault(Object, Object)} to the given {@code instance}.
-		 *
-		 * @param instance     the instance the bean is having.
-		 * @param key          the key whose associated value is to be returned.
-		 * @param defaultValue the default mapping of the key.
-		 * @param <K>          the type of the keys in the given {@code instance}.
-		 * @param <V>          the type of the values in the given {@code instance}.
-		 * @return the value to which the specified key is mapped, or {@code defaultValue} if the given {@code instance}
-		 * 		contains no mapping for the key.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> V getOrDefault(Object instance, K key, V defaultValue) {
-			Objects.requireNonNull(instance, "instance");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				for (K propertyKey : property.keys())
-					if (Objects.equals(key, propertyKey))
-						return property.getValue(instance);
-
-			return defaultValue;
-		}
-
-		/**
-		 * Perform the default {@link Map#hashCode()} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return the hash code value for the given {@code instance}.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> int hashCode(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-
-			int hashCode = 0;
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance)) {
-				Object value = property.getValue(instance);
-				int valueHash = Objects.hashCode(value);
-
-				for (K key : property.keys()) {
-					int keyHash = Objects.hashCode(key);
-
-					hashCode += keyHash ^ valueHash;
-				}
-			}
-
-			return hashCode;
-		}
-
-		/**
-		 * Perform the default {@link Map#isEmpty()} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return true, if the given {@code instance} contains no key-value mappings.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> boolean isEmpty(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-			return new PropertiesDescriptors(instance).isEmpty();
-		}
-
-		/**
-		 * Perform the default {@link Map#keySet()} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return a set view of the keys contained in the given {@code instance}.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> RawKeySet<K> keySet(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-			return new RawKeySet(instance);
-		}
-
-		/**
-		 * Perform the default {@link Map#merge(Object, Object, BiFunction)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param key      key with which the resulting value is to be associated.
-		 * @param value    the non-null value to be merged with the existing value associated with the key or, if no
-		 *                 existing value or a null value is associated with the key, to be associated with the key.
-		 * @param function the function to recompute a value if present.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return the new value associated with the specified key, or null if no value is associated with the key.
-		 * @throws NullPointerException          if the given {@code instance} or {@code function} is null.
-		 * @throws UnsupportedOperationException if the given {@code function} returned null, Or if the given {@code
-		 *                                       instance} don't have the given {@code key}.
-		 */
-		public static <V, K> V merge(Object instance, K key, V value, BiFunction<? super V, ? super V, ? extends V> function) {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(function, "function");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				for (K propertyKey : property.keys())
-					if (Objects.equals(key, propertyKey)) {
-						V propertyValue = property.getValue(instance);
-						V newValue = propertyValue == null ? value : function.apply(propertyValue, value);
-
-						if (newValue == null)
-							throw new UnsupportedOperationException("remove");
-
-						property.setValue(instance, newValue);
-						return newValue;
-					}
-
-			throw new UnsupportedOperationException("put: " + key);
-		}
-
-		/**
-		 * Perform the default {@link Map#put(Object, Object)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param key      key with which the specified value is to be associated.
-		 * @param value    value to be associated with the specified key.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return the previous value associated with given {@code key}, or null if there was no mapping for the given
-		 *        {@code key}. (A null return can also indicate that the given {@code instance} previously associated null
-		 * 		with the given {@code key}).
-		 * @throws NullPointerException          if the given {@code instance} is null.
-		 * @throws UnsupportedOperationException if the given {@code instance} don't have the given {@code key}.
-		 */
-		public static <K, V> V put(Object instance, K key, V value) {
-			Objects.requireNonNull(instance, "instance");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				for (Object propertyKey : property.keys())
-					if (Objects.equals(key, propertyKey)) {
-						V oldValue = property.getValue(instance);
-						property.setValue(instance, value);
-						return oldValue;
-					}
-
-			throw new UnsupportedOperationException("put: " + key);
-		}
-
-		/**
-		 * Perform the default {@link Map#putAll(Map)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param map      mappings to be stored in the given {@code instance}.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @throws NullPointerException          if the given {@code instance} or {@code map} is null.
-		 * @throws UnsupportedOperationException if the given {@code map} has keys that the given {@code instance} does
-		 *                                       not have.
-		 */
-		public static <K, V> void putAll(Object instance, Map<? extends K, ? extends V> map) {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(map, "map");
-
-			Set keySet = new HashSet(map.keySet());
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance)) {
-				//no need to reassign the same field
-				boolean put = true;
-
-				//first key in the Property annotation has more priority that other keys!
-				for (K key : property.keys())
-					if (keySet.remove(key) && put) {
-						//found a key that can be put!
-						//only if the field haven't been set by previous key.
-						property.setValue(instance, map.get(key));
-						//block next assignments to the field!
-						put = false;
-					}
-			}
-
-			//the bean can't handle the map! too large for it.
-			if (!keySet.isEmpty())
-				throw new UnsupportedOperationException("putAll: " + map);
-		}
-
-		/**
-		 * Perform the default {@link Map#putIfAbsent(Object, Object)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param key      key with which the specified value is to be associated.
-		 * @param value    value to be associated with the specified key.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return the previous value associated with the specified key, or null if there was no mapping for the key. (A
-		 * 		null return can also indicate that the given {@code instance} previously associated null with the key).
-		 * @throws NullPointerException          if the given {@code instance} is null.
-		 * @throws UnsupportedOperationException if the given {@code instance} don't have the given {@code key}.
-		 */
-		public static <K, V> V putIfAbsent(Object instance, K key, V value) {
-			Objects.requireNonNull(instance, "instance");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				for (K propertyKey : property.keys())
-					//found a matching entry
-					if (Objects.equals(key, propertyKey)) {
-						V propertyValue = property.getValue(instance);
-
-						if (propertyValue == null)
-							property.setValue(instance, value);
-
-						return propertyValue;
-					}
-
-			throw new UnsupportedOperationException("put: " + key);
-		}
-
-		/**
-		 * Perform the default {@code readObject} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		@SuppressWarnings("JavaDoc")
-		public static <K, V> void readObject(Object instance, ObjectInputStream stream) throws IOException, ClassNotFoundException {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(stream, "stream");
-
-			PropertiesDescriptors<K, V> properties = new PropertiesDescriptors(instance);
-
-			int length = stream.readInt();
-			for0:
-			for (int i = 0; i < length; i++) {
-				K key = (K) stream.readObject();
-				V value = (V) stream.readObject();
-
-				for (PropertyDescriptor<K, V> property : properties)
-					for (K propertyKey : property.keys())
-						if (Objects.equals(key, propertyKey)) {
-							property.setValue(instance, value);
-							continue for0;
-						}
-
-				throw new IllegalArgumentException("Invalid key: " + key);
-			}
-
-			if (stream.readInt() != 0)
-				throw new IOException("Not null-terminated");
-		}
-
-		/**
-		 * Perform the default {@link Map#remove(Object, Object)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param key      key with which the specified value is associated.
-		 * @param value    value expected to be associated with the specified key.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return true, if the value was removed.
-		 * @throws NullPointerException          if the given {@code instance} is null.
-		 * @throws UnsupportedOperationException if the given {@code key} is associated to the given {@code value} in
-		 *                                       the given {@code instance}.
-		 */
-		public static <K, V> boolean remove(Object instance, K key, V value) {
-			Objects.requireNonNull(instance, "instance");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				for (K propertyKey : property.keys())
-					if (Objects.equals(key, propertyKey))
-						if (Objects.equals(value, property.getValue(instance)))
-							throw new UnsupportedOperationException("remove");
-						else
-							return false;
-
-			return false;
-		}
-
-		/**
-		 * Perform the default {@link Map#remove(Object)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param key      key whose mapping is to be removed from the map
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return the previous value associated with the given {@code key}, or null if there was no mapping for the
-		 * 		given {@code key}.
-		 * @throws NullPointerException          if the given {@code instance} is null.
-		 * @throws UnsupportedOperationException if the given {@code instance} has the given {@code key}.
-		 */
-		public static <K, V> V remove(Object instance, Object key) {
-			Objects.requireNonNull(instance, "instance");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				for (K fieldKey : property.keys())
-					if (Objects.equals(key, fieldKey))
-						throw new UnsupportedOperationException("remove");
-
-			return null;
-		}
-
-		/**
-		 * Perform the default {@link Map#replace(Object, Object)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param key      key with which the specified value is associated.
-		 * @param value    value to be associated with the specified key.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return the previous value associated with the specified key, or null if there was no mapping for the key. (A
-		 * 		null return can also indicate that the map previously associated null with the key).
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> V replace(Object instance, K key, V value) {
-			Objects.requireNonNull(instance, "instance");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				for (K propertyKey : property.keys())
-					if (Objects.equals(key, propertyKey)) {
-						V oldValue = property.getValue(instance);
-						property.setValue(instance, value);
-						return oldValue;
-					}
-
-			return null;
-		}
-
-		/**
-		 * Perform the default {@link Map#replace(Object, Object, Object)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param key      key with which the specified value is associated.
-		 * @param oldValue value expected to be associated with the specified key.
-		 * @param newValue value to be associated with the specified key.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return {@code true} if the value was replaced.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> boolean replace(Object instance, K key, V oldValue, V newValue) {
-			Objects.requireNonNull(instance, "instance");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance))
-				for (K propertyKey : property.keys())
-					if (Objects.equals(key, propertyKey))
-						if (Objects.equals(oldValue, property.getValue(instance))) {
-							property.setValue(instance, newValue);
-							return true;
-						} else
-							return false;
-
-			return false;
-		}
-
-		/**
-		 * Perform the default {@link Map#replaceAll(BiFunction)} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param function the function to apply to each entry.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @throws NullPointerException if the given {@code instance} or {@code function} is null.
-		 */
-		public static <K, V> void replaceAll(Object instance, BiFunction<? super K, ? super V, ? extends V> function) {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(function, "function");
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance)) {
-				V value = property.getValue(instance);
-
-				for (K key : property.keys())
-					value = function.apply(key, value);
-
-				property.setValue(instance, value);
-			}
-		}
-
-		/**
-		 * Perform the default {@link Map#size()} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return the number of key-value mappings in the given {@code instance}.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> int size(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-
-			int size = 0;
-			for (PropertyDescriptor<K, V> descriptor : new PropertiesDescriptors<K, V>(instance))
-				//don't forget "zero keys = singular key that is the name of the field"
-				size += descriptor.keys().size();
-
-			return size;
-		}
-
-		/**
-		 * Perform the default {@link Map#toString()} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return a string representation of the given {@code instance}.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> String toString(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-
-			Iterator<PropertyDescriptor<K, V>> iterator = new PropertiesDescriptors<K, V>(instance).iterator();
-
-			if (iterator.hasNext()) {
-				StringBuilder builder = new StringBuilder("{");
-
-				while (iterator.hasNext()) {
-					PropertyDescriptor<K, V> descriptor = iterator.next();
-					Object value = descriptor.getValue(instance);
-					String valueString = value == instance ? "(this Bean)" : String.valueOf(value);
-
-					Iterator<K> keys = descriptor.keys().iterator();
-					while (keys.hasNext()) {
-						Object key = iterator.next();
-						String keyString = key == instance ? "(this Bean)" : String.valueOf(key);
-
-						builder.append(keyString)
-								.append('=')
-								.append(valueString);
-
-						if (keys.hasNext())
-							builder.append(", ");
-					}
-
-					if (iterator.hasNext())
-						builder.append(", ");
-				}
-
-				return builder.append("}").toString();
-			}
-
-			return "{}";
-		}
-
-		/**
-		 * Perform the default {@link Map#values()} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @return a collection view of the values contained in the given {@code instance}.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public static <K, V> RawValues<V> values(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-			return new RawValues(instance);
-		}
-
-		/**
-		 * Perform the default {@code writeObject} to the given {@code instance}.
-		 *
-		 * @param instance the instance the bean is having.
-		 * @param <K>      the type of the keys in the given {@code instance}.
-		 * @param <V>      the type of the values in the given {@code instance}.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		@SuppressWarnings("JavaDoc")
-		public static <K, V> void writeObject(Object instance, ObjectOutputStream stream) throws IOException {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(stream, "stream");
-
-			stream.writeInt(RawMethods.size(instance));
-
-			for (PropertyDescriptor<K, V> property : new PropertiesDescriptors<K, V>(instance)) {
-				V value = property.getValue(instance);
-
-				for (K key : property.keys()) {
-					stream.writeObject(key);
-					stream.writeObject(value);
-				}
-			}
-
-			//null-termination
-			stream.writeInt(0);
-		}
-	}
-
-	/**
-	 * A values-collection for beans.
-	 *
-	 * @param <V> the type of the values.
-	 */
-	final class RawValues<V> extends Values<V> {
-		/**
-		 * The instance this keySet is representing.
-		 */
-		private final Object instance;
-
-		/**
-		 * Construct a new values-collection for the given {@code instance}.
-		 *
-		 * @param instance to be represented by this values-collection.
-		 * @throws NullPointerException if the given {@code instance} is null.
-		 */
-		public RawValues(Object instance) {
-			Objects.requireNonNull(instance, "instance");
-			this.instance = instance;
-		}
-
-		@Override
-		public int hashCode() {
-			int hashCode = 0;
-
-			for (V value : this)
-				hashCode += Objects.hashCode(value);
-
-			return hashCode;
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			return object == this ||
-				   object instanceof Bean.RawValues &&
-				   ((RawValues) object).instance == this.instance;
-		}
-
-		@Override
-		public Iterator iterator() {
-			return new Iterator();
-		}
-
-		@Override
-		public int size() {
-			return RawMethods.size(this.instance);
-		}
-
-		/**
-		 * An iterator for beans' values-collections.
-		 */
-		public final class Iterator implements java.util.Iterator<V> {
-			/**
-			 * The backing iterator of this iterator for iterating the fields of the class of the instance of the
-			 * entrySet of this iterator.
-			 */
-			private final java.util.Iterator<PropertyDescriptor<Object, V>> iterator =
-					new PropertiesDescriptors<Object, V>(RawValues.this.instance).iterator();
-			/**
-			 * The current position in the keys of the current {@link #descriptor}.
-			 */
-			private int cursor;
-			/**
-			 * The current field.
-			 */
-			private PropertyDescriptor<?, V> descriptor;
-			/**
-			 * How many keys in the current {@link #descriptor}.
-			 */
-			private int keys;
-
-			/**
-			 * Construct a new bean's values-collection iterator.
-			 */
-			private Iterator() {
-			}
-
-			@Override
-			public boolean hasNext() {
-				//fields always have more than 1 key
-				return this.iterator.hasNext() || this.descriptor != null && this.cursor < this.keys;
-			}
-
-			@Override
-			public V next() {
-				//the iterator.next() will do the job breaking the loop if no more fields available
-				while (true) {
-					//if there is a field previously partially solved
-					if (this.descriptor != null && this.cursor++ < this.keys)
-						//continue the to the next key of that field
-						return this.descriptor.getValue(RawValues.this.instance);
-
-					//the next field!
-					PropertyDescriptor<Object, V> descriptor = this.iterator.next();
-					this.descriptor = descriptor;
-					//don't forget "zero keys = singular key that is the name of the field"
-					//and since we don't care about the keys, we just max its length with 1
-					this.keys = descriptor.keys().size();
-					this.cursor = 0;
-				}
-			}
-		}
-	}
-
-	/**
-	 * An entrySet containing {@link Entry}s for specific keys.
-	 *
-	 * @param <K> the type of the keys.
-	 * @param <V> the type of the values.
-	 */
-	final class TemporaryEntrySet<K, V> extends EntrySet<Bean.Entry<K, V>> {
-		/**
-		 * The fields that have not been checked by this.
-		 */
-		private final PropertiesDescriptors<K, V>.Iterator descriptors;
-		/**
-		 * The solved entries.
-		 */
-		private final Set<Entry<K, V>> entries = new HashSet();
-		/**
-		 * The instance this entrySet is for.
-		 */
-		private final Object instance;
-		/**
-		 * The keys allowed in this entrySet.
-		 */
-		private final Set<K> keys;
-		/**
-		 * A function to get the value of a key in the {@link #keys} set.
-		 */
-		private final BiFunction<? super K, ? super V, ? extends V> values;
-		/**
-		 * The index of the next unsolved-key in the last unsolved-descriptor.
-		 */
-		private int cursor;
-		/**
-		 * The last field gotten by the {@link #descriptors} iterator.
-		 */
-		private PropertyDescriptor<K, V> descriptor;
-		/**
-		 * How many unsolved-keys are available.
-		 */
-		private int fieldKeys;
-
-		/**
-		 * Construct a new entrySet containing entries for the specified {@code keys}.
-		 *
-		 * @param instance the instance of the constructed entrySet.
-		 * @param keys     the keys contained in the constructed entrySet (the constructed set will modify this set!).
-		 * @throws NullPointerException if the given {@code keys} is null.
-		 */
-		public TemporaryEntrySet(Object instance, Set<K> keys) {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(keys, "keys");
-			this.instance = instance;
-			this.keys = keys;
-			this.values = null;
-			this.descriptors = new PropertiesDescriptors<K, V>(instance).iterator();
-		}
-
-		/**
-		 * Construct a new entrySet containing entries for the specified {@code keys}.
-		 *
-		 * @param instance the instance of the constructed entrySet.
-		 * @param keys     the keys contained in the constructed entrySet (the constructed set will modify this set!).
-		 * @param values   a function to get the value of a key in the returned entrySet.
-		 * @throws NullPointerException if the given {@code keys} is null.
-		 */
-		public TemporaryEntrySet(Object instance, Set<K> keys, BiFunction<? super K, ? super V, ? extends V> values) {
-			Objects.requireNonNull(instance, "instance");
-			Objects.requireNonNull(keys, "keys");
-			Objects.requireNonNull(values, "values");
-			this.instance = instance;
-			this.keys = keys;
-			this.values = values;
-			this.descriptors = new PropertiesDescriptors<K, V>(instance).iterator();
-		}
-
-		@Override
-		public Iterator iterator() {
-			return new Iterator();
-		}
-
-		@Override
-		public int size() {
-			return this.keys.size();
-		}
-
-		/**
-		 * An iterator iterating a set of entries specified by a set of keys.
-		 */
-		public final class Iterator implements java.util.Iterator<Entry<K, V>> {
-			/**
-			 * An iterator for the previously solved entries.
-			 */
-			private java.util.Iterator<Entry<K, V>> entries;
-			/**
-			 * An iterator for the unsolved keys.
-			 */
-			private java.util.Iterator<K> keys;
-
-			/**
-			 * Private access constructor.
-			 */
-			private Iterator() {
-			}
-
-			@Override
-			public boolean hasNext() {
-				//if there is still keys not resolved
-				if (!TemporaryEntrySet.this.keys.isEmpty())
-					//there is keys not solved means it will be solved in the next invoke of next()
-					return true;
-
-				//100% dependent stage; once achieved, it will stay forever!
-				//if it is the first-time no more unsolved-keys.
-				if (this.entries == null)
-					//start iterating the over solved-entries
-					this.entries = TemporaryEntrySet.this.entries.iterator();
-
-				//it depends now 100% on the solved-entries
-				return this.entries.hasNext();
-			}
-
-			@Override
-			public Entry<K, V> next() {
-				//while there is unsolved-keys. Otherwise, this block is redundant!
-				while (!TemporaryEntrySet.this.keys.isEmpty()) {
-					int cursor = TemporaryEntrySet.this.cursor++;
-					int fieldKeys = TemporaryEntrySet.this.fieldKeys;
-
-					//only if there is a leftover keys from the last field
-					if (cursor < fieldKeys) {
-						PropertyDescriptor<K, V> descriptor = TemporaryEntrySet.this.descriptor;
-
-						//if still there is unseen keys from the last field
-						K fieldKey = descriptor.keys().get(cursor);
-
-						//only if there is a matching key in the unsolvedKeys set
-						if (TemporaryEntrySet.this.keys.remove(fieldKey)) {
-							//there is a matching key
-							PropertyEntry<K, V> entry =
-									TemporaryEntrySet.this.values == null ?
-									//without initial-value
-									descriptor.getEntry(
-											TemporaryEntrySet.this.instance,
-											fieldKey,
-											cursor
-									) :
-									//with initial-value
-									descriptor.getEntry(
-											TemporaryEntrySet.this.instance,
-											fieldKey,
-											cursor,
-											TemporaryEntrySet.this.values.apply(
-													fieldKey,
-													descriptor.getValue(TemporaryEntrySet.this.instance)
-											)
-									);
-
-							//add the new entry; don't worry, the key already removed above!
-							TemporaryEntrySet.this.entries.add(entry);
-							return entry;
-						}
-
-						//no key matched in the last field's keys; to the next field!
-						continue;
-					}
-					//only if there is fields not have been solved
-					if (TemporaryEntrySet.this.descriptors.hasNext()) {
-						//if no keys remaining from the last field
-						PropertyDescriptor<K, V> descriptor = TemporaryEntrySet.this.descriptors.next();
-						TemporaryEntrySet.this.descriptor = descriptor;
-						TemporaryEntrySet.this.fieldKeys = descriptor.keys().size();
-						TemporaryEntrySet.this.cursor = 0;
-						//continue to consume the keys of the new unsolved-field
-						continue;
-					}
-
-					//if it is the first-time no more fields nor last-field's keys.
-					if (this.keys == null)
-						//start iterating over the unsolved-keys
-						this.keys = TemporaryEntrySet.this.keys.iterator();
-					//if there is still unsolved-keys
-					if (this.keys.hasNext()) {
-						//if no more fields to be resolved, but still there is keys to be resolved
-						K key = this.keys.next();
-
-						//create a new entry
-						Entry<K, V> entry =
-								TemporaryEntrySet.this.values == null ?
-								//with initial value
-								new PropertylessEntry(
-										key
-								) :
-								//without initial value
-								new PropertylessEntry(
-										key,
-										TemporaryEntrySet.this.values.apply(
-												key,
-												null
-										)
-								);
-
-						//remove it, because it has been solved
-						this.keys.remove();
-						//add the solved entry
-						TemporaryEntrySet.this.entries.add(entry);
-						return entry;
-					}
-				}
-
-				//100% dependent stage; once achieved, it will stay forever!
-				//if it is the first-time no more unsolved-keys.
-				if (this.entries == null)
-					//start iterating the over solved-entries
-					this.entries = TemporaryEntrySet.this.entries.iterator();
-
-				//it depends now 100% on the solved-entries
-				return this.entries.next();
-			}
+		public V setValue(V value) {
+			V old = this.value;
+			this.value = value;
+			return old;
 		}
 	}
 
@@ -3529,9 +3604,10 @@ public interface Bean<K, V> extends Map<K, V> {
 	/**
 	 * An abstraction for entrySets to be used by {@link Bean}s.
 	 *
-	 * @param <E> the type of the entries.
+	 * @param <K> the type of the keys in the entrySet.
+	 * @param <V> the type of the values in the entrySet.
 	 */
-	abstract class EntrySet<E extends Entry> extends AbstractSet<E> {
+	abstract class EntrySet<K, V> extends AbstractSet<Map.Entry<K, V>> {
 		/**
 		 * Private access constructor.
 		 */

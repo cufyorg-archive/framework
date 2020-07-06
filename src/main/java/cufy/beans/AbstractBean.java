@@ -19,9 +19,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * An abstraction for the interface {@link Bean}.
@@ -36,62 +33,62 @@ public abstract class AbstractBean<K, V> implements Bean<K, V>, Serializable {
 	/**
 	 * A set of the entries of this.
 	 */
-	private transient RawEntrySet<K, V> entrySet;
+	private transient DisposableEntrySet<K, V> entrySet;
 	/**
 	 * A set of the keys in this.
 	 */
-	private transient RawKeySet<K> keySet;
+	private transient DisposableKeySet<K> keySet;
 	/**
 	 * A set of the values in this.
 	 */
-	private transient RawValues<V> values;
+	private transient DisposableValues<V> values;
 
 	@Override
-	public int hashCode() {
-		return RawMethods.hashCode(this);
+	public EntrySet<K, V> entrySet() {
+		if (this.entrySet == null)
+			this.entrySet = DisposingMethods.entrySet(this);
+
+		return this.entrySet;
 	}
 
 	@Override
 	public boolean equals(Object object) {
-		return RawMethods.equals(this, object);
+		return DisposingMethods.equals(this, object);
 	}
 
 	@Override
-	public String toString() {
-		return RawMethods.toString(this);
+	public int hashCode() {
+		return DisposingMethods.hashCode(this);
 	}
 
 	@Override
-	public Set<K> keySet() {
+	public KeySet<K> keySet() {
 		if (this.keySet == null)
-			this.keySet = RawMethods.keySet(this);
+			this.keySet = DisposingMethods.keySet(this);
 
 		return this.keySet;
 	}
 
 	@Override
-	public Collection<V> values() {
+	public String toString() {
+		return DisposingMethods.toString(this);
+	}
+
+	@Override
+	public Values<V> values() {
 		if (this.values == null)
-			this.values = RawMethods.values(this);
+			this.values = DisposingMethods.values(this);
 
 		return this.values;
 	}
 
-	@Override
-	public Set<Map.Entry<K, V>> entrySet() {
-		if (this.entrySet == null)
-			this.entrySet = RawMethods.entrySet(this);
-
-		return (Set) this.entrySet;
-	}
-
 	@SuppressWarnings("JavaDoc")
 	private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
-		RawMethods.readObject(this, stream);
+		DisposingMethods.readObject(this, stream);
 	}
 
 	@SuppressWarnings("JavaDoc")
 	private void writeObject(ObjectOutputStream stream) throws IOException {
-		RawMethods.writeObject(this, stream);
+		DisposingMethods.writeObject(this, stream);
 	}
 }
