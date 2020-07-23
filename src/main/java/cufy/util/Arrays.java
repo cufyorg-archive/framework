@@ -24,7 +24,11 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 /**
- * Useful methods for Arrays.
+ * An Utility class for raw arrays. Supporting various kinds of array operations. All methods accepts any kind of array and has a
+ * reflection way method and a switcher method.
+ * <p>
+ * This class includes all the methods in the standard {@link java.util.Arrays} utility class with the same behaviour. So
+ * switching to import this class will not make any changes to files previously imported {@link java.util.Arrays}.
  *
  * @author LSafer
  * @version 0.1.5
@@ -52,6 +56,7 @@ public final class Arrays {
 	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> int all(T[] array, T... elements) {
 		Objects.requireNonNull(array, "array");
@@ -83,6 +88,7 @@ public final class Arrays {
 	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int all(boolean[] array, boolean... elements) {
 		Objects.requireNonNull(array, "array");
@@ -114,6 +120,7 @@ public final class Arrays {
 	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int all(byte[] array, byte... elements) {
 		Objects.requireNonNull(array, "array");
@@ -145,6 +152,7 @@ public final class Arrays {
 	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int all(char[] array, char... elements) {
 		Objects.requireNonNull(array, "array");
@@ -176,6 +184,7 @@ public final class Arrays {
 	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int all(double[] array, double... elements) {
 		Objects.requireNonNull(array, "array");
@@ -207,6 +216,7 @@ public final class Arrays {
 	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int all(float[] array, float... elements) {
 		Objects.requireNonNull(array, "array");
@@ -238,6 +248,7 @@ public final class Arrays {
 	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int all(int[] array, int... elements) {
 		Objects.requireNonNull(array, "array");
@@ -269,6 +280,7 @@ public final class Arrays {
 	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int all(long[] array, long... elements) {
 		Objects.requireNonNull(array, "array");
@@ -300,6 +312,7 @@ public final class Arrays {
 	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int all(short[] array, short... elements) {
 		Objects.requireNonNull(array, "array");
@@ -332,12 +345,13 @@ public final class Arrays {
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException     if the given {@code array} or {@code elements} is null.
 	 * @throws IllegalArgumentException if the given {@code array} or {@code elements} is not an array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int all0(Object array, Object elements) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(elements, "elements");
-		Objects.require(array, array.getClass().isArray(), "array");
-		Objects.require(elements, elements.getClass().isArray(), "elements");
+		Objects.require(array, Objects::isArray, "array");
+		Objects.require(elements, Objects::isArray, "elements");
 
 		int m = Array.getLength(elements);
 		int n = Array.getLength(array);
@@ -369,6 +383,7 @@ public final class Arrays {
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException     if the given {@code array} or {@code elements} is null.
 	 * @throws IllegalArgumentException if the given {@code array} or {@code elements} is not an array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int all1(Object array, Object elements) {
 		if (array instanceof Object[] && elements instanceof Object[])
@@ -405,6 +420,7 @@ public final class Arrays {
 	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> int any(T[] array, T... elements) {
 		Objects.requireNonNull(array, "array");
@@ -433,6 +449,7 @@ public final class Arrays {
 	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int any(boolean[] array, boolean... elements) {
 		Objects.requireNonNull(array, "array");
@@ -461,6 +478,7 @@ public final class Arrays {
 	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int any(byte[] array, byte... elements) {
 		Objects.requireNonNull(array, "array");
@@ -489,6 +507,7 @@ public final class Arrays {
 	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int any(char[] array, char... elements) {
 		Objects.requireNonNull(array, "array");
@@ -517,6 +536,7 @@ public final class Arrays {
 	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int any(double[] array, double... elements) {
 		Objects.requireNonNull(array, "array");
@@ -545,6 +565,7 @@ public final class Arrays {
 	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int any(float[] array, float... elements) {
 		Objects.requireNonNull(array, "array");
@@ -573,6 +594,7 @@ public final class Arrays {
 	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int any(int[] array, int... elements) {
 		Objects.requireNonNull(array, "array");
@@ -601,6 +623,7 @@ public final class Arrays {
 	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int any(long[] array, long... elements) {
 		Objects.requireNonNull(array, "array");
@@ -629,6 +652,7 @@ public final class Arrays {
 	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int any(short[] array, short... elements) {
 		Objects.requireNonNull(array, "array");
@@ -658,12 +682,13 @@ public final class Arrays {
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException     if the given {@code array} or {@code elements} is null.
 	 * @throws IllegalArgumentException if the given {@code array} or {@code elements} is not an array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int any0(Object array, Object elements) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(elements, "elements");
-		Objects.require(array, array.getClass().isArray(), "array");
-		Objects.require(elements, elements.getClass().isArray(), "elements");
+		Objects.require(array, Objects::isArray, "array");
+		Objects.require(elements, Objects::isArray, "elements");
 
 		int m = Array.getLength(elements);
 		int n = Array.getLength(array);
@@ -691,6 +716,7 @@ public final class Arrays {
 	 * 		array}. Or -1 if no such element found.
 	 * @throws NullPointerException     if the given {@code array} or {@code elements} is null.
 	 * @throws IllegalArgumentException if the given {@code array} or {@code elements} is not an array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int any1(Object array, Object elements) {
 		if (array instanceof Object[] && elements instanceof Object[])
@@ -725,6 +751,7 @@ public final class Arrays {
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> ArrayList<T> asList(T... array) {
 		return new ArrayList(array);
@@ -737,6 +764,7 @@ public final class Arrays {
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static BooleanArrayList asList(boolean[] array) {
 		return new BooleanArrayList(array);
@@ -749,6 +777,7 @@ public final class Arrays {
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static ByteArrayList asList(byte[] array) {
 		return new ByteArrayList(array);
@@ -761,6 +790,7 @@ public final class Arrays {
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static CharacterArrayList asList(char[] array) {
 		return new CharacterArrayList(array);
@@ -773,6 +803,7 @@ public final class Arrays {
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static DoubleArrayList asList(double[] array) {
 		return new DoubleArrayList(array);
@@ -785,6 +816,7 @@ public final class Arrays {
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static FloatArrayList asList(float[] array) {
 		return new FloatArrayList(array);
@@ -797,6 +829,7 @@ public final class Arrays {
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static IntegerArrayList asList(int[] array) {
 		return new IntegerArrayList(array);
@@ -809,6 +842,7 @@ public final class Arrays {
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static LongArrayList asList(long[] array) {
 		return new LongArrayList(array);
@@ -821,6 +855,7 @@ public final class Arrays {
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static ShortArrayList asList(short[] array) {
 		return new ShortArrayList(array);
@@ -834,6 +869,7 @@ public final class Arrays {
 	 * @throws NullPointerException     if the given {@code array} is null.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @see java.util.Arrays#asList(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static ArrayList0 asList0(Object array) {
 		return new ArrayList0(array);
@@ -847,6 +883,7 @@ public final class Arrays {
 	 * @throws NullPointerException     if the given {@code array} is null.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @see java.util.Arrays#asList(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static List asList1(Object array) {
 		if (array instanceof Object[])
@@ -1030,6 +1067,7 @@ public final class Arrays {
 	 * @return a new array from concatenating the given {@code arrays} (in order).
 	 * @throws NullPointerException if the given {@code arrays} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the constructed array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> T[] concat(T[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
@@ -1070,11 +1108,12 @@ public final class Arrays {
 	 * @throws NullPointerException     if the given {@code klass} or {@code arrays} is null.
 	 * @throws IllegalArgumentException if the given {@code klass} is not an array class.
 	 * @throws ArrayStoreException      if an element can not be stored in the product array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T extends U, U> U[] concat(Class<U[]> klass, T[]... arrays) {
 		Objects.requireNonNull(klass, "klass");
 		Objects.requireNonNull(arrays, "arrays");
-		Objects.require(klass, klass.isArray(), "klass");
+		Objects.require(klass, Class::isArray, "klass");
 
 		int length = 0;
 		for (int i = arrays.length - 1; i >= 0; i--) {
@@ -1103,7 +1142,8 @@ public final class Arrays {
 	 *
 	 * @param arrays the arrays to be concatenated to construct the returned array.
 	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code klass} or {@code arrays} is null.
+	 * @throws NullPointerException if the given {@code arrays} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean[] concat(boolean[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
@@ -1135,7 +1175,8 @@ public final class Arrays {
 	 *
 	 * @param arrays the arrays to be concatenated to construct the returned array.
 	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code klass} or {@code arrays} is null.
+	 * @throws NullPointerException if the given {@code arrays} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static byte[] concat(byte[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
@@ -1167,7 +1208,8 @@ public final class Arrays {
 	 *
 	 * @param arrays the arrays to be concatenated to construct the returned array.
 	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code klass} or {@code arrays} is null.
+	 * @throws NullPointerException if the given {@code arrays} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static char[] concat(char[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
@@ -1199,7 +1241,8 @@ public final class Arrays {
 	 *
 	 * @param arrays the arrays to be concatenated to construct the returned array.
 	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code klass} or {@code arrays} is null.
+	 * @throws NullPointerException if the given {@code arrays} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static double[] concat(double[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
@@ -1231,7 +1274,8 @@ public final class Arrays {
 	 *
 	 * @param arrays the arrays to be concatenated to construct the returned array.
 	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code klass} or {@code arrays} is null.
+	 * @throws NullPointerException if the given {@code arrays} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static float[] concat(float[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
@@ -1263,7 +1307,8 @@ public final class Arrays {
 	 *
 	 * @param arrays the arrays to be concatenated to construct the returned array.
 	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code klass} or {@code arrays} is null.
+	 * @throws NullPointerException if the given {@code arrays} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int[] concat(int[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
@@ -1295,7 +1340,8 @@ public final class Arrays {
 	 *
 	 * @param arrays the arrays to be concatenated to construct the returned array.
 	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code klass} or {@code arrays} is null.
+	 * @throws NullPointerException if the given {@code arrays} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static long[] concat(long[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
@@ -1327,7 +1373,8 @@ public final class Arrays {
 	 *
 	 * @param arrays the arrays to be concatenated to construct the returned array.
 	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code klass} or {@code arrays} is null.
+	 * @throws NullPointerException if the given {@code arrays} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static short[] concat(short[]... arrays) {
 		Objects.requireNonNull(arrays, "arrays");
@@ -1363,10 +1410,11 @@ public final class Arrays {
 	 * @throws NullPointerException     if the given {@code arrays} is null.
 	 * @throws IllegalArgumentException if the given {@code arrays} is not an array. Or if an array is not an array.
 	 * @throws ArrayStoreException      if an element can not be stored in the constructed array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static Object concat0(Object[] arrays) {
 		Objects.requireNonNull(arrays, "arrays");
-		Objects.require(arrays, arrays.getClass().isArray(), "arrays");
+		Objects.require(arrays, Objects::isArray, "arrays");
 
 		int length = 0;
 		Class component = Object.class;
@@ -1374,7 +1422,7 @@ public final class Arrays {
 			Object array = arrays[i];
 
 			if (array != null) {
-				Objects.require(array, a -> a.getClass().isArray(), "arrays[?]");
+				Objects.require(array, Objects::isArray, "arrays[?]");
 				component = array.getClass().getComponentType();
 				length += Array.getLength(array);
 			}
@@ -1386,7 +1434,7 @@ public final class Arrays {
 			Object array = arrays[j];
 
 			if (array != null) {
-				Objects.require(array, a -> a.getClass().isArray(), "arrays[?]");
+				Objects.require(array, Objects::isArray, "arrays[?]");
 				int m = Array.getLength(array);
 
 				if (component.isPrimitive() == array.getClass().getComponentType().isPrimitive())
@@ -1411,19 +1459,20 @@ public final class Arrays {
 	 * @throws IllegalArgumentException if the given {@code klass} is not an array class. Or if the given {@code arrays} is not an
 	 *                                  array. Or if an array is not an array.
 	 * @throws ArrayStoreException      if an element can not be stored in the constructed array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static Object concat0(Class klass, Object[] arrays) {
 		Objects.requireNonNull(klass, "klass");
 		Objects.requireNonNull(arrays, "arrays");
-		Objects.require(klass, klass.isArray(), "klass");
-		Objects.require(arrays, arrays.getClass().isArray(), "arrays");
+		Objects.require(klass, Class::isArray, "klass");
+		Objects.require(arrays, Objects::isArray, "arrays");
 
 		int length = 0;
 		for (int i = arrays.length - 1; i >= 0; i--) {
 			Object array = arrays[i];
 
 			if (array != null) {
-				Objects.require(array, array.getClass().isArray(), "arrays[?]");
+				Objects.require(array, Objects::isArray, "arrays[?]");
 				length += Array.getLength(array);
 			}
 		}
@@ -1434,7 +1483,7 @@ public final class Arrays {
 			Object array = arrays[j];
 
 			if (array != null) {
-				Objects.require(array, array.getClass().isArray(), "array[?]");
+				Objects.require(array, Objects::isArray, "array[?]");
 				int m = Array.getLength(array);
 
 				if (klass.getComponentType().isPrimitive() == array.getClass().getComponentType().isPrimitive())
@@ -1460,6 +1509,7 @@ public final class Arrays {
 	 * @throws NullPointerException     if the given {@code arrays} is null.
 	 * @throws IllegalArgumentException if the given {@code arrays} is not an array. Or if an array is not an array.
 	 * @throws ArrayStoreException      if an element can not be stored in the constructed array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static Object concat1(Object[] arrays) {
 		if (arrays instanceof Object[][])
@@ -1496,10 +1546,11 @@ public final class Arrays {
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(Object[], int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> T[] copyOf(T[] array, int length) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(length, length >= 0, NegativeArraySizeException.class, "length");
+		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
 
 		T[] copy = (T[]) Array.newInstance(array.getClass().getComponentType(), length);
 
@@ -1523,13 +1574,13 @@ public final class Arrays {
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @throws ArrayStoreException        if an element can not be stored in the constructed array.
 	 * @see java.util.Arrays#copyOf(Object[], int, Class)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T extends U, U> U[] copyOf(T[] array, int length, Class<? extends U[]> klass) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(klass, "klass");
-		Objects.require(length, length >= 0, NegativeArraySizeException.class, "length");
-		Objects.require(klass, klass.isArray(), "klass");
-		Objects.require(klass, !klass.getComponentType().isPrimitive(), "klass");
+		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
+		Objects.require(klass, Objects::isObjectArrayClass, "klass");
 
 		U[] copy = (U[]) Array.newInstance(klass.getComponentType(), length);
 
@@ -1547,10 +1598,11 @@ public final class Arrays {
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(boolean[], int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean[] copyOf(boolean[] array, int length) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(length, length >= 0, NegativeArraySizeException.class, "length");
+		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
 
 		boolean[] copy = new boolean[length];
 
@@ -1568,10 +1620,11 @@ public final class Arrays {
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(byte[], int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static byte[] copyOf(byte[] array, int length) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(length, length >= 0, NegativeArraySizeException.class, "length");
+		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
 
 		byte[] copy = new byte[length];
 
@@ -1589,10 +1642,11 @@ public final class Arrays {
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(char[], int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static char[] copyOf(char[] array, int length) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(length, length >= 0, NegativeArraySizeException.class, "length");
+		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
 
 		char[] copy = new char[length];
 
@@ -1610,10 +1664,11 @@ public final class Arrays {
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(double[], int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static double[] copyOf(double[] array, int length) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(length, length >= 0, NegativeArraySizeException.class, "length");
+		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
 
 		double[] copy = new double[length];
 
@@ -1631,10 +1686,11 @@ public final class Arrays {
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(float[], int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static float[] copyOf(float[] array, int length) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(length, length >= 0, NegativeArraySizeException.class, "length");
+		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
 
 		float[] copy = new float[length];
 
@@ -1652,10 +1708,11 @@ public final class Arrays {
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(int[], int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int[] copyOf(int[] array, int length) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(length, length >= 0, NegativeArraySizeException.class, "length");
+		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
 
 		int[] copy = new int[length];
 
@@ -1673,10 +1730,11 @@ public final class Arrays {
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(long[], int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static long[] copyOf(long[] array, int length) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(length, length >= 0, NegativeArraySizeException.class, "length");
+		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
 
 		long[] copy = new long[length];
 
@@ -1694,10 +1752,11 @@ public final class Arrays {
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(short[], int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static short[] copyOf(short[] array, int length) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(length, length >= 0, NegativeArraySizeException.class, "length");
+		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
 
 		short[] copy = new short[length];
 
@@ -1716,11 +1775,12 @@ public final class Arrays {
 	 * @throws IllegalArgumentException   if the given {@code array} is not an array.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(Object[], int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static Object copyOf0(Object array, int length) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(array, array.getClass().isArray(), "array");
-		Objects.require(length, length >= 0, NegativeArraySizeException.class, "length");
+		Objects.require(array, Objects::isArray, "array");
+		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
 
 		Object copy = Array.newInstance(array.getClass().getComponentType(), length);
 
@@ -1742,13 +1802,14 @@ public final class Arrays {
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @throws ArrayStoreException        if an element can not be stored in the constructed array.
 	 * @see java.util.Arrays#copyOf(Object[], int, Class)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static Object copyOf0(Object array, int length, Class klass) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(klass, "klass");
-		Objects.require(array, array.getClass().isArray(), "array");
-		Objects.require(length, length >= 0, NegativeArraySizeException.class, "length");
-		Objects.require(klass, klass.isArray(), "klass");
+		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
+		Objects.require(array, Objects::isArray, "array");
+		Objects.require(klass, Class::isArray, "klass");
 
 		Object copy = Array.newInstance(klass.getComponentType(), length);
 
@@ -1771,6 +1832,7 @@ public final class Arrays {
 	 * @throws IllegalArgumentException   if the given {@code array} is not an array.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(Object[], int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static Object copyOf1(Object array, int length) {
 		if (array instanceof Object[])
@@ -1812,12 +1874,13 @@ public final class Arrays {
 	 *                                   than or equals the length of the given {@code array}.
 	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
 	 * @see java.util.Arrays#copyOfRange(Object[], int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> T[] copyOfRange(T[] array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, "beginIndex");
-		Objects.require(beginIndex, beginIndex < array.length, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -1848,14 +1911,15 @@ public final class Arrays {
 	 *                                   klass} is primitive.
 	 * @throws ArrayStoreException       if an element can not be stored in the constructed array.
 	 * @see java.util.Arrays#copyOfRange(Object[], int, int, Class)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T extends U, U> U[] copyOfRange(T[] array, int beginIndex, int endIndex, Class<U[]> klass) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, "beginIndex");
-		Objects.require(beginIndex, beginIndex < array.length, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(klass, klass.isArray(), "klass");
-		Objects.require(klass, !klass.getComponentType().isPrimitive(), "klass");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(klass, Class::isArray, "klass");
+		Objects.require(klass, Objects::isObjectArrayClass, "klass");
 
 		int length = endIndex - beginIndex;
 
@@ -1880,12 +1944,13 @@ public final class Arrays {
 	 *                                   than or equals the length of the given {@code array}.
 	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
 	 * @see java.util.Arrays#copyOfRange(boolean[], int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean[] copyOfRange(boolean[] array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, "beginIndex");
-		Objects.require(beginIndex, beginIndex < array.length, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -1910,12 +1975,13 @@ public final class Arrays {
 	 *                                   than or equals the length of the given {@code array}.
 	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
 	 * @see java.util.Arrays#copyOfRange(byte[], int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static byte[] copyOfRange(byte[] array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, "beginIndex");
-		Objects.require(beginIndex, beginIndex < array.length, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -1940,12 +2006,13 @@ public final class Arrays {
 	 *                                   than or equals the length of the given {@code array}.
 	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
 	 * @see java.util.Arrays#copyOfRange(char[], int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static char[] copyOfRange(char[] array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, "beginIndex");
-		Objects.require(beginIndex, beginIndex < array.length, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -1970,12 +2037,13 @@ public final class Arrays {
 	 *                                   than or equals the length of the given {@code array}.
 	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
 	 * @see java.util.Arrays#copyOfRange(double[], int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static double[] copyOfRange(double[] array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, "beginIndex");
-		Objects.require(beginIndex, beginIndex < array.length, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -2000,12 +2068,13 @@ public final class Arrays {
 	 *                                   than or equals the length of the given {@code array}.
 	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
 	 * @see java.util.Arrays#copyOfRange(float[], int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static float[] copyOfRange(float[] array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, "beginIndex");
-		Objects.require(beginIndex, beginIndex < array.length, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -2030,12 +2099,13 @@ public final class Arrays {
 	 *                                   than or equals the length of the given {@code array}.
 	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
 	 * @see java.util.Arrays#copyOfRange(int[], int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int[] copyOfRange(int[] array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, "beginIndex");
-		Objects.require(beginIndex, beginIndex < array.length, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -2060,12 +2130,13 @@ public final class Arrays {
 	 *                                   than or equals the length of the given {@code array}.
 	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
 	 * @see java.util.Arrays#copyOfRange(long[], int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static long[] copyOfRange(long[] array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, "beginIndex");
-		Objects.require(beginIndex, beginIndex < array.length, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -2090,12 +2161,13 @@ public final class Arrays {
 	 *                                   than or equals the length of the given {@code array}.
 	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
 	 * @see java.util.Arrays#copyOfRange(short[], int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static short[] copyOfRange(short[] array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, "beginIndex");
-		Objects.require(beginIndex, beginIndex < array.length, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -2121,12 +2193,14 @@ public final class Arrays {
 	 * @throws IllegalArgumentException  if the given {@code array} is not an array. if the given {@code beginIndex} is greater
 	 *                                   than the given {@code endIndex}.
 	 * @see java.util.Arrays#copyOfRange(Object[], int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static Object copyOfRange0(Object array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, "beginIndex");
-		Objects.require(beginIndex, beginIndex < Array.getLength(array), ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+		Objects.require(beginIndex, Array.getLength(array), Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(array, Objects::isArray, "array");
 
 		int length = endIndex - beginIndex;
 
@@ -2154,13 +2228,15 @@ public final class Arrays {
 	 *                                   than the given {@code endIndex}. Or if the given {@code klass} is not an array class.
 	 * @throws ArrayStoreException       if an element can not be stored in the constructed array.
 	 * @see java.util.Arrays#copyOfRange(Object[], int, int, Class)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static Object copyOfRange0(Object array, int beginIndex, int endIndex, Class klass) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, "beginIndex");
-		Objects.require(beginIndex, beginIndex < Array.getLength(array), ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(klass, klass.isArray(), "klass");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+		Objects.require(beginIndex, Array.getLength(array), Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(array, Objects::isArray, "array");
+		Objects.require(klass, Class::isArray, "klass");
 
 		int length = endIndex - beginIndex;
 
@@ -2189,6 +2265,7 @@ public final class Arrays {
 	 * @throws IllegalArgumentException  if the given {@code array} is not an array. Or if the given {@code beginIndex} is greater
 	 *                                   than the given {@code endIndex}.
 	 * @see java.util.Arrays#copyOfRange(Object[], int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static Object copyOfRange1(Object array, int beginIndex, int endIndex) {
 		if (array instanceof Object[])
@@ -2225,6 +2302,7 @@ public final class Arrays {
 	 * @return true, if the given {@code array} deeply equals the given {@code other} in deep lengths, deep elements, and deep
 	 * 		orderings.
 	 * @see java.util.Arrays#deepEquals(Object[], Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> boolean deepEquals(T[] array, T... other) {
 		if (array == other)
@@ -2285,10 +2363,11 @@ public final class Arrays {
 	 * 		orderings.
 	 * @throws IllegalArgumentException if the given {@code array} or {@code other} is not an array.
 	 * @see java.util.Arrays#deepEquals(Object[], Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean deepEquals0(Object array, Object other) {
-		Objects.require(array, array == null || array.getClass().isArray(), "array");
-		Objects.require(other, other == null || other.getClass().isArray(), "other");
+		Objects.require(array, Objects::isArray, "array");
+		Objects.require(other, Objects::isArray, "other");
 
 		int length = Array.getLength(array);
 
@@ -2332,6 +2411,7 @@ public final class Arrays {
 	 * 		orderings.
 	 * @throws IllegalArgumentException if the given {@code array} or {@code other} is not an array.
 	 * @see java.util.Arrays#deepEquals(Object[], Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean deepEquals1(Object array, Object other) {
 		if (array instanceof Object[] && other instanceof Object[])
@@ -2365,6 +2445,7 @@ public final class Arrays {
 	 * @param <T>   the type of the elements.
 	 * @return the hash code of the elements deeply stored in the given {@code array}.
 	 * @see java.util.Arrays#deepHashCode(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> int deepHashCode(T... array) {
 		if (array == null)
@@ -2408,9 +2489,10 @@ public final class Arrays {
 	 * @return the hash code of the elements deeply stored in the given {@code array}.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @see java.util.Arrays#deepHashCode(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int deepHashCode0(Object array) {
-		Objects.require(array, array == null || array.getClass().isArray(), "array");
+		Objects.require(array, Objects::isArray, "array");
 
 		if (array == null)
 			return 0;
@@ -2441,6 +2523,7 @@ public final class Arrays {
 	 * @return the hash code of the elements deeply stored in the given {@code array}.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @see java.util.Arrays#deepHashCode(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int deepHashCode1(Object array) {
 		if (array instanceof Object[])
@@ -2474,6 +2557,7 @@ public final class Arrays {
 	 * @param <T>   the type of the elements.
 	 * @return a string representation of the deep contents of the given {@code array}.
 	 * @see java.util.Arrays#deepToString(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> String deepToString(T... array) {
 		if (array == null)
@@ -2496,6 +2580,7 @@ public final class Arrays {
 	 * @param dejaVu  the arrays that has been seen before.
 	 * @throws NullPointerException if the given {@code builder} or {@code dejaVu} is null.
 	 * @see java.util.Arrays#deepToString(Object[], StringBuilder, Set)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void deepToString(Object[] array, StringBuilder builder, Collection<Object[]> dejaVu) {
 		Objects.requireNonNull(builder, "builder");
@@ -2557,9 +2642,10 @@ public final class Arrays {
 	 * @return a string representation of the deep contents of the given {@code array}.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @see java.util.Arrays#deepToString(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String deepToString0(Object array) {
-		Objects.require(array, array == null || array.getClass().isArray(), "array");
+		Objects.require(array, Objects::isArray, "array");
 
 		if (array == null)
 			return "null";
@@ -2583,11 +2669,12 @@ public final class Arrays {
 	 * @throws NullPointerException     if the given {@code builder} or {@code dejaVu} is null.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @see java.util.Arrays#deepToString(Object[], StringBuilder, Set)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void deepToString0(Object array, StringBuilder builder, Collection dejaVu) {
 		Objects.requireNonNull(builder, "builder");
 		Objects.requireNonNull(dejaVu, "dejaVu");
-		Objects.require(array, array == null || array.getClass().isArray(), "array");
+		Objects.require(array, Objects::isArray, "array");
 
 		if (array == null)
 			builder.append("null");
@@ -2636,6 +2723,7 @@ public final class Arrays {
 	 * @return a string representation of the deep contents of the given {@code array}.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @see java.util.Arrays#deepToString(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String deepToString1(Object array) {
 		if (array instanceof Object[])
@@ -2670,6 +2758,7 @@ public final class Arrays {
 	 * @param <T>   the type of the elements.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
 	 * @see java.util.Arrays#equals(Object[], Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> boolean equals(T[] array, T... other) {
 		if (array == other)
@@ -2695,6 +2784,7 @@ public final class Arrays {
 	 * @param other the second array to be matched.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
 	 * @see java.util.Arrays#equals(boolean[], boolean[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(boolean[] array, boolean... other) {
 		if (array == other)
@@ -2720,6 +2810,7 @@ public final class Arrays {
 	 * @param other the second array to be matched.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
 	 * @see java.util.Arrays#equals(byte[], byte[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(byte[] array, byte... other) {
 		if (array == other)
@@ -2745,6 +2836,7 @@ public final class Arrays {
 	 * @param other the second array to be matched.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
 	 * @see java.util.Arrays#equals(char[], char[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(char[] array, char... other) {
 		if (array == other)
@@ -2770,6 +2862,7 @@ public final class Arrays {
 	 * @param other the second array to be matched.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
 	 * @see java.util.Arrays#equals(double[], double[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(double[] array, double... other) {
 		if (array == other)
@@ -2795,6 +2888,7 @@ public final class Arrays {
 	 * @param other the second array to be matched.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
 	 * @see java.util.Arrays#equals(float[], float[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(float[] array, float... other) {
 		if (array == other)
@@ -2820,6 +2914,7 @@ public final class Arrays {
 	 * @param other the second array to be matched.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
 	 * @see java.util.Arrays#equals(int[], int[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(int[] array, int... other) {
 		if (array == other)
@@ -2845,6 +2940,7 @@ public final class Arrays {
 	 * @param other the second array to be matched.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
 	 * @see java.util.Arrays#equals(long[], long[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(long[] array, long... other) {
 		if (array == other)
@@ -2870,6 +2966,7 @@ public final class Arrays {
 	 * @param other the second array to be matched.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
 	 * @see java.util.Arrays#equals(short[], short[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(short[] array, short... other) {
 		if (array == other)
@@ -2896,10 +2993,11 @@ public final class Arrays {
 	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
 	 * @throws IllegalArgumentException if the given {@code array} or {@code other} is not an array.
 	 * @see java.util.Arrays#equals(Object[], Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals0(Object array, Object other) {
-		Objects.require(array, array == null || array.getClass().isArray(), "array");
-		Objects.require(other, other == null || other.getClass().isArray(), "other");
+		Objects.require(array, Objects::isArray, "array");
+		Objects.require(other, Objects::isArray, "other");
 
 		int length = Array.getLength(array);
 
@@ -2931,6 +3029,7 @@ public final class Arrays {
 	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
 	 * @throws IllegalArgumentException if the given {@code array} or {@code other} is not an array.
 	 * @see java.util.Arrays#equals(Object[], Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals1(Object array, Object other) {
 		if (array instanceof Object[] && other instanceof Object[])
@@ -2966,6 +3065,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @throws ArrayStoreException  if the given {@code element} can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#fill(Object[], Object)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> void fill(T[] array, T element) {
 		Objects.requireNonNull(array, "array");
@@ -2980,6 +3080,7 @@ public final class Arrays {
 	 * @param element the element to fill the given {@code array} with.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#fill(boolean[], boolean)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(boolean[] array, boolean element) {
 		Objects.requireNonNull(array, "array");
@@ -2994,6 +3095,7 @@ public final class Arrays {
 	 * @param element the element to fill the given {@code array} with.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#fill(byte[], byte)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(byte[] array, byte element) {
 		Objects.requireNonNull(array, "array");
@@ -3008,6 +3110,7 @@ public final class Arrays {
 	 * @param element the element to fill the given {@code array} with.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#fill(char[], char)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(char[] array, char element) {
 		Objects.requireNonNull(array, "array");
@@ -3022,6 +3125,7 @@ public final class Arrays {
 	 * @param element the element to fill the given {@code array} with.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#fill(double[], double)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(double[] array, double element) {
 		Objects.requireNonNull(array, "array");
@@ -3036,6 +3140,7 @@ public final class Arrays {
 	 * @param element the element to fill the given {@code array} with.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#fill(float[], float)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(float[] array, float element) {
 		Objects.requireNonNull(array, "array");
@@ -3050,6 +3155,7 @@ public final class Arrays {
 	 * @param element the element to fill the given {@code array} with.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#fill(int[], int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(int[] array, int element) {
 		Objects.requireNonNull(array, "array");
@@ -3064,6 +3170,7 @@ public final class Arrays {
 	 * @param element the element to fill the given {@code array} with.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#fill(long[], long)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(long[] array, long element) {
 		Objects.requireNonNull(array, "array");
@@ -3078,6 +3185,7 @@ public final class Arrays {
 	 * @param element the element to fill the given {@code array} with.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#fill(short[], short)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(short[] array, short element) {
 		Objects.requireNonNull(array, "array");
@@ -3099,12 +3207,13 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
 	 *                                        array.length}.
 	 * @see java.util.Arrays#fill(Object[], int, int, Object)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> void fill(T[] array, int beginIndex, int endIndex, T element) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, endIndex < array.length, ArrayIndexOutOfBoundsException.class, "endIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
 
 		for (int i = beginIndex; i < endIndex; i++)
 			array[i] = element;
@@ -3122,12 +3231,13 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
 	 *                                        array.length}.
 	 * @see java.util.Arrays#fill(boolean[], int, int, boolean)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(boolean[] array, int beginIndex, int endIndex, boolean element) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, endIndex < array.length, ArrayIndexOutOfBoundsException.class, "endIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
 
 		for (int i = beginIndex; i < endIndex; i++)
 			array[i] = element;
@@ -3145,12 +3255,13 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
 	 *                                        array.length}.
 	 * @see java.util.Arrays#fill(byte[], int, int, byte)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(byte[] array, int beginIndex, int endIndex, byte element) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, endIndex < array.length, ArrayIndexOutOfBoundsException.class, "endIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
 
 		for (int i = beginIndex; i < endIndex; i++)
 			array[i] = element;
@@ -3168,12 +3279,13 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
 	 *                                        array.length}.
 	 * @see java.util.Arrays#fill(char[], int, int, char)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(char[] array, int beginIndex, int endIndex, char element) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, endIndex < array.length, ArrayIndexOutOfBoundsException.class, "endIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
 
 		for (int i = beginIndex; i < endIndex; i++)
 			array[i] = element;
@@ -3191,12 +3303,13 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
 	 *                                        array.length}.
 	 * @see java.util.Arrays#fill(double[], int, int, double)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(double[] array, int beginIndex, int endIndex, double element) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, endIndex < array.length, ArrayIndexOutOfBoundsException.class, "endIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
 
 		for (int i = beginIndex; i < endIndex; i++)
 			array[i] = element;
@@ -3214,12 +3327,13 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
 	 *                                        array.length}.
 	 * @see java.util.Arrays#fill(float[], int, int, float)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(float[] array, int beginIndex, int endIndex, float element) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, endIndex < array.length, ArrayIndexOutOfBoundsException.class, "endIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
 
 		for (int i = beginIndex; i < endIndex; i++)
 			array[i] = element;
@@ -3237,12 +3351,13 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
 	 *                                        array.length}.
 	 * @see java.util.Arrays#fill(int[], int, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(int[] array, int beginIndex, int endIndex, int element) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, endIndex < array.length, ArrayIndexOutOfBoundsException.class, "endIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
 
 		for (int i = beginIndex; i < endIndex; i++)
 			array[i] = element;
@@ -3260,12 +3375,13 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
 	 *                                        array.length}.
 	 * @see java.util.Arrays#fill(long[], int, int, long)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(long[] array, int beginIndex, int endIndex, long element) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, endIndex < array.length, ArrayIndexOutOfBoundsException.class, "endIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
 
 		for (int i = beginIndex; i < endIndex; i++)
 			array[i] = element;
@@ -3283,12 +3399,13 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
 	 *                                        array.length}.
 	 * @see java.util.Arrays#fill(short[], int, int, short)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(short[] array, int beginIndex, int endIndex, short element) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, endIndex < array.length, ArrayIndexOutOfBoundsException.class, "endIndex");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
 
 		for (int i = beginIndex; i < endIndex; i++)
 			array[i] = element;
@@ -3303,10 +3420,11 @@ public final class Arrays {
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @throws ArrayStoreException      if the given {@code element} can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#fill(Object[], Object)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill0(Object array, Object element) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(array, array.getClass().isArray(), "array");
+		Objects.require(array, Objects::isArray, "array");
 		int length = Array.getLength(array);
 		for (int i = 0; i < length; i++)
 			try {
@@ -3330,13 +3448,14 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
 	 *                                        array.length}.
 	 * @see java.util.Arrays#fill(Object[], int, int, Object)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill0(Object array, int beginIndex, int endIndex, Object element) {
 		Objects.requireNonNull(array, "array");
-		Objects.require(array, array.getClass().isArray(), "array");
-		Objects.require(beginIndex, beginIndex >= 0, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, beginIndex <= endIndex, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, endIndex < Array.getLength(array), ArrayIndexOutOfBoundsException.class, "endIndex");
+		Objects.require(array, Objects::isArray, "array");
+		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(endIndex, Array.getLength(array), Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
 
 		for (int i = beginIndex; i < endIndex; i++)
 			try {
@@ -3356,6 +3475,7 @@ public final class Arrays {
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @throws ArrayStoreException      if the given {@code element} can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#fill(Object[], Object)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill1(Object array, Object element) {
 		if (array instanceof Object[])
@@ -3394,6 +3514,7 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
 	 *                                        array.length}.
 	 * @see java.util.Arrays#fill(Object[], int, int, Object)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill1(Object array, int beginIndex, int endIndex, Object element) {
 		if (array instanceof Object[])
@@ -3435,15 +3556,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(Object[] src, int srcPos, Object[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3486,15 +3608,16 @@ public final class Arrays {
 	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(boolean[] src, int srcPos, boolean[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3525,15 +3648,16 @@ public final class Arrays {
 	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(byte[] src, int srcPos, byte[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3564,15 +3688,16 @@ public final class Arrays {
 	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(char[] src, int srcPos, char[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3603,15 +3728,16 @@ public final class Arrays {
 	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(double[] src, int srcPos, double[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3642,15 +3768,16 @@ public final class Arrays {
 	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(float[] src, int srcPos, float[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3681,15 +3808,16 @@ public final class Arrays {
 	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(int[] src, int srcPos, int[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3720,15 +3848,16 @@ public final class Arrays {
 	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(long[] src, int srcPos, long[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3759,15 +3888,16 @@ public final class Arrays {
 	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(short[] src, int srcPos, short[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3799,15 +3929,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(Object[] src, int srcPos, boolean[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3834,15 +3965,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(Object[] src, int srcPos, byte[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3869,15 +4001,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(Object[] src, int srcPos, char[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3904,15 +4037,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(Object[] src, int srcPos, double[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3939,15 +4073,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(Object[] src, int srcPos, float[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -3974,15 +4109,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(Object[] src, int srcPos, int[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -4009,15 +4145,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(Object[] src, int srcPos, long[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -4044,15 +4181,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(Object[] src, int srcPos, short[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -4079,15 +4217,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(boolean[] src, int srcPos, Object[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -4110,15 +4249,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(byte[] src, int srcPos, Object[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -4141,15 +4281,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(char[] src, int srcPos, Object[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -4172,15 +4313,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(double[] src, int srcPos, Object[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -4203,15 +4345,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(float[] src, int srcPos, Object[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -4234,15 +4377,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(int[] src, int srcPos, Object[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -4265,15 +4409,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(long[] src, int srcPos, Object[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -4296,15 +4441,16 @@ public final class Arrays {
 	 *                                   length > src.length} or {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(short[] src, int srcPos, Object[] dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -4328,17 +4474,20 @@ public final class Arrays {
 	 * @throws ArrayStoreException       if the given {@code src} or {@code dest} is not an array. Or if an element can not be
 	 *                                   stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy0(Object src, int srcPos, Object dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
-		Objects.require(src, src.getClass().isArray(), ArrayStoreException.class, "src");
-		Objects.require(dest, dest.getClass().isArray(), ArrayStoreException.class, "dest");
-		Objects.require(srcPos, srcPos >= 0, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos >= 0, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, length >= 0, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos, srcPos + length <= Array.getLength(src), IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, destPos + length <= Array.getLength(dest), IndexOutOfBoundsException.class, "destPos");
+		Objects.require(src, Objects::isArray, ArrayStoreException.class, "src");
+		Objects.require(dest, Objects::isArray, ArrayStoreException.class, "dest");
+		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
+		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
+		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
+		Objects.require(
+				srcPos + length, Array.getLength(src), Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
+		Objects.require(destPos +
+						length, Array.getLength(dest), Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
 
 		int si = srcPos;
 		int di = destPos;
@@ -4383,6 +4532,7 @@ public final class Arrays {
 	 * @throws ArrayStoreException       if the given {@code src} or {@code dest} is not an array. Or if an element can not be
 	 *                                   stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy1(Object[] src, int srcPos, Object dest, int destPos, int length) {
 		if (dest instanceof Object[])
@@ -4423,6 +4573,7 @@ public final class Arrays {
 	 * @throws ArrayStoreException       if the given {@code src} or {@code dest} is not an array. Or if an element can not be
 	 *                                   stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy1(Object src, int srcPos, Object[] dest, int destPos, int length) {
 		if (src instanceof Object[])
@@ -4463,6 +4614,7 @@ public final class Arrays {
 	 * @throws ArrayStoreException       if the given {@code src} or {@code dest} is not an array. Or if an element can not be
 	 *                                   stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy1(Object src, int srcPos, Object dest, int destPos, int length) {
 		//todo both primitives
@@ -4483,6 +4635,7 @@ public final class Arrays {
 	 * @param <T>   the type of the elements.
 	 * @return the hash code of the elements of the given {@code array}.
 	 * @see java.util.Arrays#hashCode(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> int hashCode(T... array) {
 		if (array == null)
@@ -4504,6 +4657,7 @@ public final class Arrays {
 	 * @param array the array to compute its hash code.
 	 * @return the hash code of the elements of the given {@code array}.
 	 * @see java.util.Arrays#hashCode(boolean[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(boolean[] array) {
 		if (array == null)
@@ -4525,6 +4679,7 @@ public final class Arrays {
 	 * @param array the array to compute its hash code.
 	 * @return the hash code of the elements of the given {@code array}.
 	 * @see java.util.Arrays#hashCode(byte[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(byte[] array) {
 		if (array == null)
@@ -4546,6 +4701,7 @@ public final class Arrays {
 	 * @param array the array to compute its hash code.
 	 * @return the hash code of the elements of the given {@code array}.
 	 * @see java.util.Arrays#hashCode(char[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(char[] array) {
 		if (array == null)
@@ -4567,6 +4723,7 @@ public final class Arrays {
 	 * @param array the array to compute its hash code.
 	 * @return the hash code of the elements of the given {@code array}.
 	 * @see java.util.Arrays#hashCode(double[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(double[] array) {
 		if (array == null)
@@ -4588,6 +4745,7 @@ public final class Arrays {
 	 * @param array the array to compute its hash code.
 	 * @return the hash code of the elements of the given {@code array}.
 	 * @see java.util.Arrays#hashCode(float[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(float[] array) {
 		if (array == null)
@@ -4609,6 +4767,7 @@ public final class Arrays {
 	 * @param array the array to compute its hash code.
 	 * @return the hash code of the elements of the given {@code array}.
 	 * @see java.util.Arrays#hashCode(int[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(int[] array) {
 		if (array == null)
@@ -4630,6 +4789,7 @@ public final class Arrays {
 	 * @param array the array to compute its hash code.
 	 * @return the hash code of the elements of the given {@code array}.
 	 * @see java.util.Arrays#hashCode(long[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(long[] array) {
 		if (array == null)
@@ -4651,6 +4811,7 @@ public final class Arrays {
 	 * @param array the array to compute its hash code.
 	 * @return the hash code of the elements of the given {@code array}.
 	 * @see java.util.Arrays#hashCode(short[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(short[] array) {
 		if (array == null)
@@ -4673,9 +4834,10 @@ public final class Arrays {
 	 * @return the hash code of the elements of the given {@code array}.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @see java.util.Arrays#hashCode(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode0(Object array) {
-		Objects.require(array, array == null || array.getClass().isArray(), "array");
+		Objects.require(array, Objects::isArray, "array");
 
 		if (array == null)
 			return 0;
@@ -4698,6 +4860,7 @@ public final class Arrays {
 	 * @return the hash code of the elements of the given {@code array}.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @see java.util.Arrays#hashCode(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode1(Object array) {
 		if (array instanceof Object[])
@@ -4731,6 +4894,7 @@ public final class Arrays {
 	 * @param <T>   the type of the elements.
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> ArrayIterator<T> iterator(T... array) {
 		return new ArrayIterator(array);
@@ -4742,6 +4906,7 @@ public final class Arrays {
 	 * @param array the array that the returned iterator is iterating.
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static BooleanArrayIterator iterator(boolean[] array) {
 		return new BooleanArrayIterator(array);
@@ -4753,6 +4918,7 @@ public final class Arrays {
 	 * @param array the array that the returned iterator is iterating.
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static ByteArrayIterator iterator(byte[] array) {
 		return new ByteArrayIterator(array);
@@ -4764,6 +4930,7 @@ public final class Arrays {
 	 * @param array the array that the returned iterator is iterating.
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static CharacterArrayIterator iterator(char[] array) {
 		return new CharacterArrayIterator(array);
@@ -4775,6 +4942,7 @@ public final class Arrays {
 	 * @param array the array that the returned iterator is iterating.
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static DoubleArrayIterator iterator(double[] array) {
 		return new DoubleArrayIterator(array);
@@ -4786,6 +4954,7 @@ public final class Arrays {
 	 * @param array the array that the returned iterator is iterating.
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static FloatArrayIterator iterator(float[] array) {
 		return new FloatArrayIterator(array);
@@ -4797,6 +4966,7 @@ public final class Arrays {
 	 * @param array the array that the returned iterator is iterating.
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static IntegerArrayIterator iterator(int[] array) {
 		return new IntegerArrayIterator(array);
@@ -4808,6 +4978,7 @@ public final class Arrays {
 	 * @param array the array that the returned iterator is iterating.
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static LongArrayIterator iterator(long[] array) {
 		return new LongArrayIterator(array);
@@ -4819,6 +4990,7 @@ public final class Arrays {
 	 * @param array the array that the returned iterator is iterating.
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static ShortArrayIterator iterator(short[] array) {
 		return new ShortArrayIterator(array);
@@ -4833,6 +5005,7 @@ public final class Arrays {
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
 	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> ArrayIterator<T> iterator(int index, T... array) {
 		return new ArrayIterator(index, array);
@@ -4846,6 +5019,7 @@ public final class Arrays {
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
 	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static BooleanArrayIterator iterator(int index, boolean[] array) {
 		return new BooleanArrayIterator(index, array);
@@ -4859,6 +5033,7 @@ public final class Arrays {
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
 	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static ByteArrayIterator iterator(int index, byte[] array) {
 		return new ByteArrayIterator(index, array);
@@ -4872,6 +5047,7 @@ public final class Arrays {
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
 	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static CharacterArrayIterator iterator(int index, char[] array) {
 		return new CharacterArrayIterator(index, array);
@@ -4885,6 +5061,7 @@ public final class Arrays {
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
 	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static DoubleArrayIterator iterator(int index, double[] array) {
 		return new DoubleArrayIterator(index, array);
@@ -4898,6 +5075,7 @@ public final class Arrays {
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
 	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static FloatArrayIterator iterator(int index, float[] array) {
 		return new FloatArrayIterator(index, array);
@@ -4911,6 +5089,7 @@ public final class Arrays {
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
 	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static IntegerArrayIterator iterator(int index, int[] array) {
 		return new IntegerArrayIterator(index, array);
@@ -4924,6 +5103,7 @@ public final class Arrays {
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
 	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static LongArrayIterator iterator(int index, long[] array) {
 		return new LongArrayIterator(index, array);
@@ -4937,6 +5117,7 @@ public final class Arrays {
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
 	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static ShortArrayIterator iterator(int index, short[] array) {
 		return new ShortArrayIterator(index, array);
@@ -4949,6 +5130,7 @@ public final class Arrays {
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws NullPointerException     if the given {@code array} is null.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static ArrayIterator0 iterator0(Object array) {
 		return new ArrayIterator0(array);
@@ -4963,6 +5145,7 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
 	 * @throws NullPointerException           if the given {@code array} is null.
 	 * @throws IllegalArgumentException       if the given {@code array} is not an array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static ArrayIterator0 iterator0(int index, Object array) {
 		return new ArrayIterator0(index, array);
@@ -4976,6 +5159,7 @@ public final class Arrays {
 	 * @return a new iterator iterating the elements of the given {@code array}.
 	 * @throws NullPointerException     if the given {@code array} is null.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static ListIterator iterator1(Object array) {
 		if (array instanceof Object[])
@@ -5010,6 +5194,7 @@ public final class Arrays {
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
 	 * @throws NullPointerException           if the given {@code array} is null.
 	 * @throws IllegalArgumentException       if the given {@code array} is not an array.
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static ListIterator iterator1(int index, Object array) {
 		if (array instanceof Object[])
@@ -5112,6 +5297,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> void parallelSetAll(T[] array, IntFunction<? extends T> function) {
 		Objects.requireNonNull(array, "array");
@@ -5128,6 +5314,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(boolean[] array, IntFunction<Boolean> function) {
 		Objects.requireNonNull(array, "array");
@@ -5152,6 +5339,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(byte[] array, IntFunction<Byte> function) {
 		Objects.requireNonNull(array, "array");
@@ -5176,6 +5364,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(char[] array, IntFunction<Character> function) {
 		Objects.requireNonNull(array, "array");
@@ -5199,6 +5388,7 @@ public final class Arrays {
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @see java.util.Arrays#parallelSetAll(double[], IntToDoubleFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(double[] array, IntToDoubleFunction function) {
 		Objects.requireNonNull(array, "array");
@@ -5215,6 +5405,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(float[] array, IntFunction<Float> function) {
 		Objects.requireNonNull(array, "array");
@@ -5238,6 +5429,7 @@ public final class Arrays {
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @see java.util.Arrays#parallelSetAll(int[], IntUnaryOperator)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(int[] array, IntUnaryOperator function) {
 		Objects.requireNonNull(array, "array");
@@ -5253,6 +5445,7 @@ public final class Arrays {
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @see java.util.Arrays#parallelSetAll(long[], IntToLongFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(long[] array, IntToLongFunction function) {
 		Objects.requireNonNull(array, "array");
@@ -5269,6 +5462,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(short[] array, IntFunction<Short> function) {
 		Objects.requireNonNull(array, "array");
@@ -5294,11 +5488,12 @@ public final class Arrays {
 	 * @throws IllegalArgumentException if the given {@code array} is null.
 	 * @throws ArrayStoreException      if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll0(Object array, IntFunction function) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(function, "function");
-		Objects.require(array, array.getClass().isArray(), "array");
+		Objects.require(array, Objects::isArray, "array");
 		IntStream.range(0, Array.getLength(array)).parallel().forEach(i -> {
 			try {
 				Array.set(array, i, function.apply(i));
@@ -5318,6 +5513,7 @@ public final class Arrays {
 	 * @throws IllegalArgumentException if the given {@code array} is null.
 	 * @throws ArrayStoreException      if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll1(Object array, IntFunction function) {
 		if (array instanceof Object[])
@@ -5500,6 +5696,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#setAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> void setAll(T[] array, IntFunction<? extends T> function) {
 		Objects.requireNonNull(array, "array");
@@ -5517,6 +5714,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#setAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(boolean[] array, IntFunction<Boolean> function) {
 		Objects.requireNonNull(array, "array");
@@ -5541,6 +5739,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#setAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(byte[] array, IntFunction<Byte> function) {
 		Objects.requireNonNull(array, "array");
@@ -5565,6 +5764,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#setAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(char[] array, IntFunction<Character> function) {
 		Objects.requireNonNull(array, "array");
@@ -5588,6 +5788,7 @@ public final class Arrays {
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @see java.util.Arrays#setAll(double[], IntToDoubleFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(double[] array, IntToDoubleFunction function) {
 		Objects.requireNonNull(array, "array");
@@ -5605,6 +5806,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#setAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(float[] array, IntFunction<Float> function) {
 		Objects.requireNonNull(array, "array");
@@ -5628,6 +5830,7 @@ public final class Arrays {
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @see java.util.Arrays#setAll(int[], IntUnaryOperator)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(int[] array, IntUnaryOperator function) {
 		Objects.requireNonNull(array, "array");
@@ -5644,6 +5847,7 @@ public final class Arrays {
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @see java.util.Arrays#setAll(long[], IntToLongFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(long[] array, IntToLongFunction function) {
 		Objects.requireNonNull(array, "array");
@@ -5661,6 +5865,7 @@ public final class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#setAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(short[] array, IntFunction<Short> function) {
 		Objects.requireNonNull(array, "array");
@@ -5686,11 +5891,12 @@ public final class Arrays {
 	 * @throws IllegalArgumentException if the given {@code array} is null.
 	 * @throws ArrayStoreException      if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#setAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll0(Object array, IntFunction function) {
 		Objects.requireNonNull(array, "array");
 		Objects.requireNonNull(function, "function");
-		Objects.require(array, array.getClass().isArray(), "array");
+		Objects.require(array, Objects::isArray, "array");
 		int length = Array.getLength(array);
 		for (int i = 0; i < length; i++)
 			try {
@@ -5710,6 +5916,7 @@ public final class Arrays {
 	 * @throws IllegalArgumentException if the given {@code array} is null.
 	 * @throws ArrayStoreException      if an element can not be stored in the given {@code array}.
 	 * @see java.util.Arrays#setAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll1(Object array, IntFunction function) {
 		if (array instanceof Object[])
@@ -5807,8 +6014,6 @@ public final class Arrays {
 	public static void sort(short[] array) {
 		java.util.Arrays.sort(array);
 	}
-
-	//todo sort(ranged) +(boolean | 0 | 1)
 
 	/**
 	 * Redirect to {@link java.util.Arrays#sort(Object[], int, int)}.
@@ -6014,6 +6219,486 @@ public final class Arrays {
 		return java.util.Arrays.stream(array, beginIndex, endIndex);
 	}
 
+	//toCollection
+
+	/**
+	 * Add all the elements in the given {@code array} to the given {@code collection}.
+	 *
+	 * @param collection the collection to be filled.
+	 * @param array      the source array to fill the given {@code collection} with.
+	 * @param <T>        the type of the elements.
+	 * @param <C>        the type of the collection.
+	 * @return the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} or {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <T, C extends Collection<? super T>> C toCollection(C collection, T... array) {
+		Objects.requireNonNull(collection, "collection");
+		Objects.requireNonNull(array, "array");
+		for (int i = 0; i < array.length; i++)
+			collection.add(array[i]);
+
+		return collection;
+	}
+
+	/**
+	 * Add all the elements in the given {@code array} to the given {@code collection}.
+	 *
+	 * @param collection the collection to be filled.
+	 * @param array      the source array to fill the given {@code collection} with.
+	 * @param <C>        the type of the collection.
+	 * @return the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} or {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <C extends Collection<? super Boolean>> C toCollection(C collection, boolean[] array) {
+		Objects.requireNonNull(collection, "collection");
+		Objects.requireNonNull(array, "array");
+		for (int i = 0; i < array.length; i++)
+			collection.add(array[i]);
+
+		return collection;
+	}
+
+	/**
+	 * Add all the elements in the given {@code array} to the given {@code collection}.
+	 *
+	 * @param collection the collection to be filled.
+	 * @param array      the source array to fill the given {@code collection} with.
+	 * @param <C>        the type of the collection.
+	 * @return the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} or {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <C extends Collection<? super Byte>> C toCollection(C collection, byte[] array) {
+		Objects.requireNonNull(collection, "collection");
+		Objects.requireNonNull(array, "array");
+		for (int i = 0; i < array.length; i++)
+			collection.add(array[i]);
+
+		return collection;
+	}
+
+	/**
+	 * Add all the elements in the given {@code array} to the given {@code collection}.
+	 *
+	 * @param collection the collection to be filled.
+	 * @param array      the source array to fill the given {@code collection} with.
+	 * @param <C>        the type of the collection.
+	 * @return the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} or {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <C extends Collection<? super Character>> C toCollection(C collection, char[] array) {
+		Objects.requireNonNull(collection, "collection");
+		Objects.requireNonNull(array, "array");
+		for (int i = 0; i < array.length; i++)
+			collection.add(array[i]);
+
+		return collection;
+	}
+
+	/**
+	 * Add all the elements in the given {@code array} to the given {@code collection}.
+	 *
+	 * @param collection the collection to be filled.
+	 * @param array      the source array to fill the given {@code collection} with.
+	 * @param <C>        the type of the collection.
+	 * @return the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} or {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <C extends Collection<? super Double>> C toCollection(C collection, double[] array) {
+		Objects.requireNonNull(collection, "collection");
+		Objects.requireNonNull(array, "array");
+		for (int i = 0; i < array.length; i++)
+			collection.add(array[i]);
+
+		return collection;
+	}
+
+	/**
+	 * Add all the elements in the given {@code array} to the given {@code collection}.
+	 *
+	 * @param collection the collection to be filled.
+	 * @param array      the source array to fill the given {@code collection} with.
+	 * @param <C>        the type of the collection.
+	 * @return the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} or {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <C extends Collection<? super Float>> C toCollection(C collection, float[] array) {
+		Objects.requireNonNull(collection, "collection");
+		Objects.requireNonNull(array, "array");
+		for (int i = 0; i < array.length; i++)
+			collection.add(array[i]);
+
+		return collection;
+	}
+
+	/**
+	 * Add all the elements in the given {@code array} to the given {@code collection}.
+	 *
+	 * @param collection the collection to be filled.
+	 * @param array      the source array to fill the given {@code collection} with.
+	 * @param <C>        the type of the collection.
+	 * @return the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} or {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <C extends Collection<? super Integer>> C toCollection(C collection, int[] array) {
+		Objects.requireNonNull(collection, "collection");
+		Objects.requireNonNull(array, "array");
+		for (int i = 0; i < array.length; i++)
+			collection.add(array[i]);
+
+		return collection;
+	}
+
+	/**
+	 * Add all the elements in the given {@code array} to the given {@code collection}.
+	 *
+	 * @param collection the collection to be filled.
+	 * @param array      the source array to fill the given {@code collection} with.
+	 * @param <C>        the type of the collection.
+	 * @return the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} or {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <C extends Collection<? super Long>> C toCollection(C collection, long[] array) {
+		Objects.requireNonNull(collection, "collection");
+		Objects.requireNonNull(array, "array");
+		for (int i = 0; i < array.length; i++)
+			collection.add(array[i]);
+
+		return collection;
+	}
+
+	/**
+	 * Add all the elements in the given {@code array} to the given {@code collection}.
+	 *
+	 * @param collection the collection to be filled.
+	 * @param array      the source array to fill the given {@code collection} with.
+	 * @param <C>        the type of the collection.
+	 * @return the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} or {@code array} is null.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <C extends Collection<? super Short>> C toCollection(C collection, short[] array) {
+		Objects.requireNonNull(collection, "collection");
+		Objects.requireNonNull(array, "array");
+		for (int i = 0; i < array.length; i++)
+			collection.add(array[i]);
+
+		return collection;
+	}
+
+	/**
+	 * Add all the elements in the given {@code array} to the given {@code collection}.
+	 *
+	 * @param collection the collection to be filled.
+	 * @param array      the source array to fill the given {@code collection} with.
+	 * @return the given {@code collection}.
+	 * @throws NullPointerException     if the given {@code collection} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array} is not an array.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static Collection toCollection0(Collection collection, Object array) {
+		Objects.requireNonNull(collection, "collection");
+		Objects.requireNonNull(array, "array");
+		Objects.require(array, Objects::isArray, "array");
+
+		int length = Array.getLength(array);
+		for (int i = 0; i < length; i++)
+			collection.add(Array.get(array, i));
+
+		return collection;
+	}
+
+	/**
+	 * Add all the elements in the given {@code array} to the given {@code collection}.
+	 *
+	 * @param collection the collection to be filled.
+	 * @param array      the source array to fill the given {@code collection} with.
+	 * @return the given {@code collection}.
+	 * @throws NullPointerException     if the given {@code collection} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array} is not an array.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static Collection toCollection1(Collection collection, Object array) {
+		if (array instanceof Object[])
+			return Arrays.toCollection(collection, (Object[]) array);
+		if (array instanceof boolean[])
+			return Arrays.toCollection(collection, (boolean[]) array);
+		if (array instanceof byte[])
+			return Arrays.toCollection(collection, (byte[]) array);
+		if (array instanceof char[])
+			return Arrays.toCollection(collection, (char[]) array);
+		if (array instanceof double[])
+			return Arrays.toCollection(collection, (double[]) array);
+		if (array instanceof float[])
+			return Arrays.toCollection(collection, (float[]) array);
+		if (array instanceof int[])
+			return Arrays.toCollection(collection, (int[]) array);
+		if (array instanceof long[])
+			return Arrays.toCollection(collection, (long[]) array);
+		if (array instanceof short[])
+			return Arrays.toCollection(collection, (short[]) array);
+
+		return Arrays.toCollection0(collection, array);
+	}
+
+	//toMap
+
+	/**
+	 * Fill the given {@code map} with the given {@code array} as key-value sequential pairs.
+	 *
+	 * @param map   the map to be filled.
+	 * @param array the source array containing sequence of key and value pairs.
+	 * @param <T>   the type of the elements.
+	 * @param <M>   the type of the map.
+	 * @return the given {@code map}.
+	 * @throws NullPointerException     if the given {@code map} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array}'s length is odd.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <T, M extends Map<? super T, ? super T>> M toMap(M map, T... array) {
+		Objects.requireNonNull(map, "map");
+		Objects.requireNonNull(array, "array");
+		Objects.require(array.length, Objects::isEven, "array");
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Fill the given {@code map} with the given {@code array} as key-value sequential pairs.
+	 *
+	 * @param map   the map to be filled.
+	 * @param array the source array containing sequence of key and value pairs.
+	 * @param <M>   the type of the map.
+	 * @return the given {@code map}.
+	 * @throws NullPointerException     if the given {@code map} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array}'s length is odd.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <M extends Map<? super Boolean, ? super Boolean>> M toMap(M map, boolean[] array) {
+		Objects.requireNonNull(map, "map");
+		Objects.requireNonNull(array, "array");
+		Objects.require(array.length, Objects::isEven, "array");
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Fill the given {@code map} with the given {@code array} as key-value sequential pairs.
+	 *
+	 * @param map   the map to be filled.
+	 * @param array the source array containing sequence of key and value pairs.
+	 * @param <M>   the type of the map.
+	 * @return the given {@code map}.
+	 * @throws NullPointerException     if the given {@code map} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array}'s length is odd.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <M extends Map<? super Byte, ? super Byte>> M toMap(M map, byte[] array) {
+		Objects.requireNonNull(map, "map");
+		Objects.requireNonNull(array, "array");
+		Objects.require(array.length, Objects::isEven, "array");
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Fill the given {@code map} with the given {@code array} as key-value sequential pairs.
+	 *
+	 * @param map   the map to be filled.
+	 * @param array the source array containing sequence of key and value pairs.
+	 * @param <M>   the type of the map.
+	 * @return the given {@code map}.
+	 * @throws NullPointerException     if the given {@code map} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array}'s length is odd.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <M extends Map<? super Character, ? super Character>> M toMap(M map, char[] array) {
+		Objects.requireNonNull(map, "map");
+		Objects.requireNonNull(array, "array");
+		Objects.require(array.length, Objects::isEven, "array");
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Fill the given {@code map} with the given {@code array} as key-value sequential pairs.
+	 *
+	 * @param map   the map to be filled.
+	 * @param array the source array containing sequence of key and value pairs.
+	 * @param <M>   the type of the map.
+	 * @return the given {@code map}.
+	 * @throws NullPointerException     if the given {@code map} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array}'s length is odd.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <M extends Map<? super Double, ? super Double>> M toMap(M map, double[] array) {
+		Objects.requireNonNull(map, "map");
+		Objects.requireNonNull(array, "array");
+		Objects.require(array.length, Objects::isEven, "array");
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Fill the given {@code map} with the given {@code array} as key-value sequential pairs.
+	 *
+	 * @param map   the map to be filled.
+	 * @param array the source array containing sequence of key and value pairs.
+	 * @param <M>   the type of the map.
+	 * @return the given {@code map}.
+	 * @throws NullPointerException     if the given {@code map} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array}'s length is odd.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <M extends Map<? super Float, ? super Float>> M toMap(M map, float[] array) {
+		Objects.requireNonNull(map, "map");
+		Objects.requireNonNull(array, "array");
+		Objects.require(array.length, Objects::isEven, "array");
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Fill the given {@code map} with the given {@code array} as key-value sequential pairs.
+	 *
+	 * @param map   the map to be filled.
+	 * @param array the source array containing sequence of key and value pairs.
+	 * @param <M>   the type of the map.
+	 * @return the given {@code map}.
+	 * @throws NullPointerException     if the given {@code map} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array}'s length is odd.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <M extends Map<? super Integer, ? super Integer>> M toMap(M map, int[] array) {
+		Objects.requireNonNull(map, "map");
+		Objects.requireNonNull(array, "array");
+		Objects.require(array.length, Objects::isEven, "array");
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Fill the given {@code map} with the given {@code array} as key-value sequential pairs.
+	 *
+	 * @param map   the map to be filled.
+	 * @param array the source array containing sequence of key and value pairs.
+	 * @param <M>   the type of the map.
+	 * @return the given {@code map}.
+	 * @throws NullPointerException     if the given {@code map} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array}'s length is odd.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <M extends Map<? super Long, ? super Long>> M toMap(M map, long[] array) {
+		Objects.requireNonNull(map, "map");
+		Objects.requireNonNull(array, "array");
+		Objects.require(array.length, Objects::isEven, "array");
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Fill the given {@code map} with the given {@code array} as key-value sequential pairs.
+	 *
+	 * @param map   the map to be filled.
+	 * @param array the source array containing sequence of key and value pairs.
+	 * @param <M>   the type of the map.
+	 * @return the given {@code map}.
+	 * @throws NullPointerException     if the given {@code map} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array}'s length is odd.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static <M extends Map<? super Short, ? super Short>> M toMap(M map, short[] array) {
+		Objects.requireNonNull(map, "map");
+		Objects.requireNonNull(array, "array");
+		Objects.require(array.length, Objects::isEven, "array");
+		for (int i = 0; i < array.length; i += 2)
+			map.put(array[i], array[i + 1]);
+
+		return map;
+	}
+
+	/**
+	 * Using Reflection, fill the given {@code map} with the given {@code array} as key-value sequential pairs.
+	 *
+	 * @param map   the map to be filled.
+	 * @param array the source array containing sequence of key and value pairs.
+	 * @return the given {@code map}.
+	 * @throws NullPointerException     if the given {@code map} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array}'s length is odd. Or if the given {@code array} is not an
+	 *                                  array.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static Map toMap0(Map map, Object array) {
+		Objects.requireNonNull(map, "map");
+		Objects.requireNonNull(array, "array");
+		Objects.require(Array.getLength(array), Objects::isEven, "array");
+		Objects.require(array, Objects::isArray, "array");
+
+		int length = Array.getLength(array);
+		for (int i = 0; i < length; i += 2)
+			map.put(Array.get(array, i), Array.get(array, i + 1));
+
+		return map;
+	}
+
+	/**
+	 * Using the best {@link #toMap(Map, Object[])} method, fill the given {@code map} with the given {@code array} as key-value
+	 * sequential pairs.
+	 *
+	 * @param map   the map to be filled.
+	 * @param array the source array containing sequence of key and value pairs.
+	 * @return the given {@code map}.
+	 * @throws NullPointerException     if the given {@code map} or {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array}'s length is odd. Or if the given {@code array} is not an
+	 *                                  array.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static Map toMap1(Map map, Object array) {
+		if (array instanceof Object[])
+			return Arrays.toMap(map, (Object[]) array);
+		if (array instanceof boolean[])
+			return Arrays.toMap(map, (boolean[]) array);
+		if (array instanceof byte[])
+			return Arrays.toMap(map, (byte[]) array);
+		if (array instanceof char[])
+			return Arrays.toMap(map, (char[]) array);
+		if (array instanceof double[])
+			return Arrays.toMap(map, (double[]) array);
+		if (array instanceof float[])
+			return Arrays.toMap(map, (float[]) array);
+		if (array instanceof int[])
+			return Arrays.toMap(map, (int[]) array);
+		if (array instanceof long[])
+			return Arrays.toMap(map, (long[]) array);
+		if (array instanceof short[])
+			return Arrays.toMap(map, (short[]) array);
+
+		return Arrays.toMap0(map, array);
+	}
+
 	//toString
 
 	/**
@@ -6023,6 +6708,7 @@ public final class Arrays {
 	 * @param <T>   the type of the elements.
 	 * @return a string representation of the contents of the given {@code array}.
 	 * @see java.util.Arrays#toString(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> String toString(T... array) {
 		if (array == null)
@@ -6054,6 +6740,7 @@ public final class Arrays {
 	 * @param array the array to build a string representation for it.
 	 * @return a string representation of the contents of the given {@code array}.
 	 * @see java.util.Arrays#toString(boolean[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(boolean[] array) {
 		if (array == null)
@@ -6085,6 +6772,7 @@ public final class Arrays {
 	 * @param array the array to build a string representation for it.
 	 * @return a string representation of the contents of the given {@code array}.
 	 * @see java.util.Arrays#toString(byte[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(byte[] array) {
 		if (array == null)
@@ -6116,6 +6804,7 @@ public final class Arrays {
 	 * @param array the array to build a string representation for it.
 	 * @return a string representation of the contents of the given {@code array}.
 	 * @see java.util.Arrays#toString(char[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(char[] array) {
 		if (array == null)
@@ -6147,6 +6836,7 @@ public final class Arrays {
 	 * @param array the array to build a string representation for it.
 	 * @return a string representation of the contents of the given {@code array}.
 	 * @see java.util.Arrays#toString(double[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(double[] array) {
 		if (array == null)
@@ -6178,6 +6868,7 @@ public final class Arrays {
 	 * @param array the array to build a string representation for it.
 	 * @return a string representation of the contents of the given {@code array}.
 	 * @see java.util.Arrays#toString(float[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(float[] array) {
 		if (array == null)
@@ -6209,6 +6900,7 @@ public final class Arrays {
 	 * @param array the array to build a string representation for it.
 	 * @return a string representation of the contents of the given {@code array}.
 	 * @see java.util.Arrays#toString(int[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(int[] array) {
 		if (array == null)
@@ -6240,6 +6932,7 @@ public final class Arrays {
 	 * @param array the array to build a string representation for it.
 	 * @return a string representation of the contents of the given {@code array}.
 	 * @see java.util.Arrays#toString(long[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(long[] array) {
 		if (array == null)
@@ -6271,6 +6964,7 @@ public final class Arrays {
 	 * @param array the array to build a string representation for it.
 	 * @return a string representation of the contents of the given {@code array}.
 	 * @see java.util.Arrays#toString(short[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(short[] array) {
 		if (array == null)
@@ -6303,9 +6997,10 @@ public final class Arrays {
 	 * @return a string representation of the contents of the given {@code array}.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @see java.util.Arrays#toString(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString0(Object array) {
-		Objects.require(array, array == null || array.getClass().isArray(), "array");
+		Objects.require(array, Objects::isArray, "array");
 
 		if (array == null)
 			return "null";
@@ -6339,6 +7034,7 @@ public final class Arrays {
 	 * @return a string representation of the contents of the given {@code array}.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @see java.util.Arrays#toString(Object[])
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString1(Object array) {
 		if (array instanceof Object[])
@@ -6369,6 +7065,9 @@ public final class Arrays {
 	 * An iterator backed by an array.
 	 *
 	 * @param <E> the type of the elements.
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class ArrayIterator<E> implements ListIterator<E> {
 		/**
@@ -6389,6 +7088,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ArrayIterator(E... array) {
 			Objects.requireNonNull(array, "array");
@@ -6402,11 +7102,12 @@ public final class Arrays {
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
 		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ArrayIterator(int index, E... array) {
 			Objects.requireNonNull(array, "array");
-			Objects.require(index, index >= 0, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, index < array.length, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
 			this.array = array;
 			this.cursor = index;
 		}
@@ -6468,6 +7169,10 @@ public final class Arrays {
 
 	/**
 	 * An iterator backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class ArrayIterator0 implements ListIterator {
 		/**
@@ -6493,10 +7198,11 @@ public final class Arrays {
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException     if the given {@code array} is null.
 		 * @throws IllegalArgumentException if the given {@code array} is not an array.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ArrayIterator0(Object array) {
 			Objects.requireNonNull(array, "array");
-			Objects.require(array, array.getClass().isArray(), "array");
+			Objects.require(array, Objects::isArray, "array");
 			this.array = array;
 			this.length = Array.getLength(array);
 		}
@@ -6509,12 +7215,13 @@ public final class Arrays {
 		 * @throws NullPointerException           if the given {@code array} is null.
 		 * @throws IllegalArgumentException       if the given {@code array} is not an array.
 		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ArrayIterator0(int index, Object array) {
 			Objects.requireNonNull(array, "array");
-			Objects.require(array, array.getClass().isArray(), "array");
-			Objects.require(index, index >= 0, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, index < Array.getLength(array), ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(array, Objects::isArray, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, Array.getLength(array), Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
 			this.array = array;
 			this.cursor = index;
 			this.length = Array.getLength(array);
@@ -6579,6 +7286,9 @@ public final class Arrays {
 	 * A list backed by an array.
 	 *
 	 * @param <E> the type of the elements.
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class ArrayList<E> extends AbstractList<E> {
 		/**
@@ -6591,6 +7301,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing the constructed list.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ArrayList(E... array) {
 			Objects.requireNonNull(array, "array");
@@ -6705,6 +7416,10 @@ public final class Arrays {
 
 	/**
 	 * A list backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class ArrayList0 extends AbstractList {
 		//todo override sort, spliterator, stream
@@ -6724,11 +7439,11 @@ public final class Arrays {
 		 * @param array the array backing this list.
 		 * @throws NullPointerException     if the given {@code array} is null.
 		 * @throws IllegalArgumentException if the given {@code array} isn't actually an array.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ArrayList0(Object array) {
 			Objects.requireNonNull(array, "array");
-			if (!array.getClass().isArray())
-				throw new IllegalArgumentException(array + " isn't an array");
+			Objects.require(array, Objects::isArray, "array");
 			this.array = array;
 			this.length = Array.getLength(array);
 		}
@@ -6829,6 +7544,10 @@ public final class Arrays {
 
 	/**
 	 * An iterator backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class BooleanArrayIterator implements ListIterator<Boolean> {
 		/**
@@ -6849,6 +7568,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private BooleanArrayIterator(boolean... array) {
 			Objects.requireNonNull(array, "array");
@@ -6862,11 +7582,12 @@ public final class Arrays {
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
 		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private BooleanArrayIterator(int index, boolean... array) {
 			Objects.requireNonNull(array, "array");
-			Objects.require(index, index >= 0, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, index < array.length, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
 			this.array = array;
 			this.cursor = index;
 		}
@@ -6928,6 +7649,10 @@ public final class Arrays {
 
 	/**
 	 * A list backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class BooleanArrayList extends AbstractList<Boolean> {
 		//todo override sort, spliterator, stream
@@ -6942,6 +7667,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing this list.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private BooleanArrayList(boolean... array) {
 			Objects.requireNonNull(array, "array");
@@ -7041,6 +7767,10 @@ public final class Arrays {
 
 	/**
 	 * An iterator backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class ByteArrayIterator implements ListIterator<Byte> {
 		/**
@@ -7061,6 +7791,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ByteArrayIterator(byte... array) {
 			Objects.requireNonNull(array, "array");
@@ -7074,11 +7805,12 @@ public final class Arrays {
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
 		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ByteArrayIterator(int index, byte... array) {
 			Objects.requireNonNull(array, "array");
-			Objects.require(index, index >= 0, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, index < array.length, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
 			this.array = array;
 			this.cursor = index;
 		}
@@ -7140,6 +7872,10 @@ public final class Arrays {
 
 	/**
 	 * A list backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class ByteArrayList extends AbstractList<Byte> {
 		//todo override sort, spliterator, stream
@@ -7154,6 +7890,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing this list.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ByteArrayList(byte... array) {
 			Objects.requireNonNull(array, "array");
@@ -7253,6 +7990,10 @@ public final class Arrays {
 
 	/**
 	 * An iterator backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class CharacterArrayIterator implements ListIterator<Character> {
 		/**
@@ -7273,6 +8014,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private CharacterArrayIterator(char... array) {
 			Objects.requireNonNull(array, "array");
@@ -7286,11 +8028,12 @@ public final class Arrays {
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
 		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private CharacterArrayIterator(int index, char... array) {
 			Objects.requireNonNull(array, "array");
-			Objects.require(index, index >= 0, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, index < array.length, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
 			this.array = array;
 			this.cursor = index;
 		}
@@ -7352,6 +8095,10 @@ public final class Arrays {
 
 	/**
 	 * A list backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class CharacterArrayList extends AbstractList<Character> {
 		//todo override sort, spliterator, stream
@@ -7366,6 +8113,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing this list.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private CharacterArrayList(char... array) {
 			Objects.requireNonNull(array, "array");
@@ -7465,6 +8213,10 @@ public final class Arrays {
 
 	/**
 	 * An iterator backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class DoubleArrayIterator implements ListIterator<Double> {
 		/**
@@ -7485,6 +8237,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private DoubleArrayIterator(double... array) {
 			Objects.requireNonNull(array, "array");
@@ -7498,11 +8251,12 @@ public final class Arrays {
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
 		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private DoubleArrayIterator(int index, double... array) {
 			Objects.requireNonNull(array, "array");
-			Objects.require(index, index >= 0, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, index < array.length, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
 			this.array = array;
 			this.cursor = index;
 		}
@@ -7564,6 +8318,10 @@ public final class Arrays {
 
 	/**
 	 * A list backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class DoubleArrayList extends AbstractList<Double> {
 		//todo override sort, stream
@@ -7578,6 +8336,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing this list.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private DoubleArrayList(double... array) {
 			Objects.requireNonNull(array, "array");
@@ -7682,6 +8441,10 @@ public final class Arrays {
 
 	/**
 	 * An iterator backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class FloatArrayIterator implements ListIterator<Float> {
 		/**
@@ -7702,6 +8465,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private FloatArrayIterator(float... array) {
 			Objects.requireNonNull(array, "array");
@@ -7715,11 +8479,12 @@ public final class Arrays {
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
 		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private FloatArrayIterator(int index, float... array) {
 			Objects.requireNonNull(array, "array");
-			Objects.require(index, index >= 0, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, index < array.length, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
 			this.array = array;
 			this.cursor = index;
 		}
@@ -7781,6 +8546,10 @@ public final class Arrays {
 
 	/**
 	 * A list backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class FloatArrayList extends AbstractList<Float> {
 		//todo override sort, spliterator, stream
@@ -7795,6 +8564,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing this list.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private FloatArrayList(float... array) {
 			Objects.requireNonNull(array, "array");
@@ -7894,6 +8664,10 @@ public final class Arrays {
 
 	/**
 	 * An iterator backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class IntegerArrayIterator implements ListIterator<Integer> {
 		/**
@@ -7914,6 +8688,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private IntegerArrayIterator(int... array) {
 			Objects.requireNonNull(array, "array");
@@ -7927,11 +8702,12 @@ public final class Arrays {
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
 		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private IntegerArrayIterator(int index, int... array) {
 			Objects.requireNonNull(array, "array");
-			Objects.require(index, index >= 0, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, index < array.length, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
 			this.array = array;
 			this.cursor = index;
 		}
@@ -7993,6 +8769,10 @@ public final class Arrays {
 
 	/**
 	 * A list backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class IntegerArrayList extends AbstractList<Integer> {
 		//todo override sort, stream
@@ -8007,6 +8787,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing this list.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private IntegerArrayList(int... array) {
 			Objects.requireNonNull(array, "array");
@@ -8111,6 +8892,10 @@ public final class Arrays {
 
 	/**
 	 * An iterator backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class LongArrayIterator implements ListIterator<Long> {
 		/**
@@ -8131,6 +8916,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private LongArrayIterator(long... array) {
 			Objects.requireNonNull(array, "array");
@@ -8144,11 +8930,12 @@ public final class Arrays {
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
 		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private LongArrayIterator(int index, long... array) {
 			Objects.requireNonNull(array, "array");
-			Objects.require(index, index >= 0, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, index < array.length, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
 			this.array = array;
 			this.cursor = index;
 		}
@@ -8210,6 +8997,10 @@ public final class Arrays {
 
 	/**
 	 * A list backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class LongArrayList extends AbstractList<Long> {
 		//todo override sort, stream
@@ -8224,6 +9015,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing this list.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private LongArrayList(long... array) {
 			Objects.requireNonNull(array, "array");
@@ -8328,6 +9120,10 @@ public final class Arrays {
 
 	/**
 	 * An iterator backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class ShortArrayIterator implements ListIterator<Short> {
 		/**
@@ -8348,6 +9144,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ShortArrayIterator(short... array) {
 			Objects.requireNonNull(array, "array");
@@ -8361,11 +9158,12 @@ public final class Arrays {
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
 		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ShortArrayIterator(int index, short... array) {
 			Objects.requireNonNull(array, "array");
-			Objects.require(index, index >= 0, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, index < array.length, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
 			this.array = array;
 			this.cursor = index;
 		}
@@ -8427,6 +9225,10 @@ public final class Arrays {
 
 	/**
 	 * A list backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static final class ShortArrayList extends AbstractList<Short> {
 		//todo override sort, spliterator, stream
@@ -8441,6 +9243,7 @@ public final class Arrays {
 		 *
 		 * @param array the array backing this list.
 		 * @throws NullPointerException if the given {@code array} is null.
+		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ShortArrayList(short... array) {
 			Objects.requireNonNull(array, "array");
