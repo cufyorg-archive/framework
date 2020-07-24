@@ -29,7 +29,7 @@ import java.util.function.Supplier;
  * @since 0.1.0 ~2020.02.13
  */
 @FunctionalInterface
-public interface ThrowingSupplier<T, E extends Throwable> extends Supplier<T> {
+public interface ThrowSupplier<T, E extends Throwable> extends Supplier<T> {
 	@Override
 	default T get() {
 		try {
