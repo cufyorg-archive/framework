@@ -15,6 +15,7 @@
  */
 package cufy.util;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.*;
@@ -1110,7 +1111,7 @@ public final class Arrays {
 	 * @throws ArrayStoreException      if an element can not be stored in the product array.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <T extends U, U> U[] concat(Class<U[]> klass, T[]... arrays) {
+	public static <T extends U, U> U[] concat(Class<U[]> klass, T[][] arrays) {
 		Objects.requireNonNull(klass, "klass");
 		Objects.requireNonNull(arrays, "arrays");
 		Objects.require(klass, Class::isArray, "klass");
@@ -1813,7 +1814,7 @@ public final class Arrays {
 
 		Object copy = Array.newInstance(klass.getComponentType(), length);
 
-		if (klass.getComponentType().isPrimitive() == array.getClass().isPrimitive())
+		if (klass.getComponentType().isPrimitive() == array.getClass().getComponentType().isPrimitive())
 			System.arraycopy(array, 0, copy, 0, Math.min(Array.getLength(array), length));
 		else
 			Arrays.hardcopy0(array, 0, copy, 0, Math.min(Array.getLength(array), length));
@@ -2242,7 +2243,7 @@ public final class Arrays {
 
 		Object product = Array.newInstance(klass.getComponentType(), length);
 
-		if (klass.getComponentType().isPrimitive() == array.getClass().isPrimitive())
+		if (klass.getComponentType().isPrimitive() == array.getClass().getComponentType().isPrimitive())
 			System.arraycopy(array, beginIndex, product, 0, Math.min(Array.getLength(array) - beginIndex, length));
 		else
 			Arrays.hardcopy0(array, beginIndex, product, 0, Math.min(Array.getLength(array) - beginIndex, length));
@@ -4997,133 +4998,6 @@ public final class Arrays {
 	}
 
 	/**
-	 * Construct a new iterator iterating the elements of the given {@code array}.
-	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @param index the index to start iterating at.
-	 * @param <T>   the type of the elements.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static <T> ArrayIterator<T> iterator(int index, T... array) {
-		return new ArrayIterator(index, array);
-	}
-
-	/**
-	 * Construct a new iterator iterating the elements of the given {@code array}.
-	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @param index the index to start iterating at.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static BooleanArrayIterator iterator(int index, boolean[] array) {
-		return new BooleanArrayIterator(index, array);
-	}
-
-	/**
-	 * Construct a new iterator iterating the elements of the given {@code array}.
-	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @param index the index to start iterating at.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static ByteArrayIterator iterator(int index, byte[] array) {
-		return new ByteArrayIterator(index, array);
-	}
-
-	/**
-	 * Construct a new iterator iterating the elements of the given {@code array}.
-	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @param index the index to start iterating at.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static CharacterArrayIterator iterator(int index, char[] array) {
-		return new CharacterArrayIterator(index, array);
-	}
-
-	/**
-	 * Construct a new iterator iterating the elements of the given {@code array}.
-	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @param index the index to start iterating at.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static DoubleArrayIterator iterator(int index, double[] array) {
-		return new DoubleArrayIterator(index, array);
-	}
-
-	/**
-	 * Construct a new iterator iterating the elements of the given {@code array}.
-	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @param index the index to start iterating at.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static FloatArrayIterator iterator(int index, float[] array) {
-		return new FloatArrayIterator(index, array);
-	}
-
-	/**
-	 * Construct a new iterator iterating the elements of the given {@code array}.
-	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @param index the index to start iterating at.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static IntegerArrayIterator iterator(int index, int[] array) {
-		return new IntegerArrayIterator(index, array);
-	}
-
-	/**
-	 * Construct a new iterator iterating the elements of the given {@code array}.
-	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @param index the index to start iterating at.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static LongArrayIterator iterator(int index, long[] array) {
-		return new LongArrayIterator(index, array);
-	}
-
-	/**
-	 * Construct a new iterator iterating the elements of the given {@code array}.
-	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @param index the index to start iterating at.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static ShortArrayIterator iterator(int index, short[] array) {
-		return new ShortArrayIterator(index, array);
-	}
-
-	/**
 	 * Using Reflection, construct a new iterator iterating the elements of the given {@code array}.
 	 *
 	 * @param array the array that the returned iterator is iterating.
@@ -5134,21 +5008,6 @@ public final class Arrays {
 	 */
 	public static ArrayIterator0 iterator0(Object array) {
 		return new ArrayIterator0(array);
-	}
-
-	/**
-	 * Using Reflection, construct a new iterator iterating the elements of the given {@code array}.
-	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @param index the index to start iterating at.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws IllegalArgumentException       if the given {@code array} is not an array.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static ArrayIterator0 iterator0(int index, Object array) {
-		return new ArrayIterator0(index, array);
 	}
 
 	/**
@@ -5182,41 +5041,6 @@ public final class Arrays {
 			return new ShortArrayIterator((short[]) array);
 
 		return Arrays.iterator0(array);
-	}
-
-	/**
-	 * Using the best {@link #iterator(int, Object[])} method, construct a new iterator iterating the elements of the given {@code
-	 * array}.
-	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @param index the index to start iterating at.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws IllegalArgumentException       if the given {@code array} is not an array.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static ListIterator iterator1(int index, Object array) {
-		if (array instanceof Object[])
-			return new ArrayIterator(index, (Object[]) array);
-		if (array instanceof boolean[])
-			return new BooleanArrayIterator(index, (boolean[]) array);
-		if (array instanceof byte[])
-			return new ByteArrayIterator(index, (byte[]) array);
-		if (array instanceof char[])
-			return new CharacterArrayIterator(index, (char[]) array);
-		if (array instanceof double[])
-			return new DoubleArrayIterator(index, (double[]) array);
-		if (array instanceof float[])
-			return new FloatArrayIterator(index, (float[]) array);
-		if (array instanceof int[])
-			return new IntegerArrayIterator(index, (int[]) array);
-		if (array instanceof long[])
-			return new LongArrayIterator(index, (long[]) array);
-		if (array instanceof short[])
-			return new ShortArrayIterator(index, (short[]) array);
-
-		return Arrays.iterator0(index, array);
 	}
 
 	//todo parallelPrefix +(boolean | byte | char | float | short | 0 | 1)
@@ -6713,25 +6537,23 @@ public final class Arrays {
 	public static <T> String toString(T... array) {
 		if (array == null)
 			return "null";
+		if (array.length == 0)
+			return "[]";
 
-		if (array.length != 0) {
-			StringBuilder builder = new StringBuilder("[");
+		StringBuilder builder = new StringBuilder("[");
 
-			int i = 0;
-			while (true) {
-				builder.append(array[i]);
+		int i = 0;
+		while (true) {
+			builder.append(array[i]);
 
-				if (++i < array.length) {
-					builder.append(", ");
-					continue;
-				}
-
-				return builder.append("]")
-						.toString();
+			if (++i < array.length) {
+				builder.append(", ");
+				continue;
 			}
-		}
 
-		return "[]";
+			return builder.append("]")
+					.toString();
+		}
 	}
 
 	/**
@@ -6745,25 +6567,23 @@ public final class Arrays {
 	public static String toString(boolean[] array) {
 		if (array == null)
 			return "null";
+		if (array.length == 0)
+			return "[]";
 
-		if (array.length != 0) {
-			StringBuilder builder = new StringBuilder("[");
+		StringBuilder builder = new StringBuilder("[");
 
-			int i = 0;
-			while (true) {
-				builder.append(array[i]);
+		int i = 0;
+		while (true) {
+			builder.append(array[i]);
 
-				if (++i < array.length) {
-					builder.append(", ");
-					continue;
-				}
-
-				return builder.append("]")
-						.toString();
+			if (++i < array.length) {
+				builder.append(", ");
+				continue;
 			}
-		}
 
-		return "[]";
+			return builder.append("]")
+					.toString();
+		}
 	}
 
 	/**
@@ -6777,25 +6597,23 @@ public final class Arrays {
 	public static String toString(byte[] array) {
 		if (array == null)
 			return "null";
+		if (array.length == 0)
+			return "[]";
 
-		if (array.length != 0) {
-			StringBuilder builder = new StringBuilder("[");
+		StringBuilder builder = new StringBuilder("[");
 
-			int i = 0;
-			while (true) {
-				builder.append(array[i]);
+		int i = 0;
+		while (true) {
+			builder.append(array[i]);
 
-				if (++i < array.length) {
-					builder.append(", ");
-					continue;
-				}
-
-				return builder.append("]")
-						.toString();
+			if (++i < array.length) {
+				builder.append(", ");
+				continue;
 			}
-		}
 
-		return "[]";
+			return builder.append("]")
+					.toString();
+		}
 	}
 
 	/**
@@ -6809,25 +6627,23 @@ public final class Arrays {
 	public static String toString(char[] array) {
 		if (array == null)
 			return "null";
+		if (array.length == 0)
+			return "[]";
 
-		if (array.length != 0) {
-			StringBuilder builder = new StringBuilder("[");
+		StringBuilder builder = new StringBuilder("[");
 
-			int i = 0;
-			while (true) {
-				builder.append(array[i]);
+		int i = 0;
+		while (true) {
+			builder.append(array[i]);
 
-				if (++i < array.length) {
-					builder.append(", ");
-					continue;
-				}
-
-				return builder.append("]")
-						.toString();
+			if (++i < array.length) {
+				builder.append(", ");
+				continue;
 			}
-		}
 
-		return "[]";
+			return builder.append("]")
+					.toString();
+		}
 	}
 
 	/**
@@ -6841,25 +6657,23 @@ public final class Arrays {
 	public static String toString(double[] array) {
 		if (array == null)
 			return "null";
+		if (array.length == 0)
+			return "[]";
 
-		if (array.length != 0) {
-			StringBuilder builder = new StringBuilder("[");
+		StringBuilder builder = new StringBuilder("[");
 
-			int i = 0;
-			while (true) {
-				builder.append(array[i]);
+		int i = 0;
+		while (true) {
+			builder.append(array[i]);
 
-				if (++i < array.length) {
-					builder.append(", ");
-					continue;
-				}
-
-				return builder.append("]")
-						.toString();
+			if (++i < array.length) {
+				builder.append(", ");
+				continue;
 			}
-		}
 
-		return "[]";
+			return builder.append("]")
+					.toString();
+		}
 	}
 
 	/**
@@ -6873,25 +6687,23 @@ public final class Arrays {
 	public static String toString(float[] array) {
 		if (array == null)
 			return "null";
+		if (array.length == 0)
+			return "[]";
 
-		if (array.length != 0) {
-			StringBuilder builder = new StringBuilder("[");
+		StringBuilder builder = new StringBuilder("[");
 
-			int i = 0;
-			while (true) {
-				builder.append(array[i]);
+		int i = 0;
+		while (true) {
+			builder.append(array[i]);
 
-				if (++i < array.length) {
-					builder.append(", ");
-					continue;
-				}
-
-				return builder.append("]")
-						.toString();
+			if (++i < array.length) {
+				builder.append(", ");
+				continue;
 			}
-		}
 
-		return "[]";
+			return builder.append("]")
+					.toString();
+		}
 	}
 
 	/**
@@ -6905,25 +6717,23 @@ public final class Arrays {
 	public static String toString(int[] array) {
 		if (array == null)
 			return "null";
+		if (array.length == 0)
+			return "[]";
 
-		if (array.length != 0) {
-			StringBuilder builder = new StringBuilder("[");
+		StringBuilder builder = new StringBuilder("[");
 
-			int i = 0;
-			while (true) {
-				builder.append(array[i]);
+		int i = 0;
+		while (true) {
+			builder.append(array[i]);
 
-				if (++i < array.length) {
-					builder.append(", ");
-					continue;
-				}
-
-				return builder.append("]")
-						.toString();
+			if (++i < array.length) {
+				builder.append(", ");
+				continue;
 			}
-		}
 
-		return "[]";
+			return builder.append("]")
+					.toString();
+		}
 	}
 
 	/**
@@ -6937,25 +6747,23 @@ public final class Arrays {
 	public static String toString(long[] array) {
 		if (array == null)
 			return "null";
+		if (array.length == 0)
+			return "[]";
 
-		if (array.length != 0) {
-			StringBuilder builder = new StringBuilder("[");
+		StringBuilder builder = new StringBuilder("[");
 
-			int i = 0;
-			while (true) {
-				builder.append(array[i]);
+		int i = 0;
+		while (true) {
+			builder.append(array[i]);
 
-				if (++i < array.length) {
-					builder.append(", ");
-					continue;
-				}
-
-				return builder.append("]")
-						.toString();
+			if (++i < array.length) {
+				builder.append(", ");
+				continue;
 			}
-		}
 
-		return "[]";
+			return builder.append("]")
+					.toString();
+		}
 	}
 
 	/**
@@ -6969,25 +6777,23 @@ public final class Arrays {
 	public static String toString(short[] array) {
 		if (array == null)
 			return "null";
+		if (array.length == 0)
+			return "[]";
 
-		if (array.length != 0) {
-			StringBuilder builder = new StringBuilder("[");
+		StringBuilder builder = new StringBuilder("[");
 
-			int i = 0;
-			while (true) {
-				builder.append(array[i]);
+		int i = 0;
+		while (true) {
+			builder.append(array[i]);
 
-				if (++i < array.length) {
-					builder.append(", ");
-					continue;
-				}
-
-				return builder.append("]")
-						.toString();
+			if (++i < array.length) {
+				builder.append(", ");
+				continue;
 			}
-		}
 
-		return "[]";
+			return builder.append("]")
+					.toString();
+		}
 	}
 
 	/**
@@ -7007,24 +6813,23 @@ public final class Arrays {
 
 		int length = Array.getLength(array);
 
-		if (length != 0) {
-			StringBuilder builder = new StringBuilder("[");
+		if (length == 0)
+			return "[]";
 
-			int i = 0;
-			while (true) {
-				builder.append(Array.get(array, i));
+		StringBuilder builder = new StringBuilder("[");
 
-				if (++i < length) {
-					builder.append(", ");
-					continue;
-				}
+		int i = 0;
+		while (true) {
+			builder.append(Array.get(array, i));
 
-				return builder.append("]")
-						.toString();
+			if (++i < length) {
+				builder.append(", ");
+				continue;
 			}
-		}
 
-		return "[]";
+			return builder.append("]")
+					.toString();
+		}
 	}
 
 	/**
@@ -7064,7 +6869,6 @@ public final class Arrays {
 	/**
 	 * An iterator backed by an array.
 	 *
-	 * @param <E> the type of the elements.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
@@ -7074,6 +6878,14 @@ public final class Arrays {
 		 * The backing array.
 		 */
 		private final E[] array;
+		/**
+		 * The index where the area backing the iterator in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this iterator.
+		 */
+		private final int length;
 		/**
 		 * The next index.
 		 */
@@ -7093,23 +6905,75 @@ public final class Arrays {
 		private ArrayIterator(E... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
 		}
 
 		/**
 		 * Construct a new iterator backed by the given {@code array}.
 		 *
-		 * @param index the index to start iterating at.
+		 * @param index the index where the area backing the constructed iterator in the given {@code array} is starting.
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ArrayIterator(int index, E... array) {
 			Objects.requireNonNull(array, "array");
 			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.index = index;
 			this.array = array;
-			this.cursor = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code cursor < 0} or {@code index > array.length} or
+		 *                                        {@code cursor > array.length - index}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ArrayIterator(int cursor, int index, E... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, array.length - index, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.array = array;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param length the length of the constructed iterator.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code index < 0} or {@code cursor < 0} or {@code index
+		 *                                        + length > array.length} or {@code cursor > length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ArrayIterator(int cursor, int index, int length, E... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			Objects.require(cursor, length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.length = length;
+			this.array = array;
 		}
 
 		@Override
@@ -7119,18 +6983,20 @@ public final class Arrays {
 
 		@Override
 		public boolean hasNext() {
-			return this.cursor < this.array.length;
+			return this.cursor < this.length;
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return this.cursor > -1;
+			return this.cursor > 0;
 		}
 
 		@Override
 		public E next() {
-			if (this.cursor < this.array.length)
-				return this.array[this.last = this.cursor++];
+			int i = this.cursor++;
+
+			if (i < this.length)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -7142,8 +7008,9 @@ public final class Arrays {
 
 		@Override
 		public E previous() {
-			if (this.cursor > -1)
-				return this.array[this.last = this.cursor--];
+			int i = --this.cursor;
+			if (i >= 0)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -7160,10 +7027,11 @@ public final class Arrays {
 
 		@Override
 		public void set(E element) {
-			if (this.last < 0 || this.last >= this.array.length)
+			int i = this.last;
+			if (i < 0 || i >= this.length)
 				throw new IllegalStateException();
 
-			this.array[this.last] = element;
+			this.array[this.index + i] = element;
 		}
 	}
 
@@ -7180,7 +7048,11 @@ public final class Arrays {
 		 */
 		private final Object array;
 		/**
-		 * The length of the backing array.
+		 * The index where the area backing the iterator in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this iterator.
 		 */
 		private final int length;
 		/**
@@ -7193,7 +7065,7 @@ public final class Arrays {
 		private int last = -1;
 
 		/**
-		 * Using Reflection, construct a new iterator backed by the given {@code array}.
+		 * Construct a new iterator backed by the given {@code array}.
 		 *
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException     if the given {@code array} is null.
@@ -7204,31 +7076,86 @@ public final class Arrays {
 			Objects.requireNonNull(array, "array");
 			Objects.require(array, Objects::isArray, "array");
 			this.array = array;
+			this.index = 0;
 			this.length = Array.getLength(array);
 		}
 
 		/**
-		 * Using Reflection, construct a new iterator backed by the given {@code array}.
+		 * Construct a new iterator backed by the given {@code array}.
 		 *
-		 * @param index the index to start iterating at.
+		 * @param index the index where the area backing the constructed iterator in the given {@code array} is starting.
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
 		 * @throws IllegalArgumentException       if the given {@code array} is not an array.
-		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ArrayIterator0(int index, Object array) {
 			Objects.requireNonNull(array, "array");
 			Objects.require(array, Objects::isArray, "array");
 			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, Array.getLength(array), Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, Array.getLength(array), Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.index = index;
 			this.array = array;
-			this.cursor = index;
 			this.length = Array.getLength(array);
 		}
 
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws IllegalArgumentException       if the given {@code array} is not an array.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code cursor < 0} or {@code index > array.length} or
+		 *                                        {@code cursor > array.length - index}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ArrayIterator0(int cursor, int index, Object array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(array, Objects::isArray, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index, Array.getLength(array), Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor,
+					Array.getLength(array) - index, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.array = array;
+			this.length = Array.getLength(array);
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param length the length of the constructed iterator.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws IllegalArgumentException       if the given {@code array} is not an array.
+		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code index < 0} or {@code cursor < 0} or {@code index
+		 *                                        + length > array.length} or {@code cursor > length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ArrayIterator0(int cursor, int index, int length, Object array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(array, Objects::isArray, "array");
+			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index + length, Array.getLength(array), Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			Objects.require(cursor, length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.length = length;
+			this.array = array;
+		}
+
 		@Override
-		public void add(Object object) {
+		public void add(Object element) {
 			throw new UnsupportedOperationException("add");
 		}
 
@@ -7239,13 +7166,15 @@ public final class Arrays {
 
 		@Override
 		public boolean hasPrevious() {
-			return this.cursor > -1;
+			return this.cursor > 0;
 		}
 
 		@Override
 		public Object next() {
-			if (this.cursor < this.length)
-				return Array.get(this.array, this.last = this.cursor++);
+			int i = this.cursor++;
+
+			if (i < this.length)
+				return Array.get(this.array, this.last = this.index + i);
 
 			throw new NoSuchElementException();
 		}
@@ -7257,8 +7186,9 @@ public final class Arrays {
 
 		@Override
 		public Object previous() {
-			if (this.cursor > -1)
-				return Array.get(this.array, this.last = this.cursor--);
+			int i = --this.cursor;
+			if (i >= 0)
+				return Array.get(this.array, this.last = this.index + i);
 
 			throw new NoSuchElementException();
 		}
@@ -7274,11 +7204,12 @@ public final class Arrays {
 		}
 
 		@Override
-		public void set(Object object) {
-			if (this.last < 0 || this.last >= this.length)
+		public void set(Object element) {
+			int i = this.last;
+			if (i < 0 || i >= this.length)
 				throw new IllegalStateException();
 
-			Array.set(this.array, this.last, object);
+			Array.set(this.array, this.index + i, element);
 		}
 	}
 
@@ -7290,11 +7221,23 @@ public final class Arrays {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static final class ArrayList<E> extends AbstractList<E> {
+	public static final class ArrayList<E> implements List<E>, Serializable, RandomAccess {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -4250091141258397846L;
+
 		/**
 		 * The backing array.
 		 */
+		@SuppressWarnings("NonSerializableFieldInSerializableClass")
 		private final E[] array;
+		/**
+		 * The index where the area backing this list in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this list.
+		 */
+		private final int length;
 
 		/**
 		 * Construct a new list backed by the given {@code array}.
@@ -7306,154 +7249,140 @@ public final class Arrays {
 		private ArrayList(E... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param array the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ArrayList(int index, E... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.array = array;
+			this.index = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index  the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param length the length of the constructed list.
+		 * @param array  the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code length < 0} or {@code index + length >
+		 *                                        array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ArrayList(int index, int length, E... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(length, Objects::nonNegative, "length");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			this.array = array;
+			this.index = index;
+			this.length = length;
 		}
 
 		@Override
-		public boolean equals(Object object) {
-			if (this == object)
-				return true;
-			if (object instanceof ArrayList)
-				return Arrays.equals(((ArrayList) object).array, this.array);
-			if (object instanceof List) {
-				Iterator iterator = ((Iterable) object).iterator();
+		public boolean add(E element) {
+			throw new UnsupportedOperationException("add");
+		}
 
-				int i = 0;
-				while (iterator.hasNext()) {
-					if (i < this.array.length) {
-						Object o = iterator.next();
-						Object t = this.array[i++];
+		@Override
+		public void add(int index, E element) {
+			Objects.require(index, Objects::nonNegative, IndexOutOfBoundsException.class, "index");
+			Objects.require(index, this.length, Objects::isLess, IndexOutOfBoundsException.class, "index");
+			throw new UnsupportedOperationException("add");
+		}
 
-						if (o == t || o != null && o.equals(t))
-							continue;
-					}
+		@Override
+		public boolean addAll(Collection<? extends E> collection) {
+			Objects.requireNonNull(collection, "collection");
+			if (collection.isEmpty())
+				return false;
 
-					return false;
-				}
+			throw new UnsupportedOperationException("addAll");
+		}
 
-				return i == this.array.length;
+		@Override
+		public boolean addAll(int index, Collection<? extends E> collection) {
+			Objects.requireNonNull(collection, "collection");
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			if (collection.isEmpty())
+				return false;
+
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public void clear() {
+			if (this.length != 0)
+				throw new UnsupportedOperationException("clear");
+		}
+
+		@Override
+		public boolean contains(Object object) {
+			for (int i = 0; i < this.length; i++) {
+				Object o = this.array[this.index + i];
+
+				if (object == o || object != null && object.equals(o))
+					return true;
 			}
 
 			return false;
 		}
 
 		@Override
-		public E get(int index) {
-			return this.array[index];
-		}
+		public boolean containsAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
 
-		@Override
-		public int hashCode() {
-			return Arrays.hashCode(this.array);
-		}
+			for0:
+			for (Object object : collection) {
+				for (int i = 0; i < this.length; i++) {
+					Object o = this.array[this.index + i];
 
-		@Override
-		public ArrayIterator<E> iterator() {
-			return Arrays.iterator(this.array);
-		}
+					if (object == o || object != null && object.equals(o))
+						continue for0;
+				}
 
-		@Override
-		public ArrayIterator<E> listIterator() {
-			return Arrays.iterator(this.array);
-		}
+				return false;
+			}
 
-		@Override
-		public ArrayIterator<E> listIterator(int index) {
-			return Arrays.iterator(index, this.array);
-		}
-
-		@Override
-		public E set(int index, E element) {
-			E old = this.array[index];
-			this.array[index] = element;
-			return old;
-		}
-
-		@Override
-		public int size() {
-			return this.array.length;
-		}
-
-		@Override
-		public void sort(Comparator<? super E> comparator) {
-			Arrays.sort(this.array, comparator);
-		}
-
-		@Override
-		public Spliterator<E> spliterator() {
-			return Arrays.spliterator(this.array);
-		}
-
-		@Override
-		public Stream<E> stream() {
-			return Arrays.stream(this.array);
-		}
-
-		@Override
-		public E[] toArray() {
-			return Arrays.copyOf(this.array, this.array.length);
-		}
-
-		@Override
-		public Object[] toArray(Object[] array) {
-			Objects.requireNonNull(array, "array");
-
-			if (array.length < this.array.length)
-				return Arrays.copyOf(this.array, this.array.length, array.getClass());
-
-			System.arraycopy(this.array, 0, array, 0, this.array.length);
-
-			if (array.length > this.array.length)
-				array[this.array.length] = null;
-
-			return array;
-		}
-
-		@Override
-		public String toString() {
-			return Arrays.toString(this.array);
-		}
-	}
-
-	/**
-	 * A list backed by an array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static final class ArrayList0 extends AbstractList {
-		//todo override sort, spliterator, stream
-
-		/**
-		 * The array backing this list.
-		 */
-		private final Object array;
-		/**
-		 * The length of the backing array of this list.
-		 */
-		private final int length;
-
-		/**
-		 * Construct a new list backed by the given {@code array}.
-		 *
-		 * @param array the array backing this list.
-		 * @throws NullPointerException     if the given {@code array} is null.
-		 * @throws IllegalArgumentException if the given {@code array} isn't actually an array.
-		 * @since 0.1.5 ~2020.07.24
-		 */
-		private ArrayList0(Object array) {
-			Objects.requireNonNull(array, "array");
-			Objects.require(array, Objects::isArray, "array");
-			this.array = array;
-			this.length = Array.getLength(array);
+			return true;
 		}
 
 		@Override
 		public boolean equals(Object object) {
 			if (this == object)
 				return true;
-			if (object instanceof ArrayList0)
-				return Arrays.equals0(((ArrayList0) object).array, this.array);
+			if (object instanceof ArrayList) {
+				ArrayList list = (ArrayList) object;
+
+				if (list.length != this.length)
+					return false;
+				if (list.array == this.array && this.index == list.index)
+					return true;
+				for (int i = 0; i < this.length; i++) {
+					Object o = list.array[list.index + i];
+					Object t = this.array[this.index + i];
+
+					if (o != t && (o == null || !o.equals(t)))
+						return false;
+				}
+
+				return true;
+			}
 			if (object instanceof List) {
 				Iterator iterator = ((Iterable) object).iterator();
 
@@ -7461,7 +7390,7 @@ public final class Arrays {
 				while (iterator.hasNext()) {
 					if (i < this.length) {
 						Object o = iterator.next();
-						Object t = Array.get(this.array, i++);
+						Object t = this.array[this.index + i++];
 
 						if (o == t || o != null && o.equals(t))
 							continue;
@@ -7477,34 +7406,154 @@ public final class Arrays {
 		}
 
 		@Override
-		public Object get(int index) {
-			return Array.get(this.array, index);
+		public void forEach(Consumer<? super E> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			for (int i = 0; i < this.length; i++)
+				consumer.accept(this.array[this.index + i]);
+		}
+
+		@Override
+		public E get(int index) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			return this.array[this.index + index];
 		}
 
 		@Override
 		public int hashCode() {
-			return Arrays.hashCode0(this.array);
+			int hashCode = 1;
+
+			for (int i = 0; i < this.length; i++) {
+				Object element = this.array[this.index + i];
+
+				hashCode = 31 * hashCode + (element == null ? 0 : element.hashCode());
+			}
+
+			return hashCode;
 		}
 
 		@Override
-		public Iterator iterator() {
-			return Arrays.iterator(this.array);
+		public int indexOf(Object object) {
+			for (int i = 0; i < this.length; i++) {
+				Object o = this.array[this.index + i];
+
+				if (object == o || object != null && object.equals(o))
+					return i;
+			}
+
+			return -1;
 		}
 
 		@Override
-		public ArrayIterator0 listIterator() {
-			return Arrays.iterator0(this.array);
+		public boolean isEmpty() {
+			return this.length == 0;
 		}
 
 		@Override
-		public ArrayIterator0 listIterator(int index) {
-			return Arrays.iterator0(index, this.array);
+		public ArrayIterator<E> iterator() {
+			return new ArrayIterator(0, this.index, this.length, this.array);
 		}
 
 		@Override
-		public Object set(int index, Object element) {
-			Object old = Array.get(this.array, index);
-			Array.set(this.array, index, element);
+		public int lastIndexOf(Object object) {
+			for (int i = this.length - 1; i >= 0; i--) {
+				Object o = this.array[this.index + i];
+
+				if (object == o || object != null && object.equals(o))
+					return i;
+			}
+
+			return -1;
+		}
+
+		@Override
+		public ArrayIterator<E> listIterator() {
+			return new ArrayIterator(0, this.index, this.length, this.array);
+		}
+
+		@Override
+		public ArrayIterator<E> listIterator(int index) {
+			return new ArrayIterator(index, this.index, this.length, this.array);
+		}
+
+		@Override
+		public Stream<E> parallelStream() {
+			return Arrays.stream(this.array, this.index, this.index + this.length).parallel();
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			for (int i = 0; i < this.length; i++) {
+				Object o = this.array[this.index + i];
+
+				if (object == o || object != null && object.equals(o))
+					throw new UnsupportedOperationException("remove");
+			}
+
+			return false;
+		}
+
+		@Override
+		public E remove(int index) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for (Object object : collection)
+				for (int i = 0; i < this.length; i++) {
+					Object o = this.array[this.index + i];
+
+					if (object == o || object != null && object.equals(o))
+						throw new UnsupportedOperationException("removeAll");
+				}
+
+			return false;
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super E> predicate) {
+			Objects.requireNonNull(predicate, "predicate");
+			for (int i = 0; i < this.length; i++)
+				if (predicate.test(this.array[this.index + i]))
+					throw new UnsupportedOperationException("removeIf");
+
+			return false;
+		}
+
+		@Override
+		public void replaceAll(UnaryOperator<E> operator) {
+			Objects.requireNonNull(operator, "operator");
+			for (int i = 0; i < this.length; i++)
+				this.array[this.index + i] = operator.apply(this.array[this.index + i]);
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for0:
+			for (int i = 0; i < this.length; i++) {
+				Object o = this.array[this.index + i];
+
+				for (Object object : collection)
+					if (object == o || object != null && object.equals(o))
+						continue for0;
+
+				throw new UnsupportedOperationException("retainAll");
+			}
+
+			return false;
+		}
+
+		@Override
+		public E set(int index, E element) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			E old = this.array[this.index + index];
+			this.array[this.index + index] = element;
 			return old;
 		}
 
@@ -7514,21 +7563,41 @@ public final class Arrays {
 		}
 
 		@Override
-		public Object[] toArray() {
-			return (Object[]) Arrays.copyOf0(this.array, this.length, Object[].class);
+		public void sort(Comparator<? super E> comparator) {
+			Arrays.sort(this.array, this.index, this.index + this.length, comparator);
 		}
 
 		@Override
-		public Object[] toArray(Object[] array) {
+		public Spliterator<E> spliterator() {
+			return Arrays.spliterator(this.array, this.index, this.index + this.length);
+		}
+
+		@Override
+		public Stream<E> stream() {
+			return Arrays.stream(this.array, this.index, this.index + this.length);
+		}
+
+		@Override
+		public ArrayList<E> subList(int beginIndex, int endIndex) {
+			Objects.require(beginIndex, Objects::nonNegative, IndexOutOfBoundsException.class, "beginIndex");
+			Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+			Objects.require(endIndex, this.length, Objects::nonGreater, IndexOutOfBoundsException.class, "endIndex");
+			return new ArrayList(this.index + beginIndex, this.index + endIndex, this.array);
+		}
+
+		@Override
+		public E[] toArray() {
+			return Arrays.copyOfRange(this.array, this.index, this.index + this.length);
+		}
+
+		@Override
+		public <T> T[] toArray(T[] array) {
 			Objects.requireNonNull(array, "array");
 
 			if (array.length < this.length)
-				return (Object[]) Arrays.copyOf0(this.array, this.length, array.getClass());
+				return (T[]) Arrays.copyOfRange(this.array, this.index, this.index + this.length, (Class) array.getClass());
 
-			if (this.array.getClass().getComponentType().isPrimitive())
-				Arrays.hardcopy0(this.array, 0, array, 0, this.length);
-			else
-				System.arraycopy(this.array, 0, array, 0, this.length);
+			System.arraycopy(this.array, this.index, array, 0, this.length);
 
 			if (array.length > this.length)
 				array[this.length] = null;
@@ -7538,7 +7607,427 @@ public final class Arrays {
 
 		@Override
 		public String toString() {
-			return Arrays.toString0(this.array);
+			if (this.length == 0)
+				return "[]";
+
+			StringBuilder builder = new StringBuilder("[");
+
+			int i = 0;
+			while (true) {
+				builder.append(this.array[this.index + i]);
+
+				if (++i < this.length) {
+					builder.append(", ");
+					continue;
+				}
+
+				return builder.append("]")
+						.toString();
+			}
+		}
+	}
+
+	/**
+	 * A list backed by an array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static final class ArrayList0 implements List, Serializable, RandomAccess {
+		//todo parallelStream | sort | spliterator | stream
+
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = 7037921306179958530L;
+
+		/**
+		 * The backing array.
+		 */
+		@SuppressWarnings("NonSerializableFieldInSerializableClass")
+		private final Object array;
+		/**
+		 * The index where the area backing this list in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this list.
+		 */
+		private final int length;
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param array the array backing the constructed list.
+		 * @throws NullPointerException     if the given {@code array} is null.
+		 * @throws IllegalArgumentException if the given {@code array} is not an array.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ArrayList0(Object array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(array, Objects::isArray, "array");
+			this.array = array;
+			this.index = 0;
+			this.length = Array.getLength(array);
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param array the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws IllegalArgumentException       if the given {@code array} is not an array.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ArrayList0(int index, Object array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(array, Objects::isArray, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, Array.getLength(array), Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.array = array;
+			this.index = index;
+			this.length = Array.getLength(array);
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index  the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param length the length of the constructed list.
+		 * @param array  the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws IllegalArgumentException       if the given {@code array} is not an array.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code length < 0} or {@code index + length >
+		 *                                        array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ArrayList0(int index, int length, Object array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(array, Objects::isArray, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(length, Objects::nonNegative, "length");
+			Objects.require(index + length, Array.getLength(array), Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			this.array = array;
+			this.index = index;
+			this.length = length;
+		}
+
+		@Override
+		public boolean add(Object element) {
+			throw new UnsupportedOperationException("add");
+		}
+
+		@Override
+		public void add(int index, Object element) {
+			Objects.require(index, Objects::nonNegative, IndexOutOfBoundsException.class, "index");
+			Objects.require(index, this.length, Objects::isLess, IndexOutOfBoundsException.class, "index");
+			throw new UnsupportedOperationException("add");
+		}
+
+		@Override
+		public boolean addAll(Collection collection) {
+			Objects.requireNonNull(collection, "collection");
+			if (collection.isEmpty())
+				return false;
+
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public boolean addAll(int index, Collection collection) {
+			Objects.requireNonNull(collection, "collection");
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			if (collection.isEmpty())
+				return false;
+
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public void clear() {
+			if (this.length != 0)
+				throw new UnsupportedOperationException("clear");
+		}
+
+		@Override
+		public boolean contains(Object object) {
+			for (int i = 0; i < this.length; i++) {
+				Object o = Array.get(this.array, this.index + i);
+
+				if (object == o || object != null && object.equals(o))
+					return true;
+			}
+
+			return false;
+		}
+
+		@Override
+		public boolean containsAll(Collection collection) {
+			Objects.requireNonNull(collection, "collection");
+
+			for0:
+			for (Object object : collection) {
+				for (int i = 0; i < this.length; i++) {
+					Object o = Array.get(this.array, this.index + i);
+
+					if (object == o || object != null && object.equals(o))
+						continue for0;
+				}
+
+				return false;
+			}
+
+			return true;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object)
+				return true;
+			if (object instanceof ArrayList0) {
+				ArrayList0 list = (ArrayList0) object;
+
+				if (list.length != this.length)
+					return false;
+				if (list.array == this.array && this.index == list.index)
+					return true;
+				for (int i = 0; i < this.length; i++) {
+					Object o = Array.get(list.array, list.index + i);
+					Object t = Array.get(this.array, this.index + i);
+
+					if (o != t && (o == null || !o.equals(t)))
+						return false;
+				}
+
+				return true;
+			}
+			if (object instanceof List) {
+				Iterator iterator = ((Iterable) object).iterator();
+
+				int i = 0;
+				while (iterator.hasNext()) {
+					if (i < this.length) {
+						Object o = iterator.next();
+						Object t = Array.get(this.array, this.index + i++);
+
+						if (o == t || o != null && o.equals(t))
+							continue;
+					}
+
+					return false;
+				}
+
+				return i == this.length;
+			}
+
+			return false;
+		}
+
+		@Override
+		public void forEach(Consumer consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			for (int i = 0; i < this.length; i++)
+				consumer.accept(Array.get(this.array, this.index + i));
+		}
+
+		@Override
+		public Object get(int index) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			return Array.get(this.array, this.index + index);
+		}
+
+		@Override
+		public int hashCode() {
+			int hashCode = 1;
+
+			for (int i = 0; i < this.length; i++) {
+				Object element = Array.get(this.array, this.index + i);
+
+				hashCode = 31 * hashCode + (element == null ? 0 : element.hashCode());
+			}
+
+			return hashCode;
+		}
+
+		@Override
+		public int indexOf(Object object) {
+			for (int i = 0; i < this.length; i++) {
+				Object o = Array.get(this.array, this.index + i);
+
+				if (object == o || object != null && object.equals(o))
+					return i;
+			}
+
+			return -1;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.length == 0;
+		}
+
+		@Override
+		public ArrayIterator0 iterator() {
+			return new ArrayIterator0(0, this.index, this.length, this.array);
+		}
+
+		@Override
+		public int lastIndexOf(Object object) {
+			for (int i = this.length - 1; i >= 0; i--) {
+				Object o = Array.get(this.array, this.index + i);
+
+				if (object == o || object != null && object.equals(o))
+					return i;
+			}
+
+			return -1;
+		}
+
+		@Override
+		public ArrayIterator0 listIterator() {
+			return new ArrayIterator0(0, this.index, this.length, this.array);
+		}
+
+		@Override
+		public ArrayIterator0 listIterator(int index) {
+			return new ArrayIterator0(0, this.index, this.length, this.array);
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			for (int i = 0; i < this.length; i++) {
+				Object o = Array.get(this.array, this.index + i);
+
+				if (object == o || object != null && object.equals(o))
+					throw new UnsupportedOperationException("remove");
+			}
+
+			return false;
+		}
+
+		@Override
+		public Object remove(int index) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean removeAll(Collection collection) {
+			Objects.requireNonNull(collection, "collection");
+			for (Object object : collection)
+				for (int i = 0; i < this.length; i++) {
+					Object o = Array.get(this.array, this.index + i);
+
+					if (object == o || object != null && object.equals(o))
+						throw new UnsupportedOperationException("removeAll");
+				}
+
+			return false;
+		}
+
+		@Override
+		public boolean removeIf(Predicate predicate) {
+			Objects.requireNonNull(predicate, "predicate");
+			for (int i = 0; i < this.length; i++)
+				if (predicate.test(Array.get(this.array, this.index + i)))
+					throw new UnsupportedOperationException("removeIf");
+
+			return false;
+		}
+
+		@Override
+		public void replaceAll(UnaryOperator operator) {
+			Objects.requireNonNull(operator, "operator");
+			for (int i = 0; i < this.length; i++)
+				Array.set(this.array, this.index + i, operator.apply(Array.get(this.array, this.index + i)));
+		}
+
+		@Override
+		public boolean retainAll(Collection collection) {
+			Objects.requireNonNull(collection, "collection");
+			for0:
+			for (int i = 0; i < this.length; i++) {
+				Object o = Array.get(this.array, this.index + i);
+
+				for (Object object : collection)
+					if (object == o || object != null && object.equals(o))
+						continue for0;
+
+				throw new UnsupportedOperationException("retainAll");
+			}
+
+			return false;
+		}
+
+		@Override
+		public Object set(int index, Object element) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			Object old = Array.get(this.array, this.index + index);
+			Array.set(this.array, this.index + index, element);
+			return old;
+		}
+
+		@Override
+		public int size() {
+			return this.length;
+		}
+
+		@Override
+		public ArrayList0 subList(int beginIndex, int endIndex) {
+			Objects.require(beginIndex, Objects::nonNegative, IndexOutOfBoundsException.class, "beginIndex");
+			Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+			Objects.require(endIndex, this.length, Objects::nonGreater, IndexOutOfBoundsException.class, "endIndex");
+			return new ArrayList0(this.index + beginIndex, this.index + endIndex, this.array);
+		}
+
+		@Override
+		public Object[] toArray() {
+			return (Object[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, Object[].class);
+		}
+
+		@Override
+		public Object[] toArray(Object[] array) {
+			Objects.requireNonNull(array, "array");
+
+			if (array.length < this.length)
+				return (Object[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, array.getClass());
+
+			if (this.array.getClass().getComponentType().isPrimitive() == array.getClass().getComponentType().isPrimitive())
+				System.arraycopy(this.array, this.index, array, 0, this.length);
+			else
+				Arrays.hardcopy0(this.array, this.index, array, 0, this.length);
+
+			if (array.length > this.length)
+				array[this.length] = null;
+
+			return array;
+		}
+
+		@Override
+		public String toString() {
+			if (this.length == 0)
+				return "[]";
+
+			StringBuilder builder = new StringBuilder("[");
+
+			int i = 0;
+			while (true) {
+				builder.append(Array.get(this.array, this.index + i));
+
+				if (++i < this.length) {
+					builder.append(", ");
+					continue;
+				}
+
+				return builder.append("]")
+						.toString();
+			}
 		}
 	}
 
@@ -7554,6 +8043,14 @@ public final class Arrays {
 		 * The backing array.
 		 */
 		private final boolean[] array;
+		/**
+		 * The index where the area backing the iterator in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this iterator.
+		 */
+		private final int length;
 		/**
 		 * The next index.
 		 */
@@ -7573,44 +8070,98 @@ public final class Arrays {
 		private BooleanArrayIterator(boolean... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
 		}
 
 		/**
 		 * Construct a new iterator backed by the given {@code array}.
 		 *
-		 * @param index the index to start iterating at.
+		 * @param index the index where the area backing the constructed iterator in the given {@code array} is starting.
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private BooleanArrayIterator(int index, boolean... array) {
 			Objects.requireNonNull(array, "array");
 			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.index = index;
 			this.array = array;
-			this.cursor = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code cursor < 0} or {@code index > array.length} or
+		 *                                        {@code cursor > array.length - index}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private BooleanArrayIterator(int cursor, int index, boolean... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, array.length - index, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.array = array;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param length the length of the constructed iterator.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code index < 0} or {@code cursor < 0} or {@code index
+		 *                                        + length > array.length} or {@code cursor > length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private BooleanArrayIterator(int cursor, int index, int length, boolean... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			Objects.require(cursor, length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.length = length;
+			this.array = array;
 		}
 
 		@Override
-		public void add(Boolean boolean_) {
+		public void add(Boolean element) {
 			throw new UnsupportedOperationException("add");
 		}
 
 		@Override
 		public boolean hasNext() {
-			return this.cursor < this.array.length;
+			return this.cursor < this.length;
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return this.cursor > -1;
+			return this.cursor > 0;
 		}
 
 		@Override
 		public Boolean next() {
-			if (this.cursor < this.array.length)
-				return this.array[this.last = this.cursor++];
+			int i = this.cursor++;
+
+			if (i < this.length)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -7622,8 +8173,9 @@ public final class Arrays {
 
 		@Override
 		public Boolean previous() {
-			if (this.cursor > -1)
-				return this.array[this.last = this.cursor--];
+			int i = --this.cursor;
+			if (i >= 0)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -7639,11 +8191,12 @@ public final class Arrays {
 		}
 
 		@Override
-		public void set(Boolean boolean_) {
-			if (this.last < 0 || this.last >= this.array.length)
+		public void set(Boolean element) {
+			int i = this.last;
+			if (i < 0 || i >= this.length)
 				throw new IllegalStateException();
 
-			this.array[this.last] = boolean_;
+			this.array[this.index + i] = element;
 		}
 	}
 
@@ -7654,114 +8207,422 @@ public final class Arrays {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static final class BooleanArrayList extends AbstractList<Boolean> {
-		//todo override sort, spliterator, stream
+	public static final class BooleanArrayList implements List<Boolean>, Serializable, RandomAccess {
+		//todo parallelStream | sort | spliterator | stream
+
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = 904807218149874266L;
 
 		/**
-		 * The array backing this list.
+		 * The backing array.
 		 */
 		private final boolean[] array;
+		/**
+		 * The index where the area backing this list in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this list.
+		 */
+		private final int length;
 
 		/**
 		 * Construct a new list backed by the given {@code array}.
 		 *
-		 * @param array the array backing this list.
+		 * @param array the array backing the constructed list.
 		 * @throws NullPointerException if the given {@code array} is null.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private BooleanArrayList(boolean... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param array the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private BooleanArrayList(int index, boolean... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.array = array;
+			this.index = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index  the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param length the length of the constructed list.
+		 * @param array  the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code length < 0} or {@code index + length >
+		 *                                        array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private BooleanArrayList(int index, int length, boolean... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(length, Objects::nonNegative, "length");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			this.array = array;
+			this.index = index;
+			this.length = length;
 		}
 
 		@Override
-		public boolean equals(Object object) {
-			if (this == object)
-				return true;
-			if (object instanceof BooleanArrayList)
-				return Arrays.equals(((BooleanArrayList) object).array, this.array);
-			if (object instanceof List) {
-				Iterator iterator = ((Iterable) object).iterator();
+		public boolean add(Boolean element) {
+			throw new UnsupportedOperationException("add");
+		}
 
-				int i = 0;
-				while (iterator.hasNext()) {
-					if (i < this.array.length) {
-						Object o = iterator.next();
-						Object t = this.array[i++];
+		@Override
+		public void add(int index, Boolean element) {
+			Objects.require(index, Objects::nonNegative, IndexOutOfBoundsException.class, "index");
+			Objects.require(index, this.length, Objects::isLess, IndexOutOfBoundsException.class, "index");
+			throw new UnsupportedOperationException("add");
+		}
 
-						if (o == t || o != null && o.equals(t))
-							continue;
-					}
+		@Override
+		public boolean addAll(Collection<? extends Boolean> collection) {
+			Objects.requireNonNull(collection, "collection");
+			if (collection.isEmpty())
+				return false;
 
-					return false;
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public boolean addAll(int index, Collection<? extends Boolean> collection) {
+			Objects.requireNonNull(collection, "collection");
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			if (collection.isEmpty())
+				return false;
+
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public void clear() {
+			if (this.length != 0)
+				throw new UnsupportedOperationException("clear");
+		}
+
+		@Override
+		public boolean contains(Object object) {
+			if (object instanceof Boolean) {
+				boolean primitive = (boolean) object;
+
+				for (int i = 0; i < this.length; i++) {
+					boolean o = this.array[this.index + i];
+
+					if (primitive == o)
+						return true;
 				}
-
-				return i == this.array.length;
 			}
 
 			return false;
 		}
 
 		@Override
+		public boolean containsAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+
+			for0:
+			for (Object object : collection) {
+				if (object instanceof Boolean) {
+					boolean primitive = (boolean) object;
+
+					for (int i = 0; i < this.length; i++) {
+						boolean o = this.array[this.index + i];
+
+						if (primitive == o)
+							continue for0;
+					}
+				}
+
+				return false;
+			}
+
+			return true;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object)
+				return true;
+			if (object instanceof BooleanArrayList) {
+				BooleanArrayList list = (BooleanArrayList) object;
+
+				if (list.length != this.length)
+					return false;
+				if (list.array == this.array && this.index == list.index)
+					return true;
+				for (int i = 0; i < this.length; i++) {
+					boolean o = list.array[list.index + i];
+					boolean t = this.array[this.index + i];
+
+					if (o != t)
+						return false;
+				}
+
+				return true;
+			}
+			if (object instanceof List) {
+				Iterator iterator = ((Iterable) object).iterator();
+
+				int i = 0;
+				while (iterator.hasNext()) {
+					if (i < this.length) {
+						Object o = iterator.next();
+
+						if (o instanceof Boolean) {
+							boolean p = (boolean) o;
+							boolean t = this.array[this.index + i++];
+
+							if (p == t)
+								continue;
+						}
+					}
+
+					return false;
+				}
+
+				return i == this.length;
+			}
+
+			return false;
+		}
+
+		@Override
+		public void forEach(Consumer<? super Boolean> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			for (int i = 0; i < this.length; i++)
+				consumer.accept(this.array[this.index + i]);
+		}
+
+		@Override
 		public Boolean get(int index) {
-			return this.array[index];
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			return this.array[this.index + index];
 		}
 
 		@Override
 		public int hashCode() {
-			return Arrays.hashCode(this.array);
+			int hashCode = 1;
+
+			for (int i = 0; i < this.length; i++) {
+				boolean element = this.array[this.index + i];
+
+				hashCode = 31 * hashCode + Boolean.hashCode(element);
+			}
+
+			return hashCode;
+		}
+
+		@Override
+		public int indexOf(Object object) {
+			if (object instanceof Boolean) {
+				boolean primitive = (boolean) object;
+
+				for (int i = 0; i < this.length; i++) {
+					boolean o = this.array[this.index + i];
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.length == 0;
 		}
 
 		@Override
 		public BooleanArrayIterator iterator() {
-			return Arrays.iterator(this.array);
+			return new BooleanArrayIterator(0, this.index, this.length, this.array);
+		}
+
+		@Override
+		public int lastIndexOf(Object object) {
+			if (object instanceof Boolean) {
+				boolean primitive = (boolean) object;
+
+				for (int i = this.length - 1; i >= 0; i--) {
+					boolean o = this.array[this.index + i];
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
 		}
 
 		@Override
 		public BooleanArrayIterator listIterator() {
-			return Arrays.iterator(this.array);
+			return new BooleanArrayIterator(0, this.index, this.length, this.array);
 		}
 
 		@Override
 		public BooleanArrayIterator listIterator(int index) {
-			return Arrays.iterator(index, this.array);
+			return new BooleanArrayIterator(index, this.index, this.length, this.array);
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			if (object instanceof Boolean) {
+				boolean primitive = (boolean) object;
+
+				for (int i = 0; i < this.length; i++) {
+					boolean o = this.array[this.index + i];
+
+					if (primitive == o)
+						throw new UnsupportedOperationException("remove");
+				}
+			}
+
+			return false;
+		}
+
+		@Override
+		public Boolean remove(int index) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for (Object object : collection)
+				if (object instanceof Boolean) {
+					boolean primitive = (boolean) object;
+
+					for (int i = 0; i < this.length; i++) {
+						boolean o = this.array[this.index + i];
+
+						if (primitive == o)
+							throw new UnsupportedOperationException("removeAll");
+					}
+				}
+
+			return false;
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super Boolean> predicate) {
+			Objects.requireNonNull(predicate, "predicate");
+			for (int i = 0; i < this.length; i++)
+				if (predicate.test(this.array[this.index + i]))
+					throw new UnsupportedOperationException("removeIf");
+
+			return false;
+		}
+
+		@Override
+		public void replaceAll(UnaryOperator<Boolean> operator) {
+			Objects.requireNonNull(operator, "operator");
+			for (int i = 0; i < this.length; i++)
+				this.array[this.index + i] = operator.apply(this.array[this.index + i]);
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for0:
+			for (int i = 0; i < this.length; i++) {
+				boolean o = this.array[this.index + i];
+
+				for (Object object : collection)
+					if (object instanceof Boolean) {
+						boolean primitive = (boolean) object;
+
+						if (primitive == o)
+							continue for0;
+					}
+
+				throw new UnsupportedOperationException("retainAll");
+			}
+
+			return false;
 		}
 
 		@Override
 		public Boolean set(int index, Boolean element) {
-			Boolean old = this.array[index];
-			this.array[index] = element;
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			boolean old = this.array[this.index + index];
+			this.array[this.index + index] = element;
 			return old;
 		}
 
 		@Override
 		public int size() {
-			return this.array.length;
+			return this.length;
+		}
+
+		@Override
+		public BooleanArrayList subList(int beginIndex, int endIndex) {
+			Objects.require(beginIndex, Objects::nonNegative, IndexOutOfBoundsException.class, "beginIndex");
+			Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+			Objects.require(endIndex, this.length, Objects::nonGreater, IndexOutOfBoundsException.class, "endIndex");
+			return new BooleanArrayList(this.index + beginIndex, this.index + endIndex, this.array);
 		}
 
 		@Override
 		public Boolean[] toArray() {
-			return (Boolean[]) Arrays.copyOf0(this.array, this.array.length, Boolean[].class);
+			return (Boolean[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, Boolean[].class);
 		}
 
 		@Override
-		public Object[] toArray(Object[] array) {
+		public <T> T[] toArray(T[] array) {
 			Objects.requireNonNull(array, "array");
 
-			if (array.length < this.array.length)
-				return (Object[]) Arrays.copyOf0(this.array, this.array.length, array.getClass());
+			if (array.length < this.length)
+				return (T[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, array.getClass());
 
-			Arrays.hardcopy(this.array, 0, array, 0, this.array.length);
+			Arrays.hardcopy(this.array, this.index, array, 0, this.length);
 
-			if (array.length > this.array.length)
-				array[this.array.length] = null;
+			if (array.length > this.length)
+				array[this.length] = null;
 
 			return array;
 		}
 
 		@Override
 		public String toString() {
-			return Arrays.toString(this.array);
+			if (this.length == 0)
+				return "[]";
+
+			StringBuilder builder = new StringBuilder("[");
+
+			int i = 0;
+			while (true) {
+				builder.append(this.array[this.index + i]);
+
+				if (++i < this.length) {
+					builder.append(", ");
+					continue;
+				}
+
+				return builder.append("]")
+						.toString();
+			}
 		}
 	}
 
@@ -7777,6 +8638,14 @@ public final class Arrays {
 		 * The backing array.
 		 */
 		private final byte[] array;
+		/**
+		 * The index where the area backing the iterator in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this iterator.
+		 */
+		private final int length;
 		/**
 		 * The next index.
 		 */
@@ -7796,44 +8665,98 @@ public final class Arrays {
 		private ByteArrayIterator(byte... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
 		}
 
 		/**
 		 * Construct a new iterator backed by the given {@code array}.
 		 *
-		 * @param index the index to start iterating at.
+		 * @param index the index where the area backing the constructed iterator in the given {@code array} is starting.
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ByteArrayIterator(int index, byte... array) {
 			Objects.requireNonNull(array, "array");
 			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.index = index;
 			this.array = array;
-			this.cursor = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code cursor < 0} or {@code index > array.length} or
+		 *                                        {@code cursor > array.length - index}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ByteArrayIterator(int cursor, int index, byte... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, array.length - index, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.array = array;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param length the length of the constructed iterator.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code index < 0} or {@code cursor < 0} or {@code index
+		 *                                        + length > array.length} or {@code cursor > length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ByteArrayIterator(int cursor, int index, int length, byte... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			Objects.require(cursor, length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.length = length;
+			this.array = array;
 		}
 
 		@Override
-		public void add(Byte byte_) {
+		public void add(Byte element) {
 			throw new UnsupportedOperationException("add");
 		}
 
 		@Override
 		public boolean hasNext() {
-			return this.cursor < this.array.length;
+			return this.cursor < this.length;
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return this.cursor > -1;
+			return this.cursor > 0;
 		}
 
 		@Override
 		public Byte next() {
-			if (this.cursor < this.array.length)
-				return this.array[this.last = this.cursor++];
+			int i = this.cursor++;
+
+			if (i < this.length)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -7845,8 +8768,9 @@ public final class Arrays {
 
 		@Override
 		public Byte previous() {
-			if (this.cursor > -1)
-				return this.array[this.last = this.cursor--];
+			int i = --this.cursor;
+			if (i >= 0)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -7862,11 +8786,12 @@ public final class Arrays {
 		}
 
 		@Override
-		public void set(Byte byte_) {
-			if (this.last < 0 || this.last >= this.array.length)
+		public void set(Byte element) {
+			int i = this.last;
+			if (i < 0 || i >= this.length)
 				throw new IllegalStateException();
 
-			this.array[this.last] = byte_;
+			this.array[this.index + i] = element;
 		}
 	}
 
@@ -7877,114 +8802,422 @@ public final class Arrays {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static final class ByteArrayList extends AbstractList<Byte> {
-		//todo override sort, spliterator, stream
+	public static final class ByteArrayList implements List<Byte>, Serializable, RandomAccess {
+		//todo parallelStream | sort | spliterator | stream
+
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -4152025373803091679L;
 
 		/**
-		 * The array backing this list.
+		 * The backing array.
 		 */
 		private final byte[] array;
+		/**
+		 * The index where the area backing this list in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this list.
+		 */
+		private final int length;
 
 		/**
 		 * Construct a new list backed by the given {@code array}.
 		 *
-		 * @param array the array backing this list.
+		 * @param array the array backing the constructed list.
 		 * @throws NullPointerException if the given {@code array} is null.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ByteArrayList(byte... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param array the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ByteArrayList(int index, byte... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.array = array;
+			this.index = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index  the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param length the length of the constructed list.
+		 * @param array  the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code length < 0} or {@code index + length >
+		 *                                        array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ByteArrayList(int index, int length, byte... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(length, Objects::nonNegative, "length");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			this.array = array;
+			this.index = index;
+			this.length = length;
 		}
 
 		@Override
-		public boolean equals(Object object) {
-			if (this == object)
-				return true;
-			if (object instanceof ByteArrayList)
-				return Arrays.equals(((ByteArrayList) object).array, this.array);
-			if (object instanceof List) {
-				Iterator iterator = ((Iterable) object).iterator();
+		public boolean add(Byte element) {
+			throw new UnsupportedOperationException("add");
+		}
 
-				int i = 0;
-				while (iterator.hasNext()) {
-					if (i < this.array.length) {
-						Object o = iterator.next();
-						Object t = this.array[i++];
+		@Override
+		public void add(int index, Byte element) {
+			Objects.require(index, Objects::nonNegative, IndexOutOfBoundsException.class, "index");
+			Objects.require(index, this.length, Objects::isLess, IndexOutOfBoundsException.class, "index");
+			throw new UnsupportedOperationException("add");
+		}
 
-						if (o == t || o != null && o.equals(t))
-							continue;
-					}
+		@Override
+		public boolean addAll(Collection<? extends Byte> collection) {
+			Objects.requireNonNull(collection, "collection");
+			if (collection.isEmpty())
+				return false;
 
-					return false;
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public boolean addAll(int index, Collection<? extends Byte> collection) {
+			Objects.requireNonNull(collection, "collection");
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			if (collection.isEmpty())
+				return false;
+
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public void clear() {
+			if (this.length != 0)
+				throw new UnsupportedOperationException("clear");
+		}
+
+		@Override
+		public boolean contains(Object object) {
+			if (object instanceof Byte) {
+				byte primitive = (byte) object;
+
+				for (int i = 0; i < this.length; i++) {
+					byte o = this.array[this.index + i];
+
+					if (primitive == o)
+						return true;
 				}
-
-				return i == this.array.length;
 			}
 
 			return false;
 		}
 
 		@Override
+		public boolean containsAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+
+			for0:
+			for (Object object : collection) {
+				if (object instanceof Byte) {
+					byte primitive = (byte) object;
+
+					for (int i = 0; i < this.length; i++) {
+						byte o = this.array[this.index + i];
+
+						if (primitive == o)
+							continue for0;
+					}
+				}
+
+				return false;
+			}
+
+			return true;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object)
+				return true;
+			if (object instanceof ByteArrayList) {
+				ByteArrayList list = (ByteArrayList) object;
+
+				if (list.length != this.length)
+					return false;
+				if (list.array == this.array && this.index == list.index)
+					return true;
+				for (int i = 0; i < this.length; i++) {
+					byte o = list.array[list.index + i];
+					byte t = this.array[this.index + i];
+
+					if (o != t)
+						return false;
+				}
+
+				return true;
+			}
+			if (object instanceof List) {
+				Iterator iterator = ((Iterable) object).iterator();
+
+				int i = 0;
+				while (iterator.hasNext()) {
+					if (i < this.length) {
+						Object o = iterator.next();
+
+						if (o instanceof Byte) {
+							byte p = (byte) o;
+							byte t = this.array[this.index + i++];
+
+							if (p == t)
+								continue;
+						}
+					}
+
+					return false;
+				}
+
+				return i == this.length;
+			}
+
+			return false;
+		}
+
+		@Override
+		public void forEach(Consumer<? super Byte> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			for (int i = 0; i < this.length; i++)
+				consumer.accept(this.array[this.index + i]);
+		}
+
+		@Override
 		public Byte get(int index) {
-			return this.array[index];
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			return this.array[this.index + index];
 		}
 
 		@Override
 		public int hashCode() {
-			return Arrays.hashCode(this.array);
+			int hashCode = 1;
+
+			for (int i = 0; i < this.length; i++) {
+				byte element = this.array[this.index + i];
+
+				hashCode = 31 * hashCode + Byte.hashCode(element);
+			}
+
+			return hashCode;
+		}
+
+		@Override
+		public int indexOf(Object object) {
+			if (object instanceof Byte) {
+				byte primitive = (byte) object;
+
+				for (int i = 0; i < this.length; i++) {
+					byte o = this.array[this.index + i];
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.length == 0;
 		}
 
 		@Override
 		public ByteArrayIterator iterator() {
-			return Arrays.iterator(this.array);
+			return new ByteArrayIterator(0, this.index, this.length, this.array);
+		}
+
+		@Override
+		public int lastIndexOf(Object object) {
+			if (object instanceof Byte) {
+				byte primitive = (byte) object;
+
+				for (int i = this.length - 1; i >= 0; i--) {
+					byte o = this.array[this.index + i];
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
 		}
 
 		@Override
 		public ByteArrayIterator listIterator() {
-			return Arrays.iterator(this.array);
+			return new ByteArrayIterator(0, this.index, this.length, this.array);
 		}
 
 		@Override
 		public ByteArrayIterator listIterator(int index) {
-			return Arrays.iterator(index, this.array);
+			return new ByteArrayIterator(index, this.index, this.length, this.array);
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			if (object instanceof Byte) {
+				byte primitive = (byte) object;
+
+				for (int i = 0; i < this.length; i++) {
+					byte o = this.array[this.index + i];
+
+					if (primitive == o)
+						throw new UnsupportedOperationException("remove");
+				}
+			}
+
+			return false;
+		}
+
+		@Override
+		public Byte remove(int index) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for (Object object : collection)
+				if (object instanceof Byte) {
+					byte primitive = (byte) object;
+
+					for (int i = 0; i < this.length; i++) {
+						byte o = this.array[this.index + i];
+
+						if (primitive == o)
+							throw new UnsupportedOperationException("removeAll");
+					}
+				}
+
+			return false;
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super Byte> predicate) {
+			Objects.requireNonNull(predicate, "predicate");
+			for (int i = 0; i < this.length; i++)
+				if (predicate.test(this.array[this.index + i]))
+					throw new UnsupportedOperationException("removeIf");
+
+			return false;
+		}
+
+		@Override
+		public void replaceAll(UnaryOperator<Byte> operator) {
+			Objects.requireNonNull(operator, "operator");
+			for (int i = 0; i < this.length; i++)
+				this.array[this.index + i] = operator.apply(this.array[this.index + i]);
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for0:
+			for (int i = 0; i < this.length; i++) {
+				byte o = this.array[this.index + i];
+
+				for (Object object : collection)
+					if (object instanceof Byte) {
+						byte primitive = (byte) object;
+
+						if (primitive == o)
+							continue for0;
+					}
+
+				throw new UnsupportedOperationException("retainAll");
+			}
+
+			return false;
 		}
 
 		@Override
 		public Byte set(int index, Byte element) {
-			Byte old = this.array[index];
-			this.array[index] = element;
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			byte old = this.array[this.index + index];
+			this.array[this.index + index] = element;
 			return old;
 		}
 
 		@Override
 		public int size() {
-			return this.array.length;
+			return this.length;
+		}
+
+		@Override
+		public ByteArrayList subList(int beginIndex, int endIndex) {
+			Objects.require(beginIndex, Objects::nonNegative, IndexOutOfBoundsException.class, "beginIndex");
+			Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+			Objects.require(endIndex, this.length, Objects::nonGreater, IndexOutOfBoundsException.class, "endIndex");
+			return new ByteArrayList(this.index + beginIndex, this.index + endIndex, this.array);
 		}
 
 		@Override
 		public Byte[] toArray() {
-			return (Byte[]) Arrays.copyOf0(this.array, this.array.length, Byte.class);
+			return (Byte[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, Byte[].class);
 		}
 
 		@Override
-		public Object[] toArray(Object[] array) {
+		public <T> T[] toArray(T[] array) {
 			Objects.requireNonNull(array, "array");
 
-			if (array.length < this.array.length)
-				return (Object[]) Arrays.copyOf0(this.array, this.array.length, array.getClass());
+			if (array.length < this.length)
+				return (T[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, array.getClass());
 
-			Arrays.hardcopy(this.array, 0, array, 0, this.array.length);
+			Arrays.hardcopy(this.array, this.index, array, 0, this.length);
 
-			if (array.length > this.array.length)
-				array[this.array.length] = null;
+			if (array.length > this.length)
+				array[this.length] = null;
 
 			return array;
 		}
 
 		@Override
 		public String toString() {
-			return Arrays.toString(this.array);
+			if (this.length == 0)
+				return "[]";
+
+			StringBuilder builder = new StringBuilder("[");
+
+			int i = 0;
+			while (true) {
+				builder.append(this.array[this.index + i]);
+
+				if (++i < this.length) {
+					builder.append(", ");
+					continue;
+				}
+
+				return builder.append("]")
+						.toString();
+			}
 		}
 	}
 
@@ -8000,6 +9233,14 @@ public final class Arrays {
 		 * The backing array.
 		 */
 		private final char[] array;
+		/**
+		 * The index where the area backing the iterator in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this iterator.
+		 */
+		private final int length;
 		/**
 		 * The next index.
 		 */
@@ -8019,44 +9260,98 @@ public final class Arrays {
 		private CharacterArrayIterator(char... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
 		}
 
 		/**
 		 * Construct a new iterator backed by the given {@code array}.
 		 *
-		 * @param index the index to start iterating at.
+		 * @param index the index where the area backing the constructed iterator in the given {@code array} is starting.
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private CharacterArrayIterator(int index, char... array) {
 			Objects.requireNonNull(array, "array");
 			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.index = index;
 			this.array = array;
-			this.cursor = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code cursor < 0} or {@code index > array.length} or
+		 *                                        {@code cursor > array.length - index}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private CharacterArrayIterator(int cursor, int index, char... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, array.length - index, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.array = array;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param length the length of the constructed iterator.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code index < 0} or {@code cursor < 0} or {@code index
+		 *                                        + length > array.length} or {@code cursor > length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private CharacterArrayIterator(int cursor, int index, int length, char... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			Objects.require(cursor, length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.length = length;
+			this.array = array;
 		}
 
 		@Override
-		public void add(Character character) {
+		public void add(Character element) {
 			throw new UnsupportedOperationException("add");
 		}
 
 		@Override
 		public boolean hasNext() {
-			return this.cursor < this.array.length;
+			return this.cursor < this.length;
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return this.cursor > -1;
+			return this.cursor > 0;
 		}
 
 		@Override
 		public Character next() {
-			if (this.cursor < this.array.length)
-				return this.array[this.last = this.cursor++];
+			int i = this.cursor++;
+
+			if (i < this.length)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -8068,8 +9363,9 @@ public final class Arrays {
 
 		@Override
 		public Character previous() {
-			if (this.cursor > -1)
-				return this.array[this.last = this.cursor--];
+			int i = --this.cursor;
+			if (i >= 0)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -8085,11 +9381,12 @@ public final class Arrays {
 		}
 
 		@Override
-		public void set(Character character) {
-			if (this.last < 0 || this.last >= this.array.length)
+		public void set(Character element) {
+			int i = this.last;
+			if (i < 0 || i >= this.length)
 				throw new IllegalStateException();
 
-			this.array[this.last] = character;
+			this.array[this.index + i] = element;
 		}
 	}
 
@@ -8100,114 +9397,422 @@ public final class Arrays {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static final class CharacterArrayList extends AbstractList<Character> {
-		//todo override sort, spliterator, stream
+	public static final class CharacterArrayList implements List<Character>, Serializable, RandomAccess {
+		//todo parallelStream | sort | spliterator | stream
+
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -5690875689599256068L;
 
 		/**
-		 * The array backing this list.
+		 * The backing array.
 		 */
 		private final char[] array;
+		/**
+		 * The index where the area backing this list in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this list.
+		 */
+		private final int length;
 
 		/**
 		 * Construct a new list backed by the given {@code array}.
 		 *
-		 * @param array the array backing this list.
+		 * @param array the array backing the constructed list.
 		 * @throws NullPointerException if the given {@code array} is null.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private CharacterArrayList(char... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param array the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private CharacterArrayList(int index, char... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.array = array;
+			this.index = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index  the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param length the length of the constructed list.
+		 * @param array  the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code length < 0} or {@code index + length >
+		 *                                        array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private CharacterArrayList(int index, int length, char... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(length, Objects::nonNegative, "length");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			this.array = array;
+			this.index = index;
+			this.length = length;
 		}
 
 		@Override
-		public boolean equals(Object object) {
-			if (this == object)
-				return true;
-			if (object instanceof CharacterArrayList)
-				return Arrays.equals(((CharacterArrayList) object).array, this.array);
-			if (object instanceof List) {
-				Iterator iterator = ((Iterable) object).iterator();
+		public boolean add(Character element) {
+			throw new UnsupportedOperationException("add");
+		}
 
-				int i = 0;
-				while (iterator.hasNext()) {
-					if (i < this.array.length) {
-						Object o = iterator.next();
-						Object t = this.array[i++];
+		@Override
+		public void add(int index, Character element) {
+			Objects.require(index, Objects::nonNegative, IndexOutOfBoundsException.class, "index");
+			Objects.require(index, this.length, Objects::isLess, IndexOutOfBoundsException.class, "index");
+			throw new UnsupportedOperationException("add");
+		}
 
-						if (o == t || o != null && o.equals(t))
-							continue;
-					}
+		@Override
+		public boolean addAll(Collection<? extends Character> collection) {
+			Objects.requireNonNull(collection, "collection");
+			if (collection.isEmpty())
+				return false;
 
-					return false;
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public boolean addAll(int index, Collection<? extends Character> collection) {
+			Objects.requireNonNull(collection, "collection");
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			if (collection.isEmpty())
+				return false;
+
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public void clear() {
+			if (this.length != 0)
+				throw new UnsupportedOperationException("clear");
+		}
+
+		@Override
+		public boolean contains(Object object) {
+			if (object instanceof Character) {
+				char primitive = (char) object;
+
+				for (int i = 0; i < this.length; i++) {
+					char o = this.array[this.index + i];
+
+					if (primitive == o)
+						return true;
 				}
-
-				return i == this.array.length;
 			}
 
 			return false;
 		}
 
 		@Override
+		public boolean containsAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+
+			for0:
+			for (Object object : collection) {
+				if (object instanceof Character) {
+					char primitive = (char) object;
+
+					for (int i = 0; i < this.length; i++) {
+						char o = this.array[this.index + i];
+
+						if (primitive == o)
+							continue for0;
+					}
+				}
+
+				return false;
+			}
+
+			return true;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object)
+				return true;
+			if (object instanceof CharacterArrayList) {
+				CharacterArrayList list = (CharacterArrayList) object;
+
+				if (list.length != this.length)
+					return false;
+				if (list.array == this.array && this.index == list.index)
+					return true;
+				for (int i = 0; i < this.length; i++) {
+					char o = list.array[list.index + i];
+					char t = this.array[this.index + i];
+
+					if (o != t)
+						return false;
+				}
+
+				return true;
+			}
+			if (object instanceof List) {
+				Iterator iterator = ((Iterable) object).iterator();
+
+				int i = 0;
+				while (iterator.hasNext()) {
+					if (i < this.length) {
+						Object o = iterator.next();
+
+						if (o instanceof Character) {
+							char p = (char) o;
+							char t = this.array[this.index + i++];
+
+							if (p == t)
+								continue;
+						}
+					}
+
+					return false;
+				}
+
+				return i == this.length;
+			}
+
+			return false;
+		}
+
+		@Override
+		public void forEach(Consumer<? super Character> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			for (int i = 0; i < this.length; i++)
+				consumer.accept(this.array[this.index + i]);
+		}
+
+		@Override
 		public Character get(int index) {
-			return this.array[index];
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			return this.array[this.index + index];
 		}
 
 		@Override
 		public int hashCode() {
-			return Arrays.hashCode(this.array);
+			int hashCode = 1;
+
+			for (int i = 0; i < this.length; i++) {
+				char element = this.array[this.index + i];
+
+				hashCode = 31 * hashCode + Character.hashCode(element);
+			}
+
+			return hashCode;
+		}
+
+		@Override
+		public int indexOf(Object object) {
+			if (object instanceof Character) {
+				char primitive = (char) object;
+
+				for (int i = 0; i < this.length; i++) {
+					char o = this.array[this.index + i];
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.length == 0;
 		}
 
 		@Override
 		public CharacterArrayIterator iterator() {
-			return Arrays.iterator(this.array);
+			return new CharacterArrayIterator(0, this.index, this.length, this.array);
+		}
+
+		@Override
+		public int lastIndexOf(Object object) {
+			if (object instanceof Character) {
+				char primitive = (char) object;
+
+				for (int i = this.length - 1; i >= 0; i--) {
+					char o = this.array[this.index + i];
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
 		}
 
 		@Override
 		public CharacterArrayIterator listIterator() {
-			return Arrays.iterator(this.array);
+			return new CharacterArrayIterator(0, this.index, this.length, this.array);
 		}
 
 		@Override
 		public CharacterArrayIterator listIterator(int index) {
-			return Arrays.iterator(index, this.array);
+			return new CharacterArrayIterator(index, this.index, this.length, this.array);
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			if (object instanceof Character) {
+				char primitive = (char) object;
+
+				for (int i = 0; i < this.length; i++) {
+					char o = this.array[this.index + i];
+
+					if (primitive == o)
+						throw new UnsupportedOperationException("remove");
+				}
+			}
+
+			return false;
+		}
+
+		@Override
+		public Character remove(int index) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for (Object object : collection)
+				if (object instanceof Character) {
+					char primitive = (char) object;
+
+					for (int i = 0; i < this.length; i++) {
+						char o = this.array[this.index + i];
+
+						if (primitive == o)
+							throw new UnsupportedOperationException("removeAll");
+					}
+				}
+
+			return false;
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super Character> predicate) {
+			Objects.requireNonNull(predicate, "predicate");
+			for (int i = 0; i < this.length; i++)
+				if (predicate.test(this.array[this.index + i]))
+					throw new UnsupportedOperationException("removeIf");
+
+			return false;
+		}
+
+		@Override
+		public void replaceAll(UnaryOperator<Character> operator) {
+			Objects.requireNonNull(operator, "operator");
+			for (int i = 0; i < this.length; i++)
+				this.array[this.index + i] = operator.apply(this.array[this.index + i]);
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for0:
+			for (int i = 0; i < this.length; i++) {
+				char o = this.array[this.index + i];
+
+				for (Object object : collection)
+					if (object instanceof Character) {
+						char primitive = (char) object;
+
+						if (primitive == o)
+							continue for0;
+					}
+
+				throw new UnsupportedOperationException("retainAll");
+			}
+
+			return false;
 		}
 
 		@Override
 		public Character set(int index, Character element) {
-			Character old = this.array[index];
-			this.array[index] = element;
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			char old = this.array[this.index + index];
+			this.array[this.index + index] = element;
 			return old;
 		}
 
 		@Override
 		public int size() {
-			return this.array.length;
+			return this.length;
+		}
+
+		@Override
+		public CharacterArrayList subList(int beginIndex, int endIndex) {
+			Objects.require(beginIndex, Objects::nonNegative, IndexOutOfBoundsException.class, "beginIndex");
+			Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+			Objects.require(endIndex, this.length, Objects::nonGreater, IndexOutOfBoundsException.class, "endIndex");
+			return new CharacterArrayList(this.index + beginIndex, this.index + endIndex, this.array);
 		}
 
 		@Override
 		public Character[] toArray() {
-			return (Character[]) Arrays.copyOf0(this.array, this.array.length, Character.class);
+			return (Character[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, Character[].class);
 		}
 
 		@Override
-		public Object[] toArray(Object[] array) {
+		public <T> T[] toArray(T[] array) {
 			Objects.requireNonNull(array, "array");
 
-			if (array.length < this.array.length)
-				return (Object[]) Arrays.copyOf0(this.array, this.array.length, array.getClass());
+			if (array.length < this.length)
+				return (T[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, array.getClass());
 
-			Arrays.hardcopy(this.array, 0, array, 0, this.array.length);
+			Arrays.hardcopy(this.array, this.index, array, 0, this.length);
 
-			if (array.length > this.array.length)
-				array[this.array.length] = null;
+			if (array.length > this.length)
+				array[this.length] = null;
 
 			return array;
 		}
 
 		@Override
 		public String toString() {
-			return Arrays.toString(this.array);
+			if (this.length == 0)
+				return "[]";
+
+			StringBuilder builder = new StringBuilder("[");
+
+			int i = 0;
+			while (true) {
+				builder.append(this.array[this.index + i]);
+
+				if (++i < this.length) {
+					builder.append(", ");
+					continue;
+				}
+
+				return builder.append("]")
+						.toString();
+			}
 		}
 	}
 
@@ -8223,6 +9828,14 @@ public final class Arrays {
 		 * The backing array.
 		 */
 		private final double[] array;
+		/**
+		 * The index where the area backing the iterator in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this iterator.
+		 */
+		private final int length;
 		/**
 		 * The next index.
 		 */
@@ -8242,44 +9855,98 @@ public final class Arrays {
 		private DoubleArrayIterator(double... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
 		}
 
 		/**
 		 * Construct a new iterator backed by the given {@code array}.
 		 *
-		 * @param index the index to start iterating at.
+		 * @param index the index where the area backing the constructed iterator in the given {@code array} is starting.
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private DoubleArrayIterator(int index, double... array) {
 			Objects.requireNonNull(array, "array");
 			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.index = index;
 			this.array = array;
-			this.cursor = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code cursor < 0} or {@code index > array.length} or
+		 *                                        {@code cursor > array.length - index}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private DoubleArrayIterator(int cursor, int index, double... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, array.length - index, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.array = array;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param length the length of the constructed iterator.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code index < 0} or {@code cursor < 0} or {@code index
+		 *                                        + length > array.length} or {@code cursor > length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private DoubleArrayIterator(int cursor, int index, int length, double... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			Objects.require(cursor, length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.length = length;
+			this.array = array;
 		}
 
 		@Override
-		public void add(Double double_) {
+		public void add(Double element) {
 			throw new UnsupportedOperationException("add");
 		}
 
 		@Override
 		public boolean hasNext() {
-			return this.cursor < this.array.length;
+			return this.cursor < this.length;
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return this.cursor > -1;
+			return this.cursor > 0;
 		}
 
 		@Override
 		public Double next() {
-			if (this.cursor < this.array.length)
-				return this.array[this.last = this.cursor++];
+			int i = this.cursor++;
+
+			if (i < this.length)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -8291,8 +9958,9 @@ public final class Arrays {
 
 		@Override
 		public Double previous() {
-			if (this.cursor > -1)
-				return this.array[this.last = this.cursor--];
+			int i = --this.cursor;
+			if (i >= 0)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -8308,11 +9976,12 @@ public final class Arrays {
 		}
 
 		@Override
-		public void set(Double double_) {
-			if (this.last < 0 || this.last >= this.array.length)
+		public void set(Double element) {
+			int i = this.last;
+			if (i < 0 || i >= this.length)
 				throw new IllegalStateException();
 
-			this.array[this.last] = double_;
+			this.array[this.index + i] = element;
 		}
 	}
 
@@ -8323,119 +9992,437 @@ public final class Arrays {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static final class DoubleArrayList extends AbstractList<Double> {
-		//todo override sort, stream
+	public static final class DoubleArrayList implements List<Double>, Serializable, RandomAccess {
+		//todo sort
+
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -6034507697615689669L;
 
 		/**
-		 * The array backing this list.
+		 * The backing array.
 		 */
 		private final double[] array;
+		/**
+		 * The index where the area backing this list in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this list.
+		 */
+		private final int length;
 
 		/**
 		 * Construct a new list backed by the given {@code array}.
 		 *
-		 * @param array the array backing this list.
+		 * @param array the array backing the constructed list.
 		 * @throws NullPointerException if the given {@code array} is null.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private DoubleArrayList(double... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param array the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private DoubleArrayList(int index, double... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.array = array;
+			this.index = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index  the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param length the length of the constructed list.
+		 * @param array  the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code length < 0} or {@code index + length >
+		 *                                        array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private DoubleArrayList(int index, int length, double... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(length, Objects::nonNegative, "length");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			this.array = array;
+			this.index = index;
+			this.length = length;
 		}
 
 		@Override
-		public boolean equals(Object object) {
-			if (this == object)
-				return true;
-			if (object instanceof DoubleArrayList)
-				return Arrays.equals(((DoubleArrayList) object).array, this.array);
-			if (object instanceof List) {
-				Iterator iterator = ((Iterable) object).iterator();
+		public boolean add(Double element) {
+			throw new UnsupportedOperationException("add");
+		}
 
-				int i = 0;
-				while (iterator.hasNext()) {
-					if (i < this.array.length) {
-						Object o = iterator.next();
-						Object t = this.array[i++];
+		@Override
+		public void add(int index, Double element) {
+			Objects.require(index, Objects::nonNegative, IndexOutOfBoundsException.class, "index");
+			Objects.require(index, this.length, Objects::isLess, IndexOutOfBoundsException.class, "index");
+			throw new UnsupportedOperationException("add");
+		}
 
-						if (o == t || o != null && o.equals(t))
-							continue;
-					}
+		@Override
+		public boolean addAll(Collection<? extends Double> collection) {
+			Objects.requireNonNull(collection, "collection");
+			if (collection.isEmpty())
+				return false;
 
-					return false;
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public boolean addAll(int index, Collection<? extends Double> collection) {
+			Objects.requireNonNull(collection, "collection");
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			if (collection.isEmpty())
+				return false;
+
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public void clear() {
+			if (this.length != 0)
+				throw new UnsupportedOperationException("clear");
+		}
+
+		@Override
+		public boolean contains(Object object) {
+			if (object instanceof Double) {
+				long primitive = Double.doubleToLongBits((double) object);
+
+				for (int i = 0; i < this.length; i++) {
+					long o = Double.doubleToLongBits(this.array[this.index + i]);
+
+					if (primitive == o)
+						return true;
 				}
-
-				return i == this.array.length;
 			}
 
 			return false;
 		}
 
 		@Override
+		public boolean containsAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+
+			for0:
+			for (Object object : collection) {
+				if (object instanceof Double) {
+					long primitive = Double.doubleToLongBits((double) object);
+
+					for (int i = 0; i < this.length; i++) {
+						long o = Double.doubleToLongBits(this.array[this.index + i]);
+
+						if (primitive == o)
+							continue for0;
+					}
+				}
+
+				return false;
+			}
+
+			return true;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object)
+				return true;
+			if (object instanceof DoubleArrayList) {
+				DoubleArrayList list = (DoubleArrayList) object;
+
+				if (list.length != this.length)
+					return false;
+				if (list.array == this.array && this.index == list.index)
+					return true;
+				for (int i = 0; i < this.length; i++) {
+					long o = Double.doubleToLongBits(list.array[list.index + i]);
+					long t = Double.doubleToLongBits(this.array[this.index + i]);
+
+					if (o != t)
+						return false;
+				}
+
+				return true;
+			}
+			if (object instanceof List) {
+				Iterator iterator = ((Iterable) object).iterator();
+
+				int i = 0;
+				while (iterator.hasNext()) {
+					if (i < this.length) {
+						Object o = iterator.next();
+
+						if (o instanceof Double) {
+							long p = Double.doubleToLongBits((double) o);
+							long t = Double.doubleToLongBits(this.array[this.index + i++]);
+
+							if (p == t)
+								continue;
+						}
+					}
+
+					return false;
+				}
+
+				return i == this.length;
+			}
+
+			return false;
+		}
+
+		@Override
+		public void forEach(Consumer<? super Double> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			for (int i = 0; i < this.length; i++)
+				consumer.accept(this.array[this.index + i]);
+		}
+
+		@Override
 		public Double get(int index) {
-			return this.array[index];
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			return this.array[this.index + index];
 		}
 
 		@Override
 		public int hashCode() {
-			return Arrays.hashCode(this.array);
+			int hashCode = 1;
+
+			for (int i = 0; i < this.length; i++) {
+				double element = this.array[this.index + i];
+
+				hashCode = 31 * hashCode + Double.hashCode(element);
+			}
+
+			return hashCode;
+		}
+
+		@Override
+		public int indexOf(Object object) {
+			if (object instanceof Double) {
+				long primitive = Double.doubleToLongBits((double) object);
+
+				for (int i = 0; i < this.length; i++) {
+					long o = Double.doubleToLongBits(this.array[this.index + i]);
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.length == 0;
 		}
 
 		@Override
 		public DoubleArrayIterator iterator() {
-			return Arrays.iterator(this.array);
+			return new DoubleArrayIterator(0, this.index, this.length, this.array);
+		}
+
+		@Override
+		public int lastIndexOf(Object object) {
+			if (object instanceof Double) {
+				long primitive = Double.doubleToLongBits((double) object);
+
+				for (int i = this.length - 1; i >= 0; i--) {
+					long o = Double.doubleToLongBits(this.array[this.index + i]);
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
 		}
 
 		@Override
 		public DoubleArrayIterator listIterator() {
-			return Arrays.iterator(this.array);
+			return new DoubleArrayIterator(0, this.index, this.length, this.array);
 		}
 
 		@Override
 		public DoubleArrayIterator listIterator(int index) {
-			return Arrays.iterator(index, this.array);
+			return new DoubleArrayIterator(index, this.index, this.length, this.array);
+		}
+
+		@Override
+		public Stream<Double> parallelStream() {
+			return Arrays.stream(this.array, this.index, this.index + this.length).parallel().boxed();
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			if (object instanceof Double) {
+				long primitive = Double.doubleToLongBits((double) object);
+
+				for (int i = 0; i < this.length; i++) {
+					long o = Double.doubleToLongBits(this.array[this.index + i]);
+
+					if (primitive == o)
+						throw new UnsupportedOperationException("remove");
+				}
+			}
+
+			return false;
+		}
+
+		@Override
+		public Double remove(int index) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for (Object object : collection)
+				if (object instanceof Double) {
+					long primitive = Double.doubleToLongBits((double) object);
+
+					for (int i = 0; i < this.length; i++) {
+						long o = Double.doubleToLongBits(this.array[this.index + i]);
+
+						if (primitive == o)
+							throw new UnsupportedOperationException("removeAll");
+					}
+				}
+
+			return false;
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super Double> predicate) {
+			Objects.requireNonNull(predicate, "predicate");
+			for (int i = 0; i < this.length; i++)
+				if (predicate.test(this.array[this.index + i]))
+					throw new UnsupportedOperationException("removeIf");
+
+			return false;
+		}
+
+		@Override
+		public void replaceAll(UnaryOperator<Double> operator) {
+			Objects.requireNonNull(operator, "operator");
+			for (int i = 0; i < this.length; i++)
+				this.array[this.index + i] = operator.apply(this.array[this.index + i]);
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for0:
+			for (int i = 0; i < this.length; i++) {
+				long o = Double.doubleToLongBits(this.array[this.index + i]);
+
+				for (Object object : collection)
+					if (object instanceof Double) {
+						long primitive = Double.doubleToLongBits((double) object);
+
+						if (primitive == o)
+							continue for0;
+					}
+
+				throw new UnsupportedOperationException("retainAll");
+			}
+
+			return false;
 		}
 
 		@Override
 		public Double set(int index, Double element) {
-			Double old = this.array[index];
-			this.array[index] = element;
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			double old = this.array[this.index + index];
+			this.array[this.index + index] = element;
 			return old;
 		}
 
 		@Override
 		public int size() {
-			return this.array.length;
+			return this.length;
 		}
 
 		@Override
 		public Spliterator.OfDouble spliterator() {
-			return Arrays.spliterator(this.array);
+			return Arrays.spliterator(this.array, this.index, this.index + this.length);
+		}
+
+		@Override
+		public Stream<Double> stream() {
+			return Arrays.stream(this.array, this.index, this.index + this.length).boxed();
+		}
+
+		@Override
+		public DoubleArrayList subList(int beginIndex, int endIndex) {
+			Objects.require(beginIndex, Objects::nonNegative, IndexOutOfBoundsException.class, "beginIndex");
+			Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+			Objects.require(endIndex, this.length, Objects::nonGreater, IndexOutOfBoundsException.class, "endIndex");
+			return new DoubleArrayList(this.index + beginIndex, this.index + endIndex, this.array);
 		}
 
 		@Override
 		public Double[] toArray() {
-			return (Double[]) Arrays.copyOf0(this.array, this.array.length, Double[].class);
+			return (Double[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, Double[].class);
 		}
 
 		@Override
-		public Object[] toArray(Object[] array) {
+		public <T> T[] toArray(T[] array) {
 			Objects.requireNonNull(array, "array");
 
-			if (array.length < this.array.length)
-				return (Object[]) Arrays.copyOf0(this.array, this.array.length, array.getClass());
+			if (array.length < this.length)
+				return (T[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, array.getClass());
 
-			Arrays.hardcopy(this.array, 0, array, 0, this.array.length);
+			Arrays.hardcopy(this.array, this.index, array, 0, this.length);
 
-			if (array.length > this.array.length)
-				array[this.array.length] = null;
+			if (array.length > this.length)
+				array[this.length] = null;
 
 			return array;
 		}
 
 		@Override
 		public String toString() {
-			return Arrays.toString(this.array);
+			if (this.length == 0)
+				return "[]";
+
+			StringBuilder builder = new StringBuilder("[");
+
+			int i = 0;
+			while (true) {
+				builder.append(this.array[this.index + i]);
+
+				if (++i < this.length) {
+					builder.append(", ");
+					continue;
+				}
+
+				return builder.append("]")
+						.toString();
+			}
 		}
 	}
 
@@ -8451,6 +10438,14 @@ public final class Arrays {
 		 * The backing array.
 		 */
 		private final float[] array;
+		/**
+		 * The index where the area backing the iterator in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this iterator.
+		 */
+		private final int length;
 		/**
 		 * The next index.
 		 */
@@ -8470,44 +10465,98 @@ public final class Arrays {
 		private FloatArrayIterator(float... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
 		}
 
 		/**
 		 * Construct a new iterator backed by the given {@code array}.
 		 *
-		 * @param index the index to start iterating at.
+		 * @param index the index where the area backing the constructed iterator in the given {@code array} is starting.
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private FloatArrayIterator(int index, float... array) {
 			Objects.requireNonNull(array, "array");
 			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.index = index;
 			this.array = array;
-			this.cursor = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code cursor < 0} or {@code index > array.length} or
+		 *                                        {@code cursor > array.length - index}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private FloatArrayIterator(int cursor, int index, float... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, array.length - index, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.array = array;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param length the length of the constructed iterator.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code index < 0} or {@code cursor < 0} or {@code index
+		 *                                        + length > array.length} or {@code cursor > length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private FloatArrayIterator(int cursor, int index, int length, float... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			Objects.require(cursor, length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.length = length;
+			this.array = array;
 		}
 
 		@Override
-		public void add(Float float_) {
+		public void add(Float element) {
 			throw new UnsupportedOperationException("add");
 		}
 
 		@Override
 		public boolean hasNext() {
-			return this.cursor < this.array.length;
+			return this.cursor < this.length;
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return this.cursor > -1;
+			return this.cursor > 0;
 		}
 
 		@Override
 		public Float next() {
-			if (this.cursor < this.array.length)
-				return this.array[this.last = this.cursor++];
+			int i = this.cursor++;
+
+			if (i < this.length)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -8519,8 +10568,9 @@ public final class Arrays {
 
 		@Override
 		public Float previous() {
-			if (this.cursor > -1)
-				return this.array[this.last = this.cursor--];
+			int i = --this.cursor;
+			if (i >= 0)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -8536,11 +10586,12 @@ public final class Arrays {
 		}
 
 		@Override
-		public void set(Float float_) {
-			if (this.last < 0 || this.last >= this.array.length)
+		public void set(Float element) {
+			int i = this.last;
+			if (i < 0 || i >= this.length)
 				throw new IllegalStateException();
 
-			this.array[this.last] = float_;
+			this.array[this.index + i] = element;
 		}
 	}
 
@@ -8551,114 +10602,422 @@ public final class Arrays {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static final class FloatArrayList extends AbstractList<Float> {
-		//todo override sort, spliterator, stream
+	public static final class FloatArrayList implements List<Float>, Serializable, RandomAccess {
+		//todo parallelStream | sort | spliterator | stream
+
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -5661810328133608920L;
 
 		/**
-		 * The array backing this list.
+		 * The backing array.
 		 */
 		private final float[] array;
+		/**
+		 * The index where the area backing this list in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this list.
+		 */
+		private final int length;
 
 		/**
 		 * Construct a new list backed by the given {@code array}.
 		 *
-		 * @param array the array backing this list.
+		 * @param array the array backing the constructed list.
 		 * @throws NullPointerException if the given {@code array} is null.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private FloatArrayList(float... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param array the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private FloatArrayList(int index, float... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.array = array;
+			this.index = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index  the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param length the length of the constructed list.
+		 * @param array  the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code length < 0} or {@code index + length >
+		 *                                        array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private FloatArrayList(int index, int length, float... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(length, Objects::nonNegative, "length");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			this.array = array;
+			this.index = index;
+			this.length = length;
 		}
 
 		@Override
-		public boolean equals(Object object) {
-			if (this == object)
-				return true;
-			if (object instanceof FloatArrayList)
-				return Arrays.equals(((FloatArrayList) object).array, this.array);
-			if (object instanceof List) {
-				Iterator iterator = ((Iterable) object).iterator();
+		public boolean add(Float element) {
+			throw new UnsupportedOperationException("add");
+		}
 
-				int i = 0;
-				while (iterator.hasNext()) {
-					if (i < this.array.length) {
-						Object o = iterator.next();
-						Object t = this.array[i++];
+		@Override
+		public void add(int index, Float element) {
+			Objects.require(index, Objects::nonNegative, IndexOutOfBoundsException.class, "index");
+			Objects.require(index, this.length, Objects::isLess, IndexOutOfBoundsException.class, "index");
+			throw new UnsupportedOperationException("add");
+		}
 
-						if (o == t || o != null && o.equals(t))
-							continue;
-					}
+		@Override
+		public boolean addAll(Collection<? extends Float> collection) {
+			Objects.requireNonNull(collection, "collection");
+			if (collection.isEmpty())
+				return false;
 
-					return false;
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public boolean addAll(int index, Collection<? extends Float> collection) {
+			Objects.requireNonNull(collection, "collection");
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			if (collection.isEmpty())
+				return false;
+
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public void clear() {
+			if (this.length != 0)
+				throw new UnsupportedOperationException("clear");
+		}
+
+		@Override
+		public boolean contains(Object object) {
+			if (object instanceof Float) {
+				int primitive = Float.floatToIntBits((float) object);
+
+				for (int i = 0; i < this.length; i++) {
+					int o = Float.floatToIntBits(this.array[this.index + i]);
+
+					if (primitive == o)
+						return true;
 				}
-
-				return i == this.array.length;
 			}
 
 			return false;
 		}
 
 		@Override
+		public boolean containsAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+
+			for0:
+			for (Object object : collection) {
+				if (object instanceof Float) {
+					int primitive = Float.floatToIntBits((float) object);
+
+					for (int i = 0; i < this.length; i++) {
+						int o = Float.floatToIntBits(this.array[this.index + i]);
+
+						if (primitive == o)
+							continue for0;
+					}
+				}
+
+				return false;
+			}
+
+			return true;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object)
+				return true;
+			if (object instanceof FloatArrayList) {
+				FloatArrayList list = (FloatArrayList) object;
+
+				if (list.length != this.length)
+					return false;
+				if (list.array == this.array && this.index == list.index)
+					return true;
+				for (int i = 0; i < this.length; i++) {
+					int o = Float.floatToIntBits(list.array[list.index + i]);
+					int t = Float.floatToIntBits(this.array[this.index + i]);
+
+					if (o != t)
+						return false;
+				}
+
+				return true;
+			}
+			if (object instanceof List) {
+				Iterator iterator = ((Iterable) object).iterator();
+
+				int i = 0;
+				while (iterator.hasNext()) {
+					if (i < this.length) {
+						Object o = iterator.next();
+
+						if (o instanceof Float) {
+							int p = Float.floatToIntBits((float) o);
+							int t = Float.floatToIntBits(this.array[this.index + i++]);
+
+							if (p == t)
+								continue;
+						}
+					}
+
+					return false;
+				}
+
+				return i == this.length;
+			}
+
+			return false;
+		}
+
+		@Override
+		public void forEach(Consumer<? super Float> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			for (int i = 0; i < this.length; i++)
+				consumer.accept(this.array[this.index + i]);
+		}
+
+		@Override
 		public Float get(int index) {
-			return this.array[index];
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			return this.array[this.index + index];
 		}
 
 		@Override
 		public int hashCode() {
-			return Arrays.hashCode(this.array);
+			int hashCode = 1;
+
+			for (int i = 0; i < this.length; i++) {
+				float element = this.array[this.index + i];
+
+				hashCode = 31 * hashCode + Float.hashCode(element);
+			}
+
+			return hashCode;
+		}
+
+		@Override
+		public int indexOf(Object object) {
+			if (object instanceof Float) {
+				int primitive = Float.floatToIntBits((float) object);
+
+				for (int i = 0; i < this.length; i++) {
+					int o = Float.floatToIntBits(this.array[this.index + i]);
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.length == 0;
 		}
 
 		@Override
 		public FloatArrayIterator iterator() {
-			return Arrays.iterator(this.array);
+			return new FloatArrayIterator(0, this.index, this.length, this.array);
+		}
+
+		@Override
+		public int lastIndexOf(Object object) {
+			if (object instanceof Float) {
+				int primitive = Float.floatToIntBits((float) object);
+
+				for (int i = this.length - 1; i >= 0; i--) {
+					int o = Float.floatToIntBits(this.array[this.index + i]);
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
 		}
 
 		@Override
 		public FloatArrayIterator listIterator() {
-			return Arrays.iterator(this.array);
+			return new FloatArrayIterator(0, this.index, this.length, this.array);
 		}
 
 		@Override
 		public FloatArrayIterator listIterator(int index) {
-			return Arrays.iterator(index, this.array);
+			return new FloatArrayIterator(index, this.index, this.length, this.array);
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			if (object instanceof Float) {
+				int primitive = Float.floatToIntBits((float) object);
+
+				for (int i = 0; i < this.length; i++) {
+					int o = Float.floatToIntBits(this.array[this.index + i]);
+
+					if (primitive == o)
+						throw new UnsupportedOperationException("remove");
+				}
+			}
+
+			return false;
+		}
+
+		@Override
+		public Float remove(int index) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for (Object object : collection)
+				if (object instanceof Float) {
+					int primitive = Float.floatToIntBits((float) object);
+
+					for (int i = 0; i < this.length; i++) {
+						int o = Float.floatToIntBits(this.array[this.index + i]);
+
+						if (primitive == o)
+							throw new UnsupportedOperationException("removeAll");
+					}
+				}
+
+			return false;
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super Float> predicate) {
+			Objects.requireNonNull(predicate, "predicate");
+			for (int i = 0; i < this.length; i++)
+				if (predicate.test(this.array[this.index + i]))
+					throw new UnsupportedOperationException("removeIf");
+
+			return false;
+		}
+
+		@Override
+		public void replaceAll(UnaryOperator<Float> operator) {
+			Objects.requireNonNull(operator, "operator");
+			for (int i = 0; i < this.length; i++)
+				this.array[this.index + i] = operator.apply(this.array[this.index + i]);
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for0:
+			for (int i = 0; i < this.length; i++) {
+				int o = Float.floatToIntBits(this.array[this.index + i]);
+
+				for (Object object : collection)
+					if (object instanceof Float) {
+						int primitive = Float.floatToIntBits((float) object);
+
+						if (primitive == o)
+							continue for0;
+					}
+
+				throw new UnsupportedOperationException("retainAll");
+			}
+
+			return false;
 		}
 
 		@Override
 		public Float set(int index, Float element) {
-			Float old = this.array[index];
-			this.array[index] = element;
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			float old = this.array[this.index + index];
+			this.array[this.index + index] = element;
 			return old;
 		}
 
 		@Override
 		public int size() {
-			return this.array.length;
+			return this.length;
+		}
+
+		@Override
+		public FloatArrayList subList(int beginIndex, int endIndex) {
+			Objects.require(beginIndex, Objects::nonNegative, IndexOutOfBoundsException.class, "beginIndex");
+			Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+			Objects.require(endIndex, this.length, Objects::nonGreater, IndexOutOfBoundsException.class, "endIndex");
+			return new FloatArrayList(this.index + beginIndex, this.index + endIndex, this.array);
 		}
 
 		@Override
 		public Float[] toArray() {
-			return (Float[]) Arrays.copyOf0(this.array, this.array.length, Float[].class);
+			return (Float[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, Float[].class);
 		}
 
 		@Override
-		public Object[] toArray(Object[] array) {
+		public <T> T[] toArray(T[] array) {
 			Objects.requireNonNull(array, "array");
 
-			if (array.length < this.array.length)
-				return (Object[]) Arrays.copyOf0(this.array, this.array.length, array.getClass());
+			if (array.length < this.length)
+				return (T[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, array.getClass());
 
-			Arrays.hardcopy(this.array, 0, array, 0, this.array.length);
+			Arrays.hardcopy(this.array, this.index, array, 0, this.length);
 
-			if (array.length > this.array.length)
-				array[this.array.length] = null;
+			if (array.length > this.length)
+				array[this.length] = null;
 
 			return array;
 		}
 
 		@Override
 		public String toString() {
-			return Arrays.toString(this.array);
+			if (this.length == 0)
+				return "[]";
+
+			StringBuilder builder = new StringBuilder("[");
+
+			int i = 0;
+			while (true) {
+				builder.append(this.array[this.index + i]);
+
+				if (++i < this.length) {
+					builder.append(", ");
+					continue;
+				}
+
+				return builder.append("]")
+						.toString();
+			}
 		}
 	}
 
@@ -8674,6 +11033,14 @@ public final class Arrays {
 		 * The backing array.
 		 */
 		private final int[] array;
+		/**
+		 * The index where the area backing the iterator in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this iterator.
+		 */
+		private final int length;
 		/**
 		 * The next index.
 		 */
@@ -8693,44 +11060,98 @@ public final class Arrays {
 		private IntegerArrayIterator(int... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
 		}
 
 		/**
 		 * Construct a new iterator backed by the given {@code array}.
 		 *
-		 * @param index the index to start iterating at.
+		 * @param index the index where the area backing the constructed iterator in the given {@code array} is starting.
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private IntegerArrayIterator(int index, int... array) {
 			Objects.requireNonNull(array, "array");
 			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.index = index;
 			this.array = array;
-			this.cursor = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code cursor < 0} or {@code index > array.length} or
+		 *                                        {@code cursor > array.length - index}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private IntegerArrayIterator(int cursor, int index, int... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, array.length - index, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.array = array;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param length the length of the constructed iterator.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code index < 0} or {@code cursor < 0} or {@code index
+		 *                                        + length > array.length} or {@code cursor > length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private IntegerArrayIterator(int cursor, int index, int length, int... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			Objects.require(cursor, length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.length = length;
+			this.array = array;
 		}
 
 		@Override
-		public void add(Integer integer) {
+		public void add(Integer element) {
 			throw new UnsupportedOperationException("add");
 		}
 
 		@Override
 		public boolean hasNext() {
-			return this.cursor < this.array.length;
+			return this.cursor < this.length;
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return this.cursor > -1;
+			return this.cursor > 0;
 		}
 
 		@Override
 		public Integer next() {
-			if (this.cursor < this.array.length)
-				return this.array[this.last = this.cursor++];
+			int i = this.cursor++;
+
+			if (i < this.length)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -8742,8 +11163,9 @@ public final class Arrays {
 
 		@Override
 		public Integer previous() {
-			if (this.cursor > -1)
-				return this.array[this.last = this.cursor--];
+			int i = --this.cursor;
+			if (i >= 0)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -8759,11 +11181,12 @@ public final class Arrays {
 		}
 
 		@Override
-		public void set(Integer integer) {
-			if (this.last < 0 || this.last >= this.array.length)
+		public void set(Integer element) {
+			int i = this.last;
+			if (i < 0 || i >= this.length)
 				throw new IllegalStateException();
 
-			this.array[this.last] = integer;
+			this.array[this.index + i] = element;
 		}
 	}
 
@@ -8774,119 +11197,437 @@ public final class Arrays {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static final class IntegerArrayList extends AbstractList<Integer> {
-		//todo override sort, stream
+	public static final class IntegerArrayList implements List<Integer>, Serializable, RandomAccess {
+		//todo sort
+
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -2978154255439047934L;
 
 		/**
-		 * The array backing this list.
+		 * The backing array.
 		 */
 		private final int[] array;
+		/**
+		 * The index where the area backing this list in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this list.
+		 */
+		private final int length;
 
 		/**
 		 * Construct a new list backed by the given {@code array}.
 		 *
-		 * @param array the array backing this list.
+		 * @param array the array backing the constructed list.
 		 * @throws NullPointerException if the given {@code array} is null.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private IntegerArrayList(int... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param array the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private IntegerArrayList(int index, int... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.array = array;
+			this.index = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index  the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param length the length of the constructed list.
+		 * @param array  the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code length < 0} or {@code index + length >
+		 *                                        array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private IntegerArrayList(int index, int length, int... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(length, Objects::nonNegative, "length");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			this.array = array;
+			this.index = index;
+			this.length = length;
 		}
 
 		@Override
-		public boolean equals(Object object) {
-			if (this == object)
-				return true;
-			if (object instanceof IntegerArrayList)
-				return Arrays.equals(((IntegerArrayList) object).array, this.array);
-			if (object instanceof List) {
-				Iterator iterator = ((Iterable) object).iterator();
+		public boolean add(Integer element) {
+			throw new UnsupportedOperationException("add");
+		}
 
-				int i = 0;
-				while (iterator.hasNext()) {
-					if (i < this.array.length) {
-						Object o = iterator.next();
-						Object t = this.array[i++];
+		@Override
+		public void add(int index, Integer element) {
+			Objects.require(index, Objects::nonNegative, IndexOutOfBoundsException.class, "index");
+			Objects.require(index, this.length, Objects::isLess, IndexOutOfBoundsException.class, "index");
+			throw new UnsupportedOperationException("add");
+		}
 
-						if (o == t || o != null && o.equals(t))
-							continue;
-					}
+		@Override
+		public boolean addAll(Collection<? extends Integer> collection) {
+			Objects.requireNonNull(collection, "collection");
+			if (collection.isEmpty())
+				return false;
 
-					return false;
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public boolean addAll(int index, Collection<? extends Integer> collection) {
+			Objects.requireNonNull(collection, "collection");
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			if (collection.isEmpty())
+				return false;
+
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public void clear() {
+			if (this.length != 0)
+				throw new UnsupportedOperationException("clear");
+		}
+
+		@Override
+		public boolean contains(Object object) {
+			if (object instanceof Integer) {
+				int primitive = (int) object;
+
+				for (int i = 0; i < this.length; i++) {
+					int o = this.array[this.index + i];
+
+					if (primitive == o)
+						return true;
 				}
-
-				return i == this.array.length;
 			}
 
 			return false;
 		}
 
 		@Override
+		public boolean containsAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+
+			for0:
+			for (Object object : collection) {
+				if (object instanceof Integer) {
+					int primitive = (int) object;
+
+					for (int i = 0; i < this.length; i++) {
+						int o = this.array[this.index + i];
+
+						if (primitive == o)
+							continue for0;
+					}
+				}
+
+				return false;
+			}
+
+			return true;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object)
+				return true;
+			if (object instanceof IntegerArrayList) {
+				IntegerArrayList list = (IntegerArrayList) object;
+
+				if (list.length != this.length)
+					return false;
+				if (list.array == this.array && this.index == list.index)
+					return true;
+				for (int i = 0; i < this.length; i++) {
+					int o = list.array[list.index + i];
+					int t = this.array[this.index + i];
+
+					if (o != t)
+						return false;
+				}
+
+				return true;
+			}
+			if (object instanceof List) {
+				Iterator iterator = ((Iterable) object).iterator();
+
+				int i = 0;
+				while (iterator.hasNext()) {
+					if (i < this.length) {
+						Object o = iterator.next();
+
+						if (o instanceof Integer) {
+							int p = (int) o;
+							int t = this.array[this.index + i++];
+
+							if (p == t)
+								continue;
+						}
+					}
+
+					return false;
+				}
+
+				return i == this.length;
+			}
+
+			return false;
+		}
+
+		@Override
+		public void forEach(Consumer<? super Integer> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			for (int i = 0; i < this.length; i++)
+				consumer.accept(this.array[this.index + i]);
+		}
+
+		@Override
 		public Integer get(int index) {
-			return this.array[index];
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			return this.array[this.index + index];
 		}
 
 		@Override
 		public int hashCode() {
-			return Arrays.hashCode(this.array);
+			int hashCode = 1;
+
+			for (int i = 0; i < this.length; i++) {
+				int element = this.array[this.index + i];
+
+				hashCode = 31 * hashCode + Integer.hashCode(element);
+			}
+
+			return hashCode;
+		}
+
+		@Override
+		public int indexOf(Object object) {
+			if (object instanceof Integer) {
+				int primitive = (int) object;
+
+				for (int i = 0; i < this.length; i++) {
+					int o = this.array[this.index + i];
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.length == 0;
 		}
 
 		@Override
 		public IntegerArrayIterator iterator() {
-			return Arrays.iterator(this.array);
+			return new IntegerArrayIterator(0, this.index, this.length, this.array);
+		}
+
+		@Override
+		public int lastIndexOf(Object object) {
+			if (object instanceof Integer) {
+				int primitive = (int) object;
+
+				for (int i = this.length - 1; i >= 0; i--) {
+					int o = this.array[this.index + i];
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
 		}
 
 		@Override
 		public IntegerArrayIterator listIterator() {
-			return Arrays.iterator(this.array);
+			return new IntegerArrayIterator(0, this.index, this.length, this.array);
 		}
 
 		@Override
 		public IntegerArrayIterator listIterator(int index) {
-			return Arrays.iterator(index, this.array);
+			return new IntegerArrayIterator(index, this.index, this.length, this.array);
+		}
+
+		@Override
+		public Stream<Integer> parallelStream() {
+			return Arrays.stream(this.array, this.index, this.index + this.length).parallel().boxed();
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			if (object instanceof Integer) {
+				int primitive = (int) object;
+
+				for (int i = 0; i < this.length; i++) {
+					int o = this.array[this.index + i];
+
+					if (primitive == o)
+						throw new UnsupportedOperationException("remove");
+				}
+			}
+
+			return false;
+		}
+
+		@Override
+		public Integer remove(int index) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for (Object object : collection)
+				if (object instanceof Integer) {
+					int primitive = (int) object;
+
+					for (int i = 0; i < this.length; i++) {
+						int o = this.array[this.index + i];
+
+						if (primitive == o)
+							throw new UnsupportedOperationException("removeAll");
+					}
+				}
+
+			return false;
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super Integer> predicate) {
+			Objects.requireNonNull(predicate, "predicate");
+			for (int i = 0; i < this.length; i++)
+				if (predicate.test(this.array[this.index + i]))
+					throw new UnsupportedOperationException("removeIf");
+
+			return false;
+		}
+
+		@Override
+		public void replaceAll(UnaryOperator<Integer> operator) {
+			Objects.requireNonNull(operator, "operator");
+			for (int i = 0; i < this.length; i++)
+				this.array[this.index + i] = operator.apply(this.array[this.index + i]);
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for0:
+			for (int i = 0; i < this.length; i++) {
+				int o = this.array[this.index + i];
+
+				for (Object object : collection)
+					if (object instanceof Integer) {
+						int primitive = (int) object;
+
+						if (primitive == o)
+							continue for0;
+					}
+
+				throw new UnsupportedOperationException("retainAll");
+			}
+
+			return false;
 		}
 
 		@Override
 		public Integer set(int index, Integer element) {
-			Integer old = this.array[index];
-			this.array[index] = element;
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			int old = this.array[this.index + index];
+			this.array[this.index + index] = element;
 			return old;
 		}
 
 		@Override
 		public int size() {
-			return this.array.length;
+			return this.length;
 		}
 
 		@Override
 		public Spliterator.OfInt spliterator() {
-			return Arrays.spliterator(this.array);
+			return Arrays.spliterator(this.array, this.index, this.index + this.length);
+		}
+
+		@Override
+		public Stream<Integer> stream() {
+			return Arrays.stream(this.array, this.index, this.index + this.length).boxed();
+		}
+
+		@Override
+		public IntegerArrayList subList(int beginIndex, int endIndex) {
+			Objects.require(beginIndex, Objects::nonNegative, IndexOutOfBoundsException.class, "beginIndex");
+			Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+			Objects.require(endIndex, this.length, Objects::nonGreater, IndexOutOfBoundsException.class, "endIndex");
+			return new IntegerArrayList(this.index + beginIndex, this.index + endIndex, this.array);
 		}
 
 		@Override
 		public Integer[] toArray() {
-			return (Integer[]) Arrays.copyOf0(this.array, this.array.length, Integer[].class);
+			return (Integer[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, Integer[].class);
 		}
 
 		@Override
-		public Object[] toArray(Object[] array) {
+		public <T> T[] toArray(T[] array) {
 			Objects.requireNonNull(array, "array");
 
-			if (array.length < this.array.length)
-				return (Object[]) Arrays.copyOf0(this.array, this.array.length, array.getClass());
+			if (array.length < this.length)
+				return (T[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, array.getClass());
 
-			Arrays.hardcopy(this.array, 0, array, 0, this.array.length);
+			Arrays.hardcopy(this.array, this.index, array, 0, this.length);
 
-			if (array.length > this.array.length)
-				array[this.array.length] = null;
+			if (array.length > this.length)
+				array[this.length] = null;
 
 			return array;
 		}
 
 		@Override
 		public String toString() {
-			return Arrays.toString(this.array);
+			if (this.length == 0)
+				return "[]";
+
+			StringBuilder builder = new StringBuilder("[");
+
+			int i = 0;
+			while (true) {
+				builder.append(this.array[this.index + i]);
+
+				if (++i < this.length) {
+					builder.append(", ");
+					continue;
+				}
+
+				return builder.append("]")
+						.toString();
+			}
 		}
 	}
 
@@ -8902,6 +11643,14 @@ public final class Arrays {
 		 * The backing array.
 		 */
 		private final long[] array;
+		/**
+		 * The index where the area backing the iterator in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this iterator.
+		 */
+		private final int length;
 		/**
 		 * The next index.
 		 */
@@ -8921,44 +11670,98 @@ public final class Arrays {
 		private LongArrayIterator(long... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
 		}
 
 		/**
 		 * Construct a new iterator backed by the given {@code array}.
 		 *
-		 * @param index the index to start iterating at.
+		 * @param index the index where the area backing the constructed iterator in the given {@code array} is starting.
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private LongArrayIterator(int index, long... array) {
 			Objects.requireNonNull(array, "array");
 			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.index = index;
 			this.array = array;
-			this.cursor = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code cursor < 0} or {@code index > array.length} or
+		 *                                        {@code cursor > array.length - index}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private LongArrayIterator(int cursor, int index, long... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, array.length - index, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.array = array;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param length the length of the constructed iterator.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code index < 0} or {@code cursor < 0} or {@code index
+		 *                                        + length > array.length} or {@code cursor > length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private LongArrayIterator(int cursor, int index, int length, long... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			Objects.require(cursor, length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.length = length;
+			this.array = array;
 		}
 
 		@Override
-		public void add(Long long_) {
+		public void add(Long element) {
 			throw new UnsupportedOperationException("add");
 		}
 
 		@Override
 		public boolean hasNext() {
-			return this.cursor < this.array.length;
+			return this.cursor < this.length;
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return this.cursor > -1;
+			return this.cursor > 0;
 		}
 
 		@Override
 		public Long next() {
-			if (this.cursor < this.array.length)
-				return this.array[this.last = this.cursor++];
+			int i = this.cursor++;
+
+			if (i < this.length)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -8970,8 +11773,9 @@ public final class Arrays {
 
 		@Override
 		public Long previous() {
-			if (this.cursor > -1)
-				return this.array[this.last = this.cursor--];
+			int i = --this.cursor;
+			if (i >= 0)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -8987,11 +11791,12 @@ public final class Arrays {
 		}
 
 		@Override
-		public void set(Long long_) {
-			if (this.last < 0 || this.last >= this.array.length)
+		public void set(Long element) {
+			int i = this.last;
+			if (i < 0 || i >= this.length)
 				throw new IllegalStateException();
 
-			this.array[this.last] = long_;
+			this.array[this.index + i] = element;
 		}
 	}
 
@@ -9002,119 +11807,437 @@ public final class Arrays {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static final class LongArrayList extends AbstractList<Long> {
-		//todo override sort, stream
+	public static final class LongArrayList implements List<Long>, Serializable, RandomAccess {
+		//todo sort
+
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = 736277981288898776L;
 
 		/**
-		 * The array backing this list.
+		 * The backing array.
 		 */
 		private final long[] array;
+		/**
+		 * The index where the area backing this list in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this list.
+		 */
+		private final int length;
 
 		/**
 		 * Construct a new list backed by the given {@code array}.
 		 *
-		 * @param array the array backing this list.
+		 * @param array the array backing the constructed list.
 		 * @throws NullPointerException if the given {@code array} is null.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private LongArrayList(long... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param array the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private LongArrayList(int index, long... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.array = array;
+			this.index = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index  the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param length the length of the constructed list.
+		 * @param array  the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code length < 0} or {@code index + length >
+		 *                                        array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private LongArrayList(int index, int length, long... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(length, Objects::nonNegative, "length");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			this.array = array;
+			this.index = index;
+			this.length = length;
 		}
 
 		@Override
-		public boolean equals(Object object) {
-			if (this == object)
-				return true;
-			if (object instanceof LongArrayList)
-				return Arrays.equals(((LongArrayList) object).array, this.array);
-			if (object instanceof List) {
-				Iterator iterator = ((Iterable) object).iterator();
+		public boolean add(Long element) {
+			throw new UnsupportedOperationException("add");
+		}
 
-				int i = 0;
-				while (iterator.hasNext()) {
-					if (i < this.array.length) {
-						Object o = iterator.next();
-						Object t = this.array[i++];
+		@Override
+		public void add(int index, Long element) {
+			Objects.require(index, Objects::nonNegative, IndexOutOfBoundsException.class, "index");
+			Objects.require(index, this.length, Objects::isLess, IndexOutOfBoundsException.class, "index");
+			throw new UnsupportedOperationException("add");
+		}
 
-						if (o == t || o != null && o.equals(t))
-							continue;
-					}
+		@Override
+		public boolean addAll(Collection<? extends Long> collection) {
+			Objects.requireNonNull(collection, "collection");
+			if (collection.isEmpty())
+				return false;
 
-					return false;
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public boolean addAll(int index, Collection<? extends Long> collection) {
+			Objects.requireNonNull(collection, "collection");
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			if (collection.isEmpty())
+				return false;
+
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public void clear() {
+			if (this.length != 0)
+				throw new UnsupportedOperationException("clear");
+		}
+
+		@Override
+		public boolean contains(Object object) {
+			if (object instanceof Long) {
+				long primitive = (long) object;
+
+				for (int i = 0; i < this.length; i++) {
+					long o = this.array[this.index + i];
+
+					if (primitive == o)
+						return true;
 				}
-
-				return i == this.array.length;
 			}
 
 			return false;
 		}
 
 		@Override
+		public boolean containsAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+
+			for0:
+			for (Object object : collection) {
+				if (object instanceof Long) {
+					long primitive = (long) object;
+
+					for (int i = 0; i < this.length; i++) {
+						long o = this.array[this.index + i];
+
+						if (primitive == o)
+							continue for0;
+					}
+				}
+
+				return false;
+			}
+
+			return true;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object)
+				return true;
+			if (object instanceof LongArrayList) {
+				LongArrayList list = (LongArrayList) object;
+
+				if (list.length != this.length)
+					return false;
+				if (list.array == this.array && this.index == list.index)
+					return true;
+				for (int i = 0; i < this.length; i++) {
+					long o = list.array[list.index + i];
+					long t = this.array[this.index + i];
+
+					if (o != t)
+						return false;
+				}
+
+				return true;
+			}
+			if (object instanceof List) {
+				Iterator iterator = ((Iterable) object).iterator();
+
+				int i = 0;
+				while (iterator.hasNext()) {
+					if (i < this.length) {
+						Object o = iterator.next();
+
+						if (o instanceof Long) {
+							long p = (long) o;
+							long t = this.array[this.index + i++];
+
+							if (p == t)
+								continue;
+						}
+					}
+
+					return false;
+				}
+
+				return i == this.length;
+			}
+
+			return false;
+		}
+
+		@Override
+		public void forEach(Consumer<? super Long> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			for (int i = 0; i < this.length; i++)
+				consumer.accept(this.array[this.index + i]);
+		}
+
+		@Override
 		public Long get(int index) {
-			return this.array[index];
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			return this.array[this.index + index];
 		}
 
 		@Override
 		public int hashCode() {
-			return Arrays.hashCode(this.array);
+			int hashCode = 1;
+
+			for (int i = 0; i < this.length; i++) {
+				long element = this.array[this.index + i];
+
+				hashCode = 31 * hashCode + Long.hashCode(element);
+			}
+
+			return hashCode;
+		}
+
+		@Override
+		public int indexOf(Object object) {
+			if (object instanceof Long) {
+				long primitive = (long) object;
+
+				for (int i = 0; i < this.length; i++) {
+					long o = this.array[this.index + i];
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.length == 0;
 		}
 
 		@Override
 		public LongArrayIterator iterator() {
-			return Arrays.iterator(this.array);
+			return new LongArrayIterator(0, this.index, this.length, this.array);
+		}
+
+		@Override
+		public int lastIndexOf(Object object) {
+			if (object instanceof Long) {
+				long primitive = (long) object;
+
+				for (int i = this.length - 1; i >= 0; i--) {
+					long o = this.array[this.index + i];
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
 		}
 
 		@Override
 		public LongArrayIterator listIterator() {
-			return Arrays.iterator(this.array);
+			return new LongArrayIterator(0, this.index, this.length, this.array);
 		}
 
 		@Override
 		public LongArrayIterator listIterator(int index) {
-			return Arrays.iterator(index, this.array);
+			return new LongArrayIterator(index, this.index, this.length, this.array);
+		}
+
+		@Override
+		public Stream<Long> parallelStream() {
+			return Arrays.stream(this.array, this.index, this.index + this.length).parallel().boxed();
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			if (object instanceof Long) {
+				long primitive = (long) object;
+
+				for (int i = 0; i < this.length; i++) {
+					long o = this.array[this.index + i];
+
+					if (primitive == o)
+						throw new UnsupportedOperationException("remove");
+				}
+			}
+
+			return false;
+		}
+
+		@Override
+		public Long remove(int index) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for (Object object : collection)
+				if (object instanceof Long) {
+					long primitive = (long) object;
+
+					for (int i = 0; i < this.length; i++) {
+						long o = this.array[this.index + i];
+
+						if (primitive == o)
+							throw new UnsupportedOperationException("removeAll");
+					}
+				}
+
+			return false;
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super Long> predicate) {
+			Objects.requireNonNull(predicate, "predicate");
+			for (int i = 0; i < this.length; i++)
+				if (predicate.test(this.array[this.index + i]))
+					throw new UnsupportedOperationException("removeIf");
+
+			return false;
+		}
+
+		@Override
+		public void replaceAll(UnaryOperator<Long> operator) {
+			Objects.requireNonNull(operator, "operator");
+			for (int i = 0; i < this.length; i++)
+				this.array[this.index + i] = operator.apply(this.array[this.index + i]);
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for0:
+			for (int i = 0; i < this.length; i++) {
+				long o = this.array[this.index + i];
+
+				for (Object object : collection)
+					if (object instanceof Long) {
+						long primitive = (long) object;
+
+						if (primitive == o)
+							continue for0;
+					}
+
+				throw new UnsupportedOperationException("retainAll");
+			}
+
+			return false;
 		}
 
 		@Override
 		public Long set(int index, Long element) {
-			Long old = this.array[index];
-			this.array[index] = element;
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			long old = this.array[this.index + index];
+			this.array[this.index + index] = element;
 			return old;
 		}
 
 		@Override
 		public int size() {
-			return this.array.length;
+			return this.length;
 		}
 
 		@Override
 		public Spliterator.OfLong spliterator() {
-			return Arrays.spliterator(this.array);
+			return Arrays.spliterator(this.array, this.index, this.index + this.length);
+		}
+
+		@Override
+		public Stream<Long> stream() {
+			return Arrays.stream(this.array, this.index, this.index + this.length).boxed();
+		}
+
+		@Override
+		public LongArrayList subList(int beginIndex, int endIndex) {
+			Objects.require(beginIndex, Objects::nonNegative, IndexOutOfBoundsException.class, "beginIndex");
+			Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+			Objects.require(endIndex, this.length, Objects::nonGreater, IndexOutOfBoundsException.class, "endIndex");
+			return new LongArrayList(this.index + beginIndex, this.index + endIndex, this.array);
 		}
 
 		@Override
 		public Long[] toArray() {
-			return (Long[]) Arrays.copyOf0(this.array, this.array.length, Long[].class);
+			return (Long[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, Long[].class);
 		}
 
 		@Override
-		public Object[] toArray(Object[] array) {
+		public <T> T[] toArray(T[] array) {
 			Objects.requireNonNull(array, "array");
 
-			if (array.length < this.array.length)
-				return (Object[]) Arrays.copyOf0(this.array, this.array.length, array.getClass());
+			if (array.length < this.length)
+				return (T[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, array.getClass());
 
-			Arrays.hardcopy(this.array, 0, array, 0, this.array.length);
+			Arrays.hardcopy(this.array, this.index, array, 0, this.length);
 
-			if (array.length > this.array.length)
-				array[this.array.length] = null;
+			if (array.length > this.length)
+				array[this.length] = null;
 
 			return array;
 		}
 
 		@Override
 		public String toString() {
-			return Arrays.toString(this.array);
+			if (this.length == 0)
+				return "[]";
+
+			StringBuilder builder = new StringBuilder("[");
+
+			int i = 0;
+			while (true) {
+				builder.append(this.array[this.index + i]);
+
+				if (++i < this.length) {
+					builder.append(", ");
+					continue;
+				}
+
+				return builder.append("]")
+						.toString();
+			}
 		}
 	}
 
@@ -9130,6 +12253,14 @@ public final class Arrays {
 		 * The backing array.
 		 */
 		private final short[] array;
+		/**
+		 * The index where the area backing the iterator in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this iterator.
+		 */
+		private final int length;
 		/**
 		 * The next index.
 		 */
@@ -9149,44 +12280,98 @@ public final class Arrays {
 		private ShortArrayIterator(short... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
 		}
 
 		/**
 		 * Construct a new iterator backed by the given {@code array}.
 		 *
-		 * @param index the index to start iterating at.
+		 * @param index the index where the area backing the constructed iterator in the given {@code array} is starting.
 		 * @param array the array backing the constructed iterator.
 		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ShortArrayIterator(int index, short... array) {
 			Objects.requireNonNull(array, "array");
 			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.index = index;
 			this.array = array;
-			this.cursor = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code cursor < 0} or {@code index > array.length} or
+		 *                                        {@code cursor > array.length - index}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ShortArrayIterator(int cursor, int index, short... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, array.length - index, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.array = array;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new iterator backed by the given {@code array}.
+		 *
+		 * @param cursor the index to start iterating at.
+		 * @param index  the index where the area backing the constructed iterator in the given {@code array} is starting.
+		 * @param length the length of the constructed iterator.
+		 * @param array  the array backing the constructed iterator.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code index < 0} or {@code cursor < 0} or {@code index
+		 *                                        + length > array.length} or {@code cursor > length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ShortArrayIterator(int cursor, int index, int length, short... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(cursor, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "cursor");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			Objects.require(cursor, length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "cursor");
+			this.cursor = cursor;
+			this.index = index;
+			this.length = length;
+			this.array = array;
 		}
 
 		@Override
-		public void add(Short short_) {
+		public void add(Short element) {
 			throw new UnsupportedOperationException("add");
 		}
 
 		@Override
 		public boolean hasNext() {
-			return this.cursor < this.array.length;
+			return this.cursor < this.length;
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return this.cursor > -1;
+			return this.cursor > 0;
 		}
 
 		@Override
 		public Short next() {
-			if (this.cursor < this.array.length)
-				return this.array[this.last = this.cursor++];
+			int i = this.cursor++;
+
+			if (i < this.length)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -9198,8 +12383,9 @@ public final class Arrays {
 
 		@Override
 		public Short previous() {
-			if (this.cursor > -1)
-				return this.array[this.last = this.cursor--];
+			int i = --this.cursor;
+			if (i >= 0)
+				return this.array[this.last = this.index + i];
 
 			throw new NoSuchElementException();
 		}
@@ -9215,11 +12401,12 @@ public final class Arrays {
 		}
 
 		@Override
-		public void set(Short short_) {
-			if (this.last < 0 || this.last >= this.array.length)
+		public void set(Short element) {
+			int i = this.last;
+			if (i < 0 || i >= this.length)
 				throw new IllegalStateException();
 
-			this.array[this.last] = short_;
+			this.array[this.index + i] = element;
 		}
 	}
 
@@ -9230,114 +12417,422 @@ public final class Arrays {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static final class ShortArrayList extends AbstractList<Short> {
-		//todo override sort, spliterator, stream
+	public static final class ShortArrayList implements List<Short>, Serializable, RandomAccess {
+		//todo parallelStream | sort | spliterator | stream
+
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -2313958129306118264L;
 
 		/**
-		 * The array backing this list.
+		 * The backing array.
 		 */
 		private final short[] array;
+		/**
+		 * The index where the area backing this list in the given {@code array} is starting.
+		 */
+		private final int index;
+		/**
+		 * The length of this list.
+		 */
+		private final int length;
 
 		/**
 		 * Construct a new list backed by the given {@code array}.
 		 *
-		 * @param array the array backing this list.
+		 * @param array the array backing the constructed list.
 		 * @throws NullPointerException if the given {@code array} is null.
 		 * @since 0.1.5 ~2020.07.24
 		 */
 		private ShortArrayList(short... array) {
 			Objects.requireNonNull(array, "array");
 			this.array = array;
+			this.index = 0;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param array the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index > array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ShortArrayList(int index, short... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(index, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "index");
+			this.array = array;
+			this.index = index;
+			this.length = array.length;
+		}
+
+		/**
+		 * Construct a new list backed by the given {@code array}.
+		 *
+		 * @param index  the index where the area backing the constructed list in the given {@code array} is starting.
+		 * @param length the length of the constructed list.
+		 * @param array  the array backing the constructed list.
+		 * @throws NullPointerException           if the given {@code array} is null.
+		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code length < 0} or {@code index + length >
+		 *                                        array.length}.
+		 * @since 0.1.5 ~2020.07.24
+		 */
+		private ShortArrayList(int index, int length, short... array) {
+			Objects.requireNonNull(array, "array");
+			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
+			Objects.require(length, Objects::nonNegative, "length");
+			Objects.require(index + length, array.length, Objects::nonGreater,
+					ArrayIndexOutOfBoundsException.class, "index + length");
+			this.array = array;
+			this.index = index;
+			this.length = length;
 		}
 
 		@Override
-		public boolean equals(Object object) {
-			if (this == object)
-				return true;
-			if (object instanceof ShortArrayList)
-				return Arrays.equals(((ShortArrayList) object).array, this.array);
-			if (object instanceof List) {
-				Iterator iterator = ((Iterable) object).iterator();
+		public boolean add(Short element) {
+			throw new UnsupportedOperationException("add");
+		}
 
-				int i = 0;
-				while (iterator.hasNext()) {
-					if (i < this.array.length) {
-						Object o = iterator.next();
-						Object t = this.array[i++];
+		@Override
+		public void add(int index, Short element) {
+			Objects.require(index, Objects::nonNegative, IndexOutOfBoundsException.class, "index");
+			Objects.require(index, this.length, Objects::isLess, IndexOutOfBoundsException.class, "index");
+			throw new UnsupportedOperationException("add");
+		}
 
-						if (o == t || o != null && o.equals(t))
-							continue;
-					}
+		@Override
+		public boolean addAll(Collection<? extends Short> collection) {
+			Objects.requireNonNull(collection, "collection");
+			if (collection.isEmpty())
+				return false;
 
-					return false;
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public boolean addAll(int index, Collection<? extends Short> collection) {
+			Objects.requireNonNull(collection, "collection");
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			if (collection.isEmpty())
+				return false;
+
+			throw new UnsupportedOperationException("addAll");
+		}
+
+		@Override
+		public void clear() {
+			if (this.length != 0)
+				throw new UnsupportedOperationException("clear");
+		}
+
+		@Override
+		public boolean contains(Object object) {
+			if (object instanceof Short) {
+				short primitive = (short) object;
+
+				for (int i = 0; i < this.length; i++) {
+					short o = this.array[this.index + i];
+
+					if (primitive == o)
+						return true;
 				}
-
-				return i == this.array.length;
 			}
 
 			return false;
 		}
 
 		@Override
+		public boolean containsAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+
+			for0:
+			for (Object object : collection) {
+				if (object instanceof Short) {
+					short primitive = (short) object;
+
+					for (int i = 0; i < this.length; i++) {
+						short o = this.array[this.index + i];
+
+						if (primitive == o)
+							continue for0;
+					}
+				}
+
+				return false;
+			}
+
+			return true;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object)
+				return true;
+			if (object instanceof ShortArrayList) {
+				ShortArrayList list = (ShortArrayList) object;
+
+				if (list.length != this.length)
+					return false;
+				if (list.array == this.array && this.index == list.index)
+					return true;
+				for (int i = 0; i < this.length; i++) {
+					short o = list.array[list.index + i];
+					short t = this.array[this.index + i];
+
+					if (o != t)
+						return false;
+				}
+
+				return true;
+			}
+			if (object instanceof List) {
+				Iterator iterator = ((Iterable) object).iterator();
+
+				int i = 0;
+				while (iterator.hasNext()) {
+					if (i < this.length) {
+						Object o = iterator.next();
+
+						if (o instanceof Short) {
+							short p = (short) o;
+							short t = this.array[this.index + i++];
+
+							if (p == t)
+								continue;
+						}
+					}
+
+					return false;
+				}
+
+				return i == this.length;
+			}
+
+			return false;
+		}
+
+		@Override
+		public void forEach(Consumer<? super Short> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			for (int i = 0; i < this.length; i++)
+				consumer.accept(this.array[this.index + i]);
+		}
+
+		@Override
 		public Short get(int index) {
-			return this.array[index];
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			return this.array[this.index + index];
 		}
 
 		@Override
 		public int hashCode() {
-			return Arrays.hashCode(this.array);
+			int hashCode = 1;
+
+			for (int i = 0; i < this.length; i++) {
+				short element = this.array[this.index + i];
+
+				hashCode = 31 * hashCode + Short.hashCode(element);
+			}
+
+			return hashCode;
+		}
+
+		@Override
+		public int indexOf(Object object) {
+			if (object instanceof Short) {
+				short primitive = (short) object;
+
+				for (int i = 0; i < this.length; i++) {
+					short o = this.array[this.index + i];
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return this.length == 0;
 		}
 
 		@Override
 		public ShortArrayIterator iterator() {
-			return Arrays.iterator(this.array);
+			return new ShortArrayIterator(0, this.index, this.length, this.array);
+		}
+
+		@Override
+		public int lastIndexOf(Object object) {
+			if (object instanceof Short) {
+				short primitive = (short) object;
+
+				for (int i = this.length - 1; i >= 0; i--) {
+					short o = this.array[this.index + i];
+
+					if (primitive == o)
+						return i;
+				}
+			}
+
+			return -1;
 		}
 
 		@Override
 		public ShortArrayIterator listIterator() {
-			return Arrays.iterator(this.array);
+			return new ShortArrayIterator(0, this.index, this.length, this.array);
 		}
 
 		@Override
 		public ShortArrayIterator listIterator(int index) {
-			return Arrays.iterator(index, this.array);
+			return new ShortArrayIterator(index, this.index, this.length, this.array);
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			if (object instanceof Short) {
+				short primitive = (short) object;
+
+				for (int i = 0; i < this.length; i++) {
+					short o = this.array[this.index + i];
+
+					if (primitive == o)
+						throw new UnsupportedOperationException("remove");
+				}
+			}
+
+			return false;
+		}
+
+		@Override
+		public Short remove(int index) {
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for (Object object : collection)
+				if (object instanceof Short) {
+					short primitive = (short) object;
+
+					for (int i = 0; i < this.length; i++) {
+						short o = this.array[this.index + i];
+
+						if (primitive == o)
+							throw new UnsupportedOperationException("removeAll");
+					}
+				}
+
+			return false;
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super Short> predicate) {
+			Objects.requireNonNull(predicate, "predicate");
+			for (int i = 0; i < this.length; i++)
+				if (predicate.test(this.array[this.index + i]))
+					throw new UnsupportedOperationException("removeIf");
+
+			return false;
+		}
+
+		@Override
+		public void replaceAll(UnaryOperator<Short> operator) {
+			Objects.requireNonNull(operator, "operator");
+			for (int i = 0; i < this.length; i++)
+				this.array[this.index + i] = operator.apply(this.array[this.index + i]);
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> collection) {
+			Objects.requireNonNull(collection, "collection");
+			for0:
+			for (int i = 0; i < this.length; i++) {
+				short o = this.array[this.index + i];
+
+				for (Object object : collection)
+					if (object instanceof Short) {
+						short primitive = (short) object;
+
+						if (primitive == o)
+							continue for0;
+					}
+
+				throw new UnsupportedOperationException("retainAll");
+			}
+
+			return false;
 		}
 
 		@Override
 		public Short set(int index, Short element) {
-			Short old = this.array[index];
-			this.array[index] = element;
+			Objects.require(index, Objects::nonNegative, "index");
+			Objects.require(index, this.length, Objects::isLess, "index");
+			short old = this.array[this.index + index];
+			this.array[this.index + index] = element;
 			return old;
 		}
 
 		@Override
 		public int size() {
-			return this.array.length;
+			return this.length;
+		}
+
+		@Override
+		public ShortArrayList subList(int beginIndex, int endIndex) {
+			Objects.require(beginIndex, Objects::nonNegative, IndexOutOfBoundsException.class, "beginIndex");
+			Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
+			Objects.require(endIndex, this.length, Objects::nonGreater, IndexOutOfBoundsException.class, "endIndex");
+			return new ShortArrayList(this.index + beginIndex, this.index + endIndex, this.array);
 		}
 
 		@Override
 		public Short[] toArray() {
-			return (Short[]) Arrays.copyOf0(this.array, this.array.length, Short[].class);
+			return (Short[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, Short[].class);
 		}
 
 		@Override
-		public Object[] toArray(Object[] array) {
+		public <T> T[] toArray(T[] array) {
 			Objects.requireNonNull(array, "array");
 
-			if (array.length < this.array.length)
-				return (Object[]) Arrays.copyOf0(this.array, this.array.length, array.getClass());
+			if (array.length < this.length)
+				return (T[]) Arrays.copyOfRange0(this.array, this.index, this.index + this.length, array.getClass());
 
-			Arrays.hardcopy(this.array, 0, array, 0, this.array.length);
+			Arrays.hardcopy(this.array, this.index, array, 0, this.length);
 
-			if (array.length > this.array.length)
-				array[this.array.length] = null;
+			if (array.length > this.length)
+				array[this.length] = null;
 
 			return array;
 		}
 
 		@Override
 		public String toString() {
-			return Arrays.toString(this.array);
+			if (this.length == 0)
+				return "[]";
+
+			StringBuilder builder = new StringBuilder("[");
+
+			int i = 0;
+			while (true) {
+				builder.append(this.array[this.index + i]);
+
+				if (++i < this.length) {
+					builder.append(", ");
+					continue;
+				}
+
+				return builder.append("]")
+						.toString();
+			}
 		}
 	}
 }
