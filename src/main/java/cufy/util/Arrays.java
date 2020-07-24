@@ -4618,11 +4618,28 @@ public final class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy1(Object src, int srcPos, Object dest, int destPos, int length) {
-		//todo both primitives
-		if (src instanceof Object[])
+		if (src instanceof Object[] && dest instanceof Object[])
+			Arrays.hardcopy((Object[]) src, srcPos, (Object[]) dest, destPos, length);
+		else if (src instanceof Object[])
 			Arrays.hardcopy1((Object[]) src, srcPos, dest, destPos, length);
 		else if (dest instanceof Object[])
 			Arrays.hardcopy1(src, srcPos, (Object[]) dest, destPos, length);
+		else if (src instanceof boolean[] && dest instanceof boolean[])
+			Arrays.hardcopy((boolean[]) src, srcPos, (boolean[]) dest, destPos, length);
+		else if (src instanceof byte[] && dest instanceof byte[])
+			Arrays.hardcopy((byte[]) src, srcPos, (byte[]) dest, destPos, length);
+		else if (src instanceof char[] && dest instanceof char[])
+			Arrays.hardcopy((char[]) src, srcPos, (char[]) dest, destPos, length);
+		else if (src instanceof double[] && dest instanceof double[])
+			Arrays.hardcopy((double[]) src, srcPos, (double[]) dest, destPos, length);
+		else if (src instanceof float[] && dest instanceof float[])
+			Arrays.hardcopy((float[]) src, srcPos, (float[]) dest, destPos, length);
+		else if (src instanceof int[] && dest instanceof int[])
+			Arrays.hardcopy((int[]) src, srcPos, (int[]) dest, destPos, length);
+		else if (src instanceof long[] && dest instanceof long[])
+			Arrays.hardcopy((long[]) src, srcPos, (long[]) dest, destPos, length);
+		else if (src instanceof short[] && dest instanceof short[])
+			Arrays.hardcopy((short[]) src, srcPos, (short[]) dest, destPos, length);
 		else
 			Arrays.hardcopy0(src, srcPos, dest, destPos, length);
 	}
