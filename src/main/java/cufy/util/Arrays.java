@@ -1885,7 +1885,7 @@ public class Arrays {
 		Objects.requireNonNull(array, "array");
 		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -1922,7 +1922,7 @@ public class Arrays {
 		Objects.requireNonNull(array, "array");
 		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(klass, Class::isArray, "klass");
 		Objects.require(klass, Objects::isObjectArrayClass, "klass");
 
@@ -1955,7 +1955,7 @@ public class Arrays {
 		Objects.requireNonNull(array, "array");
 		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -1986,7 +1986,7 @@ public class Arrays {
 		Objects.requireNonNull(array, "array");
 		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -2017,7 +2017,7 @@ public class Arrays {
 		Objects.requireNonNull(array, "array");
 		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -2048,7 +2048,7 @@ public class Arrays {
 		Objects.requireNonNull(array, "array");
 		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -2079,7 +2079,7 @@ public class Arrays {
 		Objects.requireNonNull(array, "array");
 		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -2110,7 +2110,7 @@ public class Arrays {
 		Objects.requireNonNull(array, "array");
 		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -2141,7 +2141,7 @@ public class Arrays {
 		Objects.requireNonNull(array, "array");
 		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -2172,7 +2172,7 @@ public class Arrays {
 		Objects.requireNonNull(array, "array");
 		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
 
 		int length = endIndex - beginIndex;
 
@@ -2204,7 +2204,7 @@ public class Arrays {
 		Objects.requireNonNull(array, "array");
 		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, Array.getLength(array), Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, Array.getLength(array), Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(array, Objects::isArray, "array");
 
 		int length = endIndex - beginIndex;
@@ -2239,7 +2239,7 @@ public class Arrays {
 		Objects.requireNonNull(array, "array");
 		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, Array.getLength(array), Objects::isLess, ArrayIndexOutOfBoundsException.class, "beginIndex");
+		Objects.require(beginIndex, Array.getLength(array), Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
 		Objects.require(array, Objects::isArray, "array");
 		Objects.require(klass, Class::isArray, "klass");
 
