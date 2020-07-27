@@ -30,18 +30,22 @@ import java.util.stream.Stream;
  * <p>
  * This class includes all the methods in the standard {@link java.util.Arrays} utility class with the same behaviour. So
  * switching to import this class will not make any changes to files previously imported {@link java.util.Arrays}.
+ * <p>
+ * Note: the class is not final nor have a private constructor ;). Anyone can override this class to provide more static methods
+ * meanwhile provide access to the methods of this class with the sub-class's signature. But, don't forget that this class is not
+ * made for OOP! So, any attempt to construct any sub-class of this class will fail no matter what.
  *
  * @author LSafer
  * @version 0.1.5
  * @since 0.0.a ~2019.06.11
  */
-public final class Arrays {
+public class Arrays {
 	/**
 	 * This is an util class and must not be instanced as an object.
 	 *
 	 * @throws AssertionError when called.
 	 */
-	private Arrays() {
+	protected Arrays() {
 		throw new AssertionError("No instance for you!");
 	}
 
