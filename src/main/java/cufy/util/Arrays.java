@@ -751,7 +751,7 @@ public class Arrays {
 	/**
 	 * Construct a new list backed by the given {@code array}.
 	 *
-	 * @param array the array backing the retuned list.
+	 * @param array the array backing the returned list.
 	 * @param <T>   the type of the elements.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
@@ -765,7 +765,7 @@ public class Arrays {
 	/**
 	 * Construct a new list backed by the given {@code array}.
 	 *
-	 * @param array the array backing the retuned list.
+	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
@@ -778,7 +778,7 @@ public class Arrays {
 	/**
 	 * Construct a new list backed by the given {@code array}.
 	 *
-	 * @param array the array backing the retuned list.
+	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
@@ -791,7 +791,7 @@ public class Arrays {
 	/**
 	 * Construct a new list backed by the given {@code array}.
 	 *
-	 * @param array the array backing the retuned list.
+	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
@@ -804,7 +804,7 @@ public class Arrays {
 	/**
 	 * Construct a new list backed by the given {@code array}.
 	 *
-	 * @param array the array backing the retuned list.
+	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
@@ -817,7 +817,7 @@ public class Arrays {
 	/**
 	 * Construct a new list backed by the given {@code array}.
 	 *
-	 * @param array the array backing the retuned list.
+	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
@@ -830,7 +830,7 @@ public class Arrays {
 	/**
 	 * Construct a new list backed by the given {@code array}.
 	 *
-	 * @param array the array backing the retuned list.
+	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
@@ -843,7 +843,7 @@ public class Arrays {
 	/**
 	 * Construct a new list backed by the given {@code array}.
 	 *
-	 * @param array the array backing the retuned list.
+	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
@@ -856,7 +856,7 @@ public class Arrays {
 	/**
 	 * Construct a new list backed by the given {@code array}.
 	 *
-	 * @param array the array backing the retuned list.
+	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @see java.util.Arrays#asList(Object[])
@@ -869,7 +869,7 @@ public class Arrays {
 	/**
 	 * Using Reflection, construct a new list backed by the given {@code array}.
 	 *
-	 * @param array the array backing the retuned list.
+	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException     if the given {@code array} is null.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
@@ -883,7 +883,7 @@ public class Arrays {
 	/**
 	 * Using the best {@link #asList(Object[])} method, construct a new list backed by the given {@code array}.
 	 *
-	 * @param array the array backing the retuned list.
+	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException     if the given {@code array} is null.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
