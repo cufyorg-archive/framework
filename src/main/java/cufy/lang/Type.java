@@ -25,14 +25,16 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * An alternative representation for {@link Class classes}. This provides more data about the targeted type. About the components
- * component and the wildclass of that class. The wildclass is how the class should be treated. The type-component is a component
- * of types for each specific component in an instance this type is representing.
+ * and the wildclass of that class. The wildclass is how the class should be treated. The componentType is a component of types
+ * for each specific object in an instance this type is representing.
  * <br>
  * Note: the class {@link Void} is the class of null.
  *
@@ -49,8 +51,22 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 *     Use the group {@code "WILD"} to extract the {@link #wildclass}.
 	 *     Use the group {@link "COMPONENTS"} to extract the {@link #components}.
 	 * </pre>
+	 *
+	 * @since 0.1.5
 	 */
-	public static final Pattern PATTERN = Pattern.compile("^(?<TYPE>[^,:<>]+)(?::(?<WILD>[^,:<>]+))?(?:<(?<COMPONENTS>(?:[^,:<>]+(?::[^,:<>]+)?(?:<(?:[^:,<>]+(?::[^:,<>]+)?(?:<(?:[^,<>]*(?:<.*>)?,?)*>)?(?:,(?=\\s*[^>]))?)*>)?(?:,(?=\\s*\\S))?)*)>)?\\s*$");
+	private static final Pattern PATTERN = Pattern.compile("^(?<TYPE>[^,:<>]+)(?::(?<WILD>[^,:<>]+))?(?:<(?<COMPONENTS>(?:[^,:<>]+(?::[^,:<>]+)?(?:<(?:[^:,<>]+(?::[^:,<>]+)?(?:<(?:[^,<>]*(?:<.*>)?,?)*>)?(?:,(?=\\s*[^>]))?)*>)?(?:,(?=\\s*\\S))?)*)>)?\\s*$");
+	/**
+	 * A pattern to validate {@link #getName() names} of {@link Component}s.
+	 *
+	 * @since 0.1.5
+	 */
+	private static final Pattern PATTERNS = Pattern.compile("^(?:[^,:<>]+(?::[^,:<>]+)?(?:<(?:[^:,<>]+(?::[^:,<>]+)?(?:<(?:[^,<>]*(?:<.*>)?,?)*>)?(?:,(?=\\s*[^>]))?)*>)?(?:,(?=\\s*\\S))?)*$");
+	/**
+	 * A pattern to split {@link #getName() names} of {@link Component}s.
+	 *
+	 * @since 0.1.5
+	 */
+	private static final Pattern SPLIT = Pattern.compile("[^:,<>]+(?::[^:,<>]+)?(?:<(?:[^,<>]*(?:<.*>)?,?)*>)?(?=,(?=\\s*[^>]))?");
 
 	@SuppressWarnings("JavaDoc")
 	private static final long serialVersionUID = -4030819563298464225L;
@@ -58,53 +74,23 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	/**
 	 * A component of the types specified foreach component to be held by an instance of this type. This field should be treated
 	 * as final field.
+	 *
+	 * @since 0.1.5
 	 */
 	private Component[] components;
 	/**
 	 * The class represented by this type. This field should be treated as final field.
+	 *
+	 * @since 0.1.5
 	 */
 	private Class<T> typeclass;
 	/**
 	 * The class that an instance of this type should be treated as if it was an instance of it. This field should be treated as
 	 * final field.
+	 *
+	 * @since 0.1.5
 	 */
 	private Class wildclass;
-
-	private Type() {
-		this.typeclass = (Class) Object.class;
-		this.wildclass = Object.class;
-		this.components = new Component[0];
-	}
-
-	/**
-	 * Construct a new type that represents the class {@link Object}, and have the given {@code components}.
-	 *
-	 * @param components an array of components of the types specified foreach component to be held by an instance of the
-	 *                   constructed type.
-	 * @throws NullPointerException if the given {@code components} or any of its elements is null.
-	 */
-	private Type(Component... components) {
-		Objects.requireNonNull(components, "components");
-		this.typeclass = (Class) Object.class;
-		this.wildclass = Object.class;
-		this.components = Component.finalize(components);
-	}
-
-	/**
-	 * Construct a new type that represents the given {@code typeclass}, and have the given {@code components}.
-	 *
-	 * @param typeclass  the class to be represented by the constructed type.
-	 * @param components an array of components of the types specified foreach component to be held by an instance of the
-	 *                   constructed type.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code components} or any of its elements is null.
-	 */
-	private Type(Class<T> typeclass, Component... components) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(components, "components");
-		this.typeclass = typeclass;
-		this.wildclass = typeclass;
-		this.components = Component.finalize(components);
-	}
 
 	/**
 	 * Construct a new type that represents the given {@code typeclass}, and have the given {@code components}, and should be
@@ -116,47 +102,45 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 *                   constructed type.
 	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code components} or any of its
 	 *                              elements is null.
+	 * @since 0.1.5
 	 */
-	private Type(Class<T> typeclass, Class wildclass, Component... components) {
+	private Type(Class<T> typeclass, Class wildclass, Component[] components) {
 		Objects.requireNonNull(typeclass, "typeclass");
 		Objects.requireNonNull(wildclass, "wildclass");
 		Objects.requireNonNull(components, "components");
 		this.typeclass = typeclass;
 		this.wildclass = wildclass;
-		this.components = Component.finalize(components);
+		this.components = components.clone();
 	}
 
 	/**
-	 * Get an array of types from the given {@code typeclasses}.
+	 * Get a new empty array of types.
 	 *
-	 * @param typeclasses the source typeclasses foreach type in the returned array.
-	 * @return an array of types from the given {@code typeclasses}.
-	 * @throws NullPointerException if the given {@code typeclasses} is null.
+	 * @return a new empty array of types.
 	 * @since 0.1.5
 	 */
-	public static Type[] array(Class... typeclasses) {
-		Objects.requireNonNull(typeclasses, "typeclasses");
-		Type[] types = new Type[typeclasses.length];
+	public static Type[] array() {
+		return new Type[0];
+	}
+
+	/**
+	 * Create a new array of types from the given {@code typeclasses}.
+	 *
+	 * @param typeclasses the source array.
+	 * @return a new array of types from the given {@code typeclasses}. Or null if the given {@code typeclasses} is null.
+	 * @since 0.1.5
+	 */
+	public static Type2[] array(Class... typeclasses) {
+		if (typeclasses == null)
+			return null;
+
+		Type2[] types = new Type2[typeclasses.length];
 
 		for (int i = 0; i < types.length; i++) {
 			Class typeclass = typeclasses[i];
 
 			if (typeclass != null)
-				types[i] = Type.of(typeclass);
-		}
-
-		return types;
-	}
-
-	public static Type[] array(Component... components) {
-		Objects.requireNonNull(components, "components");
-		Type[] types = new Type[components.length];
-
-		for (int i = 0; i < types.length; i++) {
-			Component component = components[i];
-
-			if (component != null)
-				types[i] = component.getComponentType();
+				types[i] = Type2.of(typeclass);
 		}
 
 		return types;
@@ -172,6 +156,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @throws ClassNotFoundException      if no type can be associated to the given {@code name}.
 	 * @throws NullPointerException        if the given {@code name} is null.
 	 * @see Class#forName(String)
+	 * @since 0.1.5
 	 */
 	public static Type<?> forName(String name) throws ClassNotFoundException {
 		Objects.requireNonNull(name, "name");
@@ -186,7 +171,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 
 		Class typeclass = Class.forName(typeString.trim());
 		Class wildclass = wildString == null ? typeclass : Class.forName(wildString.trim());
-		Component[] components = componentsString == null ? new Component[0] : Component.forNames(componentsString);
+		Type[] components = componentsString == null ? new Type[0] : Type.forNames(componentsString);
 
 		return Type.of(typeclass, wildclass, components);
 	}
@@ -203,6 +188,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @throws ClassNotFoundException      if no type can be associated to the given {@code name}.
 	 * @throws NullPointerException        if the given {@code name} or {@code loader} is null.
 	 * @see Class#forName(String, boolean, ClassLoader)
+	 * @since 0.1.5
 	 */
 	public static Type<?> forName(String name, boolean initialize, ClassLoader loader) throws ClassNotFoundException {
 		Objects.requireNonNull(name, "name");
@@ -218,10 +204,68 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 
 		Class typeclass = Class.forName(typeString.trim(), initialize, loader);
 		Class wildclass = wildString == null ? typeclass : Class.forName(wildString.trim(), initialize, loader);
-		Component[] components = componentsString == null ? new Component[0] :
-								 Component.forNames(componentsString, initialize, loader);
+		Type[] components = componentsString == null ? new Type[0] : Type.forNames(componentsString, initialize, loader);
 
 		return Type.of(typeclass, wildclass, components);
+	}
+
+	/**
+	 * Get a Types array associated with the types with the given {@code names}.
+	 *
+	 * @param names the fully qualified names of the desired types array.
+	 * @return a Types array for the types with the given {@code name}.
+	 * @throws LinkageError                if the linkage failed.
+	 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
+	 * @throws ClassNotFoundException      if no types can be associated to the given {@code name}.
+	 * @throws NullPointerException        if the given {@code name} is null.
+	 * @since 0.1.5
+	 */
+	public static Type[] forNames(String names) throws ClassNotFoundException {
+		Objects.requireNonNull(names, "names");
+
+		if (!Type.PATTERNS.matcher(names).matches())
+			throw new ClassNotFoundException(names);
+
+		List<Type> list = new ArrayList();
+
+		Matcher matcher = Type.SPLIT.matcher(names.trim());
+		while (matcher.find()) {
+			String componentName = matcher.group().trim();
+			list.add("?".equals(componentName) ? null : Type.forName(componentName));
+		}
+
+		return list.toArray(new Type[0]);
+	}
+
+	/**
+	 * Get a Types array associated with the types with the given {@code names}. Using the given {@code loader}.
+	 *
+	 * @param names      the fully qualified names of the desired types array.
+	 * @param initialize if {@code true} the any non-initialized class will be initialized.
+	 * @param loader     class loader from which the classes must be loaded.
+	 * @return a Types array for the types with the given {@code name}.
+	 * @throws LinkageError                if the linkage failed.
+	 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
+	 * @throws ClassNotFoundException      if no types can be associated to the given {@code name}.
+	 * @throws NullPointerException        if the given {@code name} or {@code loader} is null.
+	 * @since 0.1.5
+	 */
+	public static Type[] forNames(String names, boolean initialize, ClassLoader loader) throws ClassNotFoundException {
+		Objects.requireNonNull(names, "names");
+		Objects.requireNonNull(loader, "loader");
+
+		if (!Type.PATTERNS.matcher(names).matches())
+			throw new ClassNotFoundException(names);
+
+		List<Type> list = new ArrayList();
+
+		Matcher matcher = Type.SPLIT.matcher(names.trim());
+		while (matcher.find()) {
+			String componentName = matcher.group().trim();
+			list.add("?".equals(componentName) ? null : Type.forName(componentName, initialize, loader));
+		}
+
+		return list.toArray(new Type[0]);
 	}
 
 	/**
@@ -270,26 +314,18 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		return Type.of(typeclass, wildclass, components);
 	}
 
-	public static Type<Object> of() {
-		return new Type();
-	}
-
 	/**
-	 * Get a type that represents the given {@code typeclass}.
+	 * Get a type that represent the class {@link Object}, and have no components.
 	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>)
-	 *     <font color="a5edff">TYPE</font>
+	 *     Type.of()
+	 *     <font color="a5edff">Object</font>
 	 * </pre>
 	 *
-	 * @param typeclass the class to be represented by the returned type.
-	 * @param <T>       the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code components} or any of its elements is null.
+	 * @return a type that represents the class {@link Object}, and have no components.
 	 * @since 0.1.5
 	 */
-	public static <T> Type<T> of(Class<T> typeclass) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		return new Type(typeclass);
+	public static Type<Object> of() {
+		return new Type(Object.class, Object.class, new Component[0]);
 	}
 
 	/**
@@ -299,15 +335,66 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 *     <font color="a5edff">Object</font>&lt;<font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>&gt;
 	 * </pre>
 	 *
-	 * @param components an array of components of the types specified foreach component to be held by an instance of the
-	 *                   constructed type.
+	 * @param components the components of the returned type.
 	 * @return a type that represents the class {@link Object}, and have the given {@code components}.
-	 * @throws NullPointerException if the given {@code components} or any of its elements is null.
+	 * @throws NullPointerException if the given {@code components} is null.
 	 * @since 0.1.5
 	 */
 	public static Type<Object> of(Component... components) {
 		Objects.requireNonNull(components, "components");
-		return new Type(components);
+		return new Type(Object.class, Object.class, components);
+	}
+
+	/**
+	 * Get a type that represents the class {@link Object}, and have the given {@code components}.
+	 * <pre>
+	 *     Type.of(<font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
+	 *     <font color="a5edff">Object</font>&lt;<font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>&gt;
+	 * </pre>
+	 *
+	 * @param components the components of the returned type.
+	 * @return a type that represents the class {@link Object}, and have the given {@code components}.
+	 * @throws NullPointerException if the given {@code components} is null.
+	 * @since 0.1.5
+	 */
+	public static Type<Object> of(Type... components) {
+		Objects.requireNonNull(components, "components");
+		return new Type(Object.class, Object.class, Component.array(components));
+	}
+
+	/**
+	 * Get a type that represents the class {@link Object}, and have the given {@code components}.
+	 * <pre>
+	 *     Type.of(<font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
+	 *     <font color="a5edff">Object</font>&lt;<font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>&gt;
+	 * </pre>
+	 *
+	 * @param components the components of the returned type.
+	 * @return a type that represents the class {@link Object}, and have the given {@code components}.
+	 * @throws NullPointerException if the given {@code components} is null.
+	 * @since 0.1.5
+	 */
+	public static Type<Object> of(Class[] components) {
+		Objects.requireNonNull(components, "components");
+		return new Type(Object.class, Object.class, Component.array(components));
+	}
+
+	/**
+	 * Get a type that represents the given {@code typeclass}, and have no components.
+	 * <pre>
+	 *     Type.of(<font color="a5edff">TYPE</font>)
+	 *     <font color="a5edff">TYPE</font>
+	 * </pre>
+	 *
+	 * @param typeclass the class to be represented by the returned type.
+	 * @param <T>       the type of the class represented by the returned type.
+	 * @return a type that represents the given {@code typeclass}, and have no components.
+	 * @throws NullPointerException if the given {@code typeclass} is null.
+	 * @since 0.1.5
+	 */
+	public static <T> Type<T> of(Class<T> typeclass) {
+		Objects.requireNonNull(typeclass, "typeclass");
+		return new Type(typeclass, typeclass, new Component[0]);
 	}
 
 	/**
@@ -318,21 +405,82 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * </pre>
 	 *
 	 * @param typeclass  the class to be represented by the returned type.
-	 * @param components an array of components of the types specified foreach component to be held by an instance of the
-	 *                   constructed type.
+	 * @param components the components of the returned type.
 	 * @param <T>        the type of the class represented by the returned type.
 	 * @return a type that represents the given {@code typeclass}, and have the given {@code components}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code components} or any of its elements is null.
+	 * @throws NullPointerException if the given {@code typeclass} or {@code components} is null.
 	 * @since 0.1.5
 	 */
 	public static <T> Type<T> of(Class<T> typeclass, Component... components) {
 		Objects.requireNonNull(typeclass, "typeclass");
 		Objects.requireNonNull(components, "components");
-		return new Type(typeclass, components);
+		return new Type(typeclass, typeclass, components);
 	}
 
 	/**
-	 * Get a type that represents the given {@code typeclass}, and have the given {@code component}, and should be treated as if
+	 * Get a type that represents the given {@code typeclass}, and have the given {@code components}.
+	 * <pre>
+	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
+	 *     <font color="a5edff">TYPE</font>&lt;<font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>&gt;
+	 * </pre>
+	 *
+	 * @param typeclass  the class to be represented by the returned type.
+	 * @param components the components of the returned type.
+	 * @param <T>        the type of the class represented by the returned type.
+	 * @return a type that represents the given {@code typeclass}, and have the given {@code components}.
+	 * @throws NullPointerException if the given {@code typeclass} or {@code components} is null.
+	 * @since 0.1.5
+	 */
+	public static <T> Type<T> of(Class<T> typeclass, Type... components) {
+		Objects.requireNonNull(typeclass, "typeclass");
+		Objects.requireNonNull(components, "components");
+		return new Type(typeclass, typeclass, Component.array(components));
+	}
+
+	/**
+	 * Get a type that represents the given {@code typeclass}, and have the given {@code components}.
+	 * <pre>
+	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
+	 *     <font color="a5edff">TYPE</font>&lt;<font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>&gt;
+	 * </pre>
+	 *
+	 * @param typeclass  the class to be represented by the returned type.
+	 * @param components the components of the returned type.
+	 * @param <T>        the type of the class represented by the returned type.
+	 * @return a type that represents the given {@code typeclass}, and have the given {@code components}.
+	 * @throws NullPointerException if the given {@code typeclass} or {@code components} is null.
+	 * @since 0.1.5
+	 */
+	public static <T> Type<T> of(Class<T> typeclass, Class[] components) {
+		Objects.requireNonNull(typeclass, "typeclass");
+		Objects.requireNonNull(components, "components");
+		return new Type(typeclass, typeclass, Component.array(components));
+	}
+
+	/**
+	 * Get a type that represents the given {@code typeclass}, and have no components, and should be treated as if it was the
+	 * given {@code wildclass}.
+	 * <pre>
+	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>)
+	 *     <font color="a5edff">TYPE</font>:<font color="fc8fbb">WILD</font>
+	 * </pre>
+	 *
+	 * @param typeclass the class to be represented by the returned type.
+	 * @param wildclass the class that an instance of the returned type should be treated as if it was an instance of it.
+	 * @param <T>       the type of the class represented by the returned type.
+	 * @return a new type that represents the given {@code typeclass}, and have no components, and should be treated as if it was
+	 * 		the given {@code wildclass}.
+	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} is null.
+	 * @since 0.1.5
+	 */
+	public static <T> Type<T> of(Class<T> typeclass, Class wildclass) {
+		Objects.requireNonNull(typeclass, "typeclass");
+		Objects.requireNonNull(wildclass, "wildclass");
+		return new Type(typeclass, wildclass, new Component[0]);
+	}
+
+	/**
+	 * Get a type that represents the given {@code typeclass}, and have the given {@code components}, and should be treated as if
 	 * it was the given {@code wildclass}.
 	 * <pre>
 	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
@@ -341,12 +489,11 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 *
 	 * @param typeclass  the class to be represented by the returned type.
 	 * @param wildclass  the class that an instance of the returned type should be treated as if it was an instance of it.
-	 * @param components an array of components of the types specified foreach component to be held by an instance of the
-	 *                   constructed type.
+	 * @param components the components of the returned type.
 	 * @param <T>        the type of the class represented by the returned type.
-	 * @return a new type that represents the given {@code typeclass}, and have the given {@code component}, and should be treated
-	 * 		as if it was the given {@code wildclass}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code component} is null.
+	 * @return a new type that represents the given {@code typeclass}, and have the given {@code components}, and should be
+	 * 		treated as if it was the given {@code wildclass}.
+	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code components} is null.
 	 * @since 0.1.5
 	 */
 	public static <T> Type<T> of(Class<T> typeclass, Class wildclass, Component... components) {
@@ -354,6 +501,54 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		Objects.requireNonNull(wildclass, "wildclass");
 		Objects.requireNonNull(components, "component");
 		return new Type(typeclass, wildclass, components);
+	}
+
+	/**
+	 * Get a type that represents the given {@code typeclass}, and have the given {@code components}, and should be treated as if
+	 * it was the given {@code wildclass}.
+	 * <pre>
+	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
+	 *     <font color="a5edff">TYPE</font>:<font color="fc8fbb">WILD</font>&lt;<font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>&gt;
+	 * </pre>
+	 *
+	 * @param typeclass  the class to be represented by the returned type.
+	 * @param wildclass  the class that an instance of the returned type should be treated as if it was an instance of it.
+	 * @param components the components of the returned type.
+	 * @param <T>        the type of the class represented by the returned type.
+	 * @return a new type that represents the given {@code typeclass}, and have the given {@code components}, and should be
+	 * 		treated as if it was the given {@code wildclass}.
+	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code components} is null.
+	 * @since 0.1.5
+	 */
+	public static <T> Type<T> of(Class<T> typeclass, Class wildclass, Type... components) {
+		Objects.requireNonNull(typeclass, "typeclass");
+		Objects.requireNonNull(wildclass, "wildclass");
+		Objects.requireNonNull(components, "component");
+		return new Type(typeclass, wildclass, Component.array(components));
+	}
+
+	/**
+	 * Get a type that represents the given {@code typeclass}, and have the given {@code components}, and should be treated as if
+	 * it was the given {@code wildclass}.
+	 * <pre>
+	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>)
+	 *     <font color="a5edff">TYPE</font>:<font color="fc8fbb">WILD</font>&lt;<font color="d3c4ff">COMPONENT0, COMPONENT1, COMPONENT2, …</font>&gt;
+	 * </pre>
+	 *
+	 * @param typeclass  the class to be represented by the returned type.
+	 * @param wildclass  the class that an instance of the returned type should be treated as if it was an instance of it.
+	 * @param components the components of the returned type.
+	 * @param <T>        the type of the class represented by the returned type.
+	 * @return a new type that represents the given {@code typeclass}, and have the given {@code components}, and should be
+	 * 		treated as if it was the given {@code wildclass}.
+	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code components} is null.
+	 * @since 0.1.5
+	 */
+	public static <T> Type<T> of(Class<T> typeclass, Class wildclass, Class... components) {
+		Objects.requireNonNull(typeclass, "typeclass");
+		Objects.requireNonNull(wildclass, "wildclass");
+		Objects.requireNonNull(components, "component");
+		return new Type(typeclass, wildclass, Component.array(components));
 	}
 
 	/**
@@ -367,8 +562,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @param typeclassSrc  the source of the class to be represented by the returned type.
 	 * @param wildclassSrc  the source of the class that an instance of the returned type should be treated as if it was an
 	 *                      instance of it.
-	 * @param componentsSrc the source of the array of components of the types specified foreach component to be held by an
-	 *                      instance of the constructed type.
+	 * @param componentsSrc the source of the array of components of the returned type.
 	 * @param <T>           the type of the class represented by the returned type.
 	 * @return a type that represents the {@code typeclass} of the given {@code typeclassSrc}, and have the {@code component} of
 	 * 		the given {@code componentsSrc}, and should be treated as if it was the {@code wildclass} of the given {@code
@@ -424,7 +618,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.wildclass, this.typeclass) + Arrays.hashCode(this.components);
+		return this.wildclass.hashCode() ^ this.typeclass.hashCode() ^ Arrays.hashCode(this.components);
 	}
 
 	@Override
@@ -442,6 +636,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 */
 	@SuppressWarnings("JavaDoc")
 	public T cast(Object instance) {
+		//null is safe ;)
 		return this.typeclass.cast(instance);
 	}
 
@@ -478,7 +673,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	/**
 	 * Get the general type for all components in the specified {@code component} to be held by an instance of this type.
 	 * <br>
-	 * Note: This is like calling {@link Type#getComponentType(int, Object) getComponentType(}{@link Component#DEFAULT
+	 * Note: This is like calling {@link Type#getComponentType(int, Object) getComponentType(}{@link Component#componentType
 	 * Type.COMPONENT_TYPE)}.
 	 *
 	 * @param component the index of the component in this type that have the returned component type.
@@ -489,27 +684,23 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	public Type getComponentType(int component) {
 		return component >= 0 && component < this.components.length &&
 			   this.components[component] != null ?
-			   this.components[component].get(Component.DEFAULT) :
+			   this.components[component].getComponentType() :
 			   null;
 	}
 
 	/**
-	 * Get the component type of this type that have the given {@code key} in the specified {@code component}.
-	 * <br>
-	 * Note: the key {@link Component#DEFAULT} is the key for the general component type.
+	 * Get the component type of this type for the given {@code object} in the specified {@code component}.
 	 *
 	 * @param component the index of the component in this type that have the returned component type.
-	 * @param key       the key associated to the returned type as a component in this type.
-	 * @return the component type of this type that have the given {@code key} in the specified {@code component}. Or null if no
-	 * 		component have the given position, or that component does not have a type associated to the given {@code key} in it.
+	 * @param object    the object associated to the returned type as a component in this type.
+	 * @return the component type of this type for the given {@code object} in the specified {@code component}. Or null if no
+	 * 		component have the given position, or that component does not have a type associated to the given {@code object} in it.
 	 * @since 0.1.5
 	 */
-	public Type getComponentType(int component, Object key) {
+	public Type getComponentType(int component, Object object) {
 		return component >= 0 && component < this.components.length &&
 			   this.components[component] != null ?
-			   this.components[component].containsKey(key) ?
-			   this.components[component].get(key) :
-			   this.components[component].get(Component.DEFAULT) :
+			   this.components[component].getComponentType(object) :
 			   null;
 	}
 
@@ -785,24 +976,10 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * Get this type.
 	 *
 	 * @return this type.
+	 * @since 0.1.5
 	 */
 	public Type<T> with() {
 		return this;
-	}
-
-	/**
-	 * Get a type that represents the {@code typeclass} of this type, and have the {@code component} of this type, and should be
-	 * treated as if it was the given {@code wildclass}.
-	 *
-	 * @param wildclass the class that an instance of the returned type should be treated as if it was an instance of it.
-	 * @return a type that represents the {@code typeclass} of this type, and have the {@code component} of this type, and should
-	 * 		be treated as if it was the given {@code wildclass}.
-	 * @throws NullPointerException if the given {@code wildclass} is null.
-	 * @since 0.1.5
-	 */
-	public Type<T> with(Class wildclass) {
-		Objects.requireNonNull(wildclass, "wildclass");
-		return Type.of(wildclass, this.typeclass, this.components);
 	}
 
 	/**
@@ -818,6 +995,51 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	public Type<T> with(Component... components) {
 		Objects.requireNonNull(components, "components");
 		return Type.of(this.typeclass, this.wildclass, components);
+	}
+
+	/**
+	 * Get a type that represents the {@code typeclass} of this type, and have the given {@code components}, and should be treated
+	 * as if it was the {@code wildclass} of this type.
+	 *
+	 * @param components the components of the types specified foreach component to be held by an instance of the returned type.
+	 * @return a type that represents the {@code typeclass} of this type, and have the given {@code components}, and should be
+	 * 		treated as if it was the {@code wildclass} of this type.
+	 * @throws NullPointerException if the given {@code component} is null.
+	 * @since 0.1.5
+	 */
+	public Type<T> with(Type... components) {
+		Objects.requireNonNull(components, "components");
+		return Type.of(this.typeclass, this.wildclass, components);
+	}
+
+	/**
+	 * Get a type that represents the {@code typeclass} of this type, and have the given {@code components}, and should be treated
+	 * as if it was the {@code wildclass} of this type.
+	 *
+	 * @param components the components of the types specified foreach component to be held by an instance of the returned type.
+	 * @return a type that represents the {@code typeclass} of this type, and have the given {@code components}, and should be
+	 * 		treated as if it was the {@code wildclass} of this type.
+	 * @throws NullPointerException if the given {@code component} is null.
+	 * @since 0.1.5
+	 */
+	public Type<T> with(Class[] components) {
+		Objects.requireNonNull(components, "components");
+		return Type.of(this.typeclass, this.wildclass, components);
+	}
+
+	/**
+	 * Get a type that represents the {@code typeclass} of this type, and have the {@code component} of this type, and should be
+	 * treated as if it was the given {@code wildclass}.
+	 *
+	 * @param wildclass the class that an instance of the returned type should be treated as if it was an instance of it.
+	 * @return a type that represents the {@code typeclass} of this type, and have the {@code component} of this type, and should
+	 * 		be treated as if it was the given {@code wildclass}.
+	 * @throws NullPointerException if the given {@code wildclass} is null.
+	 * @since 0.1.5
+	 */
+	public Type<T> with(Class wildclass) {
+		Objects.requireNonNull(wildclass, "wildclass");
+		return Type.of(wildclass, this.typeclass, this.components);
 	}
 
 	/**
@@ -839,6 +1061,42 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	}
 
 	/**
+	 * Get a type that represents the {@code typeclass} of this type, and have the given {@code component}, and should be treated
+	 * as if it was the given {@code wildclass}.
+	 *
+	 * @param wildclass  the class that an instance of the returned type should be treated as if it was an instance of it.
+	 * @param components an array of components of the types specified foreach component to be held by an instance of the
+	 *                   constructed type.
+	 * @return a type that represents the {@code typeclass} of this type, and have the given {@code component}, and should be
+	 * 		treated as if it was the given {@code wildclass}.
+	 * @throws NullPointerException if the given {@code wildclass} or {@code component} is null.
+	 * @since 0.1.5
+	 */
+	public Type<T> with(Class wildclass, Type... components) {
+		Objects.requireNonNull(components, "components");
+		Objects.requireNonNull(wildclass, "wildclass");
+		return Type.of(this.typeclass, wildclass, components);
+	}
+
+	/**
+	 * Get a type that represents the {@code typeclass} of this type, and have the given {@code component}, and should be treated
+	 * as if it was the given {@code wildclass}.
+	 *
+	 * @param wildclass  the class that an instance of the returned type should be treated as if it was an instance of it.
+	 * @param components an array of components of the types specified foreach component to be held by an instance of the
+	 *                   constructed type.
+	 * @return a type that represents the {@code typeclass} of this type, and have the given {@code component}, and should be
+	 * 		treated as if it was the given {@code wildclass}.
+	 * @throws NullPointerException if the given {@code wildclass} or {@code component} is null.
+	 * @since 0.1.5
+	 */
+	public Type<T> with(Class wildclass, Class... components) {
+		Objects.requireNonNull(components, "components");
+		Objects.requireNonNull(wildclass, "wildclass");
+		return Type.of(this.typeclass, wildclass, components);
+	}
+
+	/**
 	 * Get a type that represents the {@code Object} version of the {@code typeclass} of this type, and have the {@code component}
 	 * of this type, and should be treated as if it was the {@code wildclass} of this type.
 	 *
@@ -848,7 +1106,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 */
 	public Type<T> withObjectiveClass() {
 		return this.typeclass.isPrimitive() ?
-			   Type.of(Reflection.asObjectClass(this.typeclass), this.wildclass, this.components) :
+			   Type.of(Reflection.deepAsWrapperClass(this.typeclass), this.wildclass, this.components) :
 			   this;
 	}
 
@@ -863,7 +1121,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 */
 	public Type<T> withPrimitiveType() {
 		return Reflection.hasPrimitiveClass(this.typeclass) ?
-			   Type.of(Reflection.asPrimitiveClass(this.typeclass), this.wildclass, this.components) :
+			   Type.of(Reflection.deepAsPrimitiveClass(this.typeclass), this.wildclass, this.components) :
 			   null;
 	}
 
@@ -875,39 +1133,6 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		this.components = (Component[]) stream.readObject();
 	}
 
-	/**
-	 * Backdoor to modify the {@code components} of this type.
-	 *
-	 * @param components the new {@code components} array to be set.
-	 * @throws NullPointerException if the given {@code components} is null.
-	 */
-	private void setComponents(Component[] components) {
-		Objects.requireNonNull(components, "components");
-		this.components = Component.finalize(components);
-	}
-
-	/**
-	 * Backdoor to modify the {@code typeclass} of this type.
-	 *
-	 * @param typeclass the new {@code typeclass} to be set.
-	 * @throws NullPointerException if the given {@code typeclass} is null.
-	 */
-	private void setTypeclass(Class typeclass) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		this.typeclass = typeclass;
-	}
-
-	/**
-	 * Backdoor to modify the {@code wildclass} of this type.
-	 *
-	 * @param wildclass the new {@code wildclass} to be set.
-	 * @throws NullPointerException if the given {@code wildclass} is null.
-	 */
-	private void setWildclass(Class wildclass) {
-		Objects.requireNonNull(wildclass, "wildclass");
-		this.wildclass = wildclass;
-	}
-
 	@SuppressWarnings("JavaDoc")
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		Objects.requireNonNull(stream, "stream");
@@ -915,905 +1140,415 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		stream.writeObject(this.wildclass);
 		stream.writeObject(this.components);
 	}
-
-	/**
-	 * A component types map that can't be modified and type consider it safe to be stored as its component.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5
-	 */
-	public static final class Component extends AbstractMap<Object, Type> implements java.lang.reflect.Type, Serializable {
-		/**
-		 * A key for a general type for all components to be held by an instance of a type.
-		 */
-		public static final Object DEFAULT = new Object();
-		/**
-		 * A pattern to validate {@link #getName() names} of {@link Component}s.
-		 */
-		public static final Pattern PATTERN = Pattern.compile("^(?:[^,:<>]+(?::[^,:<>]+)?(?:<(?:[^:,<>]+(?::[^:,<>]+)?(?:<(?:[^,<>]*(?:<.*>)?,?)*>)?(?:,(?=\\s*[^>]))?)*>)?(?:,(?=\\s*\\S))?)*$");
-		/**
-		 * A pattern to split {@link #getName() names} of {@link Component}s.
-		 */
-		public static final Pattern SPLIT = Pattern.compile("[^:,<>]+(?::[^:,<>]+)?(?:<(?:[^,<>]*(?:<.*>)?,?)*>)?(?=,(?=\\s*[^>]))?");
-
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = -7433454741119812315L;
-
-		/**
-		 * An unmodifiable entry-set containing the {@link Map.Entry}s of this component.
-		 */
-		private ComponentEntrySet entrySet = new ComponentEntrySet();
-		/**
-		 * True, if this component has been finalized and can't be modified.
-		 */
-		private volatile boolean finalized;
-
-		/**
-		 * Private access constructor.
-		 */
-		private Component() {
-		}
-
-		private Component(Class componentClass) {
-			this.put(Component.DEFAULT, Type.of(componentClass));
-		}
-
-		private Component(Type componentType) {
-			this.put(Component.DEFAULT, componentType);
-		}
-
-		public static Component[] array() {
-			return new Component[0];
-		}
-
-		public static Component[] array(Type... componentTypes) {
-			Objects.requireNonNull(componentTypes, "componentTypes");
-			Component[] components = new Component[componentTypes.length];
-
-			for (int i = 0; i < components.length; i++) {
-				Type componentType = componentTypes[i];
-
-				if (componentType != null)
-					components[i] = Component.of(componentType);
-			}
-
-			return components;
-		}
-
-		public static Component[] array(int length, Type... componentTypes) {
-			Objects.requireNonNull(componentTypes, "componentTypes");
-			Component[] components = new Component[componentTypes.length];
-
-			for (int i = 0; i < components.length; i++) {
-				Type componentType = componentTypes[i];
-
-				if (componentType != null)
-					components[i] = Component.of(componentType);
-			}
-
-			return components;
-		}
-
-		public static Component[] array(Class... componentClasses) {
-			Objects.requireNonNull(componentClasses, "componentClasses");
-			Component[] components = new Component[componentClasses.length];
-
-			for (int i = 0; i < components.length; i++) {
-				Class componentClass = componentClasses[i];
-
-				if (componentClass != null)
-					components[i] = Component.of(componentClass);
-			}
-
-			return components;
-		}
-
-		public static Component[] array(int length, Class... componentClasses) {
-			Objects.requireNonNull(componentClasses, "componentClasses");
-			Component[] components = new Component[componentClasses.length];
-
-			for (int i = 0; i < components.length; i++) {
-				Class componentClass = componentClasses[i];
-
-				if (componentClass != null)
-					components[i] = Component.of(componentClass);
-			}
-
-			return components;
-		}
-
-		/**
-		 * Get a Component object associated with the component with the given {@code name}.
-		 *
-		 * @param name the fully qualified name of the desired component.
-		 * @return a Component object for the component with the given {@code name}.
-		 * @throws LinkageError                if the linkage failed.
-		 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
-		 * @throws ClassNotFoundException      if no component can be associated to the given {@code name}.
-		 * @throws NullPointerException        if the given {@code name} is null.
-		 * @see Class#forName(String)
-		 * @see Type#forName(String)
-		 */
-		public static Component forName(String name) throws ClassNotFoundException {
-			return Component.of(Type.forName(name));
-		}
-
-		/**
-		 * Get a Component object associated with the component with the given {@code name}, Using the given {@code loader}.
-		 *
-		 * @param name       the fully qualified name of the desired component.
-		 * @param initialize if {@code true} the any non-initialized class will be initialized.
-		 * @param loader     class loader from which the classes must be loaded.
-		 * @return a Component object for the component with the given {@code name}.
-		 * @throws LinkageError                if the linkage failed.
-		 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
-		 * @throws ClassNotFoundException      if no component can be associated to the given {@code name}.
-		 * @throws NullPointerException        if the given {@code name} or {@code loader} is null.
-		 * @see Class#forName(String, boolean, ClassLoader)
-		 * @see Type#forName(String, boolean, ClassLoader)
-		 */
-		public static Component forName(String name, boolean initialize, ClassLoader loader) throws ClassNotFoundException {
-			return Component.of(Type.forName(name, initialize, loader));
-		}
-
-		/**
-		 * Get a Components array associated with the components with the given {@code names}.
-		 *
-		 * @param names the fully qualified names of the desired components array.
-		 * @return a Components array for the components with the given {@code name}.
-		 * @throws LinkageError                if the linkage failed.
-		 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
-		 * @throws ClassNotFoundException      if no components can be associated to the given {@code name}.
-		 * @throws NullPointerException        if the given {@code name} is null.
-		 */
-		public static Component[] forNames(String names) throws ClassNotFoundException {
-			Objects.requireNonNull(names, "names");
-
-			if (!Component.PATTERN.matcher(names).matches())
-				throw new ClassNotFoundException(names);
-
-			List<Component> list = new ArrayList();
-
-			Matcher matcher = Component.SPLIT.matcher(names.trim());
-			while (matcher.find()) {
-				String componentName = matcher.group().trim();
-				list.add("?".equals(componentName) ? null : Component.forName(componentName));
-			}
-
-			return list.toArray(new Component[0]);
-		}
-
-		/**
-		 * Get a Components array associated with the components with the given {@code names}. Using the given {@code loader}.
-		 *
-		 * @param names      the fully qualified names of the desired components array.
-		 * @param initialize if {@code true} the any non-initialized class will be initialized.
-		 * @param loader     class loader from which the classes must be loaded.
-		 * @return a Components array for the components with the given {@code name}.
-		 * @throws LinkageError                if the linkage failed.
-		 * @throws ExceptionInInitializerError if the initialization provoked by this method fails.
-		 * @throws ClassNotFoundException      if no components can be associated to the given {@code name}.
-		 * @throws NullPointerException        if the given {@code name} or {@code loader} is null.
-		 */
-		public static Component[] forNames(String names, boolean initialize, ClassLoader loader) throws ClassNotFoundException {
-			Objects.requireNonNull(names, "names");
-			Objects.requireNonNull(loader, "loader");
-
-			if (!Component.PATTERN.matcher(names).matches())
-				throw new ClassNotFoundException(names);
-
-			List<Component> list = new ArrayList();
-
-			Matcher matcher = Component.SPLIT.matcher(names.trim());
-			while (matcher.find()) {
-				String componentName = matcher.group().trim();
-				list.add("?".equals(componentName) ? null : Component.forName(componentName, initialize, loader));
-			}
-
-			return list.toArray(new Component[0]);
-		}
-
-		/**
-		 * Get an empty component.
-		 *
-		 * @return an empty component.
-		 */
-		public static Component of() {
-			return new Component();
-		}
-
-		/**
-		 * Get a component that its general type is the class of the given {@code componentClass}, and have no mappings.
-		 * <pre>
-		 *     Type.component(<font color="d3c4ff">COMPONENT</font>)
-		 *     <font color="d3c4ff">COMPONENT</font>
-		 * </pre>
-		 *
-		 * @param componentClass the general type for the components that have no mapping in the returned component.
-		 * @return a component that its general type is the class of the given {@code componentClass}, and have no mappings.
-		 * @since 0.1.5
-		 */
-		public static Component of(Class componentClass) {
-			return new Component(componentClass);
-		}
-
-		/**
-		 * Get a component that its general type is the given {@code componentType}, and have no mappings.
-		 * <pre>
-		 *     Type.component(<font color="d3c4ff">COMPONENT</font>)
-		 *     <font color="d3c4ff">COMPONENT</font>
-		 * </pre>
-		 *
-		 * @param componentType the general type for the components that have no mapping in the returned component.
-		 * @return a component that its general type is the given {@code componentType}, and have no mappings.
-		 * @since 0.1.5
-		 */
-		public static Component of(Type componentType) {
-			return new Component(componentType);
-		}
-
-		public static Component of(Map<Object, Type> componentMap) {
-			Objects.requireNonNull(componentMap, "componentMap");
-			Component component
-		}
-
-		/**
-		 * Finalize the given {@code component} and make it unmodifiable.
-		 *
-		 * @param component the component to be finalized.
-		 * @return the given {@code component}.
-		 */
-		static Component finalize(Component component) {
-			if (component != null)
-				synchronized (component) {
-					component.finalized = true;
-				}
-
-			return component;
-		}
-
-		/**
-		 * Finalize the given {@code components} and make them unmodifiable.
-		 *
-		 * @param components the components to be finalized.
-		 * @return a copy of the given {@code components}.
-		 * @throws NullPointerException if the given {@code components} is null.
-		 */
-		static Component[] finalize(Component... components) {
-			Objects.requireNonNull(components, "components");
-			Component[] finalized = new Component[components.length];
-
-			for (int i = 0; i < components.length; i++)
-				Component.finalize(finalized[i] = components[i]);
-
-			return finalized;
-		}
-
-		@Override
-		public Set<Map.Entry<Object, Type>> entrySet() {
-			synchronized (this) {
-				return (Set) this.entrySet;
-			}
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			synchronized (this) {
-				return o == this ||
-					   o instanceof Component &&
-					   Objects.equals(((Component) o).entrySet, this.entrySet);
-			}
-		}
-
-		@Override
-		public String getTypeName() {
-			Type component = this.get(Component.DEFAULT);
-			return component == null ? "?" : component.getTypeName();
-		}
-
-		@Override
-		public int hashCode() {
-			return this.entrySet.hashCode();
-		}
-
-		@Override
-		public Type put(Object key, Type type) {
-			synchronized (this) {
-				if (this.finalized)
-					throw new UnsupportedOperationException("Finalized Component");
-
-				for (ComponentEntry entry : this.entrySet)
-					if (entry.getKey().equals(key))
-						return entry.setValue(type);
-
-				this.entrySet.add(new ComponentEntry(key, type));
-				return null;
-			}
-		}
-
-		@Override
-		public String toString() {
-			return "component " + this.getName();
-		}
-
-		/**
-		 * Get the {@link Component#DEFAULT componentType} of this component. The {@link Component#DEFAULT componentType} is the
-		 * type for the elements that have no type in the component of the type representing it.
-		 *
-		 * @return the {@link Component#DEFAULT componentType} of this component, Or null if this component has no {@link
-		 *        Component#DEFAULT componentType}.
-		 * @since 0.1.5
-		 */
-		public Type getComponentType() {
-			return this.get(Component.DEFAULT);
-		}
-
-		/**
-		 * Get the {@code componentType} for the element with the given {@code key} in this component.
-		 *
-		 * @param key the key of the returned type in this component.
-		 * @return the {@code componentType} for the element with the given {@code key} in this component, Or the {@link
-		 *        Component#DEFAULT componentType} of this component if there is no {@code componentType} with the given key in this
-		 * 		component.
-		 * @since 0.1.5
-		 */
-		public Type getComponentType(Object key) {
-			Type type = this.get(key);
-			return type == null ? this.get(Component.DEFAULT) : type;
-		}
-
-		/**
-		 * Get the {@code Name} of this component. The {@code Name} of a component is the {@link Type#getName() Name} of its
-		 * {@link Component#DEFAULT componentType}, or {@code "?"} if it has no {@link Component#DEFAULT componentType}.
-		 *
-		 * @return the {@code Name} of this component, Or {@code "?"} if this component has no {@link Component#DEFAULT
-		 * 		componentType}.
-		 * @since 0.1.5
-		 */
-		public String getName() {
-			Type component = this.get(Component.DEFAULT);
-			return component == null ? "?" : component.getName();
-		}
-
-		/**
-		 * Get the {@code SimpleName} of this component. The {@code SimpleName} of a component is the {@link Type#getSimpleName()
-		 * SimpleName} of its {@link Component#DEFAULT componentType}, or {@code "?"} if it has no {@link Component#DEFAULT
-		 * componentType}.
-		 *
-		 * @return the {@code SimpleName} of this component, Or {@code "?"} if this component has no {@link Component#DEFAULT
-		 * 		componentType}.
-		 * @since 0.1.5
-		 */
-		public String getSimpleName() {
-			Type component = this.get(Component.DEFAULT);
-			return component == null ? "?" : component.getSimpleName();
-		}
-
-		@SuppressWarnings("JavaDoc")
-		private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
-			synchronized (this) {
-				Objects.requireNonNull(stream, "stream");
-				this.entrySet = (ComponentEntrySet) stream.readObject();
-				this.finalized = stream.readBoolean();
-			}
-		}
-
-		@SuppressWarnings("JavaDoc")
-		private void writeObject(ObjectOutputStream stream) throws IOException {
-			synchronized (this) {
-				Objects.requireNonNull(stream, "stream");
-				stream.writeObject(this.entrySet);
-				stream.writeBoolean(this.finalized);
-			}
-		}
-
-		/**
-		 * An {@link Map.Entry} implementation for {@link Component}s.
-		 */
-		public final class ComponentEntry implements Map.Entry<Object, Type>, Serializable {
-			@SuppressWarnings("JavaDoc")
-			private static final long serialVersionUID = 4415634297546273668L;
-
-			/**
-			 * The key of this entry.
-			 */
-			private Object key;
-			/**
-			 * The value of this entry.
-			 */
-			private Type type;
-
-			/**
-			 * Construct a new component-entry.
-			 *
-			 * @param key  the key of this entry.
-			 * @param type the type (value) to this entry.
-			 */
-			private ComponentEntry(Object key, Type type) {
-				this.key = key;
-				this.type = type;
-			}
-
-			@Override
-			public boolean equals(Object other) {
-				return other == this ||
-					   other instanceof Map.Entry &&
-					   Objects.equals(((Map.Entry) other).getKey(), this.key) &&
-					   Objects.equals(((Map.Entry) other).getValue(), this.type);
-			}
-
-			@Override
-			public Object getKey() {
-				return this.key;
-			}
-
-			@Override
-			public Type getValue() {
-				return this.type;
-			}
-
-			@Override
-			public int hashCode() {
-				return Objects.hashCode(this.key) ^ Objects.hashCode(this.type);
-			}
-
-			@Override
-			public Type setValue(Type value) {
-				synchronized (Component.this) {
-					if (Component.this.finalized)
-						throw new UnsupportedOperationException("Finalized Component");
-
-					return this.type = value;
-				}
-			}
-
-			@Override
-			public String toString() {
-				return this.key + "=" + this.type;
-			}
-
-			@SuppressWarnings("JavaDoc")
-			private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
-				Objects.requireNonNull(stream, "stream");
-				this.key = stream.readObject();
-				this.type = (Type) stream.readObject();
-			}
-
-			@SuppressWarnings("JavaDoc")
-			private void writeObject(ObjectOutputStream stream) throws IOException {
-				Objects.requireNonNull(stream, "stream");
-				stream.writeObject(this.key);
-				stream.writeObject(this.type);
-			}
-		}
-
-		/**
-		 * An {@link Map#entrySet} implementation for {@link Component}s.
-		 */
-		public final class ComponentEntrySet extends AbstractSet<ComponentEntry> implements Serializable {
-			@SuppressWarnings("JavaDoc")
-			private static final long serialVersionUID = -4116543953594190322L;
-
-			/**
-			 * The backing hashset.
-			 */
-			private Set<ComponentEntry> set = new HashSet();
-
-			/**
-			 * Private access constructor.
-			 */
-			private ComponentEntrySet() {
-			}
-
-			@Override
-			public boolean add(ComponentEntry entry) {
-				synchronized (Component.this) {
-					if (Component.this.finalized)
-						throw new UnsupportedOperationException("Finalized Component");
-
-					return this.set.add(entry);
-				}
-			}
-
-			@Override
-			public Iterator iterator() {
-				return new Iterator();
-			}
-
-			@Override
-			public int size() {
-				return this.set.size();
-			}
-
-			@Override
-			public String toString() {
-				java.util.Iterator<ComponentEntry> iterator = this.set.iterator();
-
-				if (iterator.hasNext()) {
-					StringBuilder builder = new StringBuilder("[");
-
-					while (true) {
-						builder.append(iterator.next());
-
-						if (iterator.hasNext()) {
-							builder.append(", ");
-							continue;
-						}
-
-						return builder.append("]")
-								.toString();
-					}
-				}
-
-				return "[]";
-			}
-
-			@SuppressWarnings("JavaDoc")
-			private void readObject(ObjectInputStream stream) throws ClassNotFoundException, IOException {
-				Objects.requireNonNull(stream, "stream");
-				this.set = (Set) stream.readObject();
-			}
-
-			@SuppressWarnings("JavaDoc")
-			private void writeObject(ObjectOutputStream stream) throws IOException {
-				Objects.requireNonNull(stream, "stream");
-				stream.writeObject(this.set);
-			}
-
-			/**
-			 * An iterator for component-entry sets.
-			 */
-			public final class Iterator implements java.util.Iterator<ComponentEntry> {
-				/**
-				 * The backing iterator.
-				 */
-				private final java.util.Iterator<ComponentEntry> iterator = ComponentEntrySet.this.set.iterator();
-
-				/**
-				 * Private access constructor.
-				 */
-				private Iterator() {
-				}
-
-				@Override
-				public boolean hasNext() {
-					return this.iterator.hasNext();
-				}
-
-				@Override
-				public ComponentEntry next() {
-					return this.iterator.next();
-				}
-
-				@Override
-				public void remove() {
-					synchronized (Component.this) {
-						if (Component.this.finalized)
-							throw new UnsupportedOperationException("Finalized Component");
-
-						this.iterator.remove();
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * An util class for auto-generating types.
-	 */
-	public static final class Generate {
-		/**
-		 * This is an util class and must not be instanced as an object.
-		 *
-		 * @throws AssertionError when called.
-		 */
-		private Generate() {
-			throw new AssertionError("No instance for you!");
-		}
-
-		/**
-		 * Get a type auto-generated to be representing the given {@code instance}. The {@link Component#DEFAULT componentType}s
-		 * of the {@link Component components} of the returned type are the given {@code componentType}, each type is for the
-		 * component at the same position as its position.
-		 *
-		 * @param instance       the instance the returned type are representing.
-		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
-		 *                       position as the type in the components array of the returned type.
-		 * @param <T>            the type of the class represented by the returned type.
-		 * @return a type auto-generated to be representing the given {@code instance}. The {@link Component#DEFAULT
-		 * 		componentType}s of the {@link Component components} of the returned type are the given {@code componentType}, each
-		 * 		type is for the component at the same position as its position.
-		 * @throws NullPointerException if the given {@code componentTypes} is null.
-		 */
-		public static <T> Type<T> from(T instance, Type... componentTypes) {
-			Objects.requireNonNull(componentTypes, "componentTypes");
-			return Generate.from(new HashMap(), instance, componentTypes);
-		}
-
-		/**
-		 * Get a type auto-generated to be representing the given {@code instance}, and should be treated as if it was the given
-		 * {@code wildclass}. The {@link Component#DEFAULT componentType}s of the {@link Component components} of the returned
-		 * type are the given {@code componentType}, each type is for the component at the same position as its position.
-		 *
-		 * @param instance       the instance the returned type are representing.
-		 * @param wildclass      the class that an instance of the returned type should be treated as if it was an instance of
-		 *                       it.
-		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
-		 *                       position as the type in the components array of the returned type.
-		 * @param <T>            the type of the class represented by the returned type.
-		 * @return a type auto-generated to be representing the given {@code instance}, and should be treated as if it was the
-		 * 		given {@code wildclass}. The {@link Component#DEFAULT componentType}s of the {@link Component components} of the
-		 * 		returned type are the given {@code componentType}, each type is for the component at the same position as its
-		 * 		position.
-		 * @throws NullPointerException if the given {@code wildclass} or {@code componentTypes} is null.
-		 */
-		public static <T> Type<T> from(T instance, Class wildclass, Type... componentTypes) {
-			Objects.requireNonNull(wildclass, "wildclass");
-			Objects.requireNonNull(componentTypes, "componentTypes");
-			return Generate.from(new HashMap(), instance, wildclass, componentTypes);
-		}
-
-		/**
-		 * The backing method for the method {@link Generate#from(Object, Type...)}.
-		 *
-		 * @param dejaVus        a map associates instances to their types, so any instance included in the map will not be
-		 *                       classified, instead this method will take the type associated to it in the map.
-		 * @param instance       the instance the returned type are representing.
-		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
-		 *                       position as the type in the components array of the returned type.
-		 * @param <T>            the type of the class represented by the returned type.
-		 * @return a type auto-generated to be representing the given {@code instance}. The {@link Component#DEFAULT
-		 * 		componentType}s of the {@link Component components} of the returned type are the given {@code componentType}, each
-		 * 		type is for the component at the same position as its position.
-		 * @throws NullPointerException if the given {@code dejaVus} or {@code componentTypes} is null.
-		 */
-		static <T> Type<T> from(Map dejaVus, T instance, Type... componentTypes) {
-			Objects.requireNonNull(dejaVus, "dejaVus");
-			Objects.requireNonNull(componentTypes, "componentTypes");
-			Class wildclass = instance == null ? Void.class : instance.getClass();
-			return Generate.from(dejaVus, instance, wildclass, componentTypes);
-		}
-
-		/**
-		 * The backing method for the method {@link Generate#from(Object, Class, Type[])}.
-		 *
-		 * @param dejaVus        a map associates instances to their types, so any instance included in the map will not be
-		 *                       classified, instead this method will take the type associated to it in the map.
-		 * @param instance       the instance the returned type are representing.
-		 * @param wildclass      the class that an instance of the returned type should be treated as if it was an instance of
-		 *                       it.
-		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
-		 *                       position as the type in the components array of the returned type.
-		 * @param <T>            the type of the class represented by the returned type.
-		 * @return a type auto-generated to be representing the given {@code instance}, and should be treated as if it was the
-		 * 		given {@code wildclass}. The {@link Component#DEFAULT componentType}s of the {@link Component components} of the
-		 * 		returned type are the given {@code componentType}, each type is for the component at the same position as its
-		 * 		position.
-		 * @throws NullPointerException if the given {@code dejaVus} or {@code wildclass} or {@code componentTypes} is null.
-		 */
-		static <T> Type<T> from(Map dejaVus, T instance, Class wildclass, Type... componentTypes) {
-			Objects.requireNonNull(dejaVus, "dejaVus");
-			Objects.requireNonNull(wildclass, "wildclass");
-			Objects.requireNonNull(componentTypes, "componentTypes");
-
-			if (instance != null)
-				if (instance.getClass().isArray())
-					return Generate.fromArray(dejaVus, instance, wildclass, componentTypes);
-				else if (instance instanceof Iterable)
-					return Generate.fromIterable(dejaVus, (Iterable) instance, wildclass, componentTypes);
-				else if (instance instanceof Map)
-					return Generate.fromMap(dejaVus, (Map) instance, wildclass, componentTypes);
-
-			return Type.from(instance, wildclass, Component.array(componentTypes));
-		}
-
-		/**
-		 * Get a type auto-generated to be representing the given {@code array}, and should be treated as if it was the given
-		 * {@code wildclass}. The {@link Component#DEFAULT componentType}s of the {@link Component components} of the returned
-		 * type are the given {@code componentType}, each type is for the component at the same position as its position.
-		 *
-		 * @param dejaVus        a map associates instances to their types, so any instance included in the map will not be
-		 *                       classified, instead this method will take the type associated to it in the map.
-		 * @param array          the array the returned type are representing.
-		 * @param wildclass      the class that an instance of the returned type should be treated as if it was an instance of
-		 *                       it.
-		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
-		 *                       position as the type in the components array of the returned type.
-		 * @param <T>            the type of the class represented by the returned type.
-		 * @return a type auto-generated to be representing the given {@code array}, and should be treated as if it was the given
-		 *        {@code wildclass}. The {@link Component#DEFAULT componentType}s of the {@link Component components} of the returned
-		 * 		type are the given {@code componentType}, each type is for the component at the same position as its position.
-		 * @throws NullPointerException if the given {@code dejaVus} or {@code array} or {@code wildclass} or {@code
-		 *                              componentTypes} is null.
-		 */
-		static <T> Type<T> fromArray(Map<Object, Type> dejaVus, Object array, Class wildclass, Type[] componentTypes) {
-			Objects.requireNonNull(dejaVus, "dejaVus");
-			Objects.requireNonNull(array, "array");
-			Objects.requireNonNull(wildclass, "wildclass");
-			Objects.requireNonNull(componentTypes, "componentTypes");
-
-			Type elementComponentType;
-			Component[] components;
-			if (componentTypes.length < 1) {
-				elementComponentType = Generate.ofArray(array.getClass().getComponentType());
-				components = Component.array(elementComponentType);
-			} else if (componentTypes[0] != null) {
-				elementComponentType = componentTypes[0];
-				components = Component.array(componentTypes);
-			} else {
-				elementComponentType = Generate.ofArray(array.getClass().getComponentType());
-				Type[] modified = Arrays.copyOf(componentTypes, componentTypes.length);
-				modified[0] = elementComponentType;
-				components = Component.array(modified);
-			}
-
-			Type type = Type.from(array, wildclass);
-			dejaVus.put(array, type);
-
-			Iterator iterator = Arrays.iterator(array);
-			for (int i = 0; iterator.hasNext(); i++) {
-				Object element = iterator.next();
-
-				if (dejaVus.containsKey(element))
-					//if it has been solved before
-					components[0].put(i, dejaVus.get(element));
-				else
-					components[0].put(i, Generate.from(dejaVus, element, elementComponentType));
-			}
-
-			//finalize everything
-			type.setComponents(components);
-			return type;
-		}
-
-		/**
-		 * Get a type auto-generated to be representing the given {@code iterable}, and should be treated as if it was the given
-		 * {@code wildclass}. The {@link Component#DEFAULT componentType}s of the {@link Component components} of the returned
-		 * type are the given {@code componentType}, each type is for the component at the same position as its position.
-		 *
-		 * @param dejaVus        a map associates instances to their types, so any instance included in the map will not be
-		 *                       classified, instead this method will take the type associated to it in the map.
-		 * @param iterable       the iterable the returned type are representing.
-		 * @param wildclass      the class that an instance of the returned type should be treated as if it was an instance of
-		 *                       it.
-		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
-		 *                       position as the type in the components array of the returned type.
-		 * @param <T>            the type of the class represented by the returned type.
-		 * @return a type auto-generated to be representing the given {@code iterable}, and should be treated as if it was the
-		 * 		given {@code wildclass}. The {@link Component#DEFAULT componentType}s of the {@link Component components} of the
-		 * 		returned type are the given {@code componentType}, each type is for the component at the same position as its
-		 * 		position.
-		 * @throws NullPointerException if the given {@code dejaVus} or {@code iterable} or {@code wildclass} or {@code
-		 *                              componentTypes} is null.
-		 */
-		static <T> Type<T> fromIterable(Map<Object, Type> dejaVus, Iterable iterable, Class wildclass, Type[] componentTypes) {
-			Objects.requireNonNull(dejaVus, "dejaVus");
-			Objects.requireNonNull(iterable, "iterable");
-			Objects.requireNonNull(wildclass, "wildclass");
-			Objects.requireNonNull(componentTypes, "componentTypes");
-
-			Type elementComponentType = componentTypes.length < 1 ? null : componentTypes[0];
-			Component[] components = Component.array(1, componentTypes);
-
-			Type type = Type.from(iterable, wildclass);
-			dejaVus.put(iterable, type);
-
-			Iterator iterator = iterable.iterator();
-			for (int i = 0; iterator.hasNext(); i++) {
-				Object element = iterator.next();
-
-				if (dejaVus.containsKey(element))
-					//if it has been solved before
-					components[0].put(i, dejaVus.get(element));
-				else
-					components[0].put(i, Generate.from(dejaVus, element, elementComponentType));
-			}
-
-			//finalize everything
-			type.setComponents(components);
-			return type;
-		}
-
-		/**
-		 * Get a type auto-generated to be representing the given {@code map}, and should be treated as if it was the given {@code
-		 * wildclass}. The {@link Component#DEFAULT componentType}s of the {@link Component components} of the returned type are
-		 * the given {@code componentType}, each type is for the component at the same position as its position.
-		 *
-		 * @param dejaVus        a map associates instances to their types, so any instance included in the map will not be
-		 *                       classified, instead this method will take the type associated to it in the map.
-		 * @param map            the map the returned type are representing.
-		 * @param wildclass      the class that an instance of the returned type should be treated as if it was an instance of
-		 *                       it.
-		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
-		 *                       position as the type in the components array of the returned type.
-		 * @param <T>            the type of the class represented by the returned type.
-		 * @return a type auto-generated to be representing the given {@code map}, and should be treated as if it was the given
-		 *        {@code wildclass}. The {@link Component#DEFAULT componentType}s of the {@link Component components} of the returned
-		 * 		type are the given {@code componentType}, each type is for the component at the same position as its position.
-		 * @throws NullPointerException if the given {@code dejaVus} or {@code map} or {@code wildclass} or {@code componentTypes}
-		 *                              is null.
-		 */
-		static <T> Type<T> fromMap(Map<Object, Type> dejaVus, Map map, Class wildclass, Type[] componentTypes) {
-			Objects.requireNonNull(dejaVus, "dejaVus");
-			Objects.requireNonNull(map, "map");
-			Objects.requireNonNull(wildclass, "wildclass");
-			Objects.requireNonNull(componentTypes, "componentTypes");
-
-			Type keyComponentType = componentTypes.length < 1 ? null : componentTypes[0];
-			Type valueComponentType = componentTypes.length < 2 ? null : componentTypes[1];
-			Component[] components = Component.array(2, componentTypes);
-
-			Type type = Type.from(map, wildclass);
-			dejaVus.put(map, type);
-
-			for (Map.Entry entry : (Set<Map.Entry>) map.entrySet()) {
-				Object key = entry.getKey();
-				Object value = entry.getValue();
-
-				if (dejaVus.containsKey(key))
-					//if it has been solved before
-					components[0].put(key, dejaVus.get(key));
-				else
-					components[0].put(key, Generate.from(dejaVus, key, keyComponentType));
-
-				if (dejaVus.containsKey(value))
-					//if it has been solved before
-					components[1].put(key, dejaVus.get(value));
-				else
-					components[1].put(key, Generate.from(dejaVus, value, valueComponentType));
-			}
-
-			//finalize everything
-			type.setComponents(components);
-			return type;
-		}
-
-		/**
-		 * Get a type that represents the given {@code typeclass}, and with a {@code components} auto generated from the given
-		 * array's class.
-		 * <pre>
-		 *     Type.ofArray(<font color="a5edff">TYPE[][][]</font>)
-		 *     <font color="a5edff">TYPE[][][]</font>&lt;<font color="a5edff">TYPE[][]</font>&lt;<font color="a5edff">TYPE[]</font>&lt;<font color="a5edff">TYPE</font>&gt;&gt;&gt;
-		 * </pre>
-		 *
-		 * @param typeclass the array class to be represented by the returned type.
-		 * @param <T>       the type of the class represented by the returned type.
-		 * @return a type that represents the given {@code typeclass}, and with a {@code components} auto generated from the given
-		 * 		array's class.
-		 * @throws NullPointerException if the given {@code typeclass} is null.
-		 */
-		static <T> Type<T> ofArray(Class<T> typeclass) {
-			Objects.requireNonNull(typeclass, "typeclass");
-			return typeclass.isArray() ?
-				   Type.of(typeclass, Type.Component.of(Generate.ofArray(typeclass.getComponentType()))) :
-				   Type.of(typeclass);
-		}
-
-		/**
-		 * Get a type that represents the given {@code typeclass}, and with a {@code components} auto generated from the given
-		 * array's class, and should be treated as if it was the given {@code wildclass}.
-		 * <pre>
-		 *     Type.ofArray(<font color="a5edff">TYPE[][][]</font>, <font color="fc8fbb">WILD</font>)
-		 *     <font color="a5edff">TYPE[][][]</font>:<font color="fc8fbb">WILD</font>&lt;<font color="a5edff">TYPE[][]</font>&lt;<font color="a5edff">TYPE[]</font>&lt;<font color="a5edff">TYPE</font>&gt;&gt;&gt;
-		 * </pre>
-		 *
-		 * @param typeclass the array class to be represented by the returned type.
-		 * @param wildclass the class that an instance of the returned type should be treated as if it was an instance of it.
-		 * @param <T>       the type of the class represented by the returned type.
-		 * @return a type that represents the given {@code typeclass}, and with a {@code components} auto generated from the given
-		 * 		array's class, and should be treated as if it was the given {@code wildclass}.
-		 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} is null.
-		 */
-		static <T> Type<T> ofArray(Class<T> typeclass, Class wildclass) {
-			Objects.requireNonNull(typeclass, "typeclass");
-			Objects.requireNonNull(wildclass, "wildclass");
-			return typeclass.isArray() ?
-				   Type.of(typeclass, wildclass, Type.Component.of(Generate.ofArray(typeclass.getComponentType()))) :
-				   Type.of(typeclass, wildclass);
-		}
-	}
 }
+//
+//		/**
+//		 * Finalize the given {@code components} and make them unmodifiable.
+//		 *
+//		 * @param components the components to be finalized.
+//		 * @return a copy of the given {@code components}.
+//		 * @throws NullPointerException if the given {@code components} is null.
+//		 */
+//		static Component[] finalize(Component... components) {
+//			Objects.requireNonNull(components, "components");
+//			Component[] finalized = new Component[components.length];
+//
+//			System.arraycopy(components, 0, finalized, 0, components.length);
+//
+//			return finalized;
+//		}
+//
+//		static Map<Object, Type> finalize(Map<Object, Type> map) {
+//			Objects.requireNonNull(map, "map");
+//			Map finalized = new HashMap(map.size());
+//
+//			return finalized;
+//		}
+//
+//		/**
+//		 * Construct a new component with no componentType nor any mappings.
+//		 */
+//		private Component() {
+//		}
+//
+//		/**
+//		 * Construct a new component with the mappings in the given {@code componentMap}.
+//		 *
+//		 * @param componentMap the mappings of the objects to their types in the constructed component.
+//		 * @throws NullPointerException if the given {@code componentMap} is null.
+//		 * @throws ClassCastException   if the given {@code componentMap} has a value that is not null neither an instance of
+//		 *                              {@link Type}.
+//		 */
+//		private Component(Map<Object, Type> componentMap) {
+//			Objects.requireNonNull(componentMap, "componentMap");
+//			this.componentMap = Component.finalize(componentMap);
+//		}
+//
+//		/**
+//		 * Construct a new component that its general type is the given {@code componentType}, and have no mappings.
+//		 *
+//		 * @param componentType the general type for the objects that have no mapping in the constructed component.
+//		 */
+//		private Component(Type<T> componentType) {
+//			this.componentType = componentType;
+//			this.componentMap = Collections.emptyMap();
+//		}
+
+//
+//	/**
+//	 * Construct a new type that represents the class {@link Object}, and have no components.
+//	 */
+//	private Type() {
+//		this.typeclass = (Class) Object.class;
+//		this.wildclass = Object.class;
+//		this.components = new Component[0];
+//	}
+//
+//	/**
+//	 * Construct a new type that represents the class {@link Object}, and have the given {@code components}.
+//	 *
+//	 * @param components an array of components of the types specified foreach component to be held by an instance of the
+//	 *                   constructed type.
+//	 * @throws NullPointerException if the given {@code components} or any of its elements is null.
+//	 */
+//	private Type(Component... components) {
+//		Objects.requireNonNull(components, "components");
+//		this.typeclass = (Class) Object.class;
+//		this.wildclass = Object.class;
+//		this.components = Component.finalize(components);
+//	}
+//
+//	/**
+//	 * Construct a new type that represents the given {@code typeclass}, and have the given {@code components}.
+//	 *
+//	 * @param typeclass  the class to be represented by the constructed type.
+//	 * @param components an array of components of the types specified foreach component to be held by an instance of the
+//	 *                   constructed type.
+//	 * @throws NullPointerException if the given {@code typeclass} or {@code components} or any of its elements is null.
+//	 */
+//	private Type(Class<T> typeclass, Component... components) {
+//		Objects.requireNonNull(typeclass, "typeclass");
+//		Objects.requireNonNull(components, "components");
+//		this.typeclass = typeclass;
+//		this.wildclass = typeclass;
+//		this.components = Component.finalize(components);
+//	}
+
+//
+//	/**
+//	 * An util class for auto-generating types.
+//	 */
+//	public static final class Generate {
+//		/**
+//		 * This is an util class and must not be instanced as an object.
+//		 *
+//		 * @throws AssertionError when called.
+//		 */
+//		private Generate() {
+//			throw new AssertionError("No instance for you!");
+//		}
+//
+//		/**
+//		 * Get a type auto-generated to be representing the given {@code instance}. The {@link Component#componentType componentType}s
+//		 * of the {@link Component components} of the returned type are the given {@code componentType}, each type is for the
+//		 * component at the same position as its position.
+//		 *
+//		 * @param instance       the instance the returned type are representing.
+//		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
+//		 *                       position as the type in the components array of the returned type.
+//		 * @param <T>            the type of the class represented by the returned type.
+//		 * @return a type auto-generated to be representing the given {@code instance}. The {@link Component#componentType
+//		 * 		componentType}s of the {@link Component components} of the returned type are the given {@code componentType}, each
+//		 * 		type is for the component at the same position as its position.
+//		 * @throws NullPointerException if the given {@code componentTypes} is null.
+//		 */
+//		public static <T> Type<T> from(T instance, Type... componentTypes) {
+//			Objects.requireNonNull(componentTypes, "componentTypes");
+//			return Generate.from(new HashMap(), instance, componentTypes);
+//		}
+//
+//		/**
+//		 * Get a type auto-generated to be representing the given {@code instance}, and should be treated as if it was the given
+//		 * {@code wildclass}. The {@link Component#componentType componentType}s of the {@link Component components} of the returned
+//		 * type are the given {@code componentType}, each type is for the component at the same position as its position.
+//		 *
+//		 * @param instance       the instance the returned type are representing.
+//		 * @param wildclass      the class that an instance of the returned type should be treated as if it was an instance of
+//		 *                       it.
+//		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
+//		 *                       position as the type in the components array of the returned type.
+//		 * @param <T>            the type of the class represented by the returned type.
+//		 * @return a type auto-generated to be representing the given {@code instance}, and should be treated as if it was the
+//		 * 		given {@code wildclass}. The {@link Component#componentType componentType}s of the {@link Component components} of the
+//		 * 		returned type are the given {@code componentType}, each type is for the component at the same position as its
+//		 * 		position.
+//		 * @throws NullPointerException if the given {@code wildclass} or {@code componentTypes} is null.
+//		 */
+//		public static <T> Type<T> from(T instance, Class wildclass, Type... componentTypes) {
+//			Objects.requireNonNull(wildclass, "wildclass");
+//			Objects.requireNonNull(componentTypes, "componentTypes");
+//			return Generate.from(new HashMap(), instance, wildclass, componentTypes);
+//		}
+//
+//		/**
+//		 * The backing method for the method {@link Generate#from(Object, Type...)}.
+//		 *
+//		 * @param dejaVus        a map associates instances to their types, so any instance included in the map will not be
+//		 *                       classified, instead this method will take the type associated to it in the map.
+//		 * @param instance       the instance the returned type are representing.
+//		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
+//		 *                       position as the type in the components array of the returned type.
+//		 * @param <T>            the type of the class represented by the returned type.
+//		 * @return a type auto-generated to be representing the given {@code instance}. The {@link Component#componentType
+//		 * 		componentType}s of the {@link Component components} of the returned type are the given {@code componentType}, each
+//		 * 		type is for the component at the same position as its position.
+//		 * @throws NullPointerException if the given {@code dejaVus} or {@code componentTypes} is null.
+//		 */
+//		static <T> Type<T> from(Map dejaVus, T instance, Type... componentTypes) {
+//			Objects.requireNonNull(dejaVus, "dejaVus");
+//			Objects.requireNonNull(componentTypes, "componentTypes");
+//			Class wildclass = instance == null ? Void.class : instance.getClass();
+//			return Generate.from(dejaVus, instance, wildclass, componentTypes);
+//		}
+//
+//		/**
+//		 * The backing method for the method {@link Generate#from(Object, Class, Type[])}.
+//		 *
+//		 * @param dejaVus        a map associates instances to their types, so any instance included in the map will not be
+//		 *                       classified, instead this method will take the type associated to it in the map.
+//		 * @param instance       the instance the returned type are representing.
+//		 * @param wildclass      the class that an instance of the returned type should be treated as if it was an instance of
+//		 *                       it.
+//		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
+//		 *                       position as the type in the components array of the returned type.
+//		 * @param <T>            the type of the class represented by the returned type.
+//		 * @return a type auto-generated to be representing the given {@code instance}, and should be treated as if it was the
+//		 * 		given {@code wildclass}. The {@link Component#componentType componentType}s of the {@link Component components} of the
+//		 * 		returned type are the given {@code componentType}, each type is for the component at the same position as its
+//		 * 		position.
+//		 * @throws NullPointerException if the given {@code dejaVus} or {@code wildclass} or {@code componentTypes} is null.
+//		 */
+//		static <T> Type<T> from(Map dejaVus, T instance, Class wildclass, Type... componentTypes) {
+//			Objects.requireNonNull(dejaVus, "dejaVus");
+//			Objects.requireNonNull(wildclass, "wildclass");
+//			Objects.requireNonNull(componentTypes, "componentTypes");
+//
+//			if (instance != null)
+//				if (instance.getClass().isArray())
+//					return Generate.fromArray(dejaVus, instance, wildclass, componentTypes);
+//				else if (instance instanceof Iterable)
+//					return Generate.fromIterable(dejaVus, (Iterable) instance, wildclass, componentTypes);
+//				else if (instance instanceof Map)
+//					return Generate.fromMap(dejaVus, (Map) instance, wildclass, componentTypes);
+//
+//			return Type.from(instance, wildclass, Component.array(componentTypes));
+//		}
+//
+//		/**
+//		 * Get a type auto-generated to be representing the given {@code array}, and should be treated as if it was the given
+//		 * {@code wildclass}. The {@link Component#componentType componentType}s of the {@link Component components} of the returned
+//		 * type are the given {@code componentType}, each type is for the component at the same position as its position.
+//		 *
+//		 * @param dejaVus        a map associates instances to their types, so any instance included in the map will not be
+//		 *                       classified, instead this method will take the type associated to it in the map.
+//		 * @param array          the array the returned type are representing.
+//		 * @param wildclass      the class that an instance of the returned type should be treated as if it was an instance of
+//		 *                       it.
+//		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
+//		 *                       position as the type in the components array of the returned type.
+//		 * @param <T>            the type of the class represented by the returned type.
+//		 * @return a type auto-generated to be representing the given {@code array}, and should be treated as if it was the given
+//		 *        {@code wildclass}. The {@link Component#componentType componentType}s of the {@link Component components} of the returned
+//		 * 		type are the given {@code componentType}, each type is for the component at the same position as its position.
+//		 * @throws NullPointerException if the given {@code dejaVus} or {@code array} or {@code wildclass} or {@code
+//		 *                              componentTypes} is null.
+//		 */
+//		static <T> Type<T> fromArray(Map<Object, Type> dejaVus, Object array, Class wildclass, Type[] componentTypes) {
+//			Objects.requireNonNull(dejaVus, "dejaVus");
+//			Objects.requireNonNull(array, "array");
+//			Objects.requireNonNull(wildclass, "wildclass");
+//			Objects.requireNonNull(componentTypes, "componentTypes");
+//
+//			Type elementComponentType;
+//			Component[] components;
+//			if (componentTypes.length < 1) {
+//				elementComponentType = Generate.ofArray(array.getClass().getComponentType());
+//				components = Component.array(elementComponentType);
+//			} else if (componentTypes[0] != null) {
+//				elementComponentType = componentTypes[0];
+//				components = Component.array(componentTypes);
+//			} else {
+//				elementComponentType = Generate.ofArray(array.getClass().getComponentType());
+//				Type[] modified = Arrays.copyOf(componentTypes, componentTypes.length);
+//				modified[0] = elementComponentType;
+//				components = Component.array(modified);
+//			}
+//
+//			Type type = Type.from(array, wildclass);
+//			dejaVus.put(array, type);
+//
+//			Iterator iterator = Arrays.iterator(array);
+//			for (int i = 0; iterator.hasNext(); i++) {
+//				Object element = iterator.next();
+//
+//				if (dejaVus.containsKey(element))
+//					//if it has been solved before
+//					components[0].put(i, dejaVus.get(element));
+//				else
+//					components[0].put(i, Generate.from(dejaVus, element, elementComponentType));
+//			}
+//
+//			//finalize everything
+//			type.setComponents(components);
+//			return type;
+//		}
+//
+//		/**
+//		 * Get a type auto-generated to be representing the given {@code iterable}, and should be treated as if it was the given
+//		 * {@code wildclass}. The {@link Component#componentType componentType}s of the {@link Component components} of the returned
+//		 * type are the given {@code componentType}, each type is for the component at the same position as its position.
+//		 *
+//		 * @param dejaVus        a map associates instances to their types, so any instance included in the map will not be
+//		 *                       classified, instead this method will take the type associated to it in the map.
+//		 * @param iterable       the iterable the returned type are representing.
+//		 * @param wildclass      the class that an instance of the returned type should be treated as if it was an instance of
+//		 *                       it.
+//		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
+//		 *                       position as the type in the components array of the returned type.
+//		 * @param <T>            the type of the class represented by the returned type.
+//		 * @return a type auto-generated to be representing the given {@code iterable}, and should be treated as if it was the
+//		 * 		given {@code wildclass}. The {@link Component#componentType componentType}s of the {@link Component components} of the
+//		 * 		returned type are the given {@code componentType}, each type is for the component at the same position as its
+//		 * 		position.
+//		 * @throws NullPointerException if the given {@code dejaVus} or {@code iterable} or {@code wildclass} or {@code
+//		 *                              componentTypes} is null.
+//		 */
+//		static <T> Type<T> fromIterable(Map<Object, Type> dejaVus, Iterable iterable, Class wildclass, Type[] componentTypes) {
+//			Objects.requireNonNull(dejaVus, "dejaVus");
+//			Objects.requireNonNull(iterable, "iterable");
+//			Objects.requireNonNull(wildclass, "wildclass");
+//			Objects.requireNonNull(componentTypes, "componentTypes");
+//
+//			Type elementComponentType = componentTypes.length < 1 ? null : componentTypes[0];
+//			Component[] components = Component.array(1, componentTypes);
+//
+//			Type type = Type.from(iterable, wildclass);
+//			dejaVus.put(iterable, type);
+//
+//			Iterator iterator = iterable.iterator();
+//			for (int i = 0; iterator.hasNext(); i++) {
+//				Object element = iterator.next();
+//
+//				if (dejaVus.containsKey(element))
+//					//if it has been solved before
+//					components[0].put(i, dejaVus.get(element));
+//				else
+//					components[0].put(i, Generate.from(dejaVus, element, elementComponentType));
+//			}
+//
+//			//finalize everything
+//			type.setComponents(components);
+//			return type;
+//		}
+//
+//		/**
+//		 * Get a type auto-generated to be representing the given {@code map}, and should be treated as if it was the given {@code
+//		 * wildclass}. The {@link Component#componentType componentType}s of the {@link Component components} of the returned type are
+//		 * the given {@code componentType}, each type is for the component at the same position as its position.
+//		 *
+//		 * @param dejaVus        a map associates instances to their types, so any instance included in the map will not be
+//		 *                       classified, instead this method will take the type associated to it in the map.
+//		 * @param map            the map the returned type are representing.
+//		 * @param wildclass      the class that an instance of the returned type should be treated as if it was an instance of
+//		 *                       it.
+//		 * @param componentTypes the general types array for the components that have no mapping in the component at the same
+//		 *                       position as the type in the components array of the returned type.
+//		 * @param <T>            the type of the class represented by the returned type.
+//		 * @return a type auto-generated to be representing the given {@code map}, and should be treated as if it was the given
+//		 *        {@code wildclass}. The {@link Component#componentType componentType}s of the {@link Component components} of the returned
+//		 * 		type are the given {@code componentType}, each type is for the component at the same position as its position.
+//		 * @throws NullPointerException if the given {@code dejaVus} or {@code map} or {@code wildclass} or {@code componentTypes}
+//		 *                              is null.
+//		 */
+//		static <T> Type<T> fromMap(Map<Object, Type> dejaVus, Map map, Class wildclass, Type[] componentTypes) {
+//			Objects.requireNonNull(dejaVus, "dejaVus");
+//			Objects.requireNonNull(map, "map");
+//			Objects.requireNonNull(wildclass, "wildclass");
+//			Objects.requireNonNull(componentTypes, "componentTypes");
+//
+//			Type keyComponentType = componentTypes.length < 1 ? null : componentTypes[0];
+//			Type valueComponentType = componentTypes.length < 2 ? null : componentTypes[1];
+//			Component[] components = Component.array(2, componentTypes);
+//
+//			Type type = Type.from(map, wildclass);
+//			dejaVus.put(map, type);
+//
+//			for (Map.Entry entry : (Set<Map.Entry>) map.entrySet()) {
+//				Object key = entry.getKey();
+//				Object value = entry.getValue();
+//
+//				if (dejaVus.containsKey(key))
+//					//if it has been solved before
+//					components[0].put(key, dejaVus.get(key));
+//				else
+//					components[0].put(key, Generate.from(dejaVus, key, keyComponentType));
+//
+//				if (dejaVus.containsKey(value))
+//					//if it has been solved before
+//					components[1].put(key, dejaVus.get(value));
+//				else
+//					components[1].put(key, Generate.from(dejaVus, value, valueComponentType));
+//			}
+//
+//			//finalize everything
+//			type.setComponents(components);
+//			return type;
+//		}
+//
+//		/**
+//		 * Get a type that represents the given {@code typeclass}, and with a {@code components} auto generated from the given
+//		 * array's class.
+//		 * <pre>
+//		 *     Type.ofArray(<font color="a5edff">TYPE[][][]</font>)
+//		 *     <font color="a5edff">TYPE[][][]</font>&lt;<font color="a5edff">TYPE[][]</font>&lt;<font color="a5edff">TYPE[]</font>&lt;<font color="a5edff">TYPE</font>&gt;&gt;&gt;
+//		 * </pre>
+//		 *
+//		 * @param typeclass the array class to be represented by the returned type.
+//		 * @param <T>       the type of the class represented by the returned type.
+//		 * @return a type that represents the given {@code typeclass}, and with a {@code components} auto generated from the given
+//		 * 		array's class.
+//		 * @throws NullPointerException if the given {@code typeclass} is null.
+//		 */
+//		static <T> Type<T> ofArray(Class<T> typeclass) {
+//			Objects.requireNonNull(typeclass, "typeclass");
+//			return typeclass.isArray() ?
+//				   Type.of(typeclass, Type.Component.of(Generate.ofArray(typeclass.getComponentType()))) :
+//				   Type.of(typeclass);
+//		}
+//
+//		/**
+//		 * Get a type that represents the given {@code typeclass}, and with a {@code components} auto generated from the given
+//		 * array's class, and should be treated as if it was the given {@code wildclass}.
+//		 * <pre>
+//		 *     Type.ofArray(<font color="a5edff">TYPE[][][]</font>, <font color="fc8fbb">WILD</font>)
+//		 *     <font color="a5edff">TYPE[][][]</font>:<font color="fc8fbb">WILD</font>&lt;<font color="a5edff">TYPE[][]</font>&lt;<font color="a5edff">TYPE[]</font>&lt;<font color="a5edff">TYPE</font>&gt;&gt;&gt;
+//		 * </pre>
+//		 *
+//		 * @param typeclass the array class to be represented by the returned type.
+//		 * @param wildclass the class that an instance of the returned type should be treated as if it was an instance of it.
+//		 * @param <T>       the type of the class represented by the returned type.
+//		 * @return a type that represents the given {@code typeclass}, and with a {@code components} auto generated from the given
+//		 * 		array's class, and should be treated as if it was the given {@code wildclass}.
+//		 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} is null.
+//		 */
+//		static <T> Type<T> ofArray(Class<T> typeclass, Class wildclass) {
+//			Objects.requireNonNull(typeclass, "typeclass");
+//			Objects.requireNonNull(wildclass, "wildclass");
+//			return typeclass.isArray() ?
+//				   Type.of(typeclass, wildclass, Type.Component.of(Generate.ofArray(typeclass.getComponentType()))) :
+//				   Type.of(typeclass, wildclass);
+//		}
+//	}
 //		/**
 //		 * Return an empty component.
 //		 *
@@ -2029,3 +1764,36 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 //
 //			return components;
 //		}
+//
+//	/**
+//	 * Backdoor to modify the {@code components} of this type.
+//	 *
+//	 * @param components the new {@code components} array to be set.
+//	 * @throws NullPointerException if the given {@code components} is null.
+//	 */
+//	private void setComponents(Component[] components) {
+//		Objects.requireNonNull(components, "components");
+//		this.components = Component.finalize(components);
+//	}
+//
+//	/**
+//	 * Backdoor to modify the {@code typeclass} of this type.
+//	 *
+//	 * @param typeclass the new {@code typeclass} to be set.
+//	 * @throws NullPointerException if the given {@code typeclass} is null.
+//	 */
+//	private void setTypeclass(Class typeclass) {
+//		Objects.requireNonNull(typeclass, "typeclass");
+//		this.typeclass = typeclass;
+//	}
+//
+//	/**
+//	 * Backdoor to modify the {@code wildclass} of this type.
+//	 *
+//	 * @param wildclass the new {@code wildclass} to be set.
+//	 * @throws NullPointerException if the given {@code wildclass} is null.
+//	 */
+//	private void setWildclass(Class wildclass) {
+//		Objects.requireNonNull(wildclass, "wildclass");
+//		this.wildclass = wildclass;
+//	}
