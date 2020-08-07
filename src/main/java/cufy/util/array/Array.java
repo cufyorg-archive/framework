@@ -3,14 +3,13 @@ package cufy.util.array;
 import cufy.util.Objects;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.RandomAccess;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
- * An array holder.
+ * An abstraction of an array backed by an actual.
  *
  * @param <A> the type of the array.
  * @param <E> the type of the elements.
@@ -18,21 +17,143 @@ import java.util.stream.Stream;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.03
  */
-public abstract class Array<A, E> implements Iterable<E> {
-	/**
-	 * The array held by this.
-	 */
-	protected final A array;
+public abstract class Array<A, E> implements Iterable<E>, Serializable {
+	@SuppressWarnings("JavaDoc")
+	private static final long serialVersionUID = 3238786977844647983L;
 
 	/**
-	 * Construct a new array holder for the given {@code array}.
+	 * The array backing this array.
 	 *
-	 * @param array the array to be held by the constructed array holder.
+	 * @since 0.1.5 ~2020.08.04
+	 */
+	@SuppressWarnings("NonSerializableFieldInSerializableClass")
+	protected final A array;
+	/**
+	 * The first index of the area at the actual array backing this array.
+	 *
+	 * @since 0.1.5 ~2020.08.05
+	 */
+	protected final int beginIndex;
+	/**
+	 * One past the last index of the area at the actual array backing this array.
+	 *
+	 * @since 0.1.5 ~2020.08.05
+	 */
+	protected final int endIndex;
+
+	/**
+	 * Construct a new array backed by the given {@code array}.
+	 *
+	 * @param array the array to be backing the constructed array.
 	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.05
 	 */
 	protected Array(A array) {
 		Objects.requireNonNull(array, "array");
+		int length = java.lang.reflect.Array.getLength(array);
+
 		this.array = array;
+		this.beginIndex = 0;
+		this.endIndex = length;
+	}
+
+	/**
+	 * Construct a new array backed by the specified range of the given {@code array}. The range starts at the given {@code
+	 * beginIndex} and ends before the given {@code endIndex}.
+	 *
+	 * @param array      the array to be backing the constructed array.
+	 * @param beginIndex the first index of the area at the given {@code array} to be backing the constructed array.
+	 * @param endIndex   one past the last index of the area at the given {@code array} to be backing the constructed array.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex > array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.05
+	 */
+	protected Array(A array, int beginIndex, int endIndex) {
+		Objects.requireNonNull(array, "array");
+		int length = java.lang.reflect.Array.getLength(array);
+
+		if (beginIndex < 0)
+			throw new ArrayIndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
+		if (endIndex > length)
+			throw new ArrayIndexOutOfBoundsException("endIndex(" + endIndex + ") > length(" + length + ")");
+		if (beginIndex > endIndex)
+			throw new IllegalArgumentException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+
+		this.array = array;
+		this.beginIndex = beginIndex;
+		this.endIndex = endIndex;
+	}
+
+	/**
+	 * Insure that this array has even length.
+	 *
+	 * @throws IllegalArgumentException if {@code length % 2 != 0}
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	protected final void requireEven() {
+		int length = this.endIndex - this.beginIndex;
+		if (length % 2 != 0)
+			throw new IllegalArgumentException("length(" + length + ") % 2 != 0");
+	}
+
+	/**
+	 * Insure that the given {@code index} is a valid index in this array.
+	 *
+	 * @param index the index to be checked.
+	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >= length}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	protected final void requireIndex(int index) {
+		int length = this.endIndex - this.beginIndex;
+		if (index < 0)
+			throw new IndexOutOfBoundsException("index(" + index + ") < 0");
+		if (index >= length)
+			throw new IndexOutOfBoundsException("index(" + index + ") >= length(" + length + ")");
+	}
+
+	/**
+	 * Insure that the specified index is valid as a start/end point of this array.
+	 *
+	 * @param index the index to be checked.
+	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	protected final void requireRange(int index) {
+		int length = this.endIndex - this.beginIndex;
+		if (index < 0)
+			throw new IndexOutOfBoundsException("index(" + index + ") < 0");
+		if (index > length)
+			throw new IndexOutOfBoundsException("index(" + index + ") > length(" + length + ")");
+	}
+
+	/**
+	 * Insure that the specified range is a valid range in this array.
+	 *
+	 * @param beginIndex the first index in the range to be checked.
+	 * @param endIndex   one past the last index in the range to be checked.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex > length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	protected final void requireRange(int beginIndex, int endIndex) {
+		int length = this.endIndex - this.beginIndex;
+		if (beginIndex < 0)
+			throw new ArrayIndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
+		if (endIndex > length)
+			throw new ArrayIndexOutOfBoundsException("endIndex(" + endIndex + ") > length(" + length + ")");
+		if (beginIndex > endIndex)
+			throw new IllegalArgumentException("beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+	}
+
+	/**
+	 * Get the length of this array.
+	 *
+	 * @return the length of this array.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public int length() {
+		return this.endIndex - this.beginIndex;
 	}
 
 	@Override
@@ -45,114 +166,591 @@ public abstract class Array<A, E> implements Iterable<E> {
 	public abstract int hashCode();
 
 	@Override
-	public abstract Iterator<A, E> iterator();
+	public abstract ArrayIterator iterator();
 
 	@Override
-	public abstract Spliterator<A, E> spliterator();
+	public abstract ArraySpliterator spliterator();
 
 	@Override
 	public abstract String toString();
 
 	/**
-	 * Get a list backed by the array.
+	 * Determine the index of the first element in the given {@code elements} that does not equal any element in this array.
 	 *
-	 * @return a list backed by the array.
+	 * @param elements to check for.
+	 * @return the index of the first element in the given {@code elements} that does not equal any element in this array. Or -1
+	 * 		if no such element found.
+	 * @throws NullPointerException if the given {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
-	public abstract List<A, E> asList();
+	public abstract int all(E... elements);
 
 	/**
-	 * Get a map backed by the array.
+	 * Determine the index of the first element in the given {@code elements} that does not equal any element in this array.
 	 *
-	 * @return a map backed by the array.
+	 * @param elements to check for.
+	 * @return the index of the first element in the given {@code elements} that does not equal any element in this array. Or -1
+	 * 		if no such element found.
+	 * @throws NullPointerException if the given {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
-	public abstract Map<A, E, ?, ?> asMap();
+	public abstract int all(A elements);
 
 	/**
-	 * Get a set backed by the array.
+	 * Determine the index of the first element in the given {@code elements} that does equal any element in this array.
 	 *
-	 * @return a set backed by the array.
+	 * @param elements to check for.
+	 * @return the index of the first element in the given {@code elements} that does equal any element in this array. Or -1 if no
+	 * 		such element found.
+	 * @throws NullPointerException if the {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
 	 */
-	public abstract Set<A, E> asSet();
+	public abstract int any(E... elements);
 
 	/**
-	 * Get the element stored in the array at the given {@code index}.
+	 * Determine the index of the first element in the given {@code elements} that does equal any element in this array.
 	 *
-	 * @param index the index where the targeted element is stored at.
-	 * @return the element stored in teh array at the given {@code index}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
-	 * @since 0.1.5
+	 * @param elements to check for.
+	 * @return the index of the first element in the given {@code elements} that does equal any element in this array. Or -1 if no
+	 * 		such element found.
+	 * @throws NullPointerException if the {@code elements} is null.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public abstract int any(A elements);
+
+	/**
+	 * Using {@link System#arraycopy(Object, int, Object, int, int)}, copy all elements of this array to the given {@code dest}.
+	 *
+	 * @param dest the destination array.
+	 * @param pos  the position where to start writing in the destination array.
+	 * @throws NullPointerException      if the given {@code dest} is null.
+	 * @throws IndexOutOfBoundsException if {@code pos < 0} or {@code pos + length > dest.length}.
+	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
+	 */
+	public abstract void arraycopy(A dest, int pos);
+
+	/**
+	 * Construct a new set backed by the keys in this array.
+	 *
+	 * @param <K> the type of the keys.
+	 * @return a new set backed by the keys in this array.
+	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <K extends E> ArrayKeySet<K> asKeySet();
+
+	/**
+	 * Construct a new list backed by this array.
+	 *
+	 * @return a new list backed by this array.
+	 * @see java.util.Arrays#asList(Object[])
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract ArrayList asList();
+
+	/**
+	 * Construct a new map backed by this array.
+	 *
+	 * @param <K> the type of the keys.
+	 * @param <V> the type of the values.
+	 * @return a new map backed by this array.
+	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <K extends E, V extends E> ArrayMap<K, V> asMap();
+
+	/**
+	 * Construct a new set backed by this array.
+	 *
+	 * @return a set backed by this array.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract ArraySet asSet();
+
+	/**
+	 * Construct a new collection backed by the values in this array.
+	 *
+	 * @param <V> the type of the values.
+	 * @return a new collection backed by the values of this array.
+	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <V extends E> ArrayValues<V> asValues();
+
+	/**
+	 * Searches the this array for the specified value using the binary search algorithm. This array must be sorted prior to
+	 * making this call. If it is not sorted, the results are undefined. If the array contains multiple elements with the
+	 * specified value, there is no guarantee which one will be found.
+	 *
+	 * @param element the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise, -1.
+	 */
+	public abstract int binarySearch(E element);
+
+	/**
+	 * Searches the this array for the specified value using the binary search algorithm. This array must be sorted prior to
+	 * making this call. If it is not sorted, the results are undefined. If the array contains multiple elements with the
+	 * specified value, there is no guarantee which one will be found.
+	 *
+	 * @param element    the value to be searched for.
+	 * @param comparator the comparator by which the array is ordered. A null value indicates that the elements' natural ordering
+	 *                   should be used.
+	 * @return index of the search element, if it is contained in the array; otherwise, -1.
+	 */
+	public abstract int binarySearch(E element, Comparator<? super E> comparator);
+
+	/**
+	 * Construct a new array from concatenating this array with the given {@code arrays} (in order).
+	 *
+	 * @param arrays the arrays to be concatenated with this array to construct the returned array.
+	 * @return a new array from concatenating this array with the given {@code arrays} (in order).
+	 * @throws NullPointerException if the given {@code arrays} is null.
+	 * @throws ArrayStoreException  if an element can not be stored in the copy of this array.
+	 */
+	public abstract Array<A, E> concat(A... arrays);
+
+	/**
+	 * Determine if this object deeply equals the given {@code object} in deep lengths, deep elements, and deep orderings.
+	 *
+	 * @param object the other object to be compared with this.
+	 * @return true, if this object deeply equals the given {@code object} in deep lengths, deep elements, and deep orderings.
+	 */
+	public abstract boolean deepEquals(Object object);
+
+	/**
+	 * Calculate the hash code of the elements deeply stored in this array.
+	 *
+	 * @return the hash code of the elements deeply stored in this array.
+	 */
+	public abstract int deepHashCode();
+
+	/**
+	 * Build a string representation of the deep contents this array.
+	 *
+	 * @return a string representation of the deep contents of this array.
+	 */
+	public abstract String deepToString();
+
+	/**
+	 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in this array. With the key been the first
+	 * index in that range and the value been the last index.
+	 *
+	 * @param index the index to where the key (followed by the value) will be in the constructed entry.
+	 * @param <K>   the type of the key in the constructed entry.
+	 * @param <V>   the type of the value in the constructed entry.
+	 * @return a new entry backed by a range from {@code index} to {@code index + 1}.
+	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >= length}.
+	 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <K extends E, V extends E> ArrayEntry<K, V> entryAt(int index);
+
+	/**
+	 * Construct a new iterator iterating the entries in this array.
+	 *
+	 * @param <K> the type of the keys.
+	 * @param <V> the type of the values.
+	 * @return a new iterator iterating the entries in this array.
+	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <K extends E, V extends E> ArrayEntryIterator<K, V> entryIterator();
+
+	/**
+	 * Construct a new iterator iterating the entries in this array, starting from the given {@code index}.
+	 *
+	 * @param index the initial position of the returned iterator.
+	 * @param <K>   the type of the keys.
+	 * @param <V>   the type of the values.
+	 * @return a new iterator iterating the entries in this array.
+	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+	 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <K extends E, V extends E> ArrayEntryIterator<K, V> entryIterator(int index);
+
+	/**
+	 * Construct a new set backed by the entries in this array.
+	 *
+	 * @param <K> the type of the keys.
+	 * @param <V> the type of the values.
+	 * @return a new set backed by the entries in this array.
+	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <K extends E, V extends E> ArrayEntrySet<K, V> entrySet();
+
+	/**
+	 * Construct a new spliterator iterating the entries in this array.
+	 *
+	 * @param <K> the type of the keys.
+	 * @param <V> the type of the values.
+	 * @return a new spliterator iterating the entries in this array.
+	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <K extends E, V extends E> ArrayEntrySpliterator<K, V> entrySpliterator();
+
+	/**
+	 * Construct a new spliterator iterating the entries in this array, starting from the given {@code index}.
+	 *
+	 * @param index the initial position of the returned spliterator.
+	 * @param <K>   the type of the keys.
+	 * @param <V>   the type of the values.
+	 * @return a new spliterator iterating the entries in this array.
+	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+	 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <K extends E, V extends E> ArrayEntrySpliterator<K, V> entrySpliterator(int index);
+
+	/**
+	 * Assign the given {@code element} to each element of this array.
+	 *
+	 * @param element the element to fill this array with.
+	 * @throws ArrayStoreException if the given {@code element} can not be stored in this {@code array}.
+	 */
+	public abstract void fill(E element);
+
+	/**
+	 * Get the element at the given {@code index} in this array.
+	 *
+	 * @param index the index to get the element from.
+	 * @return the element at the given {@code index} in this array.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= length}.
+	 * @since 0.1.5 ~2020.08.06
 	 */
 	public abstract E get(int index);
 
 	/**
-	 * Get a list iterator backed by the array.
+	 * Manually copy all elements of this array to the given {@code dest}.
 	 *
-	 * @return a list iterator backed by the array.
-	 * @since 0.1.5
+	 * @param dest the destination array.
+	 * @param pos  the position where to start writing in the destination array.
+	 * @throws NullPointerException      if the given {@code dest} is null.
+	 * @throws IndexOutOfBoundsException if {@code pos < 0} or {@code pos + length > dest.length}.
+	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 */
-	public abstract ListIterator<A, E> listIterator();
+	public abstract void hardcopy(Object[] dest, int pos);
 
 	/**
-	 * Set the the given {@code element} to the array at the given {@code index}.
+	 * Construct a new iterator iterating the elements in this array, starting from the given {@code index}.
 	 *
-	 * @param index   the index where to set the given {@code element} at the array.
+	 * @param index the initial position of the returned iterator.
+	 * @return a new iterator iterating the entries in this array.
+	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract ArrayIterator iterator(int index);
+
+	/**
+	 * Construct a new iterator iterating the keys in this array.
+	 *
+	 * @param <K> the type of the keys.
+	 * @return a new iterator iterating the keys in this array.
+	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <K extends E> ArrayKeyIterator<K> keyIterator();
+
+	/**
+	 * Construct a new iterator iterating the keys in this array, starting from the given {@code index}.
+	 *
+	 * @param index the initial position of the returned iterator.
+	 * @param <K>   the type of the keys.
+	 * @return a new iterator iterating the keys in this array.
+	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+	 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <K extends E> ArrayKeyIterator<K> keyIterator(int index);
+
+	/**
+	 * Construct a new spliterator iterating the keys in this array.
+	 *
+	 * @param <K> the type of the keys.
+	 * @return a new spliterator iterating the keys in this array.
+	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <K extends E> ArrayKeySpliterator<K> keySpliterator();
+
+	/**
+	 * Construct a new spliterator iterating the keys in this array, starting from the given {@code index}.
+	 *
+	 * @param index the initial position of the returned spliterator.
+	 * @param <K>   the type of the keys.
+	 * @return a new spliterator iterating the keys in this array.
+	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+	 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <K extends E> ArrayKeySpliterator<K> keySpliterator(int index);
+
+	/**
+	 * Construct a new list iterator iterating the elements in this array.
+	 *
+	 * @return a new list iterator iterating the elements in this array.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract ArrayListIterator listIterator();
+
+	/**
+	 * Construct a new list iterator iterating the elements in this array, starting from the given {@code index}.
+	 *
+	 * @param index the initial position of the returned iterator.
+	 * @return a new list iterator iterating the elements in this array.
+	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract ArrayListIterator listIterator(int index);
+
+	/**
+	 * Cumulates, in parallel, each element of this array in place, using the supplied function. For example if this array
+	 * initially holds [2, 1, 0, 3] and the operation performs addition, then upon return this array holds [2, 3, 3, 6]. Parallel
+	 * prefix computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param operator a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException if the given {@code operator} is null.
+	 * @see java.util.Arrays#parallelPrefix(Object[], BinaryOperator)
+	 */
+	public abstract void parallelPrefix(BinaryOperator<? extends E> operator);
+
+	/**
+	 * In parallel, assign each element of this array to the value returned from invoking the given {@code function} with the
+	 * index of that element.
+	 *
+	 * @param function the function returning the new value of an element by its index.
+	 * @throws NullPointerException if the given {@code function} is null.
+	 * @throws ArrayStoreException  if an element can not be stored in this {@code array}.
+	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
+	 */
+	public abstract void parallelSetAll(IntFunction<? extends E> function);
+
+	/**
+	 * Sorts this array into ascending order, according to the natural ordering of its elements. All elements in this array must
+	 * implement the {@link Comparable} interface. Furthermore, all elements in the array must be mutually comparable (that is,
+	 * e1.compareTo(e2) must not throw a {@link ClassCastException} for any elements e1 and e2 in the array). This sort is
+	 * guaranteed to be stable: equal elements will not be reordered as a result of the sort.
+	 *
+	 * @see java.util.Arrays#parallelSort(Comparable[])
+	 */
+	public abstract void parallelSort();
+
+	/**
+	 * Sorts this array according to the order induced by the specified {@code comparator}. All elements in this array must be
+	 * mutually comparable by the specified {@code comparator} (that is, c.compare(e1, e2) must not throw a {@link
+	 * ClassCastException} for any elements e1 and e2 in the array). This sort is guaranteed to be stable: equal elements will not
+	 * be reordered as a result of the sort.
+	 *
+	 * @param comparator the comparator to determine the order of this array. A null value indicates that the elements' natural
+	 *                   ordering should be used.
+	 * @see java.util.Arrays#parallelSort(Object[], Comparator)
+	 */
+	public abstract void parallelSort(Comparator<? super E> comparator);
+
+	/**
+	 * Get a parallel stream streaming the elements in this array.
+	 *
+	 * @return a parallel stream streaming the elements in this array.
+	 */
+	public abstract Stream<E> parallelStream();
+
+	/**
+	 * Set the element at the given {@code index} in this array to the given {@code element}.
+	 *
+	 * @param index   the index to set the given {@code element} to.
 	 * @param element the element to be set.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= array.length}.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= length}.
 	 * @throws ArrayStoreException            if the given {@code element} can not be stored to the array.
-	 * @since 0.1.5
+	 * @since 0.1.5 ~2020.08.06
 	 */
 	public abstract void set(int index, E element);
 
 	/**
-	 * An entry backed by an array.
+	 * Assign each element of this array to the value returned from invoking the given {@code function} with the index of that
+	 * element.
 	 *
-	 * @param <A> the type of the array.
-	 * @param <E> the type of the elements.
-	 * @param <K> the type of the keys.
+	 * @param function the function returning the new value of an element by its index.
+	 * @throws NullPointerException if the {@code function} is null.
+	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
+	 * @see java.util.Arrays#setAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public abstract void setAll(IntFunction<? extends E> function);
+
+	/**
+	 * Sort this array.
+	 *
+	 * @see java.util.Arrays#sort(Object[])
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract void sort();
+
+	/**
+	 * Sort this array using the given {@code comparator}.
+	 *
+	 * @param comparator the comparator to be used.
+	 * @see java.util.Arrays#sort(Object[], Comparator)
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract void sort(Comparator<? super E> comparator);
+
+	/**
+	 * Construct a new spliterator iterating the elements in this array, starting from the given {@code index}.
+	 *
+	 * @param index the initial position of the returned spliterator.
+	 * @return a new spliterator iterating the elements in this array.
+	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract ArraySpliterator spliterator(int index);
+
+	/**
+	 * Get a stream streaming the elements in this array.
+	 *
+	 * @return a stream streaming the elements in this array.
+	 * @see java.util.Arrays#stream(Object[])
+	 */
+	public abstract Stream<E> stream();
+
+	/**
+	 * Construct a new array backed by the specified range of this array. The range starts at the given {@code beginIndex} and
+	 * ends before the given {@code endIndex}.
+	 *
+	 * @param beginIndex the first index of the area at this array to be backing the constructed array.
+	 * @param endIndex   one past the last index of the area at this array to be backing the constructed array.
+	 * @return a new array backed by the specified range of this array.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex > length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract Array<A, E> subArray(int beginIndex, int endIndex);
+
+	/**
+	 * Get an actual array copy of this array.
+	 *
+	 * @return an actual array copy of this array.
+	 */
+	public abstract A toArray();
+
+	/**
+	 * Get an actual array copy of this array.
+	 *
+	 * @param length the length of the constructed array.
+	 * @return an actual array copy of this array.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 */
+	public abstract A toArray(int length);
+
+	/**
+	 * Get an actual array copy of this array that has the given {@code klass}.
+	 *
+	 * @param klass the type of the constructed array.
+	 * @param <T>   the type of the returned array.
+	 * @return an actual array copy of this array.
+	 * @throws NullPointerException     if the given {@code klass} is null.
+	 * @throws IllegalArgumentException if the given {@code klass} is not an array class.
+	 */
+	public abstract <T extends E> T[] toArray(Class<? super T[]> klass);
+
+	/**
+	 * Get an actual array copy of this array that has the given {@code klass}.
+	 *
+	 * @param length the length of the constructed array.
+	 * @param klass  the type of the constructed array.
+	 * @param <T>    the type of the returned array.
+	 * @return an actual array copy of this array.
+	 * @throws NullPointerException       if the given {@code klass} is null.
+	 * @throws IllegalArgumentException   if the given {@code klass} is not an array class.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 */
+	public abstract <T extends E> T[] toArray(int length, Class<? super T[]> klass);
+
+	/**
+	 * Construct a new iterator iterating the values in this array.
+	 *
 	 * @param <V> the type of the values.
+	 * @return a new iterator iterating the values in this array.
+	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <V extends E> ArrayValueIterator<V> valueIterator();
+
+	/**
+	 * Construct a new iterator iterating the values in this array, starting from the given {@code index}.
+	 *
+	 * @param index the initial position of the returned iterator.
+	 * @param <V>   the type of the values.
+	 * @return a new iterator iterating the values in this array.
+	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+	 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <V extends E> ArrayValueIterator<V> valueIterator(int index);
+
+	/**
+	 * Construct a new spliterator iterating the values in this array.
+	 *
+	 * @param <V> the type of the values.
+	 * @return a new spliterator iterating the values in this array.
+	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <V extends E> ArrayValueSpliterator<V> valueSpliterator();
+
+	/**
+	 * Construct a new spliterator iterating the values in this array, starting from the given {@code index}.
+	 *
+	 * @param index the initial position of the returned spliterator.
+	 * @param <V>   the type of the values.
+	 * @return a new spliterator iterating the values in this array.
+	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+	 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public abstract <V extends E> ArrayValueSpliterator<V> valueSpliterator(int index);
+
+	/**
+	 * An entry backed by a range from {@code index} to {@code index + 1} in the enclosing array.
+	 *
+	 * @param <K> the type of the key in the entry.
+	 * @param <V> the type of the value in the entry.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public abstract static class Entry<A, E, K extends E, V extends E> implements java.util.Map.Entry<K, V>, Serializable {
+	public abstract class ArrayEntry<K extends E, V extends E> implements Map.Entry<K, V>, Serializable {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -1793396182662638233L;
 
 		/**
-		 * The array backing this entry.
-		 *
-		 * @since 0.1.5
-		 */
-		@SuppressWarnings("NonSerializableFieldInSerializableClass")
-		protected final A array;
-		/**
 		 * The index of the key of this entry in the backing array.
 		 *
-		 * @since 0.1.5
+		 * @since 0.1.5 ~2020.08.06
 		 */
 		protected final int index;
 
+		{
+			Array.this.requireEven();
+		}
+
 		/**
-		 * Construct a new entry backed by the given {@code array}.
+		 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in the enclosing array.
 		 *
-		 * @param array       the array backing the constructed entry.
-		 * @param index       the index of the key of the constructed entry.
-		 * @param arrayLength the length of the given {@code array}.
-		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >= arrayLength}.
-		 * @since 0.1.5
+		 * @param index the index to where the key (followed by the value) will be in the constructed entry.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >= length}.
+		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected Entry(A array, int index, int arrayLength) {
-			Objects.requireNonNull(array, "array");
-			Objects.require(index, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "index");
-			Objects.require(index + 1, arrayLength, Objects::isLess, ArrayIndexOutOfBoundsException.class, "index + 1");
-			this.index = index;
-			this.array = array;
+		protected ArrayEntry(int index) {
+			Array.this.requireRange(index, index + 1);
+			this.index = Array.this.beginIndex + index;
 		}
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
-		public abstract boolean equals(Object o);
+		public abstract boolean equals(Object object);
 
 		@Override
 		public abstract K getKey();
@@ -172,154 +770,228 @@ public abstract class Array<A, E> implements Iterable<E> {
 	}
 
 	/**
-	 * An iterator backed by an array.
+	 * An iterator iterating the entries in the enclosing array.
 	 *
-	 * @param <A> the type of the array.
-	 * @param <E> the type of the elements.
 	 * @param <K> the type of the keys.
 	 * @param <V> the type of the values.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public abstract static class EntryIterator<A, E, K extends E, V extends E> implements java.util.Iterator<java.util.Map.Entry<K, V>> {
-		/**
-		 * The array backing this iterator.
-		 */
-		protected final A array;
-		/**
-		 * The length of this iterator multiplied by 2.
-		 */
-		protected final int length;
-		/**
-		 * The index where the area backing the iterator in the given {@code array} is starting.
-		 */
-		protected final int offset;
+	@SuppressWarnings("AbstractClassWithoutAbstractMethods")
+	public abstract class ArrayEntryIterator<K extends E, V extends E> implements Iterator<Map.Entry<K, V>> {
 		/**
 		 * The next index.
+		 *
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected int index;
+		protected int index = Array.this.beginIndex;
+
+		{
+			Array.this.requireEven();
+		}
 
 		/**
-		 * Construct a new iterator backed by the given {@code array}.
+		 * Construct a new iterator iterating the entries in the enclosing array.
 		 *
-		 * @param offset      the offset where the area backing the constructed iterator in the given {@code array} is starting.
-		 * @param length      the length of the constructed iterator multiplied by 2.
-		 * @param array       the array backing the constructed iterator.
-		 * @param arrayLength the length of the given {@code array}.
-		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws IllegalArgumentException       if the given {@code length} is not even.
-		 * @throws ArrayIndexOutOfBoundsException if {@code offset < 0} or {@code length < 0} or {@code offset + length >
-		 *                                        arrayLength}.
-		 * @since 0.1.5 ~2020.07.24
+		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected EntryIterator(A array, int offset, int length, int arrayLength) {
-			Objects.requireNonNull(array, "array");
-			Objects.require(length, Objects::isEven, "length");
-			Objects.require(offset, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "offset");
-			Objects.require(length, Objects::nonNegative, "length");
-			Objects.require(offset + length, arrayLength, Objects::nonGreater,
-					ArrayIndexOutOfBoundsException.class, "offset + length");
-			this.array = array;
-			this.offset = offset;
-			this.length = length;
+		protected ArrayEntryIterator() {
+		}
+
+		/**
+		 * Construct a new iterator iterating the entries in the enclosing array, starting from the given {@code index}.
+		 *
+		 * @param index the initial position of the constructed iterator.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArrayEntryIterator(int index) {
+			Array.this.requireRange(index);
+			this.index += index;
+		}
+
+		@Override
+		public void forEachRemaining(Consumer<? super Map.Entry<K, V>> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			int index = this.index;
+			this.index = Array.this.endIndex;
+
+			int i = index - Array.this.beginIndex;
+			int l = Array.this.endIndex - Array.this.beginIndex;
+			for (; i < l; i += 2) {
+				ArrayEntry<K, V> entry = Array.this.entryAt(i);//trimmed index
+
+				consumer.accept(entry);
+			}
 		}
 
 		@Override
 		public boolean hasNext() {
-			return this.index < this.length;
+			return this.index < Array.this.endIndex;
+		}
+
+		@Override
+		public Map.Entry<K, V> next() {
+			int index = this.index;
+
+			if (index < Array.this.endIndex) {
+				this.index += 2;
+
+				int i = index - Array.this.beginIndex;
+				return Array.this.entryAt(i);//trimmed index
+			}
+
+			throw new NoSuchElementException();
 		}
 
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException("remove");
 		}
-
-		@Override
-		public abstract void forEachRemaining(Consumer<? super java.util.Map.Entry<K, V>> consumer);
-
-		@SuppressWarnings({"IteratorNextCanNotThrowNoSuchElementException", "AbstractMethodOverridesAbstractMethod"})
-		@Override
-		public abstract java.util.Map.Entry<K, V> next();
 	}
 
 	/**
-	 * A set backed by an array.
+	 * A set backed by the entries in the enclosing array.
 	 *
-	 * @param <A> the type of the array.
-	 * @param <E> the type of the elements.
 	 * @param <K> the type of the keys.
 	 * @param <V> the type of the values.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public abstract static class EntrySet<A, E, K extends E, V extends E> implements java.util.Set<java.util.Map.Entry<K, V>>, Serializable {
+	public abstract class ArrayEntrySet<K extends E, V extends E> implements Set<Map.Entry<K, V>>, Serializable {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -7515045887948351373L;
 
-		/**
-		 * The backing array.
-		 */
-		@SuppressWarnings("NonSerializableFieldInSerializableClass")
-		protected final A array;
-		/**
-		 * The length of this set multiplied by 2.
-		 */
-		protected final int length;
-		/**
-		 * The index where the area backing this set in the {@code array} is starting.
-		 */
-		protected final int offset;
+		{
+			Array.this.requireEven();
+		}
 
 		/**
-		 * Construct a new set backed by the given {@code array}.
+		 * Construct a new set backed by the entries in the enclosing array.
 		 *
-		 * @param array       the array backing the constructed set.
-		 * @param offset      the offset where the area backing the constructed set in the given {@code array} is starting.
-		 * @param length      the length of the constructed set multiplied by 2.
-		 * @param arrayLength the length of the given {@code array}.
-		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws IllegalArgumentException       if the given {@code length} is not even.
-		 * @throws ArrayIndexOutOfBoundsException if {@code offset < 0} or {@code length < 0} or {@code offset + length >
-		 *                                        arrayLength}.
-		 * @since 0.1.5 ~2020.07.24
+		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected EntrySet(A array, int offset, int length, int arrayLength) {
-			Objects.requireNonNull(array, "array");
-			Objects.require(length, Objects::isEven, "length");
-			Objects.require(offset, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "offset");
-			Objects.require(length, Objects::nonNegative, "length");
-			Objects.require(offset + length, arrayLength, Objects::nonGreater,
-					ArrayIndexOutOfBoundsException.class, "offset + length");
-			this.array = array;
-			this.offset = offset;
-			this.length = length;
+		protected ArrayEntrySet() {
 		}
 
 		@Override
 		public void clear() {
-			if (this.length != 0)
+			if (Array.this.endIndex - Array.this.beginIndex != 0)
 				throw new UnsupportedOperationException("clear");
 		}
 
 		@Override
+		public void forEach(Consumer<? super Map.Entry<K, V>> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+
+			int i = 0;
+			int l = Array.this.endIndex - Array.this.beginIndex;
+			for (; i < l; i += 2) {
+				ArrayEntry<K, V> entry = Array.this.entryAt(i);//trimmed index
+
+				consumer.accept(entry);
+			}
+		}
+
+		@Override
 		public boolean isEmpty() {
-			return this.length == 0;
+			return Array.this.endIndex <= Array.this.beginIndex;
+		}
+
+		@Override
+		public ArrayEntryIterator<K, V> iterator() {
+			return Array.this.entryIterator();
+		}
+
+		@Override
+		public Stream<Map.Entry<K, V>> parallelStream() {
+			return StreamSupport.stream(Array.this.entrySpliterator(), true);
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super Map.Entry<K, V>> predicate) {
+			Objects.requireNonNull(predicate, "predicate");
+
+			int i = 0;
+			int l = Array.this.endIndex - Array.this.beginIndex;
+			for (; i < l; i += 2) {
+				ArrayEntry<K, V> entry = Array.this.entryAt(i); //trimmed index
+
+				if (predicate.test(entry))
+					//can not remove
+					throw new UnsupportedOperationException("remove");
+			}
+
+			//no match
+			return false;
 		}
 
 		@Override
 		public int size() {
-			return this.length >>> 1;
+			return Array.this.endIndex - Array.this.beginIndex >>> 1;
+		}
+
+		@Override
+		public ArrayEntrySpliterator<K, V> spliterator() {
+			return Array.this.entrySpliterator();
+		}
+
+		@Override
+		public Stream<Map.Entry<K, V>> stream() {
+			return StreamSupport.stream(Array.this.entrySpliterator(), false);
+		}
+
+		@Override
+		public Object[] toArray() {
+			int length = Array.this.endIndex - Array.this.beginIndex >>> 1;
+			Object[] product = new Object[length];
+
+			int i = 0;
+			int l = Array.this.endIndex - Array.this.beginIndex;
+			for (int j = 0; i < l; i += 2, j++) {
+				ArrayEntry<K, V> entry = Array.this.entryAt(i);//trimmed index
+
+				product[j] = entry;
+			}
+
+			return product;
+		}
+
+		@Override
+		public <T> T[] toArray(T[] array) {
+			Objects.requireNonNull(array, "array");
+			int length = Array.this.endIndex - Array.this.beginIndex >>> 1;
+			T[] product = array;
+
+			if (array.length < length)
+				product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
+			else
+				product[length] = null;
+
+			//should trim the index for the entry creation
+			int i = 0;
+			int l = Array.this.endIndex - Array.this.beginIndex;
+			for (int j = 0; i < l; i += 2, j++) {
+				ArrayEntry<K, V> entry = Array.this.entryAt(i);//trimmed index
+
+				product[j] = (T) entry;
+			}
+
+			return product;
 		}
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
-		public abstract boolean add(java.util.Map.Entry<K, V> entry);
+		public abstract boolean add(Map.Entry<K, V> entry);
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
-		public abstract boolean addAll(Collection<? extends java.util.Map.Entry<K, V>> collection);
+		public abstract boolean addAll(Collection<? extends Map.Entry<K, V>> collection);
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
@@ -333,18 +1005,9 @@ public abstract class Array<A, E> implements Iterable<E> {
 		@Override
 		public abstract boolean equals(Object object);
 
-		@Override
-		public abstract void forEach(Consumer<? super java.util.Map.Entry<K, V>> consumer);
-
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract int hashCode();
-
-		@Override
-		public abstract EntryIterator<A, E, K, V> iterator();
-
-		@Override
-		public abstract Stream<java.util.Map.Entry<K, V>> parallelStream();
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
@@ -354,126 +1017,177 @@ public abstract class Array<A, E> implements Iterable<E> {
 		@Override
 		public abstract boolean removeAll(Collection<?> collection);
 
-		@Override
-		public abstract boolean removeIf(Predicate<? super java.util.Map.Entry<K, V>> predicate);
-
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract boolean retainAll(Collection<?> collection);
 
 		@Override
-		public abstract EntrySpliterator<A, E, K, V> spliterator();
-
-		@Override
-		public abstract Stream<java.util.Map.Entry<K, V>> stream();
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract Object[] toArray();
-
-		@Override
-		public abstract <T> T[] toArray(T[] array);
-
-		@Override
 		public abstract String toString();
 	}
 
-	public abstract static class EntrySpliterator<A, E, K extends E, V extends E> implements java.util.Spliterator<java.util.Map.Entry<K, V>> {
+	/**
+	 * A spliterator iterating the entries in the enclosing array.
+	 *
+	 * @param <K> the type of the keys.
+	 * @param <V> the type of the values.
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.08.02
+	 */
+	@SuppressWarnings("AbstractClassWithoutAbstractMethods")
+	public abstract class ArrayEntrySpliterator<K extends E, V extends E> implements Spliterator<Map.Entry<K, V>> {
+		/**
+		 * The characteristics of this spliterator.
+		 *
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected final int characteristics = java.util.Spliterator.SIZED | java.util.Spliterator.SUBSIZED;
+		/**
+		 * The next index.
+		 *
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected int index = Array.this.beginIndex;
+
+		{
+			Array.this.requireEven();
+		}
+
+		/**
+		 * Construct a new spliterator iterating the entries in the enclosing array.
+		 *
+		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArrayEntrySpliterator() {
+		}
+
+		/**
+		 * Construct a new spliterator iterating the entries in the enclosing array, starting from the given {@code index}.
+		 *
+		 * @param index the initial position of the constructed spliterator.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArrayEntrySpliterator(int index) {
+			Array.this.requireRange(index);
+			this.index += index;
+		}
 
 		@Override
 		public int characteristics() {
-			return 0;
+			return this.characteristics;
 		}
 
 		@Override
 		public long estimateSize() {
-			return 0;
+			return Array.this.endIndex - this.index >>> 1;
 		}
 
 		@Override
-		public void forEachRemaining(Consumer<? super java.util.Map.Entry<K, V>> action) {
+		public void forEachRemaining(Consumer<? super Map.Entry<K, V>> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			int index = this.index;
+			this.index = Array.this.endIndex;
 
+			int i = 0;
+			int l = Array.this.endIndex - Array.this.beginIndex;
+			for (; i < l; i += 2) {
+				ArrayEntry<K, V> entry = Array.this.entryAt(i);//trimmed index
+
+				consumer.accept(entry);
+			}
 		}
 
 		@Override
-		public Comparator<? super java.util.Map.Entry<K, V>> getComparator() {
-			return null;
+		public Comparator<? super Map.Entry<K, V>> getComparator() {
+			if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
+				return null;
+
+			throw new IllegalStateException();
 		}
 
 		@Override
 		public long getExactSizeIfKnown() {
-			return 0;
+			return Array.this.endIndex - this.index >>> 1;
 		}
 
 		@Override
 		public boolean hasCharacteristics(int characteristics) {
+			return (this.characteristics & characteristics) == characteristics;
+		}
+
+		@Override
+		public boolean tryAdvance(Consumer<? super Map.Entry<K, V>> consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			int index = this.index;
+
+			if (index < Array.this.endIndex) {
+				this.index += 2;
+
+				int i = index - Array.this.beginIndex;
+				ArrayEntry<K, V> entry = Array.this.entryAt(i);//trimmed index
+				consumer.accept(entry);
+				return true;
+			}
+
 			return false;
 		}
 
 		@Override
-		public boolean tryAdvance(Consumer<? super java.util.Map.Entry<K, V>> action) {
-			return false;
-		}
+		public ArrayEntrySpliterator<K, V> trySplit() {
+			int index = this.index;
+			int midIndex = index + Array.this.endIndex >>> 1;
 
-		@Override
-		public java.util.Spliterator<java.util.Map.Entry<K, V>> trySplit() {
+			if (index < midIndex) {
+				this.index = midIndex;
+				return Array.this.subArray(index, midIndex)
+						.entrySpliterator();
+			}
+
 			return null;
 		}
 	}
 
 	/**
-	 * Am iterator backed by an array.
+	 * An iterator iterating the elements in the enclosing array.
 	 *
-	 * @param <A> the type of the array.
-	 * @param <E> the type of the elements.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public abstract static class Iterator<A, E> implements java.util.Iterator<E> {
-		/**
-		 * The array backing this iterator.
-		 */
-		protected final A array;
-		/**
-		 * The length of this iterator.
-		 */
-		protected final int length;
-		/**
-		 * The index where the area backing the iterator in the given {@code array} is starting.
-		 */
-		protected final int offset;
+	public abstract class ArrayIterator implements Iterator<E> {
 		/**
 		 * The next index.
+		 *
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected int index;
+		protected int index = Array.this.beginIndex;
 
 		/**
-		 * Construct a new iterator backed by the given {@code array}.
+		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
-		 * @param offset      the offset where the area backing the constructed iterator in the given {@code array} is starting.
-		 * @param length      the length of the constructed iterator.
-		 * @param array       the array backing the constructed iterator.
-		 * @param arrayLength the length of the given {@code array}.
-		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code offset < 0} or {@code length < 0} or {@code offset + length >
-		 *                                        arrayLength}.
-		 * @since 0.1.5 ~2020.07.24
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected Iterator(A array, int offset, int length, int arrayLength) {
-			Objects.requireNonNull(array, "array");
-			Objects.require(offset, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "offset");
-			Objects.require(length, Objects::nonNegative, "length");
-			Objects.require(offset + length, arrayLength, Objects::nonGreater,
-					ArrayIndexOutOfBoundsException.class, "offset + length");
-			this.array = array;
-			this.offset = offset;
-			this.length = length;
+		protected ArrayIterator() {
+		}
+
+		/**
+		 * Construct a new iterator iterating the elements in the enclosing array.
+		 *
+		 * @param index the initial position of the constructed iterator.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArrayIterator(int index) {
+			Array.this.requireRange(index);
+			this.index += index;
 		}
 
 		@Override
 		public boolean hasNext() {
-			return this.index < this.length;
+			return this.index < Array.this.endIndex;
 		}
 
 		@Override
@@ -490,60 +1204,50 @@ public abstract class Array<A, E> implements Iterable<E> {
 	}
 
 	/**
-	 * An iterator backed by an array.
+	 * An iterator iterating the keys in the enclosing array.
 	 *
-	 * @param <A> the type of the array.
 	 * @param <K> the type of the keys.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public abstract static class KeyIterator<A, K> implements java.util.Iterator<K> {
-		/**
-		 * The array backing this iterator.
-		 */
-		protected final A array;
-		/**
-		 * The length of this iterator multiplied by 2.
-		 */
-		protected final int length;
-		/**
-		 * The index where the area backing the iterator in the given {@code array} is starting.
-		 */
-		protected final int offset;
+	public abstract class ArrayKeyIterator<K extends E> implements Iterator<K> {
 		/**
 		 * The next index.
+		 *
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected int index;
+		protected int index = Array.this.beginIndex;
+
+		{
+			Array.this.requireEven();
+		}
 
 		/**
-		 * Construct a new iterator backed by the given {@code array}.
+		 * Construct a new iterator iterating the keys in the enclosing array.
 		 *
-		 * @param offset      the offset where the area backing the constructed iterator in the given {@code array} is starting.
-		 * @param length      the length of the constructed iterator multiplied by 2.
-		 * @param array       the array backing the constructed iterator.
-		 * @param arrayLength the length of the given {@code array}.
-		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws IllegalArgumentException       if the given {@code length} is not even.
-		 * @throws ArrayIndexOutOfBoundsException if {@code offset < 0} or {@code length < 0} or {@code offset + length >
-		 *                                        arrayLength}.
-		 * @since 0.1.5 ~2020.07.24
+		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected KeyIterator(A array, int offset, int length, int arrayLength) {
-			Objects.requireNonNull(array, "array");
-			Objects.require(length, Objects::isEven, "length");
-			Objects.require(offset, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "offset");
-			Objects.require(length, Objects::nonNegative, "length");
-			Objects.require(offset + length, arrayLength, Objects::nonGreater,
-					ArrayIndexOutOfBoundsException.class, "offset + length");
-			this.array = array;
-			this.offset = offset;
-			this.length = length;
+		protected ArrayKeyIterator() {
+		}
+
+		/**
+		 * Construct a new iterator iterating the keys in the enclosing array, starting from the given {@code index}.
+		 *
+		 * @param index the initial position of the constructed iterator.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArrayKeyIterator(int index) {
+			Array.this.requireRange(index);
+			this.index += index;
 		}
 
 		@Override
 		public boolean hasNext() {
-			return this.index < this.length;
+			return this.index < Array.this.endIndex;
 		}
 
 		@Override
@@ -560,70 +1264,64 @@ public abstract class Array<A, E> implements Iterable<E> {
 	}
 
 	/**
-	 * A set backed by an array.
+	 * A set backed by the keys in the enclosing array.
 	 *
-	 * @param <A> the type of the array.
 	 * @param <K> the type of the keys.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public abstract static class KeySet<A, K> implements java.util.Set<K>, Serializable {
+	public abstract class ArrayKeySet<K extends E> implements Set<K>, Serializable {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 4627018232494058734L;
 
-		/**
-		 * The array backing this set.
-		 */
-		@SuppressWarnings("NonSerializableFieldInSerializableClass")
-		protected final A array;
-		/**
-		 * The length of this set multiplied by 2.
-		 */
-		protected final int length;
-		/**
-		 * The offset where the area backing this set in the given {@code array} is starting.
-		 */
-		protected final int offset;
+		{
+			Array.this.requireEven();
+		}
 
 		/**
-		 * Construct a new set backed by the given {@code array}.
+		 * Construct a new set backed by the keys in the enclosing array.
 		 *
-		 * @param array       the array backing the constructed set.
-		 * @param offset      the offset where the area backing the constructed set in the given {@code array} is starting.
-		 * @param length      the length of the constructed set multiplied by 2.
-		 * @param arrayLength the length of the given {@code array}.
-		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code offset < 0} or {@code offset + length >
-		 *                                        arrayLength}.
-		 * @throws IllegalArgumentException       if the given {@code length} is not even.
+		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected KeySet(A array, int offset, int length, int arrayLength) {
-			Objects.requireNonNull(array, "array");
-			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
-			Objects.require(offset, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "offset");
-			Objects.require(offset + length, arrayLength, Objects::nonGreater,
-					ArrayIndexOutOfBoundsException.class, "offset + length");
-			Objects.require(length, Objects::isEven, "length");
-			this.array = array;
-			this.offset = offset;
-			this.length = length;
+		protected ArrayKeySet() {
 		}
 
 		@Override
 		public void clear() {
-			if (this.length != 0)
+			if (Array.this.endIndex - Array.this.beginIndex != 0)
 				throw new UnsupportedOperationException("clear");
 		}
 
 		@Override
 		public boolean isEmpty() {
-			return this.length == 0;
+			return Array.this.endIndex <= Array.this.beginIndex;
+		}
+
+		@Override
+		public ArrayKeyIterator<K> iterator() {
+			return Array.this.keyIterator();
+		}
+
+		@Override
+		public Stream<K> parallelStream() {
+			return StreamSupport.stream(Array.this.keySpliterator(), true);
 		}
 
 		@Override
 		public int size() {
-			return this.length >>> 1;
+			return Array.this.endIndex - Array.this.beginIndex >>> 1;
+		}
+
+		@Override
+		public ArrayKeySpliterator<K> spliterator() {
+			return Array.this.keySpliterator();
+		}
+
+		@Override
+		public Stream<K> stream() {
+			return StreamSupport.stream(Array.this.keySpliterator(), false);
 		}
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
@@ -653,12 +1351,6 @@ public abstract class Array<A, E> implements Iterable<E> {
 		@Override
 		public abstract int hashCode();
 
-		@Override
-		public abstract KeyIterator<A, K> iterator();
-
-		@Override
-		public abstract Stream<K> parallelStream();
-
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract boolean remove(Object object);
@@ -674,12 +1366,6 @@ public abstract class Array<A, E> implements Iterable<E> {
 		@Override
 		public abstract boolean retainAll(Collection<?> collection);
 
-		@Override
-		public abstract KeySpliterator<A, K> spliterator();
-
-		@Override
-		public abstract Stream<K> stream();
-
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract Object[] toArray();
@@ -691,58 +1377,120 @@ public abstract class Array<A, E> implements Iterable<E> {
 		public abstract String toString();
 	}
 
-	public abstract static class KeySpliterator<A, K> implements java.util.Spliterator<K> {
-		//todo
+	/**
+	 * A spliterator iterating the keys in the enclosing array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.08.02
+	 */
+	public abstract class ArrayKeySpliterator<K extends E> implements Spliterator<K> {
+		/**
+		 * The characteristics of this spliterator.
+		 *
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected final int characteristics = Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.IMMUTABLE;
+		/**
+		 * The next index.
+		 *
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected int index = Array.this.beginIndex;
+
+		{
+			Array.this.requireEven();
+		}
+
+		/**
+		 * Construct a new spliterator iterating the keys in the enclosing array.
+		 *
+		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArrayKeySpliterator() {
+		}
+
+		/**
+		 * Construct a new spliterator iterating the keys in the enclosing array, starting from the given {@code index}.
+		 *
+		 * @param index the initial position of the constructed spliterator.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArrayKeySpliterator(int index) {
+			Array.this.requireRange(index);
+			this.index += index;
+		}
+
+		@Override
+		public int characteristics() {
+			return this.characteristics;
+		}
+
+		@Override
+		public long estimateSize() {
+			return Array.this.endIndex - this.index >>> 1;
+		}
+
+		@Override
+		public Comparator<? super E> getComparator() {
+			if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
+				return null;
+
+			throw new IllegalStateException();
+		}
+
+		@Override
+		public long getExactSizeIfKnown() {
+			return Array.this.endIndex - this.index >>> 1;
+		}
+
+		@Override
+		public boolean hasCharacteristics(int characteristics) {
+			return (this.characteristics & characteristics) == characteristics;
+		}
+
+		@Override
+		public ArrayKeySpliterator<K> trySplit() {
+			int index = this.index;
+			int midIndex = index + Array.this.endIndex >>> 1;
+
+			if (index < midIndex) {
+				this.index = midIndex;
+				return Array.this.subArray(index, midIndex)
+						.keySpliterator();
+			}
+
+			return null;
+		}
+
+		@Override
+		public abstract void forEachRemaining(Consumer<? super K> consumer);
+
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
+		public abstract boolean tryAdvance(Consumer<? super K> consumer);
 	}
 
 	/**
-	 * A list backed by an array.
+	 * A list backed by the enclosing array.
 	 *
-	 * @param <A> the type of the array.
-	 * @param <E> the type of the elements.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public abstract static class List<A, E> implements java.util.List<E>, Serializable, RandomAccess {
+	public abstract class ArrayList implements List<E>, Serializable, RandomAccess {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -5890878610114060287L;
 
 		/**
-		 * The backing array.
-		 */
-		@SuppressWarnings("NonSerializableFieldInSerializableClass")
-		protected final A array;
-		/**
-		 * The length of this list.
-		 */
-		protected final int length;
-		/**
-		 * The index where the area backing this list in the {@code array} is starting.
-		 */
-		protected final int offset;
-
-		/**
-		 * Construct a new list backed by the given {@code array}.
+		 * Construct a new list backed by the enclosing array.
 		 *
-		 * @param array       the array backing the constructed list.
-		 * @param offset      the offset where the area backing the constructed list in the given {@code array} is starting.
-		 * @param length      the length of the constructed list.
-		 * @param arrayLength the length of the given {@code array}.
-		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code offset < 0} or {@code length < 0} or {@code offset + length >
-		 *                                        arrayLength}.
-		 * @since 0.1.5 ~2020.07.24
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected List(A array, int offset, int length, int arrayLength) {
-			Objects.requireNonNull(array, "array");
-			Objects.require(offset, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "offset");
-			Objects.require(length, Objects::nonNegative, "length");
-			Objects.require(offset + length, arrayLength, Objects::nonGreater,
-					ArrayIndexOutOfBoundsException.class, "offset + length");
-			this.array = array;
-			this.offset = offset;
-			this.length = length;
+		protected ArrayList() {
 		}
 
 		@Override
@@ -752,52 +1500,90 @@ public abstract class Array<A, E> implements Iterable<E> {
 
 		@Override
 		public void add(int index, E element) {
-			Objects.require(index, Objects::nonNegative, IndexOutOfBoundsException.class, "index");
-			Objects.require(index, this.length, Objects::isLess, IndexOutOfBoundsException.class, "index");
+			Array.this.requireIndex(index);
 			throw new UnsupportedOperationException("add");
 		}
 
 		@Override
 		public boolean addAll(Collection<? extends E> collection) {
 			Objects.requireNonNull(collection, "collection");
-			if (collection.isEmpty())
-				return false;
+			if (!collection.isEmpty())
+				throw new UnsupportedOperationException("addAll");
 
-			throw new UnsupportedOperationException("addAll");
+			return false;
 		}
 
 		@Override
 		public boolean addAll(int index, Collection<? extends E> collection) {
 			Objects.requireNonNull(collection, "collection");
-			Objects.require(index, Objects::nonNegative, "index");
-			Objects.require(index, this.length, Objects::isLess, "index");
-			if (collection.isEmpty())
-				return false;
+			Array.this.requireIndex(index);
+			if (!collection.isEmpty())
+				throw new UnsupportedOperationException("addAll");
 
-			throw new UnsupportedOperationException("addAll");
+			return false;
 		}
 
 		@Override
 		public void clear() {
-			if (this.length != 0)
+			if (Array.this.endIndex > Array.this.beginIndex)
 				throw new UnsupportedOperationException("clear");
 		}
 
 		@Override
 		public boolean isEmpty() {
-			return this.length == 0;
+			return Array.this.endIndex <= Array.this.beginIndex;
+		}
+
+		@Override
+		public ArrayIterator iterator() {
+			return Array.this.iterator();
+		}
+
+		@Override
+		public ArrayListIterator listIterator() {
+			return Array.this.listIterator();
+		}
+
+		@Override
+		public ArrayListIterator listIterator(int index) {
+			return Array.this.listIterator(index);
+		}
+
+		@Override
+		public Stream<E> parallelStream() {
+			return StreamSupport.stream(Array.this.spliterator(), true);
 		}
 
 		@Override
 		public E remove(int index) {
-			Objects.require(index, Objects::nonNegative, "index");
-			Objects.require(index, this.length, Objects::isLess, "index");
+			Array.this.requireIndex(index);
 			throw new UnsupportedOperationException("remove");
 		}
 
 		@Override
 		public int size() {
-			return this.length;
+			return Array.this.endIndex - Array.this.beginIndex;
+		}
+
+		@Override
+		public void sort(Comparator<? super E> comparator) {
+			Array.this.sort(comparator);
+		}
+
+		@Override
+		public Spliterator<E> spliterator() {
+			return Array.this.spliterator();
+		}
+
+		@Override
+		public Stream<E> stream() {
+			return StreamSupport.stream(Array.this.spliterator(), false);
+		}
+
+		@Override
+		public ArrayList subList(int beginIndex, int endIndex) {
+			return Array.this.subArray(beginIndex, endIndex)
+					.asList();
 		}
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
@@ -826,21 +1612,9 @@ public abstract class Array<A, E> implements Iterable<E> {
 		@Override
 		public abstract int indexOf(Object object);
 
-		@Override
-		public abstract Iterator<A, E> iterator();
-
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract int lastIndexOf(Object object);
-
-		@Override
-		public abstract ListIterator<A, E> listIterator();
-
-		@Override
-		public abstract ListIterator<A, E> listIterator(int index);
-
-		@Override
-		public abstract Stream<E> parallelStream();
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
@@ -863,18 +1637,6 @@ public abstract class Array<A, E> implements Iterable<E> {
 		@Override
 		public abstract E set(int index, E element);
 
-		@Override
-		public abstract void sort(Comparator<? super E> comparator);
-
-		@Override
-		public abstract java.util.Spliterator<E> spliterator();
-
-		@Override
-		public abstract Stream<E> stream();
-
-		@Override
-		public abstract List<A, E> subList(int beginIndex, int endIndex);
-
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract Object[] toArray();
@@ -887,57 +1649,44 @@ public abstract class Array<A, E> implements Iterable<E> {
 	}
 
 	/**
-	 * An iterator backed by an array.
+	 * A list iterator iterating the elements in the enclosing array.
 	 *
-	 * @param <A> the type of the array.
-	 * @param <E> the type of the elements.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public abstract static class ListIterator<A, E> implements java.util.ListIterator<E> {
-		/**
-		 * The backing array.
-		 */
-		protected final A array;
-		/**
-		 * The length of this iterator.
-		 */
-		protected final int length;
-		/**
-		 * The index where the area backing the iterator in the given {@code array} is starting.
-		 */
-		protected final int offset;
+	public abstract class ArrayListIterator implements ListIterator<E> {
 		/**
 		 * The next index.
+		 *
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected int index;
+		protected int index = Array.this.beginIndex;
 		/**
 		 * The last index.
+		 *
+		 * @since 0.1.5 ~2020.08.06
 		 */
 		protected int last = -1;
 
 		/**
-		 * Construct a new iterator backed by the given {@code array}.
+		 * Construct a new list iterator iterating the elements in the enclosing array.
 		 *
-		 * @param array       the array backing the constructed iterator.
-		 * @param offset      the offset where the area backing the constructed iterator in the given {@code array} is starting.
-		 * @param length      the length of the constructed iterator.
-		 * @param arrayLength the length of the given array.
-		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code offset < 0} or {@code cursor < 0} or {@code
-		 *                                        offset + length > arrayLength} or {@code cursor > length}.
-		 * @since 0.1.5 ~2020.07.24
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected ListIterator(A array, int offset, int length, int arrayLength) {
-			Objects.requireNonNull(array, "array");
-			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
-			Objects.require(offset, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "offset");
-			Objects.require(offset + length, arrayLength, Objects::nonGreater,
-					ArrayIndexOutOfBoundsException.class, "offset + length");
-			this.array = array;
-			this.offset = offset;
-			this.length = length;
+		protected ArrayListIterator() {
+		}
+
+		/**
+		 * Construct a new list iterator iterating the elements in the enclosing array, starting from the given {@code index}.
+		 *
+		 * @param index the initial position of the constructed iterator.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArrayListIterator(int index) {
+			Array.this.requireRange(index);
+			this.index += index;
 		}
 
 		@Override
@@ -947,22 +1696,22 @@ public abstract class Array<A, E> implements Iterable<E> {
 
 		@Override
 		public boolean hasNext() {
-			return this.index < this.length;
+			return this.index < Array.this.endIndex;
 		}
 
 		@Override
 		public boolean hasPrevious() {
-			return this.index > 0;
+			return this.index > Array.this.beginIndex;
 		}
 
 		@Override
 		public int nextIndex() {
-			return this.index;
+			return this.index - Array.this.beginIndex;
 		}
 
 		@Override
 		public int previousIndex() {
-			return this.index - 1;
+			return this.index - Array.this.beginIndex - 1;
 		}
 
 		@Override
@@ -986,72 +1735,60 @@ public abstract class Array<A, E> implements Iterable<E> {
 	}
 
 	/**
-	 * A map backed by an array.
+	 * A map backed by the enclosing array.
 	 *
-	 * @param <A> the type of the array.
-	 * @param <E> the type of the elements.
 	 * @param <K> the type of the keys.
 	 * @param <V> the type of the values.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public abstract static class Map<A, E, K extends E, V extends E> implements java.util.Map<K, V>, Serializable {
+	public abstract class ArrayMap<K extends E, V extends E> implements Map<K, V>, Serializable {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 7692195336903798598L;
 
-		/**
-		 * The array backing this map.
-		 */
-		@SuppressWarnings("NonSerializableFieldInSerializableClass")
-		protected final A array;
-		/**
-		 * The length of this map multiplied by 2.
-		 */
-		protected final int length;
-		/**
-		 * The offset where the area backing this map in the given {@code array} is starting.
-		 */
-		protected final int offset;
+		{
+			Array.this.requireEven();
+		}
 
 		/**
-		 * Construct a new map backed by the given {@code array}.
+		 * Construct a new map backed by the enclosing array.
 		 *
-		 * @param array       the array backing the constructed map.
-		 * @param offset      the offset where the area backing the constructed map in the given {@code array} is starting.
-		 * @param length      the length of the constructed map multiplied by 2.
-		 * @param arrayLength the length of the given {@code array}.
-		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code offset < 0} or {@code offset + length >
-		 *                                        arrayLength}.
-		 * @throws IllegalArgumentException       if the given {@code length} is not even.
+		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected Map(A array, int offset, int length, int arrayLength) {
-			Objects.requireNonNull(array, "array");
-			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
-			Objects.require(offset, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "offset");
-			Objects.require(offset + length, arrayLength, Objects::nonGreater,
-					ArrayIndexOutOfBoundsException.class, "offset + length");
-			Objects.require(length, Objects::isEven, "length");
-			this.array = array;
-			this.offset = offset;
-			this.length = length;
+		protected ArrayMap() {
 		}
 
 		@Override
 		public void clear() {
-			if (this.length != 0)
+			if (Array.this.endIndex - Array.this.beginIndex != 0)
 				throw new UnsupportedOperationException("clear");
 		}
 
 		@Override
+		public ArrayEntrySet<K, V> entrySet() {
+			return Array.this.entrySet();
+		}
+
+		@Override
 		public boolean isEmpty() {
-			return this.length == 0;
+			return Array.this.endIndex <= Array.this.beginIndex;
+		}
+
+		@Override
+		public ArrayKeySet<K> keySet() {
+			return Array.this.asKeySet();
 		}
 
 		@Override
 		public int size() {
-			return this.length >>> 1;
+			return Array.this.endIndex - Array.this.beginIndex >>> 1;
+		}
+
+		@Override
+		public ArrayValues<V> values() {
+			return Array.this.asValues();
 		}
 
 		@Override
@@ -1071,9 +1808,6 @@ public abstract class Array<A, E> implements Iterable<E> {
 		@Override
 		public abstract boolean containsValue(Object value);
 
-		@Override
-		public abstract EntrySet<A, E, K, V> entrySet();
-
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract boolean equals(Object object);
@@ -1092,9 +1826,6 @@ public abstract class Array<A, E> implements Iterable<E> {
 		public abstract int hashCode();
 
 		@Override
-		public abstract KeySet<A, K> keySet();
-
-		@Override
 		public abstract V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> function);
 
 		@Override
@@ -1102,7 +1833,7 @@ public abstract class Array<A, E> implements Iterable<E> {
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
-		public abstract void putAll(java.util.Map<? extends K, ? extends V> map);
+		public abstract void putAll(Map<? extends K, ? extends V> map);
 
 		@Override
 		public abstract V putIfAbsent(K key, V value);
@@ -1124,174 +1855,155 @@ public abstract class Array<A, E> implements Iterable<E> {
 
 		@Override
 		public abstract String toString();
-
-		@Override
-		public abstract Values<A, V> values();
 	}
 
 	/**
-	 * @param <A>
-	 * @param <E>
+	 * A set backed by the enclosing array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
 	 */
-	public abstract static class Set<A, E> implements java.util.Set<E>, Serializable {
+	public abstract class ArraySet implements Set<E>, Serializable {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 2092169091443806884L;
 
-		@Override
-		public boolean add(E e) {
-			return false;
-		}
-
-		@Override
-		public boolean addAll(Collection<? extends E> c) {
-			return false;
+		/**
+		 * Construct a new set backed by the enclosing array.
+		 *
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArraySet() {
 		}
 
 		@Override
 		public void clear() {
-
-		}
-
-		@Override
-		public boolean contains(Object o) {
-			return false;
-		}
-
-		@Override
-		public boolean containsAll(Collection<?> c) {
-			return false;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			return super.equals(obj);
-		}
-
-		@Override
-		public void forEach(Consumer<? super E> action) {
-
-		}
-
-		@Override
-		public int hashCode() {
-			return super.hashCode();
+			if (Array.this.endIndex - Array.this.beginIndex != 0)
+				throw new UnsupportedOperationException("clear");
 		}
 
 		@Override
 		public boolean isEmpty() {
-			return false;
+			return Array.this.endIndex <= Array.this.beginIndex;
 		}
 
 		@Override
-		public java.util.Iterator<E> iterator() {
-			return null;
+		public ArrayIterator iterator() {
+			return Array.this.iterator();
 		}
 
 		@Override
 		public Stream<E> parallelStream() {
-			return null;
-		}
-
-		@Override
-		public boolean remove(Object o) {
-			return false;
-		}
-
-		@Override
-		public boolean removeAll(Collection<?> c) {
-			return false;
-		}
-
-		@Override
-		public boolean removeIf(Predicate<? super E> filter) {
-			return false;
-		}
-
-		@Override
-		public boolean retainAll(Collection<?> c) {
-			return false;
+			return StreamSupport.stream(Array.this.spliterator(), true);
 		}
 
 		@Override
 		public int size() {
-			return 0;
+			return Array.this.endIndex - Array.this.beginIndex;
 		}
 
 		@Override
-		public java.util.Spliterator<E> spliterator() {
-			return null;
+		public ArraySpliterator spliterator() {
+			return Array.this.spliterator();
 		}
 
 		@Override
 		public Stream<E> stream() {
-			return null;
+			return StreamSupport.stream(Array.this.spliterator(), false);
 		}
 
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
-		public Object[] toArray() {
-			return new Object[0];
-		}
+		public abstract boolean add(E element);
+
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
+		public abstract boolean addAll(Collection<? extends E> collection);
+
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
+		public abstract boolean contains(Object object);
+
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
+		public abstract boolean containsAll(Collection<?> collection);
+
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
+		public abstract boolean equals(Object object);
 
 		@Override
-		public <T> T[] toArray(T[] a) {
-			return null;
-		}
+		public abstract void forEach(Consumer<? super E> consumer);
+
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
+		public abstract int hashCode();
+
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
+		public abstract boolean remove(Object object);
+
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
+		public abstract boolean removeAll(Collection<?> collection);
 
 		@Override
-		public String toString() {
-			return super.toString();
-		}
-		//TODO
+		public abstract boolean removeIf(Predicate<? super E> predicate);
+
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
+		public abstract boolean retainAll(Collection<?> collection);
+
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
+		public abstract Object[] toArray();
+
+		@Override
+		public abstract <T> T[] toArray(T[] array);
+
+		@Override
+		public abstract String toString();
 	}
 
 	/**
-	 * A spliterator backed by an array.
+	 * A spliterator iterating the elements in the enclosing array.
 	 *
-	 * @param <A> the type of the array.
-	 * @param <E> the type of the elements.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.02
 	 */
-	public abstract static class Spliterator<A, E> implements java.util.Spliterator<E> {
-		/**
-		 * The array backing this spliterator.
-		 */
-		protected final A array;
+	public abstract class ArraySpliterator implements Spliterator<E> {
 		/**
 		 * The characteristics of this spliterator.
+		 *
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected final int characteristics;
-		/**
-		 * The index where the area backing this spliterator in the given {@code array} is ending.
-		 */
-		protected final int endIndex;
+		protected final int characteristics = Spliterator.SIZED | Spliterator.SUBSIZED;
 		/**
 		 * The next index.
+		 *
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected int beginIndex;
+		protected int index = Array.this.beginIndex;
 
 		/**
-		 * Construct a new spliterator backed by the given {@code array}.
+		 * Construct a new spliterator iterating the elements in the enclosing array, starting from the given {@code index}.
 		 *
-		 * @param array           the array backing the constructed spliterator.
-		 * @param characteristics the characteristics of the constructed spliterator. ({@link java.util.Spliterator#SIZED} and
-		 *                        {@link java.util.Spliterator#SUBSIZED} is set by default)
-		 * @param beginIndex      the beginIndex where the area backing the constructed spliterator in the given {@code array} is
-		 *                        starting.
-		 * @param endIndex        the beginIndex where the area backing the constructed spliterator in the given {@code array} is
-		 *                        ending.
-		 * @throws NullPointerException if the given {@code array} is null.
-		 * @since 0.1.5 ~2020.07.24
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected Spliterator(A array, int characteristics, int beginIndex, int endIndex) {
-			Objects.requireNonNull(array, "array");
-			this.beginIndex = beginIndex;
-			this.endIndex = endIndex;
-			this.characteristics = characteristics |
-								   java.util.Spliterator.SIZED |
-								   java.util.Spliterator.SUBSIZED;
-			this.array = array;
+		protected ArraySpliterator() {
+		}
+
+		/**
+		 * Construct a new spliterator iterating the elements in the enclosing array, starting from the given {@code index}.
+		 *
+		 * @param index the initial position of the constructed spliterator.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArraySpliterator(int index) {
+			Array.this.requireRange(index);
+			this.index += index;
 		}
 
 		@Override
@@ -1301,16 +2013,12 @@ public abstract class Array<A, E> implements Iterable<E> {
 
 		@Override
 		public long estimateSize() {
-			//as specified in the java standard array spliterator
-			//estimated size is the size expected from the parameters
-			return this.endIndex - this.beginIndex;
+			return Array.this.endIndex - this.index;
 		}
 
 		@Override
 		public Comparator<? super E> getComparator() {
-			if (this.hasCharacteristics(java.util.Spliterator.SORTED))
-				//as specified in the java standard spliterator
-				//return null if the this spliterator is defined sorted
+			if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
 				return null;
 
 			throw new IllegalStateException();
@@ -1318,7 +2026,7 @@ public abstract class Array<A, E> implements Iterable<E> {
 
 		@Override
 		public long getExactSizeIfKnown() {
-			return this.endIndex - this.beginIndex;
+			return Array.this.endIndex - this.index;
 		}
 
 		@Override
@@ -1327,72 +2035,72 @@ public abstract class Array<A, E> implements Iterable<E> {
 		}
 
 		@Override
+		public ArraySpliterator trySplit() {
+			int index = this.index;
+			int midIndex = index + Array.this.endIndex >>> 1;
+
+			if (index < midIndex) {
+				this.index = midIndex;
+				return Array.this.subArray(index, midIndex)
+						.spliterator();
+			}
+
+			return null;
+		}
+
+		@Override
 		public abstract void forEachRemaining(Consumer<? super E> consumer);
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract boolean tryAdvance(Consumer<? super E> consumer);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract java.util.Spliterator<E> trySplit();
 	}
 
 	/**
-	 * An iterator backed by an array.
+	 * An iterator iterating the values in the enclosing array.
 	 *
-	 * @param <A> the type of the array.
-	 * @param <V> the type of hte values.
+	 * @param <V> the type of the values.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public abstract static class ValueIterator<A, V> implements java.util.Iterator<V> {
-		/**
-		 * The array backing this iterator.
-		 */
-		protected final A array;
-		/**
-		 * The length of this iterator multiplied by 2.
-		 */
-		protected final int length;
-		/**
-		 * The index where the area backing the iterator in the given {@code array} is starting.
-		 */
-		protected final int offset;
+	public abstract class ArrayValueIterator<V extends E> implements Iterator<V> {
 		/**
 		 * The next index.
+		 *
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected int index;
+		protected int index = Array.this.beginIndex;
+
+		{
+			Array.this.requireEven();
+		}
 
 		/**
-		 * Construct a new iterator backed by the given {@code array}.
+		 * Construct a new iterator iterating the values in the enclosing array.
 		 *
-		 * @param offset      the offset where the area backing the constructed iterator in the given {@code array} is starting.
-		 * @param length      the length of the constructed iterator multiplied by 2.
-		 * @param array       the array backing the constructed iterator.
-		 * @param arrayLength the length of the given {@code array}.
-		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws IllegalArgumentException       if the given {@code length} is not even.
-		 * @throws ArrayIndexOutOfBoundsException if {@code offset < 0} or {@code length < 0} or {@code offset + length >
-		 *                                        arrayLength}.
-		 * @since 0.1.5 ~2020.07.24
+		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected ValueIterator(A array, int offset, int length, int arrayLength) {
-			Objects.requireNonNull(array, "array");
-			Objects.require(length, Objects::isEven, "length");
-			Objects.require(offset, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "offset");
-			Objects.require(length, Objects::nonNegative, "length");
-			Objects.require(offset + length, arrayLength, Objects::nonGreater,
-					ArrayIndexOutOfBoundsException.class, "offset + length");
-			this.array = array;
-			this.offset = offset;
-			this.length = length;
+		protected ArrayValueIterator() {
+		}
+
+		/**
+		 * Construct a new iterator iterating the values in the enclosing array, starting from the given {@code index}.
+		 *
+		 * @param index the initial position of the constructed iterator.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArrayValueIterator(int index) {
+			Array.this.requireRange(index);
+			this.index += index;
 		}
 
 		@Override
 		public boolean hasNext() {
-			return this.index < this.length;
+			return this.index < Array.this.endIndex;
 		}
 
 		@Override
@@ -1408,99 +2116,127 @@ public abstract class Array<A, E> implements Iterable<E> {
 		public abstract V next();
 	}
 
-	public abstract static class ValueSpliterator<A, V> implements java.util.Spliterator<V> {
+	/**
+	 * A spliterator iterating the values in the enclosing array.
+	 *
+	 * @param <V> the type of the values.
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.08.02
+	 */
+	public abstract class ArrayValueSpliterator<V extends E> implements Spliterator<V> {
+		/**
+		 * The characteristics of this spliterator.
+		 *
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected final int characteristics = java.util.Spliterator.SIZED | java.util.Spliterator.SUBSIZED;
+		/**
+		 * The next index.
+		 *
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected int index = Array.this.beginIndex;
+
+		{
+			Array.this.requireEven();
+		}
+
+		/**
+		 * Construct a new spliterator iterating the values in the enclosing array.
+		 *
+		 * @throws IllegalArgumentException if {@code length % 2 != 0}
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArrayValueSpliterator() {
+		}
+
+		/**
+		 * Construct a new spliterator iterating the values in the enclosing array, starting from the given {@code index}.
+		 *
+		 * @param index the initial position of the constructed spliterator.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @throws IllegalArgumentException  if {@code length % 2 != 0}
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		protected ArrayValueSpliterator(int index) {
+			Array.this.requireRange(index);
+			this.index += index;
+		}
+
 		@Override
 		public int characteristics() {
-			return 0;
+			return this.characteristics;
 		}
 
 		@Override
 		public long estimateSize() {
-			return 0;
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super V> action) {
-
+			return Array.this.endIndex - this.index >>> 1;
 		}
 
 		@Override
 		public Comparator<? super V> getComparator() {
-			return null;
+			if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
+				return null;
+
+			throw new IllegalStateException();
 		}
 
 		@Override
 		public long getExactSizeIfKnown() {
-			return 0;
+			return Array.this.endIndex - this.index >>> 1;
 		}
 
 		@Override
 		public boolean hasCharacteristics(int characteristics) {
-			return false;
+			return (this.characteristics & characteristics) == characteristics;
 		}
 
 		@Override
-		public boolean tryAdvance(Consumer<? super V> action) {
-			return false;
-		}
+		public ArrayValueSpliterator<V> trySplit() {
+			int index = this.index;
+			int midIndex = index + Array.this.endIndex >>> 1;
 
-		@Override
-		public java.util.Spliterator<V> trySplit() {
+			if (index < midIndex) {
+				this.index = midIndex;
+				return Array.this.subArray(index, midIndex)
+						.valueSpliterator();
+			}
+
 			return null;
 		}
+
+		@Override
+		public abstract void forEachRemaining(Consumer<? super V> consumer);
+
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
+		public abstract boolean tryAdvance(Consumer<? super V> consumer);
 	}
 
 	/**
-	 * A collection backed by an array.
+	 * A collection backed by the values in the enclosing array.
 	 *
-	 * @param <A> the type of the array.
 	 * @param <V> the type of the values.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	@SuppressWarnings("EqualsAndHashcode")
-	public abstract static class Values<A, V> implements java.util.Collection<V>, Serializable {
+	public abstract class ArrayValues<V extends E> implements Collection<V>, Serializable {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 7634421013079755116L;
 
-		/**
-		 * The array backing this collection.
-		 */
-		@SuppressWarnings("NonSerializableFieldInSerializableClass")
-		protected final A array;
-		/**
-		 * The length of this collection multiplied by 2.
-		 */
-		protected final int length;
-		/**
-		 * The offset where the area backing this collection in the given {@code array} is starting.
-		 */
-		protected final int offset;
+		{
+			Array.this.requireEven();
+		}
 
 		/**
-		 * Construct a new collection backed by the given {@code array}.
+		 * Construct a new collection backed by the values in the enclosing array.
 		 *
-		 * @param array       the array backing the constructed collection.
-		 * @param offset      the offset where the area backing the constructed collection in the given {@code array} is
-		 *                    starting.
-		 * @param length      the length of the constructed collection multiplied by 2.
-		 * @param arrayLength the length of the given {@code array}.
-		 * @throws NullPointerException           if the given {@code array} is null.
-		 * @throws ArrayIndexOutOfBoundsException if {@code length < 0} or {@code offset < 0} or {@code offset + length >
-		 *                                        arrayLength}.
-		 * @throws IllegalArgumentException       if the given {@code length} is not even.
+		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
+		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected Values(A array, int offset, int length, int arrayLength) {
-			Objects.requireNonNull(array, "array");
-			Objects.require(length, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "length");
-			Objects.require(offset, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "offset");
-			Objects.require(offset + length, arrayLength, Objects::nonGreater,
-					ArrayIndexOutOfBoundsException.class, "offset + length");
-			Objects.require(length, Objects::isEven, "length");
-			this.array = array;
-			this.offset = offset;
-			this.length = length;
+		protected ArrayValues() {
 		}
 
 		@Override
@@ -1515,23 +2251,38 @@ public abstract class Array<A, E> implements Iterable<E> {
 
 		@Override
 		public void clear() {
-			if (this.length != 0)
+			if (Array.this.endIndex - Array.this.beginIndex != 0)
 				throw new UnsupportedOperationException("clear");
 		}
 
 		@Override
-		public boolean equals(Object object) {
-			return object == this;
+		public boolean isEmpty() {
+			return Array.this.endIndex <= Array.this.beginIndex;
 		}
 
 		@Override
-		public boolean isEmpty() {
-			return this.length == 0;
+		public ArrayValueIterator<V> iterator() {
+			return Array.this.valueIterator();
+		}
+
+		@Override
+		public Stream<V> parallelStream() {
+			return StreamSupport.stream(Array.this.valueSpliterator(), true);
 		}
 
 		@Override
 		public int size() {
-			return this.length >>> 1;
+			return Array.this.endIndex - Array.this.beginIndex >>> 1;
+		}
+
+		@Override
+		public ArrayValueSpliterator<V> spliterator() {
+			return Array.this.valueSpliterator();
+		}
+
+		@Override
+		public Stream<V> stream() {
+			return StreamSupport.stream(Array.this.valueSpliterator(), false);
 		}
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
@@ -1542,18 +2293,16 @@ public abstract class Array<A, E> implements Iterable<E> {
 		@Override
 		public abstract boolean containsAll(Collection<?> collection);
 
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
+		public abstract boolean equals(Object object);
+
 		@Override
 		public abstract void forEach(Consumer<? super V> consumer);
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract int hashCode();
-
-		@Override
-		public abstract ValueIterator<A, V> iterator();
-
-		@Override
-		public abstract Stream<V> parallelStream();
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
@@ -1570,12 +2319,6 @@ public abstract class Array<A, E> implements Iterable<E> {
 		@Override
 		public abstract boolean retainAll(Collection<?> collection);
 
-		@Override
-		public abstract ValueSpliterator<A, V> spliterator();
-
-		@Override
-		public abstract Stream<V> stream();
-
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract Object[] toArray();
@@ -1587,4 +2330,3 @@ public abstract class Array<A, E> implements Iterable<E> {
 		public abstract String toString();
 	}
 }
-//Todo stream
