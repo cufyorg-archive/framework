@@ -17,24 +17,23 @@ package cufy.util;
 
 import cufy.util.array.*;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Spliterator;
 import java.util.function.*;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 /**
- * An Utility class for raw arrays. Supporting various kinds of array operations. All methods accepts any kind of array and has a
- * reflection way method and a switcher method.
+ * An Utility class for raw arrays. Supporting various kinds of array operations. All methods
+ * accepts any kind of array and has a reflection way method and a switcher method.
  * <p>
- * This class includes all the methods in the standard {@link java.util.Arrays} utility class with the same behaviour. So
- * switching to import this class will not make any changes to files previously imported {@link java.util.Arrays}.
+ * This class includes all the methods in the standard {@link java.util.Arrays} utility class with
+ * the same behaviour. So switching to import this class will not make any changes to files
+ * previously imported {@link java.util.Arrays}.
  * <p>
- * Note: the class is not final nor have a private constructor ;). Anyone can override this class to provide more static methods
- * meanwhile provide access to the methods of this class with the sub-class's signature. But, don't forget that this class is not
- * made for OOP! So, any attempt to construct any sub-class of this class will fail no matter what.
+ * Note: the class is not final nor have a private constructor ;). Anyone can override this class to
+ * provide more static methods meanwhile provide access to the methods of this class with the
+ * sub-class's signature. But, don't forget that this class is not made for OOP! So, any attempt to
+ * construct any sub-class of this class will fail no matter what.
  *
  * @author LSafer
  * @version 0.1.5
@@ -50,704 +49,118 @@ public class Arrays {
 		throw new AssertionError("No instance for you!");
 	}
 
-	//all
+	//..array
 
 	/**
-	 * Determine the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * array}.
+	 * Construct a new array wrapper for the given {@code array}.
 	 *
-	 * @param array    the array to be checked.
-	 * @param elements the elements to be matched to the elements of the given {@code array}.
-	 * @param <T>      the type of the elements.
-	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array the array to be wrapped.
+	 * @param <T>   the type of the elements.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static <T> int all(T[] array, T... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			T e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				T a = array[j];
-
-				if (e == a || e != null && e.equals(a))
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
+	public static <T> ObjectArray<T> array(T... array) {
+		return new ObjectArray<>(array);
 	}
 
 	/**
-	 * Determine the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * array}.
+	 * Construct a new array wrapper for the given {@code array}.
 	 *
-	 * @param array    the array to be checked.
-	 * @param elements the elements to be matched to the elements of the given {@code array}.
-	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array the array to be wrapped.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static int all(boolean[] array, boolean... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			boolean e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				boolean a = array[j];
-
-				if (e == a)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
+	public static BooleanArray array(boolean[] array) {
+		return new BooleanArray(array);
 	}
 
 	/**
-	 * Determine the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * array}.
+	 * Construct a new array wrapper for the given {@code array}.
 	 *
-	 * @param array    the array to be checked.
-	 * @param elements the elements to be matched to the elements of the given {@code array}.
-	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array the array to be wrapped.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static int all(byte[] array, byte... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			byte e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				byte a = array[j];
-
-				if (e == a)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
+	public static ByteArray array(byte[] array) {
+		return new ByteArray(array);
 	}
 
 	/**
-	 * Determine the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * array}.
+	 * Construct a new array wrapper for the given {@code array}.
 	 *
-	 * @param array    the array to be checked.
-	 * @param elements the elements to be matched to the elements of the given {@code array}.
-	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array the array to be wrapped.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static int all(char[] array, char... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			char e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				char a = array[j];
-
-				if (e == a)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
+	public static CharacterArray array(char[] array) {
+		return new CharacterArray(array);
 	}
 
 	/**
-	 * Determine the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * array}.
+	 * Construct a new array wrapper for the given {@code array}.
 	 *
-	 * @param array    the array to be checked.
-	 * @param elements the elements to be matched to the elements of the given {@code array}.
-	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array the array to be wrapped.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static int all(double[] array, double... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			long e = Double.doubleToLongBits(elements[i]);
-
-			for (int j = 0; j < array.length; j++) {
-				long a = Double.doubleToLongBits(array[j]);
-
-				if (e == a)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
+	public static DoubleArray array(double[] array) {
+		return new DoubleArray(array);
 	}
 
 	/**
-	 * Determine the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * array}.
+	 * Construct a new array wrapper for the given {@code array}.
 	 *
-	 * @param array    the array to be checked.
-	 * @param elements the elements to be matched to the elements of the given {@code array}.
-	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array the array to be wrapped.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static int all(float[] array, float... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			int e = Float.floatToIntBits(elements[i]);
-
-			for (int j = 0; j < array.length; j++) {
-				int a = Float.floatToIntBits(array[j]);
-
-				if (e == a)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
+	public static FloatArray array(float[] array) {
+		return new FloatArray(array);
 	}
 
 	/**
-	 * Determine the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * array}.
+	 * Construct a new array wrapper for the given {@code array}.
 	 *
-	 * @param array    the array to be checked.
-	 * @param elements the elements to be matched to the elements of the given {@code array}.
-	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array the array to be wrapped.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static int all(int[] array, int... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			int e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				int a = array[j];
-
-				if (e == a)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
+	public static IntegerArray array(int[] array) {
+		return new IntegerArray(array);
 	}
 
 	/**
-	 * Determine the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * array}.
+	 * Construct a new array wrapper for the given {@code array}.
 	 *
-	 * @param array    the array to be checked.
-	 * @param elements the elements to be matched to the elements of the given {@code array}.
-	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array the array to be wrapped.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static int all(long[] array, long... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			long e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				long a = array[j];
-
-				if (e == a)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
+	public static LongArray array(long[] array) {
+		return new LongArray(array);
 	}
 
 	/**
-	 * Determine the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * array}.
+	 * Construct a new array wrapper for the given {@code array}.
 	 *
-	 * @param array    the array to be checked.
-	 * @param elements the elements to be matched to the elements of the given {@code array}.
-	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array the array to be wrapped.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static int all(short[] array, short... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			short e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				short a = array[j];
-
-				if (e == a)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
+	public static ShortArray array(short[] array) {
+		return new ShortArray(array);
 	}
 
-	/**
-	 * Using Reflection, determine the index to the first element in the given {@code elements} that does not equal any element in
-	 * the given {@code array}.
-	 *
-	 * @param array    the array to be checked.
-	 * @param elements the elements to be matched to the elements of the given {@code array}.
-	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException     if the given {@code array} or {@code elements} is null.
-	 * @throws IllegalArgumentException if the given {@code array} or {@code elements} is not an array.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int all0(Object array, Object elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-		Objects.require(array, Objects::isArray, "array");
-		Objects.require(elements, Objects::isArray, "elements");
-
-		int m = Array.getLength(elements);
-		int n = Array.getLength(array);
-
-		for0:
-		for (int i = 0; i < m; i++) {
-			Object e = Array.get(elements, i);
-
-			for (int j = 0; j < n; j++) {
-				Object a = Array.get(array, j);
-
-				if (e == a || e != null && e.equals(a))
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Using the best {@link #all(Object[], Object[])} method, determine the index to the first element in the given {@code
-	 * elements} that does not equal any element in the given {@code array}.
-	 *
-	 * @param array    the array to be checked.
-	 * @param elements the elements to be matched to the elements of the given {@code array}.
-	 * @return the index to the first element in the given {@code elements} that does not equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException     if the given {@code array} or {@code elements} is null.
-	 * @throws IllegalArgumentException if the given {@code array} or {@code elements} is not an array.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int all1(Object array, Object elements) {
-		if (array instanceof Object[] && elements instanceof Object[])
-			return Arrays.all((Object[]) array, (Object[]) elements);
-		if (array instanceof boolean[] && elements instanceof boolean[])
-			return Arrays.all((boolean[]) array, (boolean[]) elements);
-		if (array instanceof byte[] && elements instanceof byte[])
-			return Arrays.all((byte[]) array, (byte[]) elements);
-		if (array instanceof char[] && elements instanceof char[])
-			return Arrays.all((char[]) array, (char[]) elements);
-		if (array instanceof double[] && elements instanceof double[])
-			return Arrays.all((double[]) array, (double[]) elements);
-		if (array instanceof float[] && elements instanceof float[])
-			return Arrays.all((float[]) array, (float[]) elements);
-		if (array instanceof int[] && elements instanceof int[])
-			return Arrays.all((int[]) array, (int[]) elements);
-		if (array instanceof long[] && elements instanceof long[])
-			return Arrays.all((long[]) array, (long[]) elements);
-		if (array instanceof short[] && elements instanceof short[])
-			return Arrays.all((short[]) array, (short[]) elements);
-
-		return Arrays.all0(array, elements);
-	}
-
-	//any
-
-	/**
-	 * Determine the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * array}.
-	 *
-	 * @param array    to check.
-	 * @param elements to check for.
-	 * @param <T>      the type of the elements.
-	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static <T> int any(T[] array, T... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			T e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				T a = array[j];
-
-				if (e == a || e != null && e.equals(a))
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Determine the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * array}.
-	 *
-	 * @param array    to check.
-	 * @param elements to check for.
-	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int any(boolean[] array, boolean... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			boolean e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				boolean a = array[j];
-
-				if (e == a)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Determine the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * array}.
-	 *
-	 * @param array    to check.
-	 * @param elements to check for.
-	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int any(byte[] array, byte... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			byte e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				byte a = array[j];
-
-				if (e == a)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Determine the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * array}.
-	 *
-	 * @param array    to check.
-	 * @param elements to check for.
-	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int any(char[] array, char... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			char e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				char a = array[j];
-
-				if (e == a)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Determine the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * array}.
-	 *
-	 * @param array    to check.
-	 * @param elements to check for.
-	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int any(double[] array, double... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			long e = Double.doubleToLongBits(elements[i]);
-
-			for (int j = 0; j < array.length; j++) {
-				long a = Double.doubleToLongBits(array[j]);
-
-				if (e == a)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Determine the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * array}.
-	 *
-	 * @param array    to check.
-	 * @param elements to check for.
-	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int any(float[] array, float... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			int e = Float.floatToIntBits(elements[i]);
-
-			for (int j = 0; j < array.length; j++) {
-				int a = Float.floatToIntBits(array[j]);
-
-				if (e == a)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Determine the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * array}.
-	 *
-	 * @param array    to check.
-	 * @param elements to check for.
-	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int any(int[] array, int... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			int e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				int a = array[j];
-
-				if (e == a)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Determine the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * array}.
-	 *
-	 * @param array    to check.
-	 * @param elements to check for.
-	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int any(long[] array, long... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			long e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				long a = array[j];
-
-				if (e == a)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Determine the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * array}.
-	 *
-	 * @param array    to check.
-	 * @param elements to check for.
-	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code array} or {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int any(short[] array, short... elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			short e = elements[i];
-
-			for (int j = 0; j < array.length; j++) {
-				short a = array[j];
-
-				if (e == a)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Using Reflection, determine the index of the first element in the given {@code elements} that does equal any element in the
-	 * given {@code array}.
-	 *
-	 * @param array    to check.
-	 * @param elements to check for.
-	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException     if the given {@code array} or {@code elements} is null.
-	 * @throws IllegalArgumentException if the given {@code array} or {@code elements} is not an array.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int any0(Object array, Object elements) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(elements, "elements");
-		Objects.require(array, Objects::isArray, "array");
-		Objects.require(elements, Objects::isArray, "elements");
-
-		int m = Array.getLength(elements);
-		int n = Array.getLength(array);
-		for (int i = 0; i < m; i++) {
-			Object e = Array.get(elements, i);
-
-			for (int j = 0; j < n; j++) {
-				Object a = Array.get(array, j);
-
-				if (e == a || e != null && e.equals(a))
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Using the best {@link #any(Object[], Object[])} method, determine the index of the first element in the given {@code
-	 * elements} that does equal any element in the given {@code array}.
-	 *
-	 * @param array    to check.
-	 * @param elements to check for.
-	 * @return the index of the first element in the given {@code elements} that does equal any element in the given {@code
-	 * 		array}. Or -1 if no such element found.
-	 * @throws NullPointerException     if the given {@code array} or {@code elements} is null.
-	 * @throws IllegalArgumentException if the given {@code array} or {@code elements} is not an array.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int any1(Object array, Object elements) {
-		if (array instanceof Object[] && elements instanceof Object[])
-			return Arrays.any((Object[]) array, (Object[]) elements);
-		if (array instanceof boolean[] && elements instanceof boolean[])
-			return Arrays.any((boolean[]) array, (boolean[]) elements);
-		if (array instanceof byte[] && elements instanceof byte[])
-			return Arrays.any((byte[]) array, (byte[]) elements);
-		if (array instanceof char[] && elements instanceof char[])
-			return Arrays.any((char[]) array, (char[]) elements);
-		if (array instanceof double[] && elements instanceof double[])
-			return Arrays.any((double[]) array, (double[]) elements);
-		if (array instanceof float[] && elements instanceof float[])
-			return Arrays.any((float[]) array, (float[]) elements);
-		if (array instanceof int[] && elements instanceof int[])
-			return Arrays.any((int[]) array, (int[]) elements);
-		if (array instanceof long[] && elements instanceof long[])
-			return Arrays.any((long[]) array, (long[]) elements);
-		if (array instanceof short[] && elements instanceof short[])
-			return Arrays.any((short[]) array, (short[]) elements);
-
-		return Arrays.any0(array, elements);
-	}
-
-	//asList
+	//.asList(A)
 
 	/**
 	 * Construct a new list backed by the given {@code array}.
@@ -759,8 +172,8 @@ public class Arrays {
 	 * @see java.util.Arrays#asList(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <T> cufy.util.array.ArrayList<T> asList(T... array) {
-		return new cufy.util.array.ArrayList(array);
+	public static <T> ObjectArray<T>.List asList(T... array) {
+		return new ObjectArray(array).list();
 	}
 
 	/**
@@ -769,11 +182,10 @@ public class Arrays {
 	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
-	 * @see java.util.Arrays#asList(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static BooleanArrayList asList(boolean[] array) {
-		return new BooleanArrayList(array);
+	public static BooleanArray.List asList(boolean[] array) {
+		return new BooleanArray(array).list();
 	}
 
 	/**
@@ -782,11 +194,10 @@ public class Arrays {
 	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
-	 * @see java.util.Arrays#asList(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static ByteArrayList asList(byte[] array) {
-		return new ByteArrayList(array);
+	public static ByteArray.List asList(byte[] array) {
+		return new ByteArray(array).list();
 	}
 
 	/**
@@ -795,11 +206,10 @@ public class Arrays {
 	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
-	 * @see java.util.Arrays#asList(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static CharacterArrayList asList(char[] array) {
-		return new CharacterArrayList(array);
+	public static CharacterArray.List asList(char[] array) {
+		return new CharacterArray(array).list();
 	}
 
 	/**
@@ -808,11 +218,10 @@ public class Arrays {
 	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
-	 * @see java.util.Arrays#asList(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static DoubleArrayList asList(double[] array) {
-		return new DoubleArrayList(array);
+	public static DoubleArray.List asList(double[] array) {
+		return new DoubleArray(array).list();
 	}
 
 	/**
@@ -821,11 +230,10 @@ public class Arrays {
 	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
-	 * @see java.util.Arrays#asList(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static FloatArrayList asList(float[] array) {
-		return new FloatArrayList(array);
+	public static FloatArray.List asList(float[] array) {
+		return new FloatArray(array).list();
 	}
 
 	/**
@@ -834,11 +242,10 @@ public class Arrays {
 	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
-	 * @see java.util.Arrays#asList(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static IntegerArrayList asList(int[] array) {
-		return new IntegerArrayList(array);
+	public static IntegerArray.List asList(int[] array) {
+		return new IntegerArray(array).list();
 	}
 
 	/**
@@ -847,11 +254,10 @@ public class Arrays {
 	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
-	 * @see java.util.Arrays#asList(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static LongArrayList asList(long[] array) {
-		return new LongArrayList(array);
+	public static LongArray.List asList(long[] array) {
+		return new LongArray(array).list();
 	}
 
 	/**
@@ -860,1589 +266,1146 @@ public class Arrays {
 	 * @param array the array backing the returned list.
 	 * @return a list containing all the given elements from the given array object.
 	 * @throws NullPointerException if the given {@code array} is null.
-	 * @see java.util.Arrays#asList(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static ShortArrayList asList(short[] array) {
-		return new ShortArrayList(array);
+	public static ShortArray.List asList(short[] array) {
+		return new ShortArray(array).list();
 	}
 
+	//..asMap(A)
+
 	/**
-	 * Using Reflection, construct a new list backed by the given {@code array}.
+	 * Construct a new map backed by the given {@code array}.
 	 *
-	 * @param array the array backing the returned list.
-	 * @return a list containing all the given elements from the given array object.
+	 * @param array the array backing the returned map.
+	 * @param <T>   the type of the elements.
+	 * @param <K>   the type of the keys.
+	 * @param <V>   the type of the values
+	 * @return a map containing the given pairs.
 	 * @throws NullPointerException     if the given {@code array} is null.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @see java.util.Arrays#asList(Object[])
-	 * @since 0.1.5 ~2020.07.24
+	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static ArrayList0 asList0(Object array) {
-		return new ArrayList0(array);
+	public static <T, K extends T, V extends T> ObjectArray<T>.Map<K, V> asMap(T... array) {
+		return new ObjectArray<>(array).map();
 	}
 
 	/**
-	 * Using the best {@link #asList(Object[])} method, construct a new list backed by the given {@code array}.
+	 * Construct a new map backed by the given {@code array}.
 	 *
-	 * @param array the array backing the returned list.
-	 * @return a list containing all the given elements from the given array object.
+	 * @param array the array backing the returned map.
+	 * @return a map containing the given pairs.
 	 * @throws NullPointerException     if the given {@code array} is null.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @see java.util.Arrays#asList(Object[])
-	 * @since 0.1.5 ~2020.07.24
+	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static List asList1(Object array) {
-		if (array instanceof Object[])
-			return Arrays.asList((Object[]) array);
-		if (array instanceof boolean[])
-			return Arrays.asList((boolean[]) array);
-		if (array instanceof byte[])
-			return Arrays.asList((byte[]) array);
-		if (array instanceof char[])
-			return Arrays.asList((char[]) array);
-		if (array instanceof double[])
-			return Arrays.asList((double[]) array);
-		if (array instanceof float[])
-			return Arrays.asList((float[]) array);
-		if (array instanceof int[])
-			return Arrays.asList((int[]) array);
-		if (array instanceof long[])
-			return Arrays.asList((long[]) array);
-		if (array instanceof short[])
-			return Arrays.asList((short[]) array);
-
-		return Arrays.asList0(array);
+	public static BooleanArray.Map asMap(boolean[] array) {
+		return new BooleanArray(array).map();
 	}
 
-	//todo binarySearch +(boolean | 0 | 1)
+	/**
+	 * Construct a new map backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned map.
+	 * @return a map containing the given pairs.
+	 * @throws NullPointerException     if the given {@code array} is null.
+	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static ByteArray.Map asMap(byte[] array) {
+		return new ByteArray(array).map();
+	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(Object[], Object)}.
+	 * Construct a new map backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned map.
+	 * @return a map containing the given pairs.
+	 * @throws NullPointerException     if the given {@code array} is null.
+	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static CharacterArray.Map asMap(char[] array) {
+		return new CharacterArray(array).map();
+	}
+
+	/**
+	 * Construct a new map backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned map.
+	 * @return a map containing the given pairs.
+	 * @throws NullPointerException     if the given {@code array} is null.
+	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static DoubleArray.Map asMap(double[] array) {
+		return new DoubleArray(array).map();
+	}
+
+	/**
+	 * Construct a new map backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned map.
+	 * @return a map containing the given pairs.
+	 * @throws NullPointerException     if the given {@code array} is null.
+	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static FloatArray.Map asMap(float[] array) {
+		return new FloatArray(array).map();
+	}
+
+	/**
+	 * Construct a new map backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned map.
+	 * @return a map containing the given pairs.
+	 * @throws NullPointerException     if the given {@code array} is null.
+	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static IntegerArray.Map asMap(int[] array) {
+		return new IntegerArray(array).map();
+	}
+
+	/**
+	 * Construct a new map backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned map.
+	 * @return a map containing the given pairs.
+	 * @throws NullPointerException     if the given {@code array} is null.
+	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static LongArray.Map asMap(long[] array) {
+		return new LongArray(array).map();
+	}
+
+	/**
+	 * Construct a new map backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned map.
+	 * @return a map containing the given pairs.
+	 * @throws NullPointerException     if the given {@code array} is null.
+	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static ShortArray.Map asMap(short[] array) {
+		return new ShortArray(array).map();
+	}
+
+	//..asSet(A)
+
+	/**
+	 * Construct a new set backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned set.
+	 * @param <T>   the type of the elements.
+	 * @return a set containing the given elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static <T> ObjectArray.Set asSet(T... array) {
+		return new ObjectArray<>(array).set();
+	}
+
+	/**
+	 * Construct a new set backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned set.
+	 * @return a set containing the given elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static BooleanArray.Set asSet(boolean[] array) {
+		return new BooleanArray(array).set();
+	}
+
+	/**
+	 * Construct a new set backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned set.
+	 * @return a set containing the given elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static ByteArray.Set asSet(byte[] array) {
+		return new ByteArray(array).set();
+	}
+
+	/**
+	 * Construct a new set backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned set.
+	 * @return a set containing the given elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static CharacterArray.Set asSet(char[] array) {
+		return new CharacterArray(array).set();
+	}
+
+	/**
+	 * Construct a new set backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned set.
+	 * @return a set containing the given elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static DoubleArray.Set asSet(double[] array) {
+		return new DoubleArray(array).set();
+	}
+
+	/**
+	 * Construct a new set backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned set.
+	 * @return a set containing the given elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static FloatArray.Set asSet(float[] array) {
+		return new FloatArray(array).set();
+	}
+
+	/**
+	 * Construct a new set backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned set.
+	 * @return a set containing the given elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static IntegerArray.Set asSet(int[] array) {
+		return new IntegerArray(array).set();
+	}
+
+	/**
+	 * Construct a new set backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned set.
+	 * @return a set containing the given elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static LongArray.Set asSet(long[] array) {
+		return new LongArray(array).set();
+	}
+
+	/**
+	 * Construct a new set backed by the given {@code array}.
+	 *
+	 * @param array the array backing the returned set.
+	 * @return a set containing the given elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static ShortArray.Set asSet(short[] array) {
+		return new ShortArray(array).set();
+	}
+
+	//.binarySearch(A, E)
+
+	/**
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array the array to be searched.
+	 * @param key   the value to be searched for.
+	 * @param <T>   the type of the elements.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#binarySearch(Object[], Object)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static <T> int binarySearch(T[] array, T key) {
-		return java.util.Arrays.binarySearch(array, key);
+		return new ObjectArray(array).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(Object[], Object, Comparator)}.
+	 * Searches the specified array for the specified object using the binary search algorithm.  The
+	 * array must be sorted into ascending order according to the specified comparator (as by the
+	 * {@link #sort(Object[], Comparator) sort(T[], Comparator)} method) prior to making this call.
+	 * If it is not sorted, the results are undefined. If the array contains multiple elements equal
+	 * to the specified object, there is no guarantee which one will be found.
+	 *
+	 * @param array      the array to be searched.
+	 * @param key        the value to be searched for.
+	 * @param comparator the comparator by which the array is ordered.  A
+	 *                   <tt>null</tt> value indicates that the elements'
+	 *                   {@linkplain Comparable natural ordering} should be used.
+	 * @param <T>        the type of the elements.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#binarySearch(Object[], Object, Comparator)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static <T> int binarySearch(T[] array, T key, Comparator<? super T> comparator) {
-		return java.util.Arrays.binarySearch(array, key, comparator);
+		return new ObjectArray(array).binarySearch(key, comparator);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(byte[], byte)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array the array to be searched.
+	 * @param key   the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static int binarySearch(boolean[] array, boolean key) {
+		return new BooleanArray(array).binarySearch(key);
+	}
+
+	/**
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array the array to be searched.
+	 * @param key   the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#binarySearch(byte[], byte)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static int binarySearch(byte[] array, byte key) {
-		return java.util.Arrays.binarySearch(array, key);
+		return new ByteArray(array).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(char[], char)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array the array to be searched.
+	 * @param key   the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#binarySearch(char[], char)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static int binarySearch(char[] array, char key) {
-		return java.util.Arrays.binarySearch(array, key);
+		return new CharacterArray(array).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(double[], double)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array the array to be searched.
+	 * @param key   the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#binarySearch(double[], double)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static int binarySearch(double[] array, double key) {
-		return java.util.Arrays.binarySearch(array, key);
+		return new DoubleArray(array).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(float[], float)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array the array to be searched.
+	 * @param key   the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#binarySearch(float[], float)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static int binarySearch(float[] array, float key) {
-		return java.util.Arrays.binarySearch(array, key);
+		return new FloatArray(array).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(int[], int)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array the array to be searched.
+	 * @param key   the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#binarySearch(int[], int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static int binarySearch(int[] array, int key) {
-		return java.util.Arrays.binarySearch(array, key);
+		return new IntegerArray(array).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(long[], long)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array the array to be searched.
+	 * @param key   the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#binarySearch(long[], long)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static int binarySearch(long[] array, long key) {
-		return java.util.Arrays.binarySearch(array, key);
+		return new LongArray(array).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(short[], short)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array the array to be searched.
+	 * @param key   the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#binarySearch(short[], short)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static int binarySearch(short[] array, short key) {
-		return java.util.Arrays.binarySearch(array, key);
+		return new ShortArray(array).binarySearch(key);
 	}
 
-	//todo binarySearch +(boolean | 0 | 1)
+	//.binarySearch(A, int, int, E)
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(Object[], int, int, Object)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array      the array to be searched.
+	 * @param beginIndex the index of the first element (inclusive) to be searched.
+	 * @param endIndex   the index of the last element (exclusive) to be searched.
+	 * @param key        the value to be searched for.
+	 * @param <T>        the type of the elements.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#binarySearch(Object[], int, int, Object)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static <T> int binarySearch(T[] array, int beginIndex, int endIndex, T key) {
-		return java.util.Arrays.binarySearch(array, beginIndex, endIndex, key);
+		return new ObjectArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(Object[], int, int, Object, Comparator)}.
+	 * Searches the specified array for the specified object using the binary search algorithm.  The
+	 * array must be sorted into ascending order according to the specified comparator (as by the
+	 * {@link #sort(Object[], Comparator) sort(T[], Comparator)} method) prior to making this call.
+	 * If it is not sorted, the results are undefined. If the array contains multiple elements equal
+	 * to the specified object, there is no guarantee which one will be found.
+	 *
+	 * @param array      the array to be searched.
+	 * @param beginIndex the index of the first element (inclusive) to be searched.
+	 * @param endIndex   the index of the last element (exclusive) to be searched.
+	 * @param key        the value to be searched for.
+	 * @param comparator the comparator by which the array is ordered.  A
+	 *                   <tt>null</tt> value indicates that the elements'
+	 *                   {@linkplain Comparable natural ordering} should be used.
+	 * @param <T>        the type of the elements.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#binarySearch(Object[], int, int, Object, Comparator)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static <T> int binarySearch(T[] array, int beginIndex, int endIndex, T key, Comparator<? super T> comparator) {
-		return java.util.Arrays.binarySearch(array, beginIndex, endIndex, key, comparator);
+		return new ObjectArray(array, beginIndex, endIndex).binarySearch(key, comparator);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(byte[], int, int, byte)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array      the array to be searched.
+	 * @param beginIndex the index of the first element (inclusive) to be searched.
+	 * @param endIndex   the index of the last element (exclusive) to be searched.
+	 * @param key        the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static int binarySearch(boolean[] array, int beginIndex, int endIndex, boolean key) {
+		return new BooleanArray(array, beginIndex, endIndex).binarySearch(key);
+	}
+
+	/**
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array      the array to be searched.
+	 * @param beginIndex the index of the first element (inclusive) to be searched.
+	 * @param endIndex   the index of the last element (exclusive) to be searched.
+	 * @param key        the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#binarySearch(byte[], int, int, byte)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static int binarySearch(byte[] array, int beginIndex, int endIndex, byte key) {
-		return java.util.Arrays.binarySearch(array, beginIndex, endIndex, key);
+		return new ByteArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(char[], int, int, char)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array      the array to be searched.
+	 * @param beginIndex the index of the first element (inclusive) to be searched.
+	 * @param endIndex   the index of the last element (exclusive) to be searched.
+	 * @param key        the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#binarySearch(char[], int, int, char)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static int binarySearch(char[] array, int beginIndex, int endIndex, char key) {
-		return java.util.Arrays.binarySearch(array, beginIndex, endIndex, key);
+		return new CharacterArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(double[], int, int, double)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array      the array to be searched.
+	 * @param beginIndex the index of the first element (inclusive) to be searched.
+	 * @param endIndex   the index of the last element (exclusive) to be searched.
+	 * @param key        the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#binarySearch(double[], int, int, double)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static int binarySearch(double[] array, int beginIndex, int endIndex, double key) {
-		return java.util.Arrays.binarySearch(array, beginIndex, endIndex, key);
+		return new DoubleArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(float[], int, int, float)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array      the array to be searched.
+	 * @param beginIndex the index of the first element (inclusive) to be searched.
+	 * @param endIndex   the index of the last element (exclusive) to be searched.
+	 * @param key        the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#binarySearch(float[], int, int, float)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static int binarySearch(float[] array, int beginIndex, int endIndex, float key) {
-		return java.util.Arrays.binarySearch(array, beginIndex, endIndex, key);
+		return new FloatArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(int[], int, int, int)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array      the array to be searched.
+	 * @param beginIndex the index of the first element (inclusive) to be searched.
+	 * @param endIndex   the index of the last element (exclusive) to be searched.
+	 * @param key        the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#binarySearch(int[], int, int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static int binarySearch(int[] array, int beginIndex, int endIndex, int key) {
-		return java.util.Arrays.binarySearch(array, beginIndex, endIndex, key);
+		return new IntegerArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(long[], int, int, long)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array      the array to be searched.
+	 * @param beginIndex the index of the first element (inclusive) to be searched.
+	 * @param endIndex   the index of the last element (exclusive) to be searched.
+	 * @param key        the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#binarySearch(long[], int, int, long)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static int binarySearch(long[] array, int beginIndex, int endIndex, long key) {
-		return java.util.Arrays.binarySearch(array, beginIndex, endIndex, key);
+		return new LongArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#binarySearch(short[], int, int, short)}.
+	 * Searches the specified array for the specified object using the binary search algorithm. The
+	 * array must be sorted into ascending order according to the {@linkplain Comparable natural
+	 * ordering} of its elements (as by the {@link #sort(Object[])} method) prior to making this
+	 * call. If it is not sorted, the results are undefined. (If the array contains elements that
+	 * are not mutually comparable (for example, strings and integers), it <i>cannot</i> be sorted
+	 * according to the natural ordering of its elements, hence results are undefined.) If the array
+	 * contains multiple elements equal to the specified object, there is no guarantee which one
+	 * will be found.
+	 *
+	 * @param array      the array to be searched.
+	 * @param beginIndex the index of the first element (inclusive) to be searched.
+	 * @param endIndex   the index of the last element (exclusive) to be searched.
+	 * @param key        the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#binarySearch(short[], int, int, short)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static int binarySearch(short[] array, int beginIndex, int endIndex, short key) {
-		return java.util.Arrays.binarySearch(array, beginIndex, endIndex, key);
+		return new ShortArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
-	//concat
+	//.copyOf(A, int)
 
 	/**
-	 * Construct a new array from concatenating the given {@code arrays} (in order). The type of the product array will be the
-	 * type of the first non-null array in the given {@code arrays}.
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @param <T>    the type of the elements.
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code arrays} is null.
-	 * @throws ArrayStoreException  if an element can not be stored in the constructed array.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static <T> T[] concat(T[]... arrays) {
-		Objects.requireNonNull(arrays, "arrays");
-
-		int length = 0;
-		Class component = Object.class;
-		for (int i = arrays.length - 1; i >= 0; i--) {
-			T[] array = arrays[i];
-
-			if (array != null) {
-				component = array.getClass().getComponentType();
-				length += array.length;
-			}
-		}
-
-		T[] product = (T[]) Array.newInstance(component, length);
-
-		for (int i = 0, j = 0; j < arrays.length; j++) {
-			T[] array = arrays[j];
-
-			if (array != null) {
-				System.arraycopy(array, 0, product, i, array.length);
-				i += array.length;
-			}
-		}
-
-		return product;
-	}
-
-	/**
-	 * Construct a new array from concatenating the given {@code arrays} (in order).
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @param klass  the type of the constructed array
-	 * @param <T>    the type of the elements.
-	 * @param <U>    the super type of the elements.
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException     if the given {@code klass} or {@code arrays} is null.
-	 * @throws IllegalArgumentException if the given {@code klass} is not an array class.
-	 * @throws ArrayStoreException      if an element can not be stored in the product array.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static <T extends U, U> U[] concat(Class<U[]> klass, T[][] arrays) {
-		Objects.requireNonNull(klass, "klass");
-		Objects.requireNonNull(arrays, "arrays");
-		Objects.require(klass, Class::isArray, "klass");
-
-		int length = 0;
-		for (int i = arrays.length - 1; i >= 0; i--) {
-			T[] array = arrays[i];
-
-			if (array != null)
-				length += array.length;
-		}
-
-		T[] product = (T[]) Array.newInstance(klass.getComponentType(), length);
-
-		for (int i = 0, j = 0; j < arrays.length; j++) {
-			T[] array = arrays[j];
-
-			if (array != null) {
-				System.arraycopy(array, 0, product, i, array.length);
-				i += array.length;
-			}
-		}
-
-		return product;
-	}
-
-	/**
-	 * Construct a new array from concatenating the given {@code arrays} (in order).
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code arrays} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static boolean[] concat(boolean[]... arrays) {
-		Objects.requireNonNull(arrays, "arrays");
-
-		int length = 0;
-		for (int i = arrays.length - 1; i >= 0; i--) {
-			boolean[] array = arrays[i];
-
-			if (array != null)
-				length += array.length;
-		}
-
-		boolean[] product = new boolean[length];
-
-		for (int i = 0, j = 0; j < arrays.length; j++) {
-			boolean[] array = arrays[j];
-
-			if (array != null) {
-				System.arraycopy(array, 0, product, i, array.length);
-				i += array.length;
-			}
-		}
-
-		return product;
-	}
-
-	/**
-	 * Construct a new array from concatenating the given {@code arrays} (in order).
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code arrays} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static byte[] concat(byte[]... arrays) {
-		Objects.requireNonNull(arrays, "arrays");
-
-		int length = 0;
-		for (int i = arrays.length - 1; i >= 0; i--) {
-			byte[] array = arrays[i];
-
-			if (array != null)
-				length += array.length;
-		}
-
-		byte[] product = new byte[length];
-
-		for (int i = 0, j = 0; j < arrays.length; j++) {
-			byte[] array = arrays[j];
-
-			if (array != null) {
-				System.arraycopy(array, 0, product, i, array.length);
-				i += array.length;
-			}
-		}
-
-		return product;
-	}
-
-	/**
-	 * Construct a new array from concatenating the given {@code arrays} (in order).
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code arrays} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static char[] concat(char[]... arrays) {
-		Objects.requireNonNull(arrays, "arrays");
-
-		int length = 0;
-		for (int i = arrays.length - 1; i >= 0; i--) {
-			char[] array = arrays[i];
-
-			if (array != null)
-				length += array.length;
-		}
-
-		char[] product = new char[length];
-
-		for (int i = 0, j = 0; j < arrays.length; j++) {
-			char[] array = arrays[j];
-
-			if (array != null) {
-				System.arraycopy(array, 0, product, i, array.length);
-				i += array.length;
-			}
-		}
-
-		return product;
-	}
-
-	/**
-	 * Construct a new array from concatenating the given {@code arrays} (in order).
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code arrays} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static double[] concat(double[]... arrays) {
-		Objects.requireNonNull(arrays, "arrays");
-
-		int length = 0;
-		for (int i = arrays.length - 1; i >= 0; i--) {
-			double[] array = arrays[i];
-
-			if (array != null)
-				length += array.length;
-		}
-
-		double[] product = new double[length];
-
-		for (int i = 0, j = 0; j < arrays.length; j++) {
-			double[] array = arrays[j];
-
-			if (array != null) {
-				System.arraycopy(array, 0, product, i, array.length);
-				i += array.length;
-			}
-		}
-
-		return product;
-	}
-
-	/**
-	 * Construct a new array from concatenating the given {@code arrays} (in order).
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code arrays} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static float[] concat(float[]... arrays) {
-		Objects.requireNonNull(arrays, "arrays");
-
-		int length = 0;
-		for (int i = arrays.length - 1; i >= 0; i--) {
-			float[] array = arrays[i];
-
-			if (array != null)
-				length += array.length;
-		}
-
-		float[] product = new float[length];
-
-		for (int i = 0, j = 0; j < arrays.length; j++) {
-			float[] array = arrays[j];
-
-			if (array != null) {
-				System.arraycopy(array, 0, product, i, array.length);
-				i += array.length;
-			}
-		}
-
-		return product;
-	}
-
-	/**
-	 * Construct a new array from concatenating the given {@code arrays} (in order).
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code arrays} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int[] concat(int[]... arrays) {
-		Objects.requireNonNull(arrays, "arrays");
-
-		int length = 0;
-		for (int i = arrays.length - 1; i >= 0; i--) {
-			int[] array = arrays[i];
-
-			if (array != null)
-				length += array.length;
-		}
-
-		int[] product = new int[length];
-
-		for (int i = 0, j = 0; j < arrays.length; j++) {
-			int[] array = arrays[j];
-
-			if (array != null) {
-				System.arraycopy(array, 0, product, i, array.length);
-				i += array.length;
-			}
-		}
-
-		return product;
-	}
-
-	/**
-	 * Construct a new array from concatenating the given {@code arrays} (in order).
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code arrays} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static long[] concat(long[]... arrays) {
-		Objects.requireNonNull(arrays, "arrays");
-
-		int length = 0;
-		for (int i = arrays.length - 1; i >= 0; i--) {
-			long[] array = arrays[i];
-
-			if (array != null)
-				length += array.length;
-		}
-
-		long[] product = new long[length];
-
-		for (int i = 0, j = 0; j < arrays.length; j++) {
-			long[] array = arrays[j];
-
-			if (array != null) {
-				System.arraycopy(array, 0, product, i, array.length);
-				i += array.length;
-			}
-		}
-
-		return product;
-	}
-
-	/**
-	 * Construct a new array from concatenating the given {@code arrays} (in order).
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException if the given {@code arrays} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static short[] concat(short[]... arrays) {
-		Objects.requireNonNull(arrays, "arrays");
-
-		int length = 0;
-		for (int i = arrays.length - 1; i >= 0; i--) {
-			short[] array = arrays[i];
-
-			if (array != null)
-				length += array.length;
-		}
-
-		short[] product = new short[length];
-
-		for (int i = 0, j = 0; j < arrays.length; j++) {
-			short[] array = arrays[j];
-
-			if (array != null) {
-				System.arraycopy(array, 0, product, i, array.length);
-				i += array.length;
-			}
-		}
-
-		return product;
-	}
-
-	/**
-	 * Using Reflection, construct a new array from concatenating the given {@code arrays} (in order). The type of the product
-	 * array will be the type of the first non-null array in the given {@code arrays}.
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException     if the given {@code arrays} is null.
-	 * @throws IllegalArgumentException if the given {@code arrays} is not an array. Or if an array is not an array.
-	 * @throws ArrayStoreException      if an element can not be stored in the constructed array.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static Object concat0(Object[] arrays) {
-		Objects.requireNonNull(arrays, "arrays");
-		Objects.require(arrays, Objects::isArray, "arrays");
-
-		int length = 0;
-		Class component = Object.class;
-		for (int i = arrays.length - 1; i >= 0; i--) {
-			Object array = arrays[i];
-
-			if (array != null) {
-				Objects.require(array, Objects::isArray, "arrays[?]");
-				component = array.getClass().getComponentType();
-				length += Array.getLength(array);
-			}
-		}
-
-		Object product = Array.newInstance(component, length);
-
-		for (int i = 0, j = 0; j < arrays.length; j++) {
-			Object array = arrays[j];
-
-			if (array != null) {
-				Objects.require(array, Objects::isArray, "arrays[?]");
-				int m = Array.getLength(array);
-
-				if (component.isPrimitive() == array.getClass().getComponentType().isPrimitive())
-					System.arraycopy(array, 0, product, i, m);
-				else
-					Arrays.hardcopy0(array, 0, product, i, m);
-
-				i += m;
-			}
-		}
-
-		return product;
-	}
-
-	/**
-	 * Using Reflection, construct a new array from concatenating the given {@code arrays} (in order).
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @param klass  the type of the constructed array
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException     if the given {@code klass} or {@code arrays} is null.
-	 * @throws IllegalArgumentException if the given {@code klass} is not an array class. Or if the given {@code arrays} is not an
-	 *                                  array. Or if an array is not an array.
-	 * @throws ArrayStoreException      if an element can not be stored in the constructed array.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static Object concat0(Class klass, Object[] arrays) {
-		Objects.requireNonNull(klass, "klass");
-		Objects.requireNonNull(arrays, "arrays");
-		Objects.require(klass, Class::isArray, "klass");
-		Objects.require(arrays, Objects::isArray, "arrays");
-
-		int length = 0;
-		for (int i = arrays.length - 1; i >= 0; i--) {
-			Object array = arrays[i];
-
-			if (array != null) {
-				Objects.require(array, Objects::isArray, "arrays[?]");
-				length += Array.getLength(array);
-			}
-		}
-
-		Object product = Array.newInstance(klass.getComponentType(), length);
-
-		for (int i = 0, j = 0; j < arrays.length; j++) {
-			Object array = arrays[j];
-
-			if (array != null) {
-				Objects.require(array, Objects::isArray, "array[?]");
-				int m = Array.getLength(array);
-
-				if (klass.getComponentType().isPrimitive() == array.getClass().getComponentType().isPrimitive())
-					System.arraycopy(array, 0, product, i, length);
-				else
-					Arrays.hardcopy0(array, 0, product, i, m);
-
-				i += m;
-			}
-		}
-
-		return product;
-	}
-
-	/**
-	 * Using the best {@link #concat(Object[][])} method. construct a new array from concatenating the given {@code arrays} (in
-	 * order). The type of the product array will be the component-type of the given {@code arrays}, If the given {@code arrays}
-	 * has a primitive component-type. Otherwise, the type of the product array will be the type of the first non-null array in
-	 * the given {@code arrays}.
-	 *
-	 * @param arrays the arrays to be concatenated to construct the returned array.
-	 * @return a new array from concatenating the given {@code arrays} (in order).
-	 * @throws NullPointerException     if the given {@code arrays} is null.
-	 * @throws IllegalArgumentException if the given {@code arrays} is not an array. Or if an array is not an array.
-	 * @throws ArrayStoreException      if an element can not be stored in the constructed array.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static Object concat1(Object[] arrays) {
-		if (arrays instanceof Object[][])
-			return Arrays.concat((Object[][]) arrays);
-		if (arrays instanceof boolean[][])
-			return Arrays.concat((boolean[][]) arrays);
-		if (arrays instanceof byte[][])
-			return Arrays.concat((byte[][]) arrays);
-		if (arrays instanceof char[][])
-			return Arrays.concat((char[][]) arrays);
-		if (arrays instanceof double[][])
-			return Arrays.concat((double[][]) arrays);
-		if (arrays instanceof float[][])
-			return Arrays.concat((float[][]) arrays);
-		if (arrays instanceof int[][])
-			return Arrays.concat((int[][]) arrays);
-		if (arrays instanceof long[][])
-			return Arrays.concat((long[][]) arrays);
-		if (arrays instanceof short[][])
-			return Arrays.concat((short[][]) arrays);
-
-		return Arrays.concat0(arrays);
-	}
-
-	//copyOf
-
-	/**
-	 * Construct a new copy of the given {@code array} capped to the given {@code length}.
+	 * Construct a new copy of the given {@code array} with the given {@code length}.
 	 *
 	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
+	 * @param length the length of the constructed array.
 	 * @param <T>    the type of the elements.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
+	 * @return a new copy of the given {@code array} with the given {@code length}.
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(Object[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> T[] copyOf(T[] array, int length) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
-
-		T[] copy = (T[]) Array.newInstance(array.getClass().getComponentType(), length);
-
-		System.arraycopy(array, 0, copy, 0, Math.min(array.length, length));
-
-		return copy;
+		return new ObjectArray<>(array).array(length);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} capped to the given {@code length}.
+	 * Construct a new copy of the given {@code array} with the given {@code length}.
 	 *
 	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
+	 * @param length the length of the constructed array.
 	 * @param klass  the type of the constructed array.
 	 * @param <T>    the type of the elements.
 	 * @param <U>    the super type of the elements.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
+	 * @return a new copy of the given {@code array} with the given {@code length}.
 	 * @throws NullPointerException       if the given {@code array} is null.
-	 * @throws IllegalArgumentException   if the given {@code klass} is not an array class. Or if the given {@code klass} is not
-	 *                                    an array class. Or if the component type of the given {@code klass} is primitive.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @throws IllegalArgumentException   if the given {@code klass} is not an object array class.
 	 * @throws ArrayStoreException        if an element can not be stored in the constructed array.
 	 * @see java.util.Arrays#copyOf(Object[], int, Class)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T extends U, U> U[] copyOf(T[] array, int length, Class<? extends U[]> klass) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(klass, "klass");
-		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
-		Objects.require(klass, Objects::isObjectArrayClass, "klass");
-
-		U[] copy = (U[]) Array.newInstance(klass.getComponentType(), length);
-
-		System.arraycopy(array, 0, copy, 0, Math.min(array.length, length));
-
-		return copy;
+		return new ObjectArray<>(array).array(length, klass);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} capped to the given {@code length}.
+	 * Construct a new copy of the given {@code array} with the given {@code length}.
 	 *
 	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
+	 * @param length the length of the constructed array.
+	 * @return a new copy of the given {@code array} with the given {@code length}.
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(boolean[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean[] copyOf(boolean[] array, int length) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
-
-		boolean[] copy = new boolean[length];
-
-		System.arraycopy(array, 0, copy, 0, Math.min(array.length, length));
-
-		return copy;
+		return new BooleanArray(array).array(length);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} capped to the given {@code length}.
+	 * Construct a new copy of the given {@code array} with the given {@code length}.
 	 *
 	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
+	 * @param length the length of the constructed array.
+	 * @return a new copy of the given {@code array} with the given {@code length}.
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(byte[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static byte[] copyOf(byte[] array, int length) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
-
-		byte[] copy = new byte[length];
-
-		System.arraycopy(array, 0, copy, 0, Math.min(array.length, length));
-
-		return copy;
+		return new ByteArray(array).array(length);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} capped to the given {@code length}.
+	 * Construct a new copy of the given {@code array} with the given {@code length}.
 	 *
 	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
+	 * @param length the length of the constructed array.
+	 * @return a new copy of the given {@code array} with the given {@code length}.
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(char[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static char[] copyOf(char[] array, int length) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
-
-		char[] copy = new char[length];
-
-		System.arraycopy(array, 0, copy, 0, Math.min(array.length, length));
-
-		return copy;
+		return new CharacterArray(array).array(length);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} capped to the given {@code length}.
+	 * Construct a new copy of the given {@code array} with the given {@code length}.
 	 *
 	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
+	 * @param length the length of the constructed array.
+	 * @return a new copy of the given {@code array} with the given {@code length}.
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(double[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static double[] copyOf(double[] array, int length) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
-
-		double[] copy = new double[length];
-
-		System.arraycopy(array, 0, copy, 0, Math.min(array.length, length));
-
-		return copy;
+		return new DoubleArray(array).array(length);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} capped to the given {@code length}.
+	 * Construct a new copy of the given {@code array} with the given {@code length}.
 	 *
 	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
+	 * @param length the length of the constructed array.
+	 * @return a new copy of the given {@code array} with the given {@code length}.
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(float[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static float[] copyOf(float[] array, int length) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
-
-		float[] copy = new float[length];
-
-		System.arraycopy(array, 0, copy, 0, Math.min(array.length, length));
-
-		return copy;
+		return new FloatArray(array).array(length);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} capped to the given {@code length}.
+	 * Construct a new copy of the given {@code array} with the given {@code length}.
 	 *
 	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
+	 * @param length the length of the constructed array.
+	 * @return a new copy of the given {@code array} with the given {@code length}.
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(int[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int[] copyOf(int[] array, int length) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
-
-		int[] copy = new int[length];
-
-		System.arraycopy(array, 0, copy, 0, Math.min(array.length, length));
-
-		return copy;
+		return new IntegerArray(array).array(length);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} capped to the given {@code length}.
+	 * Construct a new copy of the given {@code array} with the given {@code length}.
 	 *
 	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
+	 * @param length the length of the constructed array.
+	 * @return a new copy of the given {@code array} with the given {@code length}.
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(long[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static long[] copyOf(long[] array, int length) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
-
-		long[] copy = new long[length];
-
-		System.arraycopy(array, 0, copy, 0, Math.min(array.length, length));
-
-		return copy;
+		return new LongArray(array).array(length);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} capped to the given {@code length}.
+	 * Construct a new copy of the given {@code array} with the given {@code length}.
 	 *
 	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
+	 * @param length the length of the constructed array.
+	 * @return a new copy of the given {@code array} with the given {@code length}.
 	 * @throws NullPointerException       if the given {@code array} is null.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
 	 * @see java.util.Arrays#copyOf(short[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static short[] copyOf(short[] array, int length) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
-
-		short[] copy = new short[length];
-
-		System.arraycopy(array, 0, copy, 0, Math.min(array.length, length));
-
-		return copy;
+		return new ShortArray(array).array(length);
 	}
 
-	/**
-	 * Using Reflection, construct a new copy of the given {@code array} capped to the given {@code length}.
-	 *
-	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
-	 * @throws NullPointerException       if the given {@code array} is null.
-	 * @throws IllegalArgumentException   if the given {@code array} is not an array.
-	 * @throws NegativeArraySizeException if the given {@code length} is negative.
-	 * @see java.util.Arrays#copyOf(Object[], int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static Object copyOf0(Object array, int length) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(array, Objects::isArray, "array");
-		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
-
-		Object copy = Array.newInstance(array.getClass().getComponentType(), length);
-
-		System.arraycopy(array, 0, copy, 0, Math.min(Array.getLength(array), length));
-
-		return copy;
-	}
+	//.copyOfRange(A, int, int)
 
 	/**
-	 * Using Reflection, construct a new copy of the given {@code array} capped to the given {@code length}.
-	 *
-	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
-	 * @param klass  the type of the constructed array.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
-	 * @throws NullPointerException       if the given {@code array} is null.
-	 * @throws IllegalArgumentException   if the given {@code array} is not an array. Or if the given {@code klass} is not an
-	 *                                    array class.
-	 * @throws NegativeArraySizeException if the given {@code length} is negative.
-	 * @throws ArrayStoreException        if an element can not be stored in the constructed array.
-	 * @see java.util.Arrays#copyOf(Object[], int, Class)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static Object copyOf0(Object array, int length, Class klass) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(klass, "klass");
-		Objects.require(length, Objects::nonNegative, NegativeArraySizeException.class, "length");
-		Objects.require(array, Objects::isArray, "array");
-		Objects.require(klass, Class::isArray, "klass");
-
-		Object copy = Array.newInstance(klass.getComponentType(), length);
-
-		if (klass.getComponentType().isPrimitive() == array.getClass().getComponentType().isPrimitive())
-			System.arraycopy(array, 0, copy, 0, Math.min(Array.getLength(array), length));
-		else
-			Arrays.hardcopy0(array, 0, copy, 0, Math.min(Array.getLength(array), length));
-
-		return copy;
-	}
-
-	/**
-	 * Using the best {@link #copyOf(Object[], int)} method, construct a new copy of the given {@code array} capped to the given
-	 * {@code length}.
-	 *
-	 * @param array  the original array.
-	 * @param length the length cap of the constructed array.
-	 * @return a new copy of the given {@code array} capped to the given {@code length}.
-	 * @throws NullPointerException       if the given {@code array} is null.
-	 * @throws IllegalArgumentException   if the given {@code array} is not an array.
-	 * @throws NegativeArraySizeException if the given {@code length} is negative.
-	 * @see java.util.Arrays#copyOf(Object[], int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static Object copyOf1(Object array, int length) {
-		if (array instanceof Object[])
-			return Arrays.copyOf((Object[]) array, length);
-		if (array instanceof boolean[])
-			return Arrays.copyOf((boolean[]) array, length);
-		if (array instanceof byte[])
-			return Arrays.copyOf((byte[]) array, length);
-		if (array instanceof char[])
-			return Arrays.copyOf((char[]) array, length);
-		if (array instanceof double[])
-			return Arrays.copyOf((double[]) array, length);
-		if (array instanceof float[])
-			return Arrays.copyOf((float[]) array, length);
-		if (array instanceof int[])
-			return Arrays.copyOf((int[]) array, length);
-		if (array instanceof long[])
-			return Arrays.copyOf((long[]) array, length);
-		if (array instanceof short[])
-			return Arrays.copyOf((short[]) array, length);
-
-		return Arrays.copyOf0(array, length);
-	}
-
-	//copyOfRange
-
-	/**
-	 * Construct a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Construct a new copy of the given {@code array} containing the elements from the given {@code
+	 * beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
+	 * @param beginIndex the initial index of the range to be copied, inclusive.
+	 * @param endIndex   the final index of the range to be copied, exclusive. (This index may lie
+	 *                   outside the array.)
 	 * @param <T>        the type of the elements.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
+	 * @return a new copy of the given {@code array} containing the elements from the given {@code
+	 * 		beginIndex} to the given {@code endIndex}.
 	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#copyOfRange(Object[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> T[] copyOfRange(T[] array, int beginIndex, int endIndex) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-
-		int length = endIndex - beginIndex;
-
-		T[] product = (T[]) Array.newInstance(array.getClass().getComponentType(), length);
-
-		System.arraycopy(array, beginIndex, product, 0, Math.min(array.length - beginIndex, length));
-
-		return product;
+		return new ObjectArray<>(array, beginIndex, array.length)
+				.array(endIndex - beginIndex);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Construct a new copy of the given {@code array} containing the elements from the given {@code
+	 * beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
+	 * @param beginIndex the initial index of the range to be copied, inclusive.
+	 * @param endIndex   the final index of the range to be copied, exclusive. (This index may lie
+	 *                   outside the array.)
 	 * @param klass      the type of the constructed array.
 	 * @param <T>        the type of the elements.
 	 * @param <U>        the super type of the elements.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
-	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}. Or if the
-	 *                                   given {@code klass} is not an array class. Or if the component type of the given {@code
-	 *                                   klass} is primitive.
+	 * @return a new copy of the given {@code array} containing the elements from the given {@code
+	 * 		beginIndex} to the given {@code endIndex}.
+	 * @throws NullPointerException      if the given {@code array} or {@code klass} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}, Or if the given {@code
+	 *                                   klass} is not an object array class
 	 * @throws ArrayStoreException       if an element can not be stored in the constructed array.
 	 * @see java.util.Arrays#copyOfRange(Object[], int, int, Class)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T extends U, U> U[] copyOfRange(T[] array, int beginIndex, int endIndex, Class<U[]> klass) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(klass, Class::isArray, "klass");
-		Objects.require(klass, Objects::isObjectArrayClass, "klass");
-
-		int length = endIndex - beginIndex;
-
-		T[] product = (T[]) Array.newInstance(klass.getComponentType(), length);
-
-		System.arraycopy(array, beginIndex, product, 0, Math.min(array.length - beginIndex, length));
-
-		return product;
+		return new ObjectArray<>(array, beginIndex, array.length)
+				.array(endIndex - beginIndex, klass);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Construct a new copy of the given {@code array} containing the elements from the given {@code
+	 * beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
+	 * @param beginIndex the initial index of the range to be copied, inclusive.
+	 * @param endIndex   the final index of the range to be copied, exclusive. (This index may lie
+	 *                   outside the array.)
+	 * @return a new copy of the given {@code array} containing the elements from the given {@code
+	 * 		beginIndex} to the given {@code endIndex}.
 	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#copyOfRange(boolean[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean[] copyOfRange(boolean[] array, int beginIndex, int endIndex) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-
-		int length = endIndex - beginIndex;
-
-		boolean[] product = new boolean[length];
-
-		System.arraycopy(array, beginIndex, product, 0, Math.min(array.length - beginIndex, length));
-
-		return product;
+		return new BooleanArray(array, beginIndex, array.length)
+				.array(endIndex - beginIndex);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Construct a new copy of the given {@code array} containing the elements from the given {@code
+	 * beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
+	 * @param beginIndex the initial index of the range to be copied, inclusive.
+	 * @param endIndex   the final index of the range to be copied, exclusive. (This index may lie
+	 *                   outside the array.)
+	 * @return a new copy of the given {@code array} containing the elements from the given {@code
+	 * 		beginIndex} to the given {@code endIndex}.
 	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#copyOfRange(byte[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static byte[] copyOfRange(byte[] array, int beginIndex, int endIndex) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-
-		int length = endIndex - beginIndex;
-
-		byte[] product = new byte[length];
-
-		System.arraycopy(array, beginIndex, product, 0, Math.min(array.length - beginIndex, length));
-
-		return product;
+		return new ByteArray(array, beginIndex, array.length)
+				.array(endIndex - beginIndex);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Construct a new copy of the given {@code array} containing the elements from the given {@code
+	 * beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
+	 * @param beginIndex the initial index of the range to be copied, inclusive.
+	 * @param endIndex   the final index of the range to be copied, exclusive. (This index may lie
+	 *                   outside the array.)
+	 * @return a new copy of the given {@code array} containing the elements from the given {@code
+	 * 		beginIndex} to the given {@code endIndex}.
 	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#copyOfRange(char[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static char[] copyOfRange(char[] array, int beginIndex, int endIndex) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-
-		int length = endIndex - beginIndex;
-
-		char[] product = new char[length];
-
-		System.arraycopy(array, beginIndex, product, 0, Math.min(array.length - beginIndex, length));
-
-		return product;
+		return new CharacterArray(array, beginIndex, array.length)
+				.array(endIndex - beginIndex);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Construct a new copy of the given {@code array} containing the elements from the given {@code
+	 * beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
+	 * @param beginIndex the initial index of the range to be copied, inclusive.
+	 * @param endIndex   the final index of the range to be copied, exclusive. (This index may lie
+	 *                   outside the array.)
+	 * @return a new copy of the given {@code array} containing the elements from the given {@code
+	 * 		beginIndex} to the given {@code endIndex}.
 	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#copyOfRange(double[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static double[] copyOfRange(double[] array, int beginIndex, int endIndex) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-
-		int length = endIndex - beginIndex;
-
-		double[] product = new double[length];
-
-		System.arraycopy(array, beginIndex, product, 0, Math.min(array.length - beginIndex, length));
-
-		return product;
+		return new DoubleArray(array, beginIndex, array.length)
+				.array(endIndex - beginIndex);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Construct a new copy of the given {@code array} containing the elements from the given {@code
+	 * beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
+	 * @param beginIndex the initial index of the range to be copied, inclusive.
+	 * @param endIndex   the final index of the range to be copied, exclusive. (This index may lie
+	 *                   outside the array.)
+	 * @return a new copy of the given {@code array} containing the elements from the given {@code
+	 * 		beginIndex} to the given {@code endIndex}.
 	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#copyOfRange(float[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static float[] copyOfRange(float[] array, int beginIndex, int endIndex) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-
-		int length = endIndex - beginIndex;
-
-		float[] product = new float[length];
-
-		System.arraycopy(array, beginIndex, product, 0, Math.min(array.length - beginIndex, length));
-
-		return product;
+		return new FloatArray(array, beginIndex, array.length)
+				.array(endIndex - beginIndex);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Construct a new copy of the given {@code array} containing the elements from the given {@code
+	 * beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
+	 * @param beginIndex the initial index of the range to be copied, inclusive.
+	 * @param endIndex   the final index of the range to be copied, exclusive. (This index may lie
+	 *                   outside the array.)
+	 * @return a new copy of the given {@code array} containing the elements from the given {@code
+	 * 		beginIndex} to the given {@code endIndex}.
 	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#copyOfRange(int[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int[] copyOfRange(int[] array, int beginIndex, int endIndex) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-
-		int length = endIndex - beginIndex;
-
-		int[] product = new int[length];
-
-		System.arraycopy(array, beginIndex, product, 0, Math.min(array.length - beginIndex, length));
-
-		return product;
+		return new IntegerArray(array, beginIndex, array.length)
+				.array(endIndex - beginIndex);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Construct a new copy of the given {@code array} containing the elements from the given {@code
+	 * beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
+	 * @param beginIndex the initial index of the range to be copied, inclusive.
+	 * @param endIndex   the final index of the range to be copied, exclusive. (This index may lie
+	 *                   outside the array.)
+	 * @return a new copy of the given {@code array} containing the elements from the given {@code
+	 * 		beginIndex} to the given {@code endIndex}.
 	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#copyOfRange(long[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static long[] copyOfRange(long[] array, int beginIndex, int endIndex) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-
-		int length = endIndex - beginIndex;
-
-		long[] product = new long[length];
-
-		System.arraycopy(array, beginIndex, product, 0, Math.min(array.length - beginIndex, length));
-
-		return product;
+		return new LongArray(array, beginIndex, array.length)
+				.array(endIndex - beginIndex);
 	}
 
 	/**
-	 * Construct a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Construct a new copy of the given {@code array} containing the elements from the given {@code
+	 * beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
+	 * @param beginIndex the initial index of the range to be copied, inclusive.
+	 * @param endIndex   the final index of the range to be copied, exclusive. (This index may lie
+	 *                   outside the array.)
+	 * @return a new copy of the given {@code array} containing the elements from the given {@code
+	 * 		beginIndex} to the given {@code endIndex}.
 	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code beginIndex} is greater than the given {@code endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#copyOfRange(short[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static short[] copyOfRange(short[] array, int beginIndex, int endIndex) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, array.length, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-
-		int length = endIndex - beginIndex;
-
-		short[] product = new short[length];
-
-		System.arraycopy(array, beginIndex, product, 0, Math.min(array.length - beginIndex, length));
-
-		return product;
+		return new ShortArray(array, beginIndex, array.length)
+				.array(endIndex - beginIndex);
 	}
 
-	/**
-	 * Using Reflection, construct a new copy of the given {@code array} containing the elements from the given {@code beginIndex}
-	 * to the given {@code endIndex}.
-	 *
-	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
-	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code array} is not an array. if the given {@code beginIndex} is greater
-	 *                                   than the given {@code endIndex}.
-	 * @see java.util.Arrays#copyOfRange(Object[], int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static Object copyOfRange0(Object array, int beginIndex, int endIndex) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, Array.getLength(array), Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(array, Objects::isArray, "array");
-
-		int length = endIndex - beginIndex;
-
-		Object product = Array.newInstance(array.getClass().getComponentType(), length);
-
-		System.arraycopy(array, beginIndex, product, 0, Math.min(Array.getLength(array) - beginIndex, length));
-
-		return product;
-	}
+	//.deepEquals(Object[])
 
 	/**
-	 * Using Reflection, construct a new copy of the given {@code array} containing the elements from the given {@code beginIndex}
-	 * to the given {@code endIndex}.
-	 *
-	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
-	 * @param klass      the type of the constructed array.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
-	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code array} is not an array. Or if the given {@code beginIndex} is greater
-	 *                                   than the given {@code endIndex}. Or if the given {@code klass} is not an array class.
-	 * @throws ArrayStoreException       if an element can not be stored in the constructed array.
-	 * @see java.util.Arrays#copyOfRange(Object[], int, int, Class)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static Object copyOfRange0(Object array, int beginIndex, int endIndex, Class klass) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, "beginIndex");
-		Objects.require(beginIndex, Array.getLength(array), Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(array, Objects::isArray, "array");
-		Objects.require(klass, Class::isArray, "klass");
-
-		int length = endIndex - beginIndex;
-
-		Object product = Array.newInstance(klass.getComponentType(), length);
-
-		if (klass.getComponentType().isPrimitive() == array.getClass().getComponentType().isPrimitive())
-			System.arraycopy(array, beginIndex, product, 0, Math.min(Array.getLength(array) - beginIndex, length));
-		else
-			Arrays.hardcopy0(array, beginIndex, product, 0, Math.min(Array.getLength(array) - beginIndex, length));
-
-		return product;
-	}
-
-	/**
-	 * Using the best {@link #copyOfRange(Object[], int, int)} method, construct a new copy of the given {@code array} containing
-	 * the elements from the given {@code beginIndex} to the given {@code endIndex}.
-	 *
-	 * @param array      the original array.
-	 * @param beginIndex the index where to start copying from the original array to the constructed array.
-	 * @param endIndex   the index where to stop copying from the original array to the constructed array.
-	 * @return a new copy of the given {@code array} containing the elements from the given {@code beginIndex} to the given {@code
-	 * 		endIndex}.
-	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if the given {@code beginIndex} is negative. Or if the given {@code endIndex} is greater
-	 *                                   than or equals the length of the given {@code array}.
-	 * @throws IllegalArgumentException  if the given {@code array} is not an array. Or if the given {@code beginIndex} is greater
-	 *                                   than the given {@code endIndex}.
-	 * @see java.util.Arrays#copyOfRange(Object[], int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static Object copyOfRange1(Object array, int beginIndex, int endIndex) {
-		if (array instanceof Object[])
-			return Arrays.copyOfRange((Object[]) array, beginIndex, endIndex);
-		if (array instanceof boolean[])
-			return Arrays.copyOfRange((boolean[]) array, beginIndex, endIndex);
-		if (array instanceof byte[])
-			return Arrays.copyOfRange((byte[]) array, beginIndex, endIndex);
-		if (array instanceof char[])
-			return Arrays.copyOfRange((char[]) array, beginIndex, endIndex);
-		if (array instanceof double[])
-			return Arrays.copyOfRange((double[]) array, beginIndex, endIndex);
-		if (array instanceof float[])
-			return Arrays.copyOfRange((float[]) array, beginIndex, endIndex);
-		if (array instanceof int[])
-			return Arrays.copyOfRange((int[]) array, beginIndex, endIndex);
-		if (array instanceof long[])
-			return Arrays.copyOfRange((long[]) array, beginIndex, endIndex);
-		if (array instanceof short[])
-			return Arrays.copyOfRange((short[]) array, beginIndex, endIndex);
-
-		return Arrays.copyOfRange0(array, beginIndex, endIndex);
-	}
-
-	//deepEquals
-
-	/**
-	 * Determine if the given {@code array} deeply equals the given {@code other} in deep lengths, deep elements, and deep
-	 * orderings.
+	 * Determine if the given {@code array} deeply equals the given {@code other} in deep lengths,
+	 * deep elements, and deep orderings.
 	 *
 	 * @param array the first array to be matched.
 	 * @param other the second array to be matched.
 	 * @param <T>   the type of the elements.
-	 * @return true, if the given {@code array} deeply equals the given {@code other} in deep lengths, deep elements, and deep
-	 * 		orderings.
+	 * @return true, if the given {@code array} deeply equals the given {@code other} in deep
+	 * 		lengths, deep elements, and deep orderings.
 	 * @see java.util.Arrays#deepEquals(Object[], Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> boolean deepEquals(T[] array, T... other) {
-		if (array == other)
-			return true;
-		if (array == null || other == null || array.length != other.length)
-			return false;
-
-		for (int i = 0; i < array.length; i++) {
-			Object a = array[i];
-			Object o = other[i];
-
-			if (a == o)
-				continue;
-			if (a == null || o == null)
-				return false;
-
-			if (a instanceof Object[] && o instanceof Object[]) {
-				if (!Arrays.deepEquals((Object[]) a, (Object[]) o))
-					return false;
-			} else if (a instanceof boolean[] && o instanceof boolean[]) {
-				if (!Arrays.equals((boolean[]) a, (boolean[]) o))
-					return false;
-			} else if (a instanceof byte[] && o instanceof byte[]) {
-				if (!Arrays.equals((byte[]) a, (byte[]) o))
-					return false;
-			} else if (a instanceof char[] && o instanceof char[]) {
-				if (!Arrays.equals((char[]) a, (char[]) o))
-					return false;
-			} else if (a instanceof double[] && o instanceof double[]) {
-				if (!Arrays.equals((double[]) a, (double[]) o))
-					return false;
-			} else if (a instanceof float[] && o instanceof float[]) {
-				if (!Arrays.equals((float[]) a, (float[]) o))
-					return false;
-			} else if (a instanceof int[] && o instanceof int[]) {
-				if (!Arrays.equals((int[]) a, (int[]) o))
-					return false;
-			} else if (a instanceof long[] && o instanceof long[]) {
-				if (!Arrays.equals((long[]) a, (long[]) o))
-					return false;
-			} else if (a instanceof short[] && o instanceof short[]) {
-				if (!Arrays.equals((short[]) a, (short[]) o))
-					return false;
-			} else if (!a.equals(o))
-				return false;
-		}
-
-		return true;
+		return ObjectArray.deepEquals(array, other);
 	}
 
-	/**
-	 * Using Reflection, determine if the given {@code array} deeply equals the given {@code other} in deep lengths, deep
-	 * elements, and deep orderings.
-	 *
-	 * @param array the first array to be matched.
-	 * @param other the second array to be matched.
-	 * @return true, if the given {@code array} deeply equals the given {@code other} in deep lengths, deep elements, and deep
-	 * 		orderings.
-	 * @throws IllegalArgumentException if the given {@code array} or {@code other} is not an array.
-	 * @see java.util.Arrays#deepEquals(Object[], Object[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static boolean deepEquals0(Object array, Object other) {
-		Objects.require(array, Objects::isArray, "array");
-		Objects.require(other, Objects::isArray, "other");
-
-		int length = Array.getLength(array);
-
-		if (array == other)
-			return true;
-		if (array == null || other == null || length != Array.getLength(other))
-			return false;
-		if (array.getClass().getComponentType().isPrimitive() !=
-			other.getClass().getComponentType().isPrimitive())
-			return false;
-
-		for (int i = 0; i < length; i++) {
-			Object a = Array.get(array, i);
-			Object o = Array.get(other, i);
-
-			if (a == o)
-				continue;
-			if (a == null || o == null)
-				return false;
-
-			if (a instanceof Object[] && o instanceof Object[]) {
-				if (!Arrays.deepEquals0(a, o))
-					return false;
-			} else if (a.getClass().isArray() && o.getClass().isArray()) {
-				if (!Arrays.equals0(a, o))
-					return false;
-			} else if (!a.equals(o))
-				return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Using the best {@link #deepEquals(Object[], Object[])} {@link #equals(Object[], Object[])} method, determine if the given
-	 * {@code array} deeply equals the given {@code other} in deep lengths, deep elements, and deep orderings.
-	 *
-	 * @param array the first array to be matched.
-	 * @param other the second array to be matched.
-	 * @return true, if the given {@code array} deeply equals the given {@code other} in deep lengths, deep elements, and deep
-	 * 		orderings.
-	 * @throws IllegalArgumentException if the given {@code array} or {@code other} is not an array.
-	 * @see java.util.Arrays#deepEquals(Object[], Object[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static boolean deepEquals1(Object array, Object other) {
-		if (array instanceof Object[] && other instanceof Object[])
-			return Arrays.deepEquals((Object[]) array, (Object[]) other);
-		if (array instanceof boolean[] && other instanceof boolean[])
-			return Arrays.equals((boolean[]) array, (boolean[]) other);
-		if (array instanceof byte[] && other instanceof byte[])
-			return Arrays.equals((byte[]) array, (byte[]) other);
-		if (array instanceof char[] && other instanceof char[])
-			return Arrays.equals((char[]) array, (char[]) other);
-		if (array instanceof double[] && other instanceof double[])
-			return Arrays.equals((double[]) array, (double[]) other);
-		if (array instanceof float[] && other instanceof float[])
-			return Arrays.equals((float[]) array, (float[]) other);
-		if (array instanceof int[] && other instanceof int[])
-			return Arrays.equals((int[]) array, (int[]) other);
-		if (array instanceof long[] && other instanceof long[])
-			return Arrays.equals((long[]) array, (long[]) other);
-		if (array instanceof short[] && other instanceof short[])
-			return Arrays.equals((short[]) array, (short[]) other);
-
-		return Arrays.deepEquals0(array, other);
-	}
-
-	//deepHashCode
+	//.deepHashCode(Object[])
 
 	/**
 	 * Calculate the hash code of the elements deeply stored in the given {@code array}.
@@ -2453,108 +1416,11 @@ public class Arrays {
 	 * @see java.util.Arrays#deepHashCode(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <T> int deepHashCode(T... array) {
-		if (array == null)
-			return 0;
-
-		int deepHashCode = 1;
-		for (int i = 0; i < array.length; i++) {
-			Object element = array[i];
-
-			if (element == null)
-				deepHashCode = 31 * deepHashCode;
-			if (element instanceof Object[])
-				deepHashCode = 31 * deepHashCode + Arrays.deepHashCode((Object[]) element);
-			else if (element instanceof boolean[])
-				deepHashCode = 31 * deepHashCode + Arrays.hashCode((boolean[]) element);
-			else if (element instanceof byte[])
-				deepHashCode = 31 * deepHashCode + Arrays.hashCode((byte[]) element);
-			else if (element instanceof char[])
-				deepHashCode = 31 * deepHashCode + Arrays.hashCode((char[]) element);
-			else if (element instanceof double[])
-				deepHashCode = 31 * deepHashCode + Arrays.hashCode((double[]) element);
-			else if (element instanceof float[])
-				deepHashCode = 31 * deepHashCode + Arrays.hashCode((float[]) element);
-			else if (element instanceof int[])
-				deepHashCode = 31 * deepHashCode + Arrays.hashCode((int[]) element);
-			else if (element instanceof long[])
-				deepHashCode = 31 * deepHashCode + Arrays.hashCode((long[]) element);
-			else if (element instanceof short[])
-				deepHashCode = 31 * deepHashCode + Arrays.hashCode((short[]) element);
-			else
-				deepHashCode = 31 * deepHashCode + element.hashCode();
-		}
-
-		return deepHashCode;
+	public static <T> int deepHashCode(T[] array) {
+		return ObjectArray.deepHashCode(array);
 	}
 
-	/**
-	 * Using Reflection, calculate the hash code of the elements deeply stored in the given {@code array}.
-	 *
-	 * @param array the array to compute its deep hash code.
-	 * @return the hash code of the elements deeply stored in the given {@code array}.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @see java.util.Arrays#deepHashCode(Object[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int deepHashCode0(Object array) {
-		Objects.require(array, Objects::isArray, "array");
-
-		if (array == null)
-			return 0;
-
-		int length = Array.getLength(array);
-		int deepHashCode = 1;
-		for (int i = 0; i < length; i++) {
-			Object element = Array.get(array, i);
-
-			if (element == null)
-				deepHashCode = 31 * deepHashCode;
-			else if (element instanceof Object[])
-				deepHashCode = 31 * Arrays.deepHashCode0(element);
-			else if (element.getClass().isArray())
-				deepHashCode = 31 * Arrays.hashCode0(element);
-			else
-				deepHashCode = 31 * element.hashCode();
-		}
-
-		return deepHashCode;
-	}
-
-	/**
-	 * Using the best {@link #deepHashCode(Object[])} {@link #hashCode(Object[])} method, calculate the hash code of the elements
-	 * deeply stored in the given {@code array}.
-	 *
-	 * @param array the array to compute its deep hash code.
-	 * @return the hash code of the elements deeply stored in the given {@code array}.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @see java.util.Arrays#deepHashCode(Object[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int deepHashCode1(Object array) {
-		if (array instanceof Object[])
-			return Arrays.deepHashCode((Object[]) array);
-		if (array instanceof boolean[])
-			return Arrays.hashCode((boolean[]) array);
-		if (array instanceof byte[])
-			return Arrays.hashCode((byte[]) array);
-		if (array instanceof char[])
-			return Arrays.hashCode((char[]) array);
-		if (array instanceof double[])
-			return Arrays.hashCode((double[]) array);
-		if (array instanceof float[])
-			return Arrays.hashCode((float[]) array);
-		if (array instanceof int[])
-			return Arrays.hashCode((int[]) array);
-		if (array instanceof long[])
-			return Arrays.hashCode((long[]) array);
-		if (array instanceof short[])
-			return Arrays.hashCode((short[]) array);
-
-		return Arrays.deepHashCode0(array);
-	}
-
-	//deepToString
+	//.deepToString(Object[])
 
 	/**
 	 * Build a string representation of the deep contents of the given {@code array}.
@@ -2565,502 +1431,149 @@ public class Arrays {
 	 * @see java.util.Arrays#deepToString(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <T> String deepToString(T... array) {
-		if (array == null)
-			return "null";
-
-		int cap = 20 * array.length;
-		if (array.length != 0 && cap <= 0)
-			cap = Integer.MAX_VALUE;
-
-		StringBuilder builder = new StringBuilder(cap);
-		Arrays.deepToString(array, builder, new java.util.ArrayList());
-		return builder.toString();
+	public static <T> String deepToString(T[] array) {
+		return ObjectArray.deepToString(array);
 	}
 
-	/**
-	 * Build a string representation of the deep contents of the given {@code array}.
-	 *
-	 * @param array   the array to build a string representation for it.
-	 * @param builder the builder to append the string representation to.
-	 * @param dejaVu  the arrays that has been seen before.
-	 * @throws NullPointerException if the given {@code builder} or {@code dejaVu} is null.
-	 * @see java.util.Arrays#deepToString(Object[], StringBuilder, Set)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void deepToString(Object[] array, StringBuilder builder, Collection<Object[]> dejaVu) {
-		Objects.requireNonNull(builder, "builder");
-		Objects.requireNonNull(dejaVu, "dejaVu");
-
-		if (array == null)
-			builder.append("null");
-
-		if (array.length != 0) {
-			dejaVu.add(array);
-			builder.append("[");
-
-			int i = 0;
-			while (true) {
-				Object element = array[i];
-
-				if (element instanceof boolean[])
-					builder.append(Arrays.toString((boolean[]) element));
-				else if (element instanceof byte[])
-					builder.append(Arrays.toString((byte[]) element));
-				else if (element instanceof char[])
-					builder.append(Arrays.toString((char[]) element));
-				else if (element instanceof double[])
-					builder.append(Arrays.toString((double[]) element));
-				else if (element instanceof float[])
-					builder.append(Arrays.toString((float[]) element));
-				else if (element instanceof int[])
-					builder.append(Arrays.toString((int[]) element));
-				else if (element instanceof long[])
-					builder.append(Arrays.toString((long[]) element));
-				else if (element instanceof short[])
-					builder.append(Arrays.toString((short[]) element));
-				else if (element instanceof Object[])
-					if (dejaVu.contains(element))
-						builder.append("[...]");
-					else
-						Arrays.deepToString((Object[]) element, builder, dejaVu);
-				else
-					builder.append(element);
-
-				if (++i < array.length) {
-					builder.append(", ");
-					continue;
-				}
-
-				builder.append("]");
-				dejaVu.remove(array);
-				return;
-			}
-		}
-
-		builder.append("[]");
-	}
+	//.equals(A, A)
 
 	/**
-	 * Using Reflection, build a string representation of the deep contents of the given {@code array}.
-	 *
-	 * @param array the array to build a string representation for it.
-	 * @return a string representation of the deep contents of the given {@code array}.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @see java.util.Arrays#deepToString(Object[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static String deepToString0(Object array) {
-		Objects.require(array, Objects::isArray, "array");
-
-		if (array == null)
-			return "null";
-
-		int length = Array.getLength(array);
-		int cap = 20 * length;
-		if (length != 0 && cap <= 0)
-			cap = Integer.MAX_VALUE;
-
-		StringBuilder builder = new StringBuilder(cap);
-		Arrays.deepToString0(array, builder, new java.util.ArrayList());
-		return builder.toString();
-	}
-
-	/**
-	 * Using Reflection, build a string representation of the deep contents of the given {@code array}.
-	 *
-	 * @param array   the array to build a string representation for it.
-	 * @param builder the builder to append the string representation to.
-	 * @param dejaVu  the arrays that has been seen before.
-	 * @throws NullPointerException     if the given {@code builder} or {@code dejaVu} is null.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @see java.util.Arrays#deepToString(Object[], StringBuilder, Set)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void deepToString0(Object array, StringBuilder builder, Collection dejaVu) {
-		Objects.requireNonNull(builder, "builder");
-		Objects.requireNonNull(dejaVu, "dejaVu");
-		Objects.require(array, Objects::isArray, "array");
-
-		if (array == null)
-			builder.append("null");
-
-		int length = Array.getLength(array);
-
-		if (length != 0) {
-			dejaVu.add(array);
-			builder.append("[");
-
-			int i = 0;
-			while (true) {
-				Object element = Array.get(array, i);
-
-				if (element == null)
-					builder.append("null");
-				if (element instanceof Object[])
-					if (dejaVu.contains(element))
-						builder.append("[...]");
-					else
-						Arrays.deepToString0(element, builder, dejaVu);
-				else if (element.getClass().isArray())
-					builder.append(Arrays.toString0(element));
-				else
-					builder.append(element);
-
-				if (++i < length) {
-					builder.append(", ");
-					continue;
-				}
-
-				builder.append("]");
-				dejaVu.remove(array);
-				return;
-			}
-		}
-
-		builder.append("[]");
-	}
-
-	/**
-	 * Using the best {@link #deepToString(Object[])} {@link #toString(Object[])} method, build a string representation of the
-	 * deep contents of the given {@code array}.
-	 *
-	 * @param array the array to build a string representation for it.
-	 * @return a string representation of the deep contents of the given {@code array}.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @see java.util.Arrays#deepToString(Object[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static String deepToString1(Object array) {
-		if (array instanceof Object[])
-			return Arrays.deepToString((Object[]) array);
-		if (array instanceof boolean[])
-			return Arrays.toString((boolean[]) array);
-		if (array instanceof byte[])
-			return Arrays.toString((byte[]) array);
-		if (array instanceof char[])
-			return Arrays.toString((char[]) array);
-		if (array instanceof double[])
-			return Arrays.toString((double[]) array);
-		if (array instanceof float[])
-			return Arrays.toString((float[]) array);
-		if (array instanceof int[])
-			return Arrays.toString((int[]) array);
-		if (array instanceof long[])
-			return Arrays.toString((long[]) array);
-		if (array instanceof short[])
-			return Arrays.toString((short[]) array);
-
-		return Arrays.deepToString0(array);
-	}
-
-	//equals
-
-	/**
-	 * Determine if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * Determine if the given {@code array} does equals the given {@code other} in length, elements,
+	 * and order.
 	 *
 	 * @param array the first array to be matched.
 	 * @param other the second array to be matched.
 	 * @param <T>   the type of the elements.
-	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * @return true, if the given {@code array} does equals the given {@code other} in length,
+	 * 		elements, and order.
 	 * @see java.util.Arrays#equals(Object[], Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> boolean equals(T[] array, T... other) {
-		if (array == other)
-			return true;
-		if (array == null || other == null || array.length != other.length)
-			return false;
-
-		for (int i = 0; i < array.length; i++) {
-			Object a = array[i];
-			Object o = other[i];
-
-			if (a != o && (a == null || !a.equals(o)))
-				return false;
-		}
-
-		return true;
+		return ObjectArray.equals(array, other);
 	}
 
 	/**
-	 * Determine if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * Determine if the given {@code array} does equals the given {@code other} in length, elements,
+	 * and order.
 	 *
 	 * @param array the first array to be matched.
 	 * @param other the second array to be matched.
-	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * @return true, if the given {@code array} does equals the given {@code other} in length,
+	 * 		elements, and order.
 	 * @see java.util.Arrays#equals(boolean[], boolean[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(boolean[] array, boolean... other) {
-		if (array == other)
-			return true;
-		if (array == null || other == null || array.length != other.length)
-			return false;
-
-		for (int i = 0; i < array.length; i++) {
-			boolean a = array[i];
-			boolean o = other[i];
-
-			if (a != o)
-				return false;
-		}
-
-		return true;
+		return BooleanArray.equals(array, other);
 	}
 
 	/**
-	 * Determine if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * Determine if the given {@code array} does equals the given {@code other} in length, elements,
+	 * and order.
 	 *
 	 * @param array the first array to be matched.
 	 * @param other the second array to be matched.
-	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * @return true, if the given {@code array} does equals the given {@code other} in length,
+	 * 		elements, and order.
 	 * @see java.util.Arrays#equals(byte[], byte[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(byte[] array, byte... other) {
-		if (array == other)
-			return true;
-		if (array == null || other == null || array.length != other.length)
-			return false;
-
-		for (int i = 0; i < array.length; i++) {
-			byte a = array[i];
-			byte o = other[i];
-
-			if (a != o)
-				return false;
-		}
-
-		return true;
+		return ByteArray.equals(array, other);
 	}
 
 	/**
-	 * Determine if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * Determine if the given {@code array} does equals the given {@code other} in length, elements,
+	 * and order.
 	 *
 	 * @param array the first array to be matched.
 	 * @param other the second array to be matched.
-	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * @return true, if the given {@code array} does equals the given {@code other} in length,
+	 * 		elements, and order.
 	 * @see java.util.Arrays#equals(char[], char[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(char[] array, char... other) {
-		if (array == other)
-			return true;
-		if (array == null || other == null || array.length != other.length)
-			return false;
-
-		for (int i = 0; i < array.length; i++) {
-			char a = array[i];
-			char o = other[i];
-
-			if (a != o)
-				return false;
-		}
-
-		return true;
+		return CharacterArray.equals(array, other);
 	}
 
 	/**
-	 * Determine if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * Determine if the given {@code array} does equals the given {@code other} in length, elements,
+	 * and order.
 	 *
 	 * @param array the first array to be matched.
 	 * @param other the second array to be matched.
-	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * @return true, if the given {@code array} does equals the given {@code other} in length,
+	 * 		elements, and order.
 	 * @see java.util.Arrays#equals(double[], double[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(double[] array, double... other) {
-		if (array == other)
-			return true;
-		if (array == null || other == null || array.length != other.length)
-			return false;
-
-		for (int i = 0; i < array.length; i++) {
-			long a = Double.doubleToLongBits(array[i]);
-			long o = Double.doubleToLongBits(other[i]);
-
-			if (a != o)
-				return false;
-		}
-
-		return true;
+		return DoubleArray.equals(array, other);
 	}
 
 	/**
-	 * Determine if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * Determine if the given {@code array} does equals the given {@code other} in length, elements,
+	 * and order.
 	 *
 	 * @param array the first array to be matched.
 	 * @param other the second array to be matched.
-	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * @return true, if the given {@code array} does equals the given {@code other} in length,
+	 * 		elements, and order.
 	 * @see java.util.Arrays#equals(float[], float[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(float[] array, float... other) {
-		if (array == other)
-			return true;
-		if (array == null || other == null || array.length != other.length)
-			return false;
-
-		for (int i = 0; i < array.length; i++) {
-			int a = Float.floatToIntBits(array[i]);
-			int o = Float.floatToIntBits(other[i]);
-
-			if (a != o)
-				return false;
-		}
-
-		return true;
+		return FloatArray.equals(array, other);
 	}
 
 	/**
-	 * Determine if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * Determine if the given {@code array} does equals the given {@code other} in length, elements,
+	 * and order.
 	 *
 	 * @param array the first array to be matched.
 	 * @param other the second array to be matched.
-	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * @return true, if the given {@code array} does equals the given {@code other} in length,
+	 * 		elements, and order.
 	 * @see java.util.Arrays#equals(int[], int[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(int[] array, int... other) {
-		if (array == other)
-			return true;
-		if (array == null || other == null || array.length != other.length)
-			return false;
-
-		for (int i = 0; i < array.length; i++) {
-			int a = array[i];
-			int o = other[i];
-
-			if (a != o)
-				return false;
-		}
-
-		return true;
+		return IntegerArray.equals(array, other);
 	}
 
 	/**
-	 * Determine if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * Determine if the given {@code array} does equals the given {@code other} in length, elements,
+	 * and order.
 	 *
 	 * @param array the first array to be matched.
 	 * @param other the second array to be matched.
-	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * @return true, if the given {@code array} does equals the given {@code other} in length,
+	 * 		elements, and order.
 	 * @see java.util.Arrays#equals(long[], long[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(long[] array, long... other) {
-		if (array == other)
-			return true;
-		if (array == null || other == null || array.length != other.length)
-			return false;
-
-		for (int i = 0; i < array.length; i++) {
-			long a = array[i];
-			long o = other[i];
-
-			if (a != o)
-				return false;
-		}
-
-		return true;
+		return LongArray.equals(array, other);
 	}
 
 	/**
-	 * Determine if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * Determine if the given {@code array} does equals the given {@code other} in length, elements,
+	 * and order.
 	 *
 	 * @param array the first array to be matched.
 	 * @param other the second array to be matched.
-	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
+	 * @return true, if the given {@code array} does equals the given {@code other} in length,
+	 * 		elements, and order.
 	 * @see java.util.Arrays#equals(short[], short[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(short[] array, short... other) {
-		if (array == other)
-			return true;
-		if (array == null || other == null || array.length != other.length)
-			return false;
-
-		for (int i = 0; i < array.length; i++) {
-			short a = array[i];
-			short o = other[i];
-
-			if (a != o)
-				return false;
-		}
-
-		return true;
+		return ShortArray.equals(array, other);
 	}
 
-	/**
-	 * Using Reflection, determine if the given {@code array} does equals the given {@code other} in length, elements, and order.
-	 *
-	 * @param array the first array to be matched.
-	 * @param other the second array to be matched.
-	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
-	 * @throws IllegalArgumentException if the given {@code array} or {@code other} is not an array.
-	 * @see java.util.Arrays#equals(Object[], Object[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static boolean equals0(Object array, Object other) {
-		Objects.require(array, Objects::isArray, "array");
-		Objects.require(other, Objects::isArray, "other");
-
-		int length = Array.getLength(array);
-
-		if (array == other)
-			return true;
-		if (array == null || other == null || length != Array.getLength(other))
-			return false;
-		if (array.getClass().getComponentType().isPrimitive() !=
-			other.getClass().getComponentType().isPrimitive())
-			return false;
-
-		for (int i = 0; i < length; i++) {
-			Object a = Array.get(array, i);
-			Object o = Array.get(other, i);
-
-			if (a != o && (a == null || !a.equals(o)))
-				return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Using the best {@link #equals(Object[], Object[])} method, determine if the given {@code array} does equals the given
-	 * {@code other} in length, elements, and order.
-	 *
-	 * @param array the first array to be matched.
-	 * @param other the second array to be matched.
-	 * @return true, if the given {@code array} does equals the given {@code other} in length, elements, and order.
-	 * @throws IllegalArgumentException if the given {@code array} or {@code other} is not an array.
-	 * @see java.util.Arrays#equals(Object[], Object[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static boolean equals1(Object array, Object other) {
-		if (array instanceof Object[] && other instanceof Object[])
-			return Arrays.equals((Object[]) array, (Object[]) other);
-		if (array instanceof boolean[] && other instanceof boolean[])
-			return Arrays.equals((boolean[]) array, (boolean[]) other);
-		if (array instanceof byte[] && other instanceof byte[])
-			return Arrays.equals((byte[]) array, (byte[]) other);
-		if (array instanceof char[] && other instanceof char[])
-			return Arrays.equals((char[]) array, (char[]) other);
-		if (array instanceof double[] && other instanceof double[])
-			return Arrays.equals((double[]) array, (double[]) other);
-		if (array instanceof float[] && other instanceof float[])
-			return Arrays.equals((float[]) array, (float[]) other);
-		if (array instanceof int[] && other instanceof int[])
-			return Arrays.equals((int[]) array, (int[]) other);
-		if (array instanceof long[] && other instanceof long[])
-			return Arrays.equals((long[]) array, (long[]) other);
-		if (array instanceof short[] && other instanceof short[])
-			return Arrays.equals((short[]) array, (short[]) other);
-
-		return Arrays.equals0(array, other);
-	}
-
-	//fill
+	//.fill(A, E)
 
 	/**
 	 * Assign the given {@code element} to each element of the given {@code array}.
@@ -3069,14 +1582,13 @@ public class Arrays {
 	 * @param element the element to fill the given {@code array} with.
 	 * @param <T>     the type of the elements.
 	 * @throws NullPointerException if the given {@code array} is null.
-	 * @throws ArrayStoreException  if the given {@code element} can not be stored in the given {@code array}.
+	 * @throws ArrayStoreException  if the given {@code element} can not be stored in the given
+	 *                              {@code array}.
 	 * @see java.util.Arrays#fill(Object[], Object)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> void fill(T[] array, T element) {
-		Objects.requireNonNull(array, "array");
-		for (int i = 0; i < array.length; i++)
-			array[i] = element;
+		new ObjectArray<>(array).fill(element);
 	}
 
 	/**
@@ -3089,9 +1601,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(boolean[] array, boolean element) {
-		Objects.requireNonNull(array, "array");
-		for (int i = 0; i < array.length; i++)
-			array[i] = element;
+		new BooleanArray(array).fill(element);
 	}
 
 	/**
@@ -3104,9 +1614,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(byte[] array, byte element) {
-		Objects.requireNonNull(array, "array");
-		for (int i = 0; i < array.length; i++)
-			array[i] = element;
+		new ByteArray(array).fill(element);
 	}
 
 	/**
@@ -3119,9 +1627,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(char[] array, char element) {
-		Objects.requireNonNull(array, "array");
-		for (int i = 0; i < array.length; i++)
-			array[i] = element;
+		new CharacterArray(array).fill(element);
 	}
 
 	/**
@@ -3134,9 +1640,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(double[] array, double element) {
-		Objects.requireNonNull(array, "array");
-		for (int i = 0; i < array.length; i++)
-			array[i] = element;
+		new DoubleArray(array).fill(element);
 	}
 
 	/**
@@ -3149,24 +1653,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(float[] array, float element) {
-		Objects.requireNonNull(array, "array");
-		for (int i = 0; i < array.length; i++)
-			array[i] = element;
-	}
-
-	/**
-	 * Assign the given {@code element} to each element of the given {@code array}.
-	 *
-	 * @param array   the array to be filled.
-	 * @param element the element to fill the given {@code array} with.
-	 * @throws NullPointerException if the given {@code array} is null.
-	 * @see java.util.Arrays#fill(int[], int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void fill(int[] array, int element) {
-		Objects.requireNonNull(array, "array");
-		for (int i = 0; i < array.length; i++)
-			array[i] = element;
+		new FloatArray(array).fill(element);
 	}
 
 	/**
@@ -3179,9 +1666,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(long[] array, long element) {
-		Objects.requireNonNull(array, "array");
-		for (int i = 0; i < array.length; i++)
-			array[i] = element;
+		new LongArray(array).fill(element);
 	}
 
 	/**
@@ -3194,363 +1679,191 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(short[] array, short element) {
-		Objects.requireNonNull(array, "array");
-		for (int i = 0; i < array.length; i++)
-			array[i] = element;
+		new ShortArray(array).fill(element);
 	}
 
+	//.fill(A, int, int, E)
+
 	/**
-	 * Assign the given {@code element} to each element of the given {@code array} from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Assign the given {@code element} to each element of the given {@code array} from the given
+	 * {@code beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the array to be filled.
 	 * @param beginIndex the index where to start filling the given {@code array}.
 	 * @param endIndex   the index where to stop filling the given {@code array}.
 	 * @param element    the element to fill the given {@code array} with.
 	 * @param <T>        the type of the elements.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws ArrayStoreException            if the given {@code element} can not be stored in the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
-	 *                                        array.length}.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws ArrayStoreException       if the given {@code element} can not be stored in the given
+	 *                                   {@code array}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#fill(Object[], int, int, Object)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> void fill(T[] array, int beginIndex, int endIndex, T element) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
-
-		for (int i = beginIndex; i < endIndex; i++)
-			array[i] = element;
+		new ObjectArray(array, beginIndex, endIndex).fill(element);
 	}
 
 	/**
-	 * Assign the given {@code element} to each element of the given {@code array} from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Assign the given {@code element} to each element of the given {@code array} from the given
+	 * {@code beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the array to be filled.
 	 * @param beginIndex the index where to start filling the given {@code array}.
 	 * @param endIndex   the index where to stop filling the given {@code array}.
 	 * @param element    the element to fill the given {@code array} with.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
-	 *                                        array.length}.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#fill(boolean[], int, int, boolean)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(boolean[] array, int beginIndex, int endIndex, boolean element) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
-
-		for (int i = beginIndex; i < endIndex; i++)
-			array[i] = element;
+		new BooleanArray(array, beginIndex, endIndex).fill(element);
 	}
 
 	/**
-	 * Assign the given {@code element} to each element of the given {@code array} from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Assign the given {@code element} to each element of the given {@code array} from the given
+	 * {@code beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the array to be filled.
 	 * @param beginIndex the index where to start filling the given {@code array}.
 	 * @param endIndex   the index where to stop filling the given {@code array}.
 	 * @param element    the element to fill the given {@code array} with.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
-	 *                                        array.length}.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#fill(byte[], int, int, byte)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(byte[] array, int beginIndex, int endIndex, byte element) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
-
-		for (int i = beginIndex; i < endIndex; i++)
-			array[i] = element;
+		new ByteArray(array, beginIndex, endIndex).fill(element);
 	}
 
 	/**
-	 * Assign the given {@code element} to each element of the given {@code array} from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Assign the given {@code element} to each element of the given {@code array} from the given
+	 * {@code beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the array to be filled.
 	 * @param beginIndex the index where to start filling the given {@code array}.
 	 * @param endIndex   the index where to stop filling the given {@code array}.
 	 * @param element    the element to fill the given {@code array} with.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
-	 *                                        array.length}.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#fill(char[], int, int, char)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(char[] array, int beginIndex, int endIndex, char element) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
-
-		for (int i = beginIndex; i < endIndex; i++)
-			array[i] = element;
+		new CharacterArray(array, beginIndex, endIndex).fill(element);
 	}
 
 	/**
-	 * Assign the given {@code element} to each element of the given {@code array} from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Assign the given {@code element} to each element of the given {@code array} from the given
+	 * {@code beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the array to be filled.
 	 * @param beginIndex the index where to start filling the given {@code array}.
 	 * @param endIndex   the index where to stop filling the given {@code array}.
 	 * @param element    the element to fill the given {@code array} with.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
-	 *                                        array.length}.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#fill(double[], int, int, double)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(double[] array, int beginIndex, int endIndex, double element) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
-
-		for (int i = beginIndex; i < endIndex; i++)
-			array[i] = element;
+		new DoubleArray(array, beginIndex, endIndex).fill(element);
 	}
 
 	/**
-	 * Assign the given {@code element} to each element of the given {@code array} from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Assign the given {@code element} to each element of the given {@code array} from the given
+	 * {@code beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the array to be filled.
 	 * @param beginIndex the index where to start filling the given {@code array}.
 	 * @param endIndex   the index where to stop filling the given {@code array}.
 	 * @param element    the element to fill the given {@code array} with.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
-	 *                                        array.length}.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#fill(float[], int, int, float)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(float[] array, int beginIndex, int endIndex, float element) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
-
-		for (int i = beginIndex; i < endIndex; i++)
-			array[i] = element;
+		new FloatArray(array, beginIndex, endIndex).fill(element);
 	}
 
 	/**
-	 * Assign the given {@code element} to each element of the given {@code array} from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Assign the given {@code element} to each element of the given {@code array} from the given
+	 * {@code beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the array to be filled.
 	 * @param beginIndex the index where to start filling the given {@code array}.
 	 * @param endIndex   the index where to stop filling the given {@code array}.
 	 * @param element    the element to fill the given {@code array} with.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
-	 *                                        array.length}.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#fill(int[], int, int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(int[] array, int beginIndex, int endIndex, int element) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
-
-		for (int i = beginIndex; i < endIndex; i++)
-			array[i] = element;
+		new IntegerArray(array, beginIndex, endIndex).fill(element);
 	}
 
 	/**
-	 * Assign the given {@code element} to each element of the given {@code array} from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Assign the given {@code element} to each element of the given {@code array} from the given
+	 * {@code beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the array to be filled.
 	 * @param beginIndex the index where to start filling the given {@code array}.
 	 * @param endIndex   the index where to stop filling the given {@code array}.
 	 * @param element    the element to fill the given {@code array} with.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
-	 *                                        array.length}.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#fill(long[], int, int, long)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(long[] array, int beginIndex, int endIndex, long element) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
-
-		for (int i = beginIndex; i < endIndex; i++)
-			array[i] = element;
+		new LongArray(array, beginIndex, endIndex).fill(element);
 	}
 
 	/**
-	 * Assign the given {@code element} to each element of the given {@code array} from the given {@code beginIndex} to the given
-	 * {@code endIndex}.
+	 * Assign the given {@code element} to each element of the given {@code array} from the given
+	 * {@code beginIndex} to the given {@code endIndex}.
 	 *
 	 * @param array      the array to be filled.
 	 * @param beginIndex the index where to start filling the given {@code array}.
 	 * @param endIndex   the index where to stop filling the given {@code array}.
 	 * @param element    the element to fill the given {@code array} with.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
-	 *                                        array.length}.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @see java.util.Arrays#fill(short[], int, int, short)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void fill(short[] array, int beginIndex, int endIndex, short element) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, array.length, Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
-
-		for (int i = beginIndex; i < endIndex; i++)
-			array[i] = element;
+		new ShortArray(array, beginIndex, endIndex).fill(element);
 	}
 
-	/**
-	 * Using Reflection, assign the given {@code element} to each element of the given {@code array}.
-	 *
-	 * @param array   the array to be filled.
-	 * @param element the element to fill the given {@code array} with.
-	 * @throws NullPointerException     if the given {@code array} is null.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @throws ArrayStoreException      if the given {@code element} can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#fill(Object[], Object)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void fill0(Object array, Object element) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(array, Objects::isArray, "array");
-		int length = Array.getLength(array);
-		for (int i = 0; i < length; i++)
-			try {
-				Array.set(array, i, element);
-			} catch (IllegalArgumentException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-	}
+	//todo hardcopy
 
 	/**
-	 * Using Reflection, assign the given {@code element} to each element of the given {@code array} from the given {@code
-	 * beginIndex} to the given {@code endIndex}.
-	 *
-	 * @param array      the array to be filled.
-	 * @param beginIndex the index where to start filling the given {@code array}.
-	 * @param endIndex   the index where to stop filling the given {@code array}.
-	 * @param element    the element to fill the given {@code array} with.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws IllegalArgumentException       if the given {@code array} is not an array.
-	 * @throws ArrayStoreException            if the given {@code element} can not be stored in the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
-	 *                                        array.length}.
-	 * @see java.util.Arrays#fill(Object[], int, int, Object)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void fill0(Object array, int beginIndex, int endIndex, Object element) {
-		Objects.requireNonNull(array, "array");
-		Objects.require(array, Objects::isArray, "array");
-		Objects.require(beginIndex, Objects::nonNegative, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(beginIndex, endIndex, Objects::nonGreater, ArrayIndexOutOfBoundsException.class, "beginIndex");
-		Objects.require(endIndex, Array.getLength(array), Objects::isLess, ArrayIndexOutOfBoundsException.class, "endIndex");
-
-		for (int i = beginIndex; i < endIndex; i++)
-			try {
-				Array.set(array, i, element);
-			} catch (IllegalArgumentException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-	}
-
-	/**
-	 * Using the best {@link #fill(Object[], Object)} method, assign the given {@code element} to each element of the given {@code
-	 * array}.
-	 *
-	 * @param array   the array to be filled.
-	 * @param element the element to fill the given {@code array} with.
-	 * @throws NullPointerException     if the given {@code array} is null.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @throws ArrayStoreException      if the given {@code element} can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#fill(Object[], Object)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void fill1(Object array, Object element) {
-		if (array instanceof Object[])
-			Arrays.fill((Object[]) array, element);
-		else if (array instanceof boolean[] && element instanceof Boolean)
-			Arrays.fill((boolean[]) array, (boolean) element);
-		else if (array instanceof byte[] && element instanceof Byte)
-			Arrays.fill((byte[]) array, (byte) element);
-		else if (array instanceof char[] && element instanceof Character)
-			Arrays.fill((char[]) array, (char) element);
-		else if (array instanceof double[] && element instanceof Double)
-			Arrays.fill((double[]) array, (double) element);
-		else if (array instanceof float[] && element instanceof Float)
-			Arrays.fill((float[]) array, (float) element);
-		else if (array instanceof int[] && element instanceof Integer)
-			Arrays.fill((int[]) array, (int) element);
-		else if (array instanceof long[] && element instanceof Long)
-			Arrays.fill((long[]) array, (long) element);
-		else if (array instanceof short[] && element instanceof Short)
-			Arrays.fill((short[]) array, (short) element);
-		else
-			Arrays.fill0(array, element);
-	}
-
-	/**
-	 * Using the best {@link #fill(Object[], int, int, Object)} method. assign the given {@code element} to each element of the
-	 * given {@code array} from the given {@code beginIndex} to the given {@code endIndex}.
-	 *
-	 * @param array      the array to be filled.
-	 * @param beginIndex the index where to start filling the given {@code array}.
-	 * @param endIndex   the index where to stop filling the given {@code array}.
-	 * @param element    the element to fill the given {@code array} with.
-	 * @throws NullPointerException           if the given {@code array} is null.
-	 * @throws IllegalArgumentException       if the given {@code array} is not an array.
-	 * @throws ArrayStoreException            if the given {@code element} can not be stored in the given {@code array}.
-	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code beginIndex > endIndex} or {@code endIndex >=
-	 *                                        array.length}.
-	 * @see java.util.Arrays#fill(Object[], int, int, Object)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void fill1(Object array, int beginIndex, int endIndex, Object element) {
-		if (array instanceof Object[])
-			Arrays.fill((Object[]) array, beginIndex, endIndex, element);
-		else if (array instanceof boolean[] && element instanceof Boolean)
-			Arrays.fill((boolean[]) array, beginIndex, endIndex, (boolean) element);
-		else if (array instanceof byte[] && element instanceof Byte)
-			Arrays.fill((byte[]) array, beginIndex, endIndex, (byte) element);
-		else if (array instanceof char[] && element instanceof Character)
-			Arrays.fill((char[]) array, beginIndex, endIndex, (char) element);
-		else if (array instanceof double[] && element instanceof Double)
-			Arrays.fill((double[]) array, beginIndex, endIndex, (double) element);
-		else if (array instanceof float[] && element instanceof Float)
-			Arrays.fill((float[]) array, beginIndex, endIndex, (float) element);
-		else if (array instanceof int[] && element instanceof Integer)
-			Arrays.fill((int[]) array, beginIndex, endIndex, (int) element);
-		else if (array instanceof long[] && element instanceof Long)
-			Arrays.fill((long[]) array, beginIndex, endIndex, (long) element);
-		else if (array instanceof short[] && element instanceof Short)
-			Arrays.fill((short[]) array, beginIndex, endIndex, (short) element);
-		else
-			Arrays.fill0(array, element);
-	}
-
-	//hardcopy
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
+	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from
+	 * the given {@code src} at the given {@code srcPos}. Start writing to the given {@code dest} at
+	 * the given {@code destPos}. Copy the specified number of elements {@code length}.
 	 *
 	 * @param src     the source array.
 	 * @param srcPos  the index to start reading from the source array.
@@ -3558,52 +1871,22 @@ public class Arrays {
 	 * @param destPos the index to start writing to the destination array.
 	 * @param length  the number of elements to be copied.
 	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
+	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code
+	 *                                   length < 0} or {@code srcPos + length > src.length} or
+	 *                                   {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(Object[] src, int srcPos, Object[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		if (src != dest || destPos <= srcPos || srcPos + length <= destPos)
-			for (int i = 0; i < length; i++)
-				try {
-					dest[di++] = src[si++];
-				} catch (ClassCastException e) {
-					throw new ArrayStoreException(e.getMessage());
-				}
-		else {
-			Object[] clone = java.util.Arrays.copyOfRange(src, destPos, srcPos + length);
-
-			for (int i = 0, l = destPos - srcPos; i < l; i++)
-				try {
-					dest[di++] = src[si++];
-				} catch (ClassCastException e) {
-					throw new ArrayStoreException(e.getMessage());
-				}
-			for (int i = 0, l = srcPos + length - destPos; i < l; i++)
-				try {
-					dest[di++] = clone[i];
-				} catch (ClassCastException e) {
-					throw new ArrayStoreException(e.getMessage());
-				}
-		}
+		new ObjectArray(src, srcPos, srcPos + length)
+				.arraycopy(dest, destPos);
 	}
 
 	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
+	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from
+	 * the given {@code src} at the given {@code srcPos}. Start writing to the given {@code dest} at
+	 * the given {@code destPos}. Copy the specified number of elements {@code length}.
 	 *
 	 * @param src     the source array.
 	 * @param srcPos  the index to start reading from the source array.
@@ -3611,119 +1894,21 @@ public class Arrays {
 	 * @param destPos the index to start writing to the destination array.
 	 * @param length  the number of elements to be copied.
 	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(boolean[] src, int srcPos, boolean[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		if (src != dest || destPos <= srcPos || srcPos + length <= destPos)
-			for (int i = 0; i < length; i++)
-				dest[di++] = src[si++];
-		else {
-			boolean[] clone = java.util.Arrays.copyOfRange(src, destPos, srcPos + length);
-
-			for (int i = 0, l = destPos - srcPos; i < l; i++)
-				dest[di++] = src[si++];
-			for (int i = 0, l = srcPos + length - destPos; i < l; i++)
-				dest[di++] = clone[i];
-		}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(byte[] src, int srcPos, byte[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		if (src != dest || destPos <= srcPos || srcPos + length <= destPos)
-			for (int i = 0; i < length; i++)
-				dest[di++] = src[si++];
-		else {
-			byte[] clone = java.util.Arrays.copyOfRange(src, destPos, srcPos + length);
-
-			for (int i = 0, l = destPos - srcPos; i < l; i++)
-				dest[di++] = src[si++];
-			for (int i = 0, l = srcPos + length - destPos; i < l; i++)
-				dest[di++] = clone[i];
-		}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
+	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code
+	 *                                   length < 0} or {@code srcPos + length > src.length} or
+	 *                                   {@code destPos + length > dest.length}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(char[] src, int srcPos, char[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		if (src != dest || destPos <= srcPos || srcPos + length <= destPos)
-			for (int i = 0; i < length; i++)
-				dest[di++] = src[si++];
-		else {
-			char[] clone = java.util.Arrays.copyOfRange(src, destPos, srcPos + length);
-
-			for (int i = 0, l = destPos - srcPos; i < l; i++)
-				dest[di++] = src[si++];
-			for (int i = 0, l = srcPos + length - destPos; i < l; i++)
-				dest[di++] = clone[i];
-		}
+		new CharacterArray(src, srcPos, srcPos + length)
+				.arraycopy(dest, destPos);
 	}
 
 	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
+	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from
+	 * the given {@code src} at the given {@code srcPos}. Start writing to the given {@code dest} at
+	 * the given {@code destPos}. Copy the specified number of elements {@code length}.
 	 *
 	 * @param src     the source array.
 	 * @param srcPos  the index to start reading from the source array.
@@ -3731,307 +1916,22 @@ public class Arrays {
 	 * @param destPos the index to start writing to the destination array.
 	 * @param length  the number of elements to be copied.
 	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(double[] src, int srcPos, double[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		if (src != dest || destPos <= srcPos || srcPos + length <= destPos)
-			for (int i = 0; i < length; i++)
-				dest[di++] = src[si++];
-		else {
-			double[] clone = java.util.Arrays.copyOfRange(src, destPos, srcPos + length);
-
-			for (int i = 0, l = destPos - srcPos; i < l; i++)
-				dest[di++] = src[si++];
-			for (int i = 0, l = srcPos + length - destPos; i < l; i++)
-				dest[di++] = clone[i];
-		}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(float[] src, int srcPos, float[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		if (src != dest || destPos <= srcPos || srcPos + length <= destPos)
-			for (int i = 0; i < length; i++)
-				dest[di++] = src[si++];
-		else {
-			float[] clone = java.util.Arrays.copyOfRange(src, destPos, srcPos + length);
-
-			for (int i = 0, l = destPos - srcPos; i < l; i++)
-				dest[di++] = src[si++];
-			for (int i = 0, l = srcPos + length - destPos; i < l; i++)
-				dest[di++] = clone[i];
-		}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(int[] src, int srcPos, int[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		if (src != dest || destPos <= srcPos || srcPos + length <= destPos)
-			for (int i = 0; i < length; i++)
-				dest[di++] = src[si++];
-		else {
-			int[] clone = java.util.Arrays.copyOfRange(src, destPos, srcPos + length);
-
-			for (int i = 0, l = destPos - srcPos; i < l; i++)
-				dest[di++] = src[si++];
-			for (int i = 0, l = srcPos + length - destPos; i < l; i++)
-				dest[di++] = clone[i];
-		}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(long[] src, int srcPos, long[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		if (src != dest || destPos <= srcPos || srcPos + length <= destPos)
-			for (int i = 0; i < length; i++)
-				dest[di++] = src[si++];
-		else {
-			long[] clone = java.util.Arrays.copyOfRange(src, destPos, srcPos + length);
-
-			for (int i = 0, l = destPos - srcPos; i < l; i++)
-				dest[di++] = src[si++];
-			for (int i = 0, l = srcPos + length - destPos; i < l; i++)
-				dest[di++] = clone[i];
-		}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(short[] src, int srcPos, short[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		if (src != dest || destPos <= srcPos || srcPos + length <= destPos)
-			for (int i = 0; i < length; i++)
-				dest[di++] = src[si++];
-		else {
-			short[] clone = java.util.Arrays.copyOfRange(src, destPos, srcPos + length);
-
-			for (int i = 0, l = destPos - srcPos; i < l; i++)
-				dest[di++] = src[si++];
-			for (int i = 0, l = srcPos + length - destPos; i < l; i++)
-				dest[di++] = clone[i];
-		}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(Object[] src, int srcPos, boolean[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			try {
-				dest[di++] = (boolean) src[si++];
-			} catch (ClassCastException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(Object[] src, int srcPos, byte[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			try {
-				dest[di++] = (byte) src[si++];
-			} catch (ClassCastException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
+	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code
+	 *                                   length < 0} or {@code srcPos + length > src.length} or
+	 *                                   {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(Object[] src, int srcPos, char[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			try {
-				dest[di++] = (char) src[si++];
-			} catch (ClassCastException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
+		new ObjectArray(src, srcPos, srcPos + length)
+				.hardcopy(dest, destPos);
 	}
 
 	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
+	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from
+	 * the given {@code src} at the given {@code srcPos}. Start writing to the given {@code dest} at
+	 * the given {@code destPos}. Copy the specified number of elements {@code length}.
 	 *
 	 * @param src     the source array.
 	 * @param srcPos  the index to start reading from the source array.
@@ -4039,617 +1939,19 @@ public class Arrays {
 	 * @param destPos the index to start writing to the destination array.
 	 * @param length  the number of elements to be copied.
 	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(Object[] src, int srcPos, double[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			try {
-				dest[di++] = (double) src[si++];
-			} catch (ClassCastException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(Object[] src, int srcPos, float[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			try {
-				dest[di++] = (float) src[si++];
-			} catch (ClassCastException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(Object[] src, int srcPos, int[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			try {
-				dest[di++] = (int) src[si++];
-			} catch (ClassCastException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(Object[] src, int srcPos, long[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			try {
-				dest[di++] = (long) src[si++];
-			} catch (ClassCastException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(Object[] src, int srcPos, short[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			try {
-				dest[di++] = (short) src[si++];
-			} catch (ClassCastException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(boolean[] src, int srcPos, Object[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			dest[di++] = src[si++];
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(byte[] src, int srcPos, Object[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			dest[di++] = src[si++];
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
+	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code
+	 *                                   length < 0} or {@code srcPos + length > src.length} or
+	 *                                   {@code destPos + length > dest.length}.
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void hardcopy(char[] src, int srcPos, Object[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			dest[di++] = src[si++];
+		new CharacterArray(src, srcPos, srcPos + length)
+				.hardcopy(dest, destPos);
 	}
 
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(double[] src, int srcPos, Object[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			dest[di++] = src[si++];
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(float[] src, int srcPos, Object[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			dest[di++] = src[si++];
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(int[] src, int srcPos, Object[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			dest[di++] = src[si++];
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(long[] src, int srcPos, Object[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			dest[di++] = src[si++];
-	}
-
-	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given {@code src} at the
-	 * given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the specified number of
-	 * elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if an element can not be stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy(short[] src, int srcPos, Object[] dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(srcPos + length, src.length, Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos + length, dest.length, Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		for (int i = 0; i < length; i++)
-			dest[di++] = src[si++];
-	}
-
-	/**
-	 * Using Reflection, copy the elements from the given {@code src} to the given {@code dest}. Start reading from the given
-	 * {@code src} at the given {@code srcPos}. Start writing to the given {@code dest} at the given {@code destPos}. Copy the
-	 * specified number of elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if the given {@code src} or {@code dest} is not an array. Or if an element can not be
-	 *                                   stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy0(Object src, int srcPos, Object dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Objects.require(src, Objects::isArray, ArrayStoreException.class, "src");
-		Objects.require(dest, Objects::isArray, ArrayStoreException.class, "dest");
-		Objects.require(srcPos, Objects::nonNegative, IndexOutOfBoundsException.class, "srcPos");
-		Objects.require(destPos, Objects::nonNegative, IndexOutOfBoundsException.class, "destPos");
-		Objects.require(length, Objects::nonNegative, IndexOutOfBoundsException.class, "length");
-		Objects.require(
-				srcPos + length, Array.getLength(src), Objects::nonGreater, IndexOutOfBoundsException.class, "srcPos + length");
-		Objects.require(destPos +
-						length, Array.getLength(dest), Objects::nonGreater, IndexOutOfBoundsException.class, "destPos + length");
-
-		int si = srcPos;
-		int di = destPos;
-		if (src != dest || destPos <= srcPos || srcPos + length <= destPos)
-			for (int i = 0; i < length; i++)
-				try {
-					Array.set(dest, di++, Array.get(src, si++));
-				} catch (IllegalArgumentException e) {
-					throw new ArrayStoreException(e.getMessage());
-				}
-		else {
-			Object clone = Arrays.copyOfRange0(src, destPos, srcPos + length);
-
-			for (int i = 0, l = destPos - srcPos; i < l; i++)
-				try {
-					Array.set(dest, di++, Array.get(src, si++));
-				} catch (IllegalArgumentException e) {
-					throw new ArrayStoreException(e.getMessage());
-				}
-			for (int i = 0, l = srcPos + length - destPos; i < l; i++)
-				try {
-					Array.set(dest, di++, Array.get(clone, i));
-				} catch (IllegalArgumentException e) {
-					throw new ArrayStoreException(e.getMessage());
-				}
-		}
-	}
-
-	/**
-	 * Using the best {@link #hardcopy(Object[], int, Object[], int, int)} method, copy the elements from the given {@code src} to
-	 * the given {@code dest}. Start reading from the given {@code src} at the given {@code srcPos}. Start writing to the given
-	 * {@code dest} at the given {@code destPos}. Copy the specified number of elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if the given {@code src} or {@code dest} is not an array. Or if an element can not be
-	 *                                   stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy1(Object[] src, int srcPos, Object dest, int destPos, int length) {
-		if (dest instanceof Object[])
-			Arrays.hardcopy(src, srcPos, (Object[]) dest, destPos, length);
-		else if (dest instanceof boolean[])
-			Arrays.hardcopy(src, srcPos, (boolean[]) dest, destPos, length);
-		else if (dest instanceof byte[])
-			Arrays.hardcopy(src, srcPos, (byte[]) dest, destPos, length);
-		else if (dest instanceof char[])
-			Arrays.hardcopy(src, srcPos, (char[]) dest, destPos, length);
-		else if (dest instanceof double[])
-			Arrays.hardcopy(src, srcPos, (double[]) dest, destPos, length);
-		else if (dest instanceof float[])
-			Arrays.hardcopy(src, srcPos, (float[]) dest, destPos, length);
-		else if (dest instanceof int[])
-			Arrays.hardcopy(src, srcPos, (int[]) dest, destPos, length);
-		else if (dest instanceof long[])
-			Arrays.hardcopy(src, srcPos, (long[]) dest, destPos, length);
-		else if (dest instanceof short[])
-			Arrays.hardcopy(src, srcPos, (short[]) dest, destPos, length);
-		else
-			Arrays.hardcopy0(src, srcPos, dest, destPos, length);
-	}
-
-	/**
-	 * Using the best {@link #hardcopy(Object[], int, Object[], int, int)} method, copy the elements from the given {@code src} to
-	 * the given {@code dest}. Start reading from the given {@code src} at the given {@code srcPos}. Start writing to the given
-	 * {@code dest} at the given {@code destPos}. Copy the specified number of elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if the given {@code src} or {@code dest} is not an array. Or if an element can not be
-	 *                                   stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy1(Object src, int srcPos, Object[] dest, int destPos, int length) {
-		if (src instanceof Object[])
-			Arrays.hardcopy((Object[]) src, srcPos, dest, destPos, length);
-		if (src instanceof boolean[])
-			Arrays.hardcopy((boolean[]) src, srcPos, dest, destPos, length);
-		else if (src instanceof byte[])
-			Arrays.hardcopy((byte[]) src, srcPos, dest, destPos, length);
-		else if (src instanceof char[])
-			Arrays.hardcopy((char[]) src, srcPos, dest, destPos, length);
-		else if (src instanceof double[])
-			Arrays.hardcopy((double[]) src, srcPos, dest, destPos, length);
-		else if (src instanceof float[])
-			Arrays.hardcopy((float[]) src, srcPos, dest, destPos, length);
-		else if (src instanceof int[])
-			Arrays.hardcopy((int[]) src, srcPos, dest, destPos, length);
-		else if (src instanceof long[])
-			Arrays.hardcopy((long[]) src, srcPos, dest, destPos, length);
-		else if (src instanceof short[])
-			Arrays.hardcopy((short[]) src, srcPos, dest, destPos, length);
-		else
-			Arrays.hardcopy0(src, srcPos, dest, destPos, length);
-	}
-
-	/**
-	 * Using the best {@link #hardcopy(Object[], int, Object[], int, int)} method, copy the elements from the given {@code src} to
-	 * the given {@code dest}. Start reading from the given {@code src} at the given {@code srcPos}. Start writing to the given
-	 * {@code dest} at the given {@code destPos}. Copy the specified number of elements {@code length}.
-	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code length < 0} or {@code srcPos +
-	 *                                   length > src.length} or {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if the given {@code src} or {@code dest} is not an array. Or if an element can not be
-	 *                                   stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static void hardcopy1(Object src, int srcPos, Object dest, int destPos, int length) {
-		if (src instanceof Object[] && dest instanceof Object[])
-			Arrays.hardcopy((Object[]) src, srcPos, (Object[]) dest, destPos, length);
-		else if (src instanceof Object[])
-			Arrays.hardcopy1((Object[]) src, srcPos, dest, destPos, length);
-		else if (dest instanceof Object[])
-			Arrays.hardcopy1(src, srcPos, (Object[]) dest, destPos, length);
-		else if (src instanceof boolean[] && dest instanceof boolean[])
-			Arrays.hardcopy((boolean[]) src, srcPos, (boolean[]) dest, destPos, length);
-		else if (src instanceof byte[] && dest instanceof byte[])
-			Arrays.hardcopy((byte[]) src, srcPos, (byte[]) dest, destPos, length);
-		else if (src instanceof char[] && dest instanceof char[])
-			Arrays.hardcopy((char[]) src, srcPos, (char[]) dest, destPos, length);
-		else if (src instanceof double[] && dest instanceof double[])
-			Arrays.hardcopy((double[]) src, srcPos, (double[]) dest, destPos, length);
-		else if (src instanceof float[] && dest instanceof float[])
-			Arrays.hardcopy((float[]) src, srcPos, (float[]) dest, destPos, length);
-		else if (src instanceof int[] && dest instanceof int[])
-			Arrays.hardcopy((int[]) src, srcPos, (int[]) dest, destPos, length);
-		else if (src instanceof long[] && dest instanceof long[])
-			Arrays.hardcopy((long[]) src, srcPos, (long[]) dest, destPos, length);
-		else if (src instanceof short[] && dest instanceof short[])
-			Arrays.hardcopy((short[]) src, srcPos, (short[]) dest, destPos, length);
-		else
-			Arrays.hardcopy0(src, srcPos, dest, destPos, length);
-	}
-
-	//hashCode
+	//.hashCode(A)
 
 	/**
 	 * Calculate the hash code of the elements of the given {@code array}.
@@ -4660,18 +1962,8 @@ public class Arrays {
 	 * @see java.util.Arrays#hashCode(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <T> int hashCode(T... array) {
-		if (array == null)
-			return 0;
-
-		int hashCode = 1;
-		for (int i = 0; i < array.length; i++) {
-			Object element = array[i];
-
-			hashCode = 31 * hashCode + (element == null ? 0 : element.hashCode());
-		}
-
-		return hashCode;
+	public static <T> int hashCode(T[] array) {
+		return ObjectArray.hashCode(array);
 	}
 
 	/**
@@ -4683,17 +1975,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(boolean[] array) {
-		if (array == null)
-			return 0;
-
-		int hashCode = 1;
-		for (int i = 0; i < array.length; i++) {
-			boolean element = array[i];
-
-			hashCode = 31 * hashCode + Boolean.hashCode(element);
-		}
-
-		return hashCode;
+		return BooleanArray.hashCode(array);
 	}
 
 	/**
@@ -4705,17 +1987,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(byte[] array) {
-		if (array == null)
-			return 0;
-
-		int hashCode = 1;
-		for (int i = 0; i < array.length; i++) {
-			byte element = array[i];
-
-			hashCode = 31 * hashCode + Byte.hashCode(element);
-		}
-
-		return hashCode;
+		return ByteArray.hashCode(array);
 	}
 
 	/**
@@ -4727,17 +1999,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(char[] array) {
-		if (array == null)
-			return 0;
-
-		int hashCode = 1;
-		for (int i = 0; i < array.length; i++) {
-			char element = array[i];
-
-			hashCode = 31 * hashCode + Character.hashCode(element);
-		}
-
-		return hashCode;
+		return CharacterArray.hashCode(array);
 	}
 
 	/**
@@ -4749,17 +2011,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(double[] array) {
-		if (array == null)
-			return 0;
-
-		int hashCode = 1;
-		for (int i = 0; i < array.length; i++) {
-			double element = array[i];
-
-			hashCode = 31 * hashCode + Double.hashCode(element);
-		}
-
-		return hashCode;
+		return DoubleArray.hashCode(array);
 	}
 
 	/**
@@ -4771,17 +2023,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(float[] array) {
-		if (array == null)
-			return 0;
-
-		int hashCode = 1;
-		for (int i = 0; i < array.length; i++) {
-			float element = array[i];
-
-			hashCode = 31 * hashCode + Float.hashCode(element);
-		}
-
-		return hashCode;
+		return FloatArray.hashCode(array);
 	}
 
 	/**
@@ -4793,17 +2035,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(int[] array) {
-		if (array == null)
-			return 0;
-
-		int hashCode = 1;
-		for (int i = 0; i < array.length; i++) {
-			int element = array[i];
-
-			hashCode = 31 * hashCode + Integer.hashCode(element);
-		}
-
-		return hashCode;
+		return IntegerArray.hashCode(array);
 	}
 
 	/**
@@ -4815,17 +2047,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(long[] array) {
-		if (array == null)
-			return 0;
-
-		int hashCode = 1;
-		for (int i = 0; i < array.length; i++) {
-			long element = array[i];
-
-			hashCode = 31 * hashCode + Long.hashCode(element);
-		}
-
-		return hashCode;
+		return LongArray.hashCode(array);
 	}
 
 	/**
@@ -4837,78 +2059,10 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int hashCode(short[] array) {
-		if (array == null)
-			return 0;
-
-		int hashCode = 1;
-		for (int i = 0; i < array.length; i++) {
-			short element = array[i];
-
-			hashCode = 31 * hashCode + Short.hashCode(element);
-		}
-
-		return hashCode;
+		return ShortArray.hashCode(array);
 	}
 
-	/**
-	 * Using Reflection, calculate the hash code of the elements of the given {@code array}.
-	 *
-	 * @param array the array to compute its hash code.
-	 * @return the hash code of the elements of the given {@code array}.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @see java.util.Arrays#hashCode(Object[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int hashCode0(Object array) {
-		Objects.require(array, Objects::isArray, "array");
-
-		if (array == null)
-			return 0;
-
-		int hashCode = 1;
-		int length = Array.getLength(array);
-		for (int i = 0; i < length; i++) {
-			Object element = Array.get(array, i);
-
-			hashCode = 31 * hashCode + (element == null ? 0 : element.hashCode());
-		}
-
-		return hashCode;
-	}
-
-	/**
-	 * Using the best {@link #hashCode(Object[])} method, calculate the hash code of the elements of the given {@code array}.
-	 *
-	 * @param array the array to compute its hash code.
-	 * @return the hash code of the elements of the given {@code array}.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @see java.util.Arrays#hashCode(Object[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int hashCode1(Object array) {
-		if (array instanceof Object[])
-			return Arrays.hashCode((Object[]) array);
-		if (array instanceof boolean[])
-			return Arrays.hashCode((boolean[]) array);
-		if (array instanceof byte[])
-			return Arrays.hashCode((byte[]) array);
-		if (array instanceof char[])
-			return Arrays.hashCode((char[]) array);
-		if (array instanceof double[])
-			return Arrays.hashCode((double[]) array);
-		if (array instanceof float[])
-			return Arrays.hashCode((float[]) array);
-		if (array instanceof int[])
-			return Arrays.hashCode((int[]) array);
-		if (array instanceof long[])
-			return Arrays.hashCode((long[]) array);
-		if (array instanceof short[])
-			return Arrays.hashCode((short[]) array);
-
-		return Arrays.hashCode0(array);
-	}
-
-	//iterator
+	//..iterator(A)
 
 	/**
 	 * Construct a new iterator iterating the elements of the given {@code array}.
@@ -4919,8 +2073,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <T> ArrayIterator<T> iterator(T... array) {
-		return new ArrayIterator(array);
+	public static <T> ObjectArray.Iterator iterator(T... array) {
+		return new ObjectArray(array).iterator();
 	}
 
 	/**
@@ -4931,8 +2085,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static BooleanArrayIterator iterator(boolean[] array) {
-		return new BooleanArrayIterator(array);
+	public static BooleanArray.Iterator iterator(boolean[] array) {
+		return new BooleanArray(array).iterator();
 	}
 
 	/**
@@ -4943,8 +2097,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static ByteArrayIterator iterator(byte[] array) {
-		return new ByteArrayIterator(array);
+	public static ByteArray.Iterator iterator(byte[] array) {
+		return new ByteArray(array).iterator();
 	}
 
 	/**
@@ -4955,8 +2109,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static CharacterArrayIterator iterator(char[] array) {
-		return new CharacterArrayIterator(array);
+	public static CharacterArray.Iterator iterator(char[] array) {
+		return new CharacterArray(array).iterator();
 	}
 
 	/**
@@ -4967,8 +2121,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static DoubleArrayIterator iterator(double[] array) {
-		return new DoubleArrayIterator(array);
+	public static DoubleArray.Iterator iterator(double[] array) {
+		return new DoubleArray(array).iterator();
 	}
 
 	/**
@@ -4979,8 +2133,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static FloatArrayIterator iterator(float[] array) {
-		return new FloatArrayIterator(array);
+	public static FloatArray.Iterator iterator(float[] array) {
+		return new FloatArray(array).iterator();
 	}
 
 	/**
@@ -4991,8 +2145,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static IntegerArrayIterator iterator(int[] array) {
-		return new IntegerArrayIterator(array);
+	public static IntegerArray.Iterator iterator(int[] array) {
+		return new IntegerArray(array).iterator();
 	}
 
 	/**
@@ -5003,8 +2157,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static LongArrayIterator iterator(long[] array) {
-		return new LongArrayIterator(array);
+	public static LongArray.Iterator iterator(long[] array) {
+		return new LongArray(array).iterator();
 	}
 
 	/**
@@ -5015,127 +2169,344 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static ShortArrayIterator iterator(short[] array) {
-		return new ShortArrayIterator(array);
+	public static ShortArray.Iterator iterator(short[] array) {
+		return new ShortArray(array).iterator();
 	}
 
+	//.parallelPrefix(A, BinaryOperator)
+
 	/**
-	 * Using Reflection, construct a new iterator iterating the elements of the given {@code array}.
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
 	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws NullPointerException     if the given {@code array} is null.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @since 0.1.5 ~2020.07.24
+	 * @param <T>      the type of the elements.
+	 * @param array    the array, which is modified in-place by this method.
+	 * @param operator a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
+	 * @see java.util.Arrays#parallelPrefix(Object[], BinaryOperator)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static ArrayIterator0 iterator0(Object array) {
-		return new ArrayIterator0(array);
-	}
-
-	/**
-	 * Using the best {@link #iterator(Object[])} method, construct a new iterator iterating the elements of the given {@code
-	 * array}.
-	 *
-	 * @param array the array that the returned iterator is iterating.
-	 * @return a new iterator iterating the elements of the given {@code array}.
-	 * @throws NullPointerException     if the given {@code array} is null.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static ListIterator iterator1(Object array) {
-		if (array instanceof Object[])
-			return new ArrayIterator((Object[]) array);
-		if (array instanceof boolean[])
-			return new BooleanArrayIterator((boolean[]) array);
-		if (array instanceof byte[])
-			return new ByteArrayIterator((byte[]) array);
-		if (array instanceof char[])
-			return new CharacterArrayIterator((char[]) array);
-		if (array instanceof double[])
-			return new DoubleArrayIterator((double[]) array);
-		if (array instanceof float[])
-			return new FloatArrayIterator((float[]) array);
-		if (array instanceof int[])
-			return new IntegerArrayIterator((int[]) array);
-		if (array instanceof long[])
-			return new LongArrayIterator((long[]) array);
-		if (array instanceof short[])
-			return new ShortArrayIterator((short[]) array);
-
-		return Arrays.iterator0(array);
-	}
-
-	//todo parallelPrefix +(boolean | byte | char | float | short | 0 | 1)
-
-	/**
-	 * Redirect to {@link java.util.Arrays#parallelPrefix(Object[], BinaryOperator)}.
-	 */
-	@SuppressWarnings("JavaDoc")
 	public static <T> void parallelPrefix(T[] array, BinaryOperator<T> operator) {
-		java.util.Arrays.parallelPrefix(array, operator);
+		new ObjectArray(array).parallelPrefix(operator);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelPrefix(double[], DoubleBinaryOperator)}.
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array    the array, which is modified in-place by this method.
+	 * @param operator a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static void parallelPrefix(boolean[] array, BinaryOperator<Boolean> operator) {
+		new BooleanArray(array).parallelPrefix(operator);
+	}
+
+	/**
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array    the array, which is modified in-place by this method.
+	 * @param operator a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static void parallelPrefix(byte[] array, BinaryOperator<Byte> operator) {
+		new ByteArray(array).parallelPrefix(operator);
+	}
+
+	/**
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array    the array, which is modified in-place by this method.
+	 * @param operator a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static void parallelPrefix(char[] array, BinaryOperator<Character> operator) {
+		new CharacterArray(array).parallelPrefix(operator);
+	}
+
+	/**
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array    the array, which is modified in-place by this method.
+	 * @param operator a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
+	 * @see java.util.Arrays#parallelPrefix(double[], DoubleBinaryOperator)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static void parallelPrefix(double[] array, DoubleBinaryOperator operator) {
-		java.util.Arrays.parallelPrefix(array, operator);
+		new DoubleArray(array).parallelPrefix(operator::applyAsDouble);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelPrefix(int[], IntBinaryOperator)}.
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array    the array, which is modified in-place by this method.
+	 * @param operator a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static void parallelPrefix(float[] array, BinaryOperator<Float> operator) {
+		new FloatArray(array).parallelPrefix(operator);
+	}
+
+	/**
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array    the array, which is modified in-place by this method.
+	 * @param operator a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
+	 * @see java.util.Arrays#parallelPrefix(int[], IntBinaryOperator)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static void parallelPrefix(int[] array, IntBinaryOperator operator) {
-		java.util.Arrays.parallelPrefix(array, operator);
+		new IntegerArray(array).parallelPrefix(operator::applyAsInt);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelPrefix(long[], LongBinaryOperator)}.
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array    the array, which is modified in-place by this method.
+	 * @param operator a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
+	 * @see java.util.Arrays#parallelPrefix(long[], LongBinaryOperator)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelPrefix(long[] array, LongBinaryOperator operator) {
-		java.util.Arrays.parallelPrefix(array, operator);
+		new LongArray(array).parallelPrefix(operator::applyAsLong);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelPrefix(Object[], int, int, BinaryOperator)}.
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array    the array, which is modified in-place by this method.
+	 * @param operator a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static void parallelPrefix(short[] array, BinaryOperator<Short> operator) {
+		new ShortArray(array).parallelPrefix(operator);
+	}
+
+	//.parallelPrefix(A, int, int, BinaryOperator)
+
+	/**
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param <T>        the type of the elements.
+	 * @param array      the array, which is modified in-place by this method.
+	 * @param beginIndex the index of the first element, inclusive.
+	 * @param endIndex   the index of the last element, exclusive.
+	 * @param operator   a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException      if the given {@code array} or {@code operator} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#parallelPrefix(Object[], int, int, BinaryOperator)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static <T> void parallelPrefix(T[] array, int beginIndex, int endIndex, BinaryOperator<T> operator) {
-		java.util.Arrays.parallelPrefix(array, beginIndex, endIndex, operator);
+		new ObjectArray(array, beginIndex, endIndex).parallelPrefix(operator);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelPrefix(double[], int, int, DoubleBinaryOperator)}.
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array      the array, which is modified in-place by this method.
+	 * @param beginIndex the index of the first element, inclusive.
+	 * @param endIndex   the index of the last element, exclusive.
+	 * @param operator   a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException      if the given {@code array} or {@code operator} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static void parallelPrefix(boolean[] array, int beginIndex, int endIndex, BinaryOperator<Boolean> operator) {
+		new BooleanArray(array, beginIndex, endIndex).parallelPrefix(operator);
+	}
+
+	/**
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array      the array, which is modified in-place by this method.
+	 * @param beginIndex the index of the first element, inclusive.
+	 * @param endIndex   the index of the last element, exclusive.
+	 * @param operator   a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException      if the given {@code array} or {@code operator} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static void parallelPrefix(byte[] array, int beginIndex, int endIndex, BinaryOperator<Byte> operator) {
+		new ByteArray(array, beginIndex, endIndex).parallelPrefix(operator);
+	}
+
+	/**
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array      the array, which is modified in-place by this method.
+	 * @param beginIndex the index of the first element, inclusive.
+	 * @param endIndex   the index of the last element, exclusive.
+	 * @param operator   a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException      if the given {@code array} or {@code operator} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static void parallelPrefix(char[] array, int beginIndex, int endIndex, BinaryOperator<Character> operator) {
+		new CharacterArray(array, beginIndex, endIndex).parallelPrefix(operator);
+	}
+
+	/**
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array      the array, which is modified in-place by this method.
+	 * @param beginIndex the index of the first element, inclusive.
+	 * @param endIndex   the index of the last element, exclusive.
+	 * @param operator   a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException      if the given {@code array} or {@code operator} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#parallelPrefix(double[], int, int, DoubleBinaryOperator)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static void parallelPrefix(double[] array, int beginIndex, int endIndex, DoubleBinaryOperator operator) {
-		java.util.Arrays.parallelPrefix(array, beginIndex, endIndex, operator);
+		new DoubleArray(array, beginIndex, endIndex).parallelPrefix(operator::applyAsDouble);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelPrefix(int[], int, int, IntBinaryOperator)}.
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array      the array, which is modified in-place by this method.
+	 * @param beginIndex the index of the first element, inclusive.
+	 * @param endIndex   the index of the last element, exclusive.
+	 * @param operator   a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException      if the given {@code array} or {@code operator} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static void parallelPrefix(float[] array, int beginIndex, int endIndex, BinaryOperator<Float> operator) {
+		new FloatArray(array, beginIndex, endIndex).parallelPrefix(operator);
+	}
+
+	/**
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array      the array, which is modified in-place by this method.
+	 * @param beginIndex the index of the first element, inclusive.
+	 * @param endIndex   the index of the last element, exclusive.
+	 * @param operator   a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException      if the given {@code array} or {@code operator} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#parallelPrefix(int[], int, int, IntBinaryOperator)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static void parallelPrefix(int[] array, int beginIndex, int endIndex, IntBinaryOperator operator) {
-		java.util.Arrays.parallelPrefix(array, beginIndex, endIndex, operator);
+		new IntegerArray(array, beginIndex, endIndex).parallelPrefix(operator::applyAsInt);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelPrefix(long[], int, int, LongBinaryOperator)}.
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array      the array, which is modified in-place by this method.
+	 * @param beginIndex the index of the first element, inclusive.
+	 * @param endIndex   the index of the last element, exclusive.
+	 * @param operator   a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException      if the given {@code array} or {@code operator} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#parallelPrefix(long[], int, int, LongBinaryOperator)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelPrefix(long[] array, int beginIndex, int endIndex, LongBinaryOperator operator) {
-		java.util.Arrays.parallelPrefix(array, beginIndex, endIndex, operator);
+		new LongArray(array, beginIndex, endIndex).parallelPrefix(operator::applyAsLong);
 	}
 
-	//parallelSetAll
+	/**
+	 * Cumulates, in parallel, each element of the given {@code array} in place, using the supplied
+	 * function. For example if the array initially holds {@code [2, 1, 0, 3]} and the operation
+	 * performs addition, then upon return the array holds {@code [2, 3, 3, 6]}. Parallel prefix
+	 * computation is usually more efficient than sequential loops for large arrays.
+	 *
+	 * @param array      the array, which is modified in-place by this method.
+	 * @param beginIndex the index of the first element, inclusive.
+	 * @param endIndex   the index of the last element, exclusive.
+	 * @param operator   a side-effect-free, associative function to perform the cumulation.
+	 * @throws NullPointerException      if the given {@code array} or {@code operator} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static void parallelPrefix(short[] array, int beginIndex, int endIndex, BinaryOperator<Short> operator) {
+		new ShortArray(array, beginIndex, endIndex).parallelPrefix(operator);
+	}
+
+	//.parallelSetAll(A, IntFunction)
 
 	/**
-	 * In parallel, assign the given each element of the given {@code array} to the value returned from invoking the given {@code
-	 * function} with the index of that element.
+	 * In parallel, assign the given each element of the given {@code array} to the value returned
+	 * from invoking the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
@@ -5146,89 +2517,54 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> void parallelSetAll(T[] array, IntFunction<? extends T> function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		IntStream.range(0, array.length).parallel().forEach(i -> array[i] = function.apply(i));
+		new ObjectArray<>(array).parallelSetAll(function);
 	}
 
 	/**
-	 * In parallel, assign the given each element of the given {@code array} to the value returned from invoking the given {@code
-	 * function} with the index of that element.
+	 * In parallel, assign the given each element of the given {@code array} to the value returned
+	 * from invoking the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(boolean[] array, IntFunction<Boolean> function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		IntStream.range(0, array.length).parallel().forEach(i -> {
-			Object element = function.apply(i);
-
-			try {
-				array[i] = (Boolean) element;
-			} catch (ClassCastException | NullPointerException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-		});
+		new BooleanArray(array).parallelSetAll(function);
 	}
 
 	/**
-	 * In parallel, assign the given each element of the given {@code array} to the value returned from invoking the given {@code
-	 * function} with the index of that element.
+	 * In parallel, assign the given each element of the given {@code array} to the value returned
+	 * from invoking the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(byte[] array, IntFunction<Byte> function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		IntStream.range(0, array.length).parallel().forEach(i -> {
-			Object element = function.apply(i);
-
-			try {
-				array[i] = (Byte) element;
-			} catch (ClassCastException | NullPointerException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-		});
+		new ByteArray(array).parallelSetAll(function);
 	}
 
 	/**
-	 * In parallel, assign the given each element of the given {@code array} to the value returned from invoking the given {@code
-	 * function} with the index of that element.
+	 * In parallel, assign the given each element of the given {@code array} to the value returned
+	 * from invoking the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(char[] array, IntFunction<Character> function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		IntStream.range(0, array.length).parallel().forEach(i -> {
-			Object element = function.apply(i);
-
-			try {
-				array[i] = (Character) element;
-			} catch (ClassCastException | NullPointerException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-		});
+		new CharacterArray(array).parallelSetAll(function);
 	}
 
 	/**
-	 * In parallel, assign the given each element of the given {@code array} to the value returned from invoking the given {@code
-	 * function} with the index of that element.
+	 * In parallel, assign the given each element of the given {@code array} to the value returned
+	 * from invoking the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
@@ -5237,39 +2573,26 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(double[] array, IntToDoubleFunction function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		IntStream.range(0, array.length).parallel().forEach(i -> array[i] = function.applyAsDouble(i));
+		new DoubleArray(array).parallelSetAll(function::applyAsDouble);
 	}
 
 	/**
-	 * In parallel, assign the given each element of the given {@code array} to the value returned from invoking the given {@code
-	 * function} with the index of that element.
+	 * In parallel, assign the given each element of the given {@code array} to the value returned
+	 * from invoking the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(float[] array, IntFunction<Float> function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		IntStream.range(0, array.length).parallel().forEach(i -> {
-			Object element = function.apply(i);
-
-			try {
-				array[i] = (Float) element;
-			} catch (ClassCastException | NullPointerException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-		});
+		new FloatArray(array).parallelSetAll(function);
 	}
 
 	/**
-	 * In parallel, assign the given each element of the given {@code array} to the value returned from invoking the given {@code
-	 * function} with the index of that element.
+	 * In parallel, assign the given each element of the given {@code array} to the value returned
+	 * from invoking the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
@@ -5278,14 +2601,12 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(int[] array, IntUnaryOperator function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		IntStream.range(0, array.length).parallel().forEach(i -> array[i] = function.applyAsInt(i));
+		new IntegerArray(array).parallelSetAll(function::applyAsInt);
 	}
 
 	/**
-	 * In parallel, assign the given each element of the given {@code array} to the value returned from invoking the given {@code
-	 * function} with the index of that element.
+	 * In parallel, assign the given each element of the given {@code array} to the value returned
+	 * from invoking the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
@@ -5294,247 +2615,354 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(long[] array, IntToLongFunction function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		IntStream.range(0, array.length).parallel().forEach(i -> array[i] = function.applyAsLong(i));
+		new LongArray(array).parallelSetAll(function::applyAsLong);
 	}
 
 	/**
-	 * In parallel, assign the given each element of the given {@code array} to the value returned from invoking the given {@code
-	 * function} with the index of that element.
+	 * In parallel, assign the given each element of the given {@code array} to the value returned
+	 * from invoking the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void parallelSetAll(short[] array, IntFunction<Short> function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		IntStream.range(0, array.length).parallel().forEach(i -> {
-			Object element = function.apply(i);
-
-			try {
-				array[i] = (Short) element;
-			} catch (ClassCastException | NullPointerException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-		});
+		new ShortArray(array).parallelSetAll(function);
 	}
 
+	//.parallelSort(A)
+
 	/**
-	 * Using Reflection, in parallel, assign the given each element of the given {@code array} to the value returned from invoking
-	 * the given {@code function} with the index of that element.
+	 * In parallel, sorts the given {@code array} into ascending numerical order.
 	 *
-	 * @param array    the array with elements to be reassigned.
-	 * @param function the function returning the new value of an element by its index.
-	 * @throws NullPointerException     if the given {@code array} or {@code function} is null.
-	 * @throws IllegalArgumentException if the given {@code array} is null.
-	 * @throws ArrayStoreException      if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array the array to be sorted.
+	 * @param <T>   the type of the elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#parallelSort(Comparable[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSetAll0(Object array, IntFunction function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		Objects.require(array, Objects::isArray, "array");
-		IntStream.range(0, Array.getLength(array)).parallel().forEach(i -> {
-			try {
-				Array.set(array, i, function.apply(i));
-			} catch (IllegalArgumentException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-		});
+	public static <T extends Comparable<? super T>> void parallelSort(T[] array) {
+		new ObjectArray<>(array)
+				.parallelSort();
 	}
 
 	/**
-	 * Using the best {@link #parallelSetAll(Object[], IntFunction)} method, in parallel, assign the given each element of the
-	 * given {@code array} to the value returned from invoking the given {@code function} with the index of that element.
+	 * In parallel, sorts the given {@code array} into ascending numerical order.
 	 *
-	 * @param array    the array with elements to be reassigned.
-	 * @param function the function returning the new value of an element by its index.
-	 * @throws NullPointerException     if the given {@code array} or {@code function} is null.
-	 * @throws IllegalArgumentException if the given {@code array} is null.
-	 * @throws ArrayStoreException      if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array      the array to be sorted.
+	 * @param comparator the comparator to determine the order of the array.  A {@code null} value
+	 *                   indicates that the elements' {@linkplain Comparable natural ordering}
+	 *                   should be used.
+	 * @param <T>        the type of the elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#parallelSort(Object[], Comparator)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSetAll1(Object array, IntFunction function) {
-		if (array instanceof Object[])
-			Arrays.parallelSetAll((Object[]) array, function);
-		else if (array instanceof boolean[])
-			Arrays.parallelSetAll((boolean[]) array, function);
-		else if (array instanceof byte[])
-			Arrays.parallelSetAll((byte[]) array, function);
-		else if (array instanceof char[])
-			Arrays.parallelSetAll((char[]) array, function);
-		else if (array instanceof double[])
-			Arrays.parallelSetAll((double[]) array, i -> (double) function.apply(i));
-		else if (array instanceof float[])
-			Arrays.parallelSetAll((float[]) array, function);
-		else if (array instanceof int[])
-			Arrays.parallelSetAll((int[]) array, i -> (int) function.apply(i));
-		else if (array instanceof long[])
-			Arrays.parallelSetAll((long[]) array, i -> (long) function.apply(i));
-		else if (array instanceof short[])
-			Arrays.parallelSetAll((short[]) array, function);
-		else
-			Arrays.parallelSetAll0(array, function);
-	}
-
-	//todo parallelSort +(boolean | 0 | 1)
-
-	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(Comparable[])}.
-	 */
-	@SuppressWarnings("JavaDoc")
-	public static <T extends Comparable<? super T>> void parallelSort(T... array) {
-		java.util.Arrays.parallelSort(array);
-	}
-
-	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(Object[], Comparator)}.
-	 */
-	@SuppressWarnings("JavaDoc")
 	public static <T> void parallelSort(T[] array, Comparator<? super T> comparator) {
-		java.util.Arrays.parallelSort(array, comparator);
+		new ObjectArray<>(array)
+				.parallelSort(comparator);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(byte[])}.
+	 * In parallel, sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static void parallelSort(boolean[] array) {
+		new BooleanArray(array).parallelSort();
+	}
+
+	/**
+	 * In parallel, sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#parallelSort(byte[])
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static void parallelSort(byte[] array) {
-		java.util.Arrays.parallelSort(array);
+		new ByteArray(array).parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(char[])}.
+	 * In parallel, sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#parallelSort(char[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelSort(char[] array) {
-		java.util.Arrays.parallelSort(array);
+		new CharacterArray(array).parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(double[])}.
+	 * In parallel, sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#parallelSort(double[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelSort(double[] array) {
-		java.util.Arrays.parallelSort(array);
+		new DoubleArray(array).parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(float[])}.
+	 * In parallel, sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#parallelSort(float[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelSort(float[] array) {
-		java.util.Arrays.parallelSort(array);
+		new FloatArray(array).parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(int[])}.
+	 * In parallel, sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#parallelSort(int[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelSort(int[] array) {
-		java.util.Arrays.parallelSort(array);
+		new IntegerArray(array).parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(long[])}.
+	 * In parallel, sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#parallelSort(long[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelSort(long[] array) {
-		java.util.Arrays.parallelSort(array);
+		new LongArray(array).parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(short[])}.
+	 * In parallel, sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#parallelSort(short[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelSort(short[] array) {
-		java.util.Arrays.parallelSort(array);
+		new ShortArray(array).parallelSort();
 	}
 
+	//.parallelSort(A, int, int)
+
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(Comparable[], int, int)}.
+	 * In parallel, sorts the specified range of the array into ascending numerical order. The range
+	 * to be sorted extends from the given {@code beginIndex}, inclusive, to the given {@code
+	 * endIndex}, exclusive. If {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @param <T>        the type of the elements.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#parallelSort(Comparable[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static <T extends Comparable<? super T>> void parallelSort(T[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.parallelSort(array, beginIndex, endIndex);
+		new ObjectArray<>(array, beginIndex, endIndex)
+				.parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(Object[], int, int, Comparator)}.
+	 * In parallel, sorts the specified range of the array into ascending order. The range to be
+	 * sorted extends from the given {@code beginIndex}, inclusive, to the given {@code endIndex},
+	 * exclusive. If {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @param comparator the comparator to determine the order of the array.  A {@code null} value
+	 *                   indicates that the elements' {@linkplain Comparable natural ordering}
+	 *                   should be used.
+	 * @param <T>        the type of the element.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#parallelSort(Object[], int, int, Comparator)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static <T> void parallelSort(T[] array, int beginIndex, int endIndex, Comparator<? super T> comparator) {
-		java.util.Arrays.parallelSort(array, beginIndex, endIndex, comparator);
+		new ObjectArray(array, beginIndex, endIndex)
+				.parallelSort(comparator);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(byte[], int, int)}.
+	 * In parallel, sorts the specified range of the array into ascending numerical order. The range
+	 * to be sorted extends from the given {@code beginIndex}, inclusive, to the given {@code
+	 * endIndex}, exclusive. If {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static void parallelSort(boolean[] array, int beginIndex, int endIndex) {
+		new BooleanArray(array, beginIndex, endIndex).parallelSort();
+	}
+
+	/**
+	 * In parallel, sorts the specified range of the array into ascending numerical order. The range
+	 * to be sorted extends from the given {@code beginIndex}, inclusive, to the given {@code
+	 * endIndex}, exclusive. If {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#parallelSort(byte[], int, int)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static void parallelSort(byte[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.parallelSort(array, beginIndex, endIndex);
+		new ByteArray(array, beginIndex, endIndex).parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(char[], int, int)}.
+	 * In parallel, sorts the specified range of the array into ascending numerical order. The range
+	 * to be sorted extends from the given {@code beginIndex}, inclusive, to the given {@code
+	 * endIndex}, exclusive. If {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#parallelSort(char[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelSort(char[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.parallelSort(array, beginIndex, endIndex);
+		new CharacterArray(array, beginIndex, endIndex).parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(double[], int, int)}.
+	 * In parallel, sorts the specified range of the array into ascending numerical order. The range
+	 * to be sorted extends from the given {@code beginIndex}, inclusive, to the given {@code
+	 * endIndex}, exclusive. If {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#parallelSort(double[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelSort(double[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.parallelSort(array, beginIndex, endIndex);
+		new DoubleArray(array, beginIndex, endIndex).parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(float[], int, int)}.
+	 * In parallel, sorts the specified range of the array into ascending numerical order. The range
+	 * to be sorted extends from the given {@code beginIndex}, inclusive, to the given {@code
+	 * endIndex}, exclusive. If {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#parallelSort(float[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelSort(float[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.parallelSort(array, beginIndex, endIndex);
+		new FloatArray(array, beginIndex, endIndex).parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(int[], int, int)}.
+	 * In parallel, sorts the specified range of the array into ascending numerical order. The range
+	 * to be sorted extends from the given {@code beginIndex}, inclusive, to the given {@code
+	 * endIndex}, exclusive. If {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#parallelSort(int[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelSort(int[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.parallelSort(array, beginIndex, endIndex);
+		new IntegerArray(array, beginIndex, endIndex).parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(long[], int, int)}.
+	 * In parallel, sorts the specified range of the array into ascending numerical order. The range
+	 * to be sorted extends from the given {@code beginIndex}, inclusive, to the given {@code
+	 * endIndex}, exclusive. If {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#parallelSort(long[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelSort(long[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.parallelSort(array, beginIndex, endIndex);
+		new LongArray(array, beginIndex, endIndex).parallelSort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#parallelSort(short[], int, int)}.
+	 * In parallel, sorts the specified range of the array into ascending numerical order. The range
+	 * to be sorted extends from the given {@code beginIndex}, inclusive, to the given {@code
+	 * endIndex}, exclusive. If {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#parallelSort(short[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void parallelSort(short[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.parallelSort(array, beginIndex, endIndex);
+		new ShortArray(array, beginIndex, endIndex).parallelSort();
 	}
 
-	//setAll
+	//.setAll(A, IntFunction)
 
 	/**
-	 * Assign the given each element of the given {@code array} to the value returned from invoking the given {@code function}
-	 * with the index of that element.
+	 * Assign the given each element of the given {@code array} to the value returned from invoking
+	 * the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
@@ -5545,90 +2973,54 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> void setAll(T[] array, IntFunction<? extends T> function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		for (int i = 0; i < array.length; i++)
-			array[i] = function.apply(i);
+		new ObjectArray<>(array).setAll(function);
 	}
 
 	/**
-	 * Assign the given each element of the given {@code array} to the value returned from invoking the given {@code function}
-	 * with the index of that element.
+	 * Assign the given each element of the given {@code array} to the value returned from invoking
+	 * the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#setAll(Object[], IntFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(boolean[] array, IntFunction<Boolean> function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		for (int i = 0; i < array.length; i++) {
-			Object element = function.apply(i);
-
-			try {
-				array[i] = (Boolean) element;
-			} catch (ClassCastException | NullPointerException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-		}
+		new BooleanArray(array).setAll(function);
 	}
 
 	/**
-	 * Assign the given each element of the given {@code array} to the value returned from invoking the given {@code function}
-	 * with the index of that element.
+	 * Assign the given each element of the given {@code array} to the value returned from invoking
+	 * the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#setAll(Object[], IntFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(byte[] array, IntFunction<Byte> function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		for (int i = 0; i < array.length; i++) {
-			Object element = function.apply(i);
-
-			try {
-				array[i] = (Byte) element;
-			} catch (ClassCastException | NullPointerException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-		}
+		new ByteArray(array).setAll(function);
 	}
 
 	/**
-	 * Assign the given each element of the given {@code array} to the value returned from invoking the given {@code function}
-	 * with the index of that element.
+	 * Assign the given each element of the given {@code array} to the value returned from invoking
+	 * the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#setAll(Object[], IntFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(char[] array, IntFunction<Character> function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		for (int i = 0; i < array.length; i++) {
-			Object element = function.apply(i);
-
-			try {
-				array[i] = (Character) element;
-			} catch (ClassCastException | NullPointerException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-		}
+		new CharacterArray(array).setAll(function);
 	}
 
 	/**
-	 * Assign the given each element of the given {@code array} to the value returned from invoking the given {@code function}
-	 * with the index of that element.
+	 * Assign the given each element of the given {@code array} to the value returned from invoking
+	 * the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
@@ -5637,40 +3029,26 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(double[] array, IntToDoubleFunction function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		for (int i = 0; i < array.length; i++)
-			array[i] = function.applyAsDouble(i);
+		new DoubleArray(array).setAll(function::applyAsDouble);
 	}
 
 	/**
-	 * Assign the given each element of the given {@code array} to the value returned from invoking the given {@code function}
-	 * with the index of that element.
+	 * Assign the given each element of the given {@code array} to the value returned from invoking
+	 * the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#setAll(Object[], IntFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(float[] array, IntFunction<Float> function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		for (int i = 0; i < array.length; i++) {
-			Object element = function.apply(i);
-
-			try {
-				array[i] = (Float) element;
-			} catch (ClassCastException | NullPointerException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-		}
+		new FloatArray(array).setAll(function);
 	}
 
 	/**
-	 * Assign the given each element of the given {@code array} to the value returned from invoking the given {@code function}
-	 * with the index of that element.
+	 * Assign the given each element of the given {@code array} to the value returned from invoking
+	 * the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
@@ -5679,15 +3057,12 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(int[] array, IntUnaryOperator function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		for (int i = 0; i < array.length; i++)
-			array[i] = function.applyAsInt(i);
+		new IntegerArray(array).setAll(function::applyAsInt);
 	}
 
 	/**
-	 * Assign the given each element of the given {@code array} to the value returned from invoking the given {@code function}
-	 * with the index of that element.
+	 * Assign the given each element of the given {@code array} to the value returned from invoking
+	 * the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
@@ -5696,376 +3071,1036 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(long[] array, IntToLongFunction function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		for (int i = 0; i < array.length; i++)
-			array[i] = function.applyAsLong(i);
+		new LongArray(array).setAll(function::applyAsLong);
 	}
 
 	/**
-	 * Assign the given each element of the given {@code array} to the value returned from invoking the given {@code function}
-	 * with the index of that element.
+	 * Assign the given each element of the given {@code array} to the value returned from invoking
+	 * the given {@code function} with the index of that element.
 	 *
 	 * @param array    the array with elements to be reassigned.
 	 * @param function the function returning the new value of an element by its index.
 	 * @throws NullPointerException if the given {@code array} or {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#setAll(Object[], IntFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static void setAll(short[] array, IntFunction<Short> function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		for (int i = 0; i < array.length; i++) {
-			Object element = function.apply(i);
-
-			try {
-				array[i] = (Short) element;
-			} catch (ClassCastException | NullPointerException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
-		}
+		new ShortArray(array).setAll(function);
 	}
 
+	//.sort(A)
+
 	/**
-	 * Using Reflection, assign the given each element of the given {@code array} to the value returned from invoking the given
-	 * {@code function} with the index of that element.
+	 * Sorts the given {@code array} into ascending numerical order.
 	 *
-	 * @param array    the array with elements to be reassigned.
-	 * @param function the function returning the new value of an element by its index.
-	 * @throws NullPointerException     if the given {@code array} or {@code function} is null.
-	 * @throws IllegalArgumentException if the given {@code array} is null.
-	 * @throws ArrayStoreException      if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#setAll(Object[], IntFunction)
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array the array to be sorted.
+	 * @param <T>   the type of the elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#sort(Object[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void setAll0(Object array, IntFunction function) {
-		Objects.requireNonNull(array, "array");
-		Objects.requireNonNull(function, "function");
-		Objects.require(array, Objects::isArray, "array");
-		int length = Array.getLength(array);
-		for (int i = 0; i < length; i++)
-			try {
-				Array.set(array, i, function.apply(i));
-			} catch (IllegalArgumentException e) {
-				throw new ArrayStoreException(e.getMessage());
-			}
+	public static <T> void sort(T[] array) {
+		new ObjectArray(array).sort();
 	}
 
 	/**
-	 * Using the best {@link #setAll(Object[], IntFunction)} method, assign the given each element of the given {@code array} to
-	 * the value returned from invoking the given {@code function} with the index of that element.
+	 * Sorts the given {@code array} into ascending numerical order.
 	 *
-	 * @param array    the array with elements to be reassigned.
-	 * @param function the function returning the new value of an element by its index.
-	 * @throws NullPointerException     if the given {@code array} or {@code function} is null.
-	 * @throws IllegalArgumentException if the given {@code array} is null.
-	 * @throws ArrayStoreException      if an element can not be stored in the given {@code array}.
-	 * @see java.util.Arrays#setAll(Object[], IntFunction)
-	 * @since 0.1.5 ~2020.07.24
+	 * @param array      the array to be sorted.
+	 * @param comparator the comparator to determine the order of the array.  A {@code null} value
+	 *                   indicates that the elements' {@linkplain Comparable natural ordering}
+	 *                   should be used.
+	 * @param <T>        the type of the elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#sort(Object[], Comparator)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void setAll1(Object array, IntFunction function) {
-		if (array instanceof Object[])
-			Arrays.setAll((Object[]) array, function);
-		else if (array instanceof boolean[])
-			Arrays.setAll((boolean[]) array, function);
-		else if (array instanceof byte[])
-			Arrays.setAll((byte[]) array, function);
-		else if (array instanceof char[])
-			Arrays.setAll((char[]) array, function);
-		else if (array instanceof double[])
-			Arrays.setAll((double[]) array, i -> (double) function.apply(i));
-		else if (array instanceof float[])
-			Arrays.setAll((float[]) array, function);
-		else if (array instanceof int[])
-			Arrays.setAll((int[]) array, i -> (int) function.apply(i));
-		else if (array instanceof long[])
-			Arrays.setAll((long[]) array, i -> (long) function.apply(i));
-		else if (array instanceof short[])
-			Arrays.setAll((short[]) array, function);
-		else
-			Arrays.setAll0(array, function);
-	}
-
-	//todo sort +(boolean | 0 | 1)
-
-	/**
-	 * Redirect to {@link java.util.Arrays#sort(Object[])}.
-	 */
-	@SuppressWarnings("JavaDoc")
-	public static <T> void sort(T... array) {
-		java.util.Arrays.sort(array);
-	}
-
-	/**
-	 * Redirect to {@link java.util.Arrays#sort(Object[], Comparator)}.
-	 */
-	@SuppressWarnings("JavaDoc")
 	public static <T> void sort(T[] array, Comparator<? super T> comparator) {
-		java.util.Arrays.sort(array, comparator);
+		new ObjectArray(array).sort(comparator);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(byte[])}.
+	 * Sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static void sort(boolean[] array) {
+		new BooleanArray(array).sort();
+	}
+
+	/**
+	 * Sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#sort(byte[])
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static void sort(byte[] array) {
-		java.util.Arrays.sort(array);
+		new ByteArray(array).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(char[])}.
+	 * Sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#sort(char[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void sort(char[] array) {
-		java.util.Arrays.sort(array);
+		new CharacterArray(array).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(double[])}.
+	 * Sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#sort(double[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void sort(double[] array) {
-		java.util.Arrays.sort(array);
+		new DoubleArray(array).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(float[])}.
+	 * Sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#sort(float[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void sort(float[] array) {
-		java.util.Arrays.sort(array);
+		new FloatArray(array).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(int[])}.
+	 * Sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#sort(int[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void sort(int[] array) {
-		java.util.Arrays.sort(array);
+		new IntegerArray(array).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(long[])}.
+	 * Sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#sort(long[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void sort(long[] array) {
-		java.util.Arrays.sort(array);
+		new LongArray(array).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(short[])}.
+	 * Sorts the given {@code array} into ascending numerical order.
+	 *
+	 * @param array the array to be sorted.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#sort(short[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void sort(short[] array) {
-		java.util.Arrays.sort(array);
+		new ShortArray(array).sort();
 	}
 
+	//.sort(A, int, int)
+
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(Object[], int, int)}.
+	 * Sorts the specified range of the array into ascending order. The range to be sorted extends
+	 * from the given {@code beginIndex}, inclusive, to the given {@code endIndex}, exclusive. If
+	 * {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @param <T>        the type of the elements.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#sort(Object[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static <T> void sort(T[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.sort(array, beginIndex, endIndex);
+		new ObjectArray(array, beginIndex, endIndex).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(Object[], int, int, Comparator)}.
+	 * Sorts the specified range of the array into ascending order. The range to be sorted extends
+	 * from the given {@code beginIndex}, inclusive, to the given {@code endIndex}, exclusive. If
+	 * {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @param comparator the comparator to determine the order of the array.  A {@code null} value
+	 *                   indicates that the elements' {@linkplain Comparable natural ordering}
+	 *                   should be used.
+	 * @param <T>        the type of the element.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#sort(Object[], int, int, Comparator)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static <T> void sort(T[] array, int beginIndex, int endIndex, Comparator<? super T> comparator) {
-		java.util.Arrays.sort(array, beginIndex, endIndex, comparator);
+		new ObjectArray(array, beginIndex, endIndex).sort(comparator);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(byte[], int, int)}.
+	 * Sorts the specified range of the array into ascending order. The range to be sorted extends
+	 * from the given {@code beginIndex}, inclusive, to the given {@code endIndex}, exclusive. If
+	 * {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static void sort(boolean[] array, int beginIndex, int endIndex) {
+		new BooleanArray(array, beginIndex, endIndex).sort();
+	}
+
+	/**
+	 * Sorts the specified range of the array into ascending order. The range to be sorted extends
+	 * from the given {@code beginIndex}, inclusive, to the given {@code endIndex}, exclusive. If
+	 * {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#sort(byte[], int, int)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static void sort(byte[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.sort(array, beginIndex, endIndex);
+		new ByteArray(array, beginIndex, endIndex).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(char[], int, int)}.
+	 * Sorts the specified range of the array into ascending order. The range to be sorted extends
+	 * from the given {@code beginIndex}, inclusive, to the given {@code endIndex}, exclusive. If
+	 * {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#sort(char[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void sort(char[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.sort(array, beginIndex, endIndex);
+		new CharacterArray(array, beginIndex, endIndex).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(double[], int, int)}.
+	 * Sorts the specified range of the array into ascending order. The range to be sorted extends
+	 * from the given {@code beginIndex}, inclusive, to the given {@code endIndex}, exclusive. If
+	 * {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#sort(double[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void sort(double[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.sort(array, beginIndex, endIndex);
+		new DoubleArray(array, beginIndex, endIndex).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(float[], int, int)}.
+	 * Sorts the specified range of the array into ascending order. The range to be sorted extends
+	 * from the given {@code beginIndex}, inclusive, to the given {@code endIndex}, exclusive. If
+	 * {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#sort(float[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void sort(float[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.sort(array, beginIndex, endIndex);
+		new FloatArray(array, beginIndex, endIndex).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(int[], int, int)}.
+	 * Sorts the specified range of the array into ascending order. The range to be sorted extends
+	 * from the given {@code beginIndex}, inclusive, to the given {@code endIndex}, exclusive. If
+	 * {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#sort(int[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void sort(int[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.sort(array, beginIndex, endIndex);
+		new IntegerArray(array, beginIndex, endIndex).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(long[], int, int)}.
+	 * Sorts the specified range of the array into ascending order. The range to be sorted extends
+	 * from the given {@code beginIndex}, inclusive, to the given {@code endIndex}, exclusive. If
+	 * {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#sort(long[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void sort(long[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.sort(array, beginIndex, endIndex);
+		new LongArray(array, beginIndex, endIndex).sort();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#sort(short[], int, int)}.
+	 * Sorts the specified range of the array into ascending order. The range to be sorted extends
+	 * from the given {@code beginIndex}, inclusive, to the given {@code endIndex}, exclusive. If
+	 * {@code beginIndex == endIndex}, the range to be sorted is empty.
+	 *
+	 * @param array      the array to be sorted.
+	 * @param beginIndex the index of the first element, inclusive, to be sorted.
+	 * @param endIndex   the index of the last element, exclusive, to be sorted.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @see java.util.Arrays#sort(short[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static void sort(short[] array, int beginIndex, int endIndex) {
-		java.util.Arrays.sort(array, beginIndex, endIndex);
+		new ShortArray(array, beginIndex, endIndex).sort();
 	}
 
-	//todo spliterator +(boolean | byte | char | float | short | 0 | 1)
+	//.spliterator(A)
 
 	/**
-	 * Redirect to {@link java.util.Arrays#spliterator(Object[])}.
+	 * Returns a {@link Spliterator} covering all of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param <T>   the type of the elements.
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#spliterator(Object[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
-	public static <T> Spliterator<T> spliterator(T... array) {
-		return java.util.Arrays.spliterator(array);
-	}
-
-	/**
-	 * Redirect to {@link java.util.Arrays#spliterator(double[])}.
-	 */
-	@SuppressWarnings("JavaDoc")
-	public static Spliterator.OfDouble spliterator(double[] array) {
-		return java.util.Arrays.spliterator(array);
-	}
-
-	/**
-	 * Redirect to {@link java.util.Arrays#spliterator(int[])}.
-	 */
-	@SuppressWarnings("JavaDoc")
-	public static Spliterator.OfInt spliterator(int[] array) {
-		return java.util.Arrays.spliterator(array);
+	public static <T> ObjectArray.Spliterator spliterator(T[] array) {
+		return new ObjectArray(array).spliterator();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#spliterator(long[])}.
+	 * Returns a {@link Spliterator} covering all of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
-	public static Spliterator.OfLong spliterator(long[] array) {
-		return java.util.Arrays.spliterator(array);
+	public static BooleanArray.Spliterator spliterator(boolean[] array) {
+		return new BooleanArray(array).spliterator();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#spliterator(Object[], int, int)}.
+	 * Returns a {@link Spliterator} covering all of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
-	public static <T> Spliterator<T> spliterator(T[] array, int beginIndex, int endIndex) {
-		return java.util.Arrays.spliterator(array, beginIndex, endIndex);
+	public static ByteArray.Spliterator spliterator(byte[] array) {
+		return new ByteArray(array).spliterator();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#spliterator(double[], int, int)}.
+	 * Returns a {@link Spliterator} covering all of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
-	public static Spliterator.OfDouble spliterator(double[] array, int beginIndex, int endIndex) {
-		return java.util.Arrays.spliterator(array, beginIndex, endIndex);
+	public static CharacterArray.Spliterator spliterator(char[] array) {
+		return new CharacterArray(array).spliterator();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#spliterator(int[], int, int)}.
+	 * Returns a {@link Spliterator} covering all of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#spliterator(double[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
-	public static Spliterator.OfInt spliterator(int[] array, int beginIndex, int endIndex) {
-		return java.util.Arrays.spliterator(array, beginIndex, endIndex);
+	public static DoubleArray.Spliterator spliterator(double[] array) {
+		return new DoubleArray(array).spliterator();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#spliterator(long[], int, int)}.
+	 * Returns a {@link Spliterator} covering all of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
-	public static Spliterator.OfLong spliterator(long[] array, int beginIndex, int endIndex) {
-		return java.util.Arrays.spliterator(array, beginIndex, endIndex);
-	}
-
-	//todo stream +(boolean | byte | char | float | short | 0 | 1)
-
-	/**
-	 * Redirect to {@link java.util.Arrays#stream(Object[])}.
-	 */
-	@SuppressWarnings("JavaDoc")
-	public static <T> Stream<T> stream(T... array) {
-		return java.util.Arrays.stream(array);
+	public static FloatArray.Spliterator spliterator(float[] array) {
+		return new FloatArray(array).spliterator();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#stream(double[])}.
+	 * Returns a {@link Spliterator} covering all of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#spliterator(int[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static IntegerArray.Spliterator spliterator(int[] array) {
+		return new IntegerArray(array).spliterator();
+	}
+
+	/**
+	 * Returns a {@link Spliterator} covering all of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#spliterator(long[])
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static LongArray.Spliterator spliterator(long[] array) {
+		return new LongArray(array).spliterator();
+	}
+
+	/**
+	 * Returns a {@link Spliterator} covering all of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static ShortArray.Spliterator spliterator(short[] array) {
+		return new ShortArray(array).spliterator();
+	}
+
+	//.spliterator(A, int, int)
+
+	/**
+	 * Returns a {@link Spliterator} covering the specified range of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param <T>        the type of the elements.
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#spliterator(Object[], int, int)
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static <T> ObjectArray.Spliterator spliterator(T[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new ObjectArray(array, beginIndex, endIndex).spliterator();
+	}
+
+	/**
+	 * Returns a {@link Spliterator} covering the specified range of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static BooleanArray.Spliterator spliterator(boolean[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new BooleanArray(array, beginIndex, endIndex).spliterator();
+	}
+
+	/**
+	 * Returns a {@link Spliterator} covering the specified range of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static ByteArray.Spliterator spliterator(byte[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new ByteArray(array, beginIndex, endIndex).spliterator();
+	}
+
+	/**
+	 * Returns a {@link Spliterator} covering the specified range of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static CharacterArray.Spliterator spliterator(char[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new CharacterArray(array, beginIndex, endIndex).spliterator();
+	}
+
+	/**
+	 * Returns a {@link Spliterator} covering the specified range of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#spliterator(double[], int, int)
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static DoubleArray.Spliterator spliterator(double[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new DoubleArray(array, beginIndex, endIndex).spliterator();
+	}
+
+	/**
+	 * Returns a {@link Spliterator} covering the specified range of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static FloatArray.Spliterator spliterator(float[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new FloatArray(array, beginIndex, endIndex).spliterator();
+	}
+
+	/**
+	 * Returns a {@link Spliterator} covering the specified range of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#spliterator(int[], int, int)
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static IntegerArray.Spliterator spliterator(int[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new IntegerArray(array, beginIndex, endIndex).spliterator();
+	}
+
+	/**
+	 * Returns a {@link Spliterator} covering the specified range of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#spliterator(long[], int, int)
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static LongArray.Spliterator spliterator(long[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new LongArray(array, beginIndex, endIndex).spliterator();
+	}
+
+	/**
+	 * Returns a {@link Spliterator} covering the specified range of the specified array.
+	 * <p>
+	 * The spliterator reports {@link Spliterator#SIZED}, {@link Spliterator#SUBSIZED}, {@link
+	 * Spliterator#ORDERED}, and {@link Spliterator#IMMUTABLE}.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a spliterator for the array elements.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static ShortArray.Spliterator spliterator(short[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new ShortArray(array, beginIndex, endIndex).spliterator();
+	}
+
+	//.stream(A)
+
+	/**
+	 * Returns a sequential {@link Stream} with the specified array as its source.
+	 *
+	 * @param <T>   the type of the elements.
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a {@code Stream} for the array.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#stream(Object[])
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static <T> Stream<T> stream(T[] array) {
+		return new ObjectArray(array).stream();
+	}
+
+	/**
+	 * Returns a sequential {@link Stream} with the specified array as its source.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a {@code Stream} for the array.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static Stream<Boolean> stream(boolean[] array) {
+		return new BooleanArray(array).stream();
+	}
+
+	/**
+	 * Returns a sequential {@link Stream} with the specified array as its source.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a {@code Stream} for the array.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static Stream<Byte> stream(byte[] array) {
+		return new ByteArray(array).stream();
+	}
+
+	/**
+	 * Returns a sequential {@link Stream} with the specified array as its source.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a {@code Stream} for the array.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static Stream<Character> stream(char[] array) {
+		return new CharacterArray(array).stream();
+	}
+
+	/**
+	 * Returns a sequential {@link Stream} with the specified array as its source.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a {@code Stream} for the array.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#stream(double[])
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static DoubleStream stream(double[] array) {
-		return java.util.Arrays.stream(array);
+		return StreamSupport.doubleStream(
+				new DoubleArray(array).spliterator(),
+				false
+		);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#stream(int[])}.
+	 * Returns a sequential {@link Stream} with the specified array as its source.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a {@code Stream} for the array.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static Stream<Float> stream(float[] array) {
+		return new FloatArray(array).stream();
+	}
+
+	/**
+	 * Returns a sequential {@link Stream} with the specified array as its source.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a {@code Stream} for the array.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#stream(int[])
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static IntStream stream(int[] array) {
-		return java.util.Arrays.stream(array);
+		//manual
+		return StreamSupport.intStream(
+				new IntegerArray(array).spliterator(),
+				false
+		);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#stream(long[])}.
+	 * Returns a sequential {@link Stream} with the specified array as its source.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a {@code Stream} for the array.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @see java.util.Arrays#stream(long[])
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static LongStream stream(long[] array) {
-		return java.util.Arrays.stream(array);
+		//manual
+		return StreamSupport.longStream(
+				new LongArray(array).spliterator(),
+				false
+		);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#stream(Object[], int, int)}.
+	 * Returns a sequential {@link Stream} with the specified array as its source.
+	 *
+	 * @param array the array, assumed to be unmodified during use.
+	 * @return a {@code Stream} for the array.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static Stream<Short> stream(short[] array) {
+		return new ShortArray(array).stream();
+	}
+
+	//.stream(A, int, int)
+
+	/**
+	 * Returns a sequential {@link Stream} with the specified range of the specified array as its
+	 * source.
+	 *
+	 * @param <T>        the type of the array elements.
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a {@code Stream} for the array range.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#stream(Object[], int, int)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static <T> Stream<T> stream(T[] array, int beginIndex, int endIndex) {
-		return java.util.Arrays.stream(array, beginIndex, endIndex);
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new ObjectArray(array, beginIndex, endIndex).stream();
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#stream(double[], int, int)}.
+	 * Returns a sequential {@link Stream} with the specified range of the specified array as its
+	 * source.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a {@code Stream} for the array range.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static Stream<Boolean> stream(boolean[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new BooleanArray(array, beginIndex, endIndex).stream();
+	}
+
+	/**
+	 * Returns a sequential {@link Stream} with the specified range of the specified array as its
+	 * source.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a {@code Stream} for the array range.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static Stream<Byte> stream(byte[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new ByteArray(array, beginIndex, endIndex).stream();
+	}
+
+	/**
+	 * Returns a sequential {@link Stream} with the specified range of the specified array as its
+	 * source.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a {@code Stream} for the array range.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static Stream<Character> stream(char[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new CharacterArray(array, beginIndex, endIndex).stream();
+	}
+
+	/**
+	 * Returns a sequential {@link Stream} with the specified range of the specified array as its
+	 * source.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a {@code Stream} for the array range.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#stream(double[], int, int)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static DoubleStream stream(double[] array, int beginIndex, int endIndex) {
-		return java.util.Arrays.stream(array, beginIndex, endIndex);
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		//manual
+		return StreamSupport.doubleStream(
+				new DoubleArray(array, beginIndex, endIndex).spliterator(),
+				false
+		);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#stream(int[], int, int)}.
+	 * Returns a sequential {@link Stream} with the specified range of the specified array as its
+	 * source.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a {@code Stream} for the array range.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
+	public static Stream<Float> stream(float[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new FloatArray(array, beginIndex, endIndex).stream();
+	}
+
+	/**
+	 * Returns a sequential {@link Stream} with the specified range of the specified array as its
+	 * source.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a {@code Stream} for the array range.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#stream(int[], int, int)
+	 * @since 0.1.5 ~2020.08.10
+	 */
 	public static IntStream stream(int[] array, int beginIndex, int endIndex) {
-		return java.util.Arrays.stream(array, beginIndex, endIndex);
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		//manual
+		return StreamSupport.intStream(
+				new IntegerArray(array, beginIndex, endIndex).spliterator(),
+				false
+		);
 	}
 
 	/**
-	 * Redirect to {@link java.util.Arrays#stream(long[], int, int)}.
+	 * Returns a sequential {@link Stream} with the specified range of the specified array as its
+	 * source.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a {@code Stream} for the array range.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @see java.util.Arrays#stream(long[], int, int)
+	 * @since 0.1.5 ~2020.08.10
 	 */
-	@SuppressWarnings("JavaDoc")
 	public static LongStream stream(long[] array, int beginIndex, int endIndex) {
-		return java.util.Arrays.stream(array, beginIndex, endIndex);
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		//manual
+		return StreamSupport.longStream(
+				new LongArray(array, beginIndex, endIndex).spliterator(),
+				false
+		);
 	}
 
-	//toString
+	/**
+	 * Returns a sequential {@link Stream} with the specified range of the specified array as its
+	 * source.
+	 *
+	 * @param array      the array, assumed to be unmodified during use.
+	 * @param beginIndex the first index to cover, inclusive.
+	 * @param endIndex   index immediately past the last index to cover.
+	 * @return a {@code Stream} for the array range.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length} or {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.10
+	 */
+	public static Stream<Short> stream(short[] array, int beginIndex, int endIndex) {
+		if (beginIndex > endIndex)
+			//since the constructor throws IllegalArgumentException for this condition
+			throw new ArrayIndexOutOfBoundsException(
+					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
+		return new ShortArray(array, beginIndex, endIndex).stream();
+	}
+
+	//.toString(A)
 
 	/**
 	 * Build a string representation of the contents of the given {@code array}.
@@ -6077,25 +4112,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <T> String toString(T... array) {
-		if (array == null)
-			return "null";
-		if (array.length == 0)
-			return "[]";
-
-		StringBuilder builder = new StringBuilder("[");
-
-		int i = 0;
-		while (true) {
-			builder.append(array[i]);
-
-			if (++i < array.length) {
-				builder.append(", ");
-				continue;
-			}
-
-			return builder.append("]")
-					.toString();
-		}
+		return ObjectArray.toString(array);
 	}
 
 	/**
@@ -6107,25 +4124,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(boolean[] array) {
-		if (array == null)
-			return "null";
-		if (array.length == 0)
-			return "[]";
-
-		StringBuilder builder = new StringBuilder("[");
-
-		int i = 0;
-		while (true) {
-			builder.append(array[i]);
-
-			if (++i < array.length) {
-				builder.append(", ");
-				continue;
-			}
-
-			return builder.append("]")
-					.toString();
-		}
+		return BooleanArray.toString(array);
 	}
 
 	/**
@@ -6137,25 +4136,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(byte[] array) {
-		if (array == null)
-			return "null";
-		if (array.length == 0)
-			return "[]";
-
-		StringBuilder builder = new StringBuilder("[");
-
-		int i = 0;
-		while (true) {
-			builder.append(array[i]);
-
-			if (++i < array.length) {
-				builder.append(", ");
-				continue;
-			}
-
-			return builder.append("]")
-					.toString();
-		}
+		return ByteArray.toString(array);
 	}
 
 	/**
@@ -6167,25 +4148,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(char[] array) {
-		if (array == null)
-			return "null";
-		if (array.length == 0)
-			return "[]";
-
-		StringBuilder builder = new StringBuilder("[");
-
-		int i = 0;
-		while (true) {
-			builder.append(array[i]);
-
-			if (++i < array.length) {
-				builder.append(", ");
-				continue;
-			}
-
-			return builder.append("]")
-					.toString();
-		}
+		return CharacterArray.toString(array);
 	}
 
 	/**
@@ -6197,25 +4160,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(double[] array) {
-		if (array == null)
-			return "null";
-		if (array.length == 0)
-			return "[]";
-
-		StringBuilder builder = new StringBuilder("[");
-
-		int i = 0;
-		while (true) {
-			builder.append(array[i]);
-
-			if (++i < array.length) {
-				builder.append(", ");
-				continue;
-			}
-
-			return builder.append("]")
-					.toString();
-		}
+		return DoubleArray.toString(array);
 	}
 
 	/**
@@ -6227,25 +4172,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(float[] array) {
-		if (array == null)
-			return "null";
-		if (array.length == 0)
-			return "[]";
-
-		StringBuilder builder = new StringBuilder("[");
-
-		int i = 0;
-		while (true) {
-			builder.append(array[i]);
-
-			if (++i < array.length) {
-				builder.append(", ");
-				continue;
-			}
-
-			return builder.append("]")
-					.toString();
-		}
+		return FloatArray.toString(array);
 	}
 
 	/**
@@ -6257,25 +4184,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(int[] array) {
-		if (array == null)
-			return "null";
-		if (array.length == 0)
-			return "[]";
-
-		StringBuilder builder = new StringBuilder("[");
-
-		int i = 0;
-		while (true) {
-			builder.append(array[i]);
-
-			if (++i < array.length) {
-				builder.append(", ");
-				continue;
-			}
-
-			return builder.append("]")
-					.toString();
-		}
+		return IntegerArray.toString(array);
 	}
 
 	/**
@@ -6287,25 +4196,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(long[] array) {
-		if (array == null)
-			return "null";
-		if (array.length == 0)
-			return "[]";
-
-		StringBuilder builder = new StringBuilder("[");
-
-		int i = 0;
-		while (true) {
-			builder.append(array[i]);
-
-			if (++i < array.length) {
-				builder.append(", ");
-				continue;
-			}
-
-			return builder.append("]")
-					.toString();
-		}
+		return LongArray.toString(array);
 	}
 
 	/**
@@ -6317,92 +4208,6 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String toString(short[] array) {
-		if (array == null)
-			return "null";
-		if (array.length == 0)
-			return "[]";
-
-		StringBuilder builder = new StringBuilder("[");
-
-		int i = 0;
-		while (true) {
-			builder.append(array[i]);
-
-			if (++i < array.length) {
-				builder.append(", ");
-				continue;
-			}
-
-			return builder.append("]")
-					.toString();
-		}
-	}
-
-	/**
-	 * Using Reflection, build a string representation of the contents of the given {@code array}.
-	 *
-	 * @param array the array to build a string representation for it.
-	 * @return a string representation of the contents of the given {@code array}.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @see java.util.Arrays#toString(Object[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static String toString0(Object array) {
-		Objects.require(array, Objects::isArray, "array");
-
-		if (array == null)
-			return "null";
-
-		int length = Array.getLength(array);
-
-		if (length == 0)
-			return "[]";
-
-		StringBuilder builder = new StringBuilder("[");
-
-		int i = 0;
-		while (true) {
-			builder.append(Array.get(array, i));
-
-			if (++i < length) {
-				builder.append(", ");
-				continue;
-			}
-
-			return builder.append("]")
-					.toString();
-		}
-	}
-
-	/**
-	 * Using the best {@link #toString(Object[])}, build a string representation of the contents of the given {@code array}.
-	 *
-	 * @param array the array to build a string representation for it.
-	 * @return a string representation of the contents of the given {@code array}.
-	 * @throws IllegalArgumentException if the given {@code array} is not an array.
-	 * @see java.util.Arrays#toString(Object[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static String toString1(Object array) {
-		if (array instanceof Object[])
-			return Arrays.toString((Object[]) array);
-		if (array instanceof boolean[])
-			return Arrays.toString((boolean[]) array);
-		if (array instanceof byte[])
-			return Arrays.toString((byte[]) array);
-		if (array instanceof char[])
-			return Arrays.toString((char[]) array);
-		if (array instanceof double[])
-			return Arrays.toString((double[]) array);
-		if (array instanceof float[])
-			return Arrays.toString((float[]) array);
-		if (array instanceof int[])
-			return Arrays.toString((int[]) array);
-		if (array instanceof long[])
-			return Arrays.toString((long[]) array);
-		if (array instanceof short[])
-			return Arrays.toString((short[]) array);
-
-		return Arrays.toString0(array);
+		return ShortArray.toString(array);
 	}
 }

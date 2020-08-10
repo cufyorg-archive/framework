@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.03
  */
-public class CharacterArray extends Array<char[], Character> {
+public class BooleanArray extends Array<boolean[], Boolean> {
 	@SuppressWarnings("JavaDoc")
 	private static final long serialVersionUID = 3201994039505608491L;
 
@@ -26,7 +26,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.05
 	 */
-	public CharacterArray(char... array) {
+	public BooleanArray(boolean... array) {
 		super(array);
 	}
 
@@ -45,7 +45,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.05
 	 */
-	public CharacterArray(char[] array, int beginIndex, int endIndex) {
+	public BooleanArray(boolean[] array, int beginIndex, int endIndex) {
 		super(array, beginIndex, endIndex);
 	}
 
@@ -59,13 +59,13 @@ public class CharacterArray extends Array<char[], Character> {
 	 * 		elements, and order.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static boolean equals(char[] array, char[] other) {
+	public static boolean equals(boolean[] array, boolean[] other) {
 		if (array == other)
 			return true;
 		if (array.length == other.length)
 			for (int i = 0; i < array.length; i++) {
-				char element = other[i];
-				char e = array[i];
+				boolean element = other[i];
+				boolean e = array[i];
 
 				if (element == e)
 					continue;
@@ -81,17 +81,17 @@ public class CharacterArray extends Array<char[], Character> {
 	 *
 	 * @param array the array to compute its hash code.
 	 * @return the hash code of the elements of the given {@code array}.
-	 * @see java.util.Arrays#hashCode(char[])
+	 * @see java.util.Arrays#hashCode(boolean[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static int hashCode(char[] array) {
+	public static int hashCode(boolean[] array) {
 		if (array == null)
 			return 0;
 
 		int hashCode = 1;
 		for (int i = 0; i < array.length; i++) {
-			char e = array[i];
-			hashCode = 31 * hashCode + Character.hashCode(e);
+			boolean e = array[i];
+			hashCode = 31 * hashCode + Boolean.hashCode(e);
 		}
 
 		return hashCode;
@@ -102,10 +102,10 @@ public class CharacterArray extends Array<char[], Character> {
 	 *
 	 * @param array the array to build a string representation for it.
 	 * @return a string representation of the contents of the given {@code array}.
-	 * @see java.util.Arrays#toString(char[])
+	 * @see java.util.Arrays#toString(boolean[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static String toString(char[] array) {
+	public static String toString(boolean[] array) {
 		if (array == null)
 			return "null";
 		if (array.length == 0)
@@ -115,7 +115,7 @@ public class CharacterArray extends Array<char[], Character> {
 
 		int i = 0;
 		while (true) {
-			char e = array[i];
+			boolean e = array[i];
 
 			builder.append(e);
 
@@ -129,15 +129,15 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public int all(char[] elements) {
+	public int all(boolean[] elements) {
 		Objects.requireNonNull(elements, "elements");
 
 		for0:
 		for (int i = 0; i < elements.length; i++) {
-			char element = elements[i];
+			boolean element = elements[i];
 
 			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				char e = this.array[j];
+				boolean e = this.array[j];
 
 				if (element == e)
 					continue for0;
@@ -150,15 +150,15 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public int all(Character... elements) {
+	public int all(Boolean... elements) {
 		Objects.requireNonNull(elements, "elements");
 
 		for0:
 		for (int i = 0; i < elements.length; i++) {
-			Character element = elements[i];
+			Boolean element = elements[i];
 
 			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				char e = this.array[j];
+				boolean e = this.array[j];
 
 				if (element != null && element.equals(e))
 					continue for0;
@@ -171,14 +171,14 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public int any(char[] elements) {
+	public int any(boolean[] elements) {
 		Objects.requireNonNull(elements, "elements");
 
 		for (int i = 0; i < elements.length; i++) {
-			char element = elements[i];
+			boolean element = elements[i];
 
 			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				char e = this.array[j];
+				boolean e = this.array[j];
 
 				if (element == e)
 					return i;
@@ -189,14 +189,14 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public int any(Character... elements) {
+	public int any(Boolean... elements) {
 		Objects.requireNonNull(elements, "elements");
 
 		for (int i = 0; i < elements.length; i++) {
-			Character element = elements[i];
+			Boolean element = elements[i];
 
 			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				char e = this.array[j];
+				boolean e = this.array[j];
 
 				if (element != null && element.equals(e))
 					return i;
@@ -207,10 +207,10 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public char[] array(int length) {
+	public boolean[] array(int length) {
 		if (length < 0)
 			throw new NegativeArraySizeException("length(" + length + ") < 0");
-		char[] array = new char[length];
+		boolean[] array = new boolean[length];
 
 		System.arraycopy(
 				this.array,
@@ -224,7 +224,7 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public <T extends Character> T[] array(int length, Class<? super T[]> klass) {
+	public <T extends Boolean> T[] array(int length, Class<? super T[]> klass) {
 		Objects.requireNonNull(klass, "klass");
 		if (length < 0)
 			throw new NegativeArraySizeException("length(" + length + ") < 0");
@@ -257,7 +257,7 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public void arraycopy(char[] array, int pos) {
+	public void arraycopy(boolean[] array, int pos) {
 		Objects.requireNonNull(array, "array");
 
 		int length = this.length();
@@ -279,20 +279,21 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public int binarySearch(Character element) {
+	public int binarySearch(Boolean element) {
 		int low = this.beginIndex;
 		int high = this.endIndex - 1;
 
 		while (low <= high) {
 			int mid = low + high >>> 1;
-			char midVal = this.array[mid];
+			boolean midVal = this.array[mid];
 
-			if (midVal < element)
+			if (midVal == element)
+				return this.lowerIndex(mid);  // key found
+
+			if (element)
 				low = mid + 1;
-			else if (midVal > element)
-				high = mid - 1;
 			else
-				return this.lowerIndex(mid); // key found
+				high = mid - 1;
 		}
 		return this.lowerIndex(-(low + 1));  // key not found.
 	}
@@ -300,7 +301,7 @@ public class CharacterArray extends Array<char[], Character> {
 	@Override
 	public boolean contains(Object element) {
 		for (int i = this.beginIndex; i < this.endIndex; i++) {
-			char e = this.array[i];
+			boolean e = this.array[i];
 
 			if (element != null && element.equals(e))
 				return true;
@@ -324,9 +325,9 @@ public class CharacterArray extends Array<char[], Character> {
 		if (object == this)
 			//same identity
 			return true;
-		if (object instanceof CharacterArray) {
+		if (object instanceof BooleanArray) {
 			//same class
-			CharacterArray array = (CharacterArray) object;
+			BooleanArray array = (BooleanArray) object;
 
 			if (array.length() == this.length()) {
 				//same length
@@ -334,7 +335,7 @@ public class CharacterArray extends Array<char[], Character> {
 				for (int i = array.beginIndex, j = this.beginIndex; i < array.endIndex; i++, j++) {
 					//for each element
 					Object element = array.array[i];
-					char e = this.array[j];
+					boolean e = this.array[j];
 
 					if (element != null && element.equals(e))
 						continue;
@@ -352,23 +353,23 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public void fill(Character element) {
+	public void fill(Boolean element) {
 		for (int i = this.beginIndex; i < this.endIndex; i++)
 			this.array[i] = element;
 	}
 
 	@Override
-	public void forEach(Consumer<? super Character> consumer) {
+	public void forEach(Consumer<? super Boolean> consumer) {
 		Objects.requireNonNull(consumer, "consumer");
 		for (int i = this.beginIndex; i < this.endIndex; i++) {
-			char e = this.array[i];
+			boolean e = this.array[i];
 
 			consumer.accept(e);
 		}
 	}
 
 	@Override
-	public Character get(int index) {
+	public Boolean get(int index) {
 		this.requireIndex(index);
 		int i = this.upperIndex(index);
 		return this.array[i];
@@ -400,9 +401,9 @@ public class CharacterArray extends Array<char[], Character> {
 		int hashCode = 1;
 
 		for (int i = this.beginIndex; i < this.endIndex; i++) {
-			char e = this.array[i];
+			boolean e = this.array[i];
 
-			hashCode = 31 * hashCode + Character.hashCode(e);
+			hashCode = 31 * hashCode + Boolean.hashCode(e);
 		}
 
 		return hashCode;
@@ -429,9 +430,9 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public void parallelPrefix(BinaryOperator<Character> operator) {
+	public void parallelPrefix(BinaryOperator<Boolean> operator) {
 		//todo
-		Character[] temp = new Character[this.length()];
+		Boolean[] temp = new Boolean[this.length()];
 
 		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
 			temp[j] = this.array[i];
@@ -443,7 +444,7 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public void parallelSetAll(IntFunction<? extends Character> function) {
+	public void parallelSetAll(IntFunction<? extends Boolean> function) {
 		Objects.requireNonNull(function, "function");
 		IntStream.range(this.beginIndex, this.endIndex)
 				.parallel()
@@ -453,18 +454,22 @@ public class CharacterArray extends Array<char[], Character> {
 	@Override
 	public void parallelSort() {
 		//todo
-		java.util.Arrays.parallelSort(
-				this.array,
-				this.beginIndex,
-				this.endIndex
-		);
+		Boolean[] temp = new Boolean[this.length()];
+
+		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+			temp[j] = this.array[i];
+
+		java.util.Arrays.parallelSort(temp);
+
+		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+			this.array[i] = temp[j];
 	}
 
 	@Override
-	public Character replace(int index, Character element) {
+	public Boolean replace(int index, Boolean element) {
 		this.requireIndex(index);
 		int i = this.upperIndex(index);
-		char old = this.array[i];
+		boolean old = this.array[i];
 		this.array[i] = element;
 		return old;
 	}
@@ -475,14 +480,14 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public void set(int index, Character element) {
+	public void set(int index, Boolean element) {
 		this.requireIndex(index);
 		int i = this.upperIndex(index);
 		this.array[i] = element;
 	}
 
 	@Override
-	public void setAll(IntFunction<? extends Character> function) {
+	public void setAll(IntFunction<? extends Boolean> function) {
 		Objects.requireNonNull(function, "function");
 		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
 			this.array[i] = function.apply(j);
@@ -491,11 +496,15 @@ public class CharacterArray extends Array<char[], Character> {
 	@Override
 	public void sort() {
 		//todo
-		java.util.Arrays.sort(
-				this.array,
-				this.beginIndex,
-				this.endIndex
-		);
+		Boolean[] temp = new Boolean[this.length()];
+
+		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+			temp[j] = this.array[i];
+
+		java.util.Arrays.sort(temp);
+
+		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+			this.array[i] = temp[j];
 	}
 
 	@Override
@@ -504,9 +513,9 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public CharacterArray sub(int beginIndex, int endIndex) {
+	public BooleanArray sub(int beginIndex, int endIndex) {
 		this.requireRange(beginIndex, endIndex);
-		return new CharacterArray(
+		return new BooleanArray(
 				this.array,
 				this.upperIndex(beginIndex),
 				this.upperIndex(endIndex)
@@ -522,7 +531,7 @@ public class CharacterArray extends Array<char[], Character> {
 
 		int i = this.beginIndex;
 		while (true) {
-			char e = this.array[i];
+			boolean e = this.array[i];
 
 			builder.append(e);
 
@@ -547,7 +556,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public class Entry extends Array<char[], Character>.Entry<Character, Character> {
+	public class Entry extends Array<boolean[], Boolean>.Entry<Boolean, Boolean> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 5973497615323125824L;
 
@@ -572,11 +581,11 @@ public class CharacterArray extends Array<char[], Character> {
 			if (object instanceof java.util.Map.Entry) {
 				java.util.Map.Entry entry = (java.util.Map.Entry) object;
 				Object key = entry.getKey();
-				char k = CharacterArray.this.array[this.index];
+				boolean k = BooleanArray.this.array[this.index];
 
 				if (key != null && key.equals(k)) {
 					Object value = entry.getValue();
-					char v = CharacterArray.this.array[this.index + 1];
+					boolean v = BooleanArray.this.array[this.index + 1];
 
 					return value != null && value.equals(v);
 				}
@@ -586,34 +595,34 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public Character getKey() {
-			return CharacterArray.this.array[this.index];
+		public Boolean getKey() {
+			return BooleanArray.this.array[this.index];
 		}
 
 		@Override
-		public Character getValue() {
-			return CharacterArray.this.array[this.index + 1];
+		public Boolean getValue() {
+			return BooleanArray.this.array[this.index + 1];
 		}
 
 		@Override
 		public int hashCode() {
-			char k = CharacterArray.this.array[this.index];
-			char v = CharacterArray.this.array[this.index + 1];
-			return Character.hashCode(k) ^
-				   Character.hashCode(v);
+			boolean k = BooleanArray.this.array[this.index];
+			boolean v = BooleanArray.this.array[this.index + 1];
+			return Boolean.hashCode(k) ^
+				   Boolean.hashCode(v);
 		}
 
 		@Override
-		public Character setValue(Character value) {
-			char v = CharacterArray.this.array[this.index + 1];
-			CharacterArray.this.array[this.index + 1] = value;
+		public Boolean setValue(Boolean value) {
+			boolean v = BooleanArray.this.array[this.index + 1];
+			BooleanArray.this.array[this.index + 1] = value;
 			return v;
 		}
 
 		@Override
 		public String toString() {
-			char k = CharacterArray.this.array[this.index];
-			char v = CharacterArray.this.array[this.index + 1];
+			boolean k = BooleanArray.this.array[this.index];
+			boolean v = BooleanArray.this.array[this.index + 1];
 			return k + "=" + v;
 		}
 	}
@@ -625,7 +634,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public class EntryIterator extends Array<char[], Character>.EntryIterator<Character, Character> {
+	public class EntryIterator extends Array<boolean[], Boolean>.EntryIterator<Boolean, Boolean> {
 		/**
 		 * Construct a new iterator iterating the entries in the enclosing array.
 		 *
@@ -656,7 +665,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public class EntrySet extends Array<char[], Character>.EntrySet<Character, Character> {
+	public class EntrySet extends Array<boolean[], Boolean>.EntrySet<Boolean, Boolean> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -4823635378224028987L;
 
@@ -676,13 +685,13 @@ public class CharacterArray extends Array<char[], Character> {
 				java.util.Map.Entry entry = (java.util.Map.Entry) object;
 				Object key = entry.getKey();
 
-				for (int i = CharacterArray.this.beginIndex;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char k = CharacterArray.this.array[i];
+				for (int i = BooleanArray.this.beginIndex;
+					 i < BooleanArray.this.endIndex; i += 2) {
+					boolean k = BooleanArray.this.array[i];
 
 					if (key != null && key.equals(k)) {
 						Object value = entry.getValue();
-						char v = CharacterArray.this.array[i + 1];
+						boolean v = BooleanArray.this.array[i + 1];
 
 						if (value != null && value.equals(v))
 							return true;
@@ -709,13 +718,13 @@ public class CharacterArray extends Array<char[], Character> {
 							java.util.Map.Entry entry = (java.util.Map.Entry) object1;
 							Object key = entry.getKey();
 
-							for (int i = CharacterArray.this.beginIndex;
-								 i < CharacterArray.this.endIndex; i += 2) {
-								char k = CharacterArray.this.array[i];
+							for (int i = BooleanArray.this.beginIndex;
+								 i < BooleanArray.this.endIndex; i += 2) {
+								boolean k = BooleanArray.this.array[i];
 
 								if (key != null && key.equals(k)) {
 									Object value = entry.getValue();
-									char v = CharacterArray.this.array[i + 1];
+									boolean v = BooleanArray.this.array[i + 1];
 
 									if (value != null && value.equals(v))
 										continue for0;
@@ -739,11 +748,11 @@ public class CharacterArray extends Array<char[], Character> {
 		public int hashCode() {
 			int hashCode = 0;
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
-				char v = CharacterArray.this.array[i + 1];
-				hashCode += Character.hashCode(k) ^
-							Character.hashCode(v);
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
+				boolean v = BooleanArray.this.array[i + 1];
+				hashCode += Boolean.hashCode(k) ^
+							Boolean.hashCode(v);
 			}
 
 			return hashCode;
@@ -759,9 +768,9 @@ public class CharacterArray extends Array<char[], Character> {
 			Objects.requireNonNull(collection, "collection");
 
 			for0:
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
-				char v = CharacterArray.this.array[i + 1];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
+				boolean v = BooleanArray.this.array[i + 1];
 
 				for (Object object : collection)
 					if (object instanceof java.util.Map.Entry) {
@@ -792,22 +801,22 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public String toString() {
-			if (CharacterArray.this.isEmpty())
+			if (BooleanArray.this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
 
-			int i = CharacterArray.this.beginIndex;
+			int i = BooleanArray.this.beginIndex;
 			while (true) {
-				char k = CharacterArray.this.array[i];
-				char v = CharacterArray.this.array[i + 1];
+				boolean k = BooleanArray.this.array[i];
+				boolean v = BooleanArray.this.array[i + 1];
 
 				builder.append(k)
 						.append("=")
 						.append(v);
 
 				i += 2;
-				if (i >= CharacterArray.this.endIndex)
+				if (i >= BooleanArray.this.endIndex)
 					return builder.append("]")
 							.toString();
 
@@ -823,7 +832,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.02
 	 */
-	public class EntrySpliterator extends Array<char[], Character>.EntrySpliterator<Character, Character> {
+	public class EntrySpliterator extends Array<boolean[], Boolean>.EntrySpliterator<Boolean, Boolean> {
 		/**
 		 * Construct a new spliterator iterating the entries in the enclosing array.
 		 *
@@ -854,7 +863,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public class Iterator extends Array<char[], Character>.Iterator {
+	public class Iterator extends Array<boolean[], Boolean>.Iterator {
 		/**
 		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
@@ -875,26 +884,26 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void forEachRemaining(Consumer<? super Character> consumer) {
+		public void forEachRemaining(Consumer<? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = CharacterArray.this.endIndex;
+			this.index = BooleanArray.this.endIndex;
 
-			for (int i = index; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = index; i < BooleanArray.this.endIndex; i++) {
+				boolean e = BooleanArray.this.array[i];
 
 				consumer.accept(e);
 			}
 		}
 
 		@Override
-		public Character next() {
+		public Boolean next() {
 			int index = this.index;
 
-			if (index < CharacterArray.this.endIndex) {
+			if (index < BooleanArray.this.endIndex) {
 				this.index++;
 
-				return CharacterArray.this.array[index];
+				return BooleanArray.this.array[index];
 			}
 
 			throw new NoSuchElementException();
@@ -908,7 +917,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public class KeyIterator extends Array<char[], Character>.KeyIterator<Character> {
+	public class KeyIterator extends Array<boolean[], Boolean>.KeyIterator<Boolean> {
 		/**
 		 * Construct a new iterator iterating the keys in the enclosing array.
 		 *
@@ -932,26 +941,26 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void forEachRemaining(Consumer<? super Character> consumer) {
+		public void forEachRemaining(Consumer<? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = CharacterArray.this.endIndex;
+			this.index = BooleanArray.this.endIndex;
 
-			for (int i = index; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = index; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				consumer.accept(k);
 			}
 		}
 
 		@Override
-		public Character next() {
+		public Boolean next() {
 			int index = this.index;
 
-			if (index < CharacterArray.this.endIndex) {
+			if (index < BooleanArray.this.endIndex) {
 				this.index += 2;
 
-				return CharacterArray.this.array[index];
+				return BooleanArray.this.array[index];
 			}
 
 			throw new NoSuchElementException();
@@ -965,7 +974,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public class KeySet extends Array<char[], Character>.KeySet<Character> {
+	public class KeySet extends Array<boolean[], Boolean>.KeySet<Boolean> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 7793360078444812816L;
 
@@ -981,8 +990,8 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public boolean contains(Object object) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (object != null && object.equals(k))
 					return true;
@@ -1001,9 +1010,9 @@ public class CharacterArray extends Array<char[], Character> {
 				if (set.size() == this.size()) {
 					for0:
 					for (Object key : set) {
-						for (int i = CharacterArray.this.beginIndex;
-							 i < CharacterArray.this.endIndex; i += 2) {
-							char k = CharacterArray.this.array[i];
+						for (int i = BooleanArray.this.beginIndex;
+							 i < BooleanArray.this.endIndex; i += 2) {
+							boolean k = BooleanArray.this.array[i];
 
 							if (key != null && key.equals(k))
 								continue for0;
@@ -1020,10 +1029,10 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void forEach(Consumer<? super Character> consumer) {
+		public void forEach(Consumer<? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				consumer.accept(k);
 			}
@@ -1033,10 +1042,10 @@ public class CharacterArray extends Array<char[], Character> {
 		public int hashCode() {
 			int hashCode = 0;
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
-				hashCode += Character.hashCode(k);
+				hashCode += Boolean.hashCode(k);
 			}
 
 			return hashCode;
@@ -1048,11 +1057,11 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public boolean removeIf(Predicate<? super Character> predicate) {
+		public boolean removeIf(Predicate<? super Boolean> predicate) {
 			Objects.requireNonNull(predicate, "predicate");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (predicate.test(k))
 					//can not remove
@@ -1068,8 +1077,8 @@ public class CharacterArray extends Array<char[], Character> {
 			Objects.requireNonNull(collection, "collection");
 
 			for0:
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				for (Object key : collection)
 					if (key != null && key.equals(k))
@@ -1094,9 +1103,9 @@ public class CharacterArray extends Array<char[], Character> {
 			int length = this.size();
 			Object[] product = new Object[length];
 
-			for (int i = CharacterArray.this.beginIndex, j = 0;
-				 i < CharacterArray.this.endIndex; i += 2, j++) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex, j = 0;
+				 i < BooleanArray.this.endIndex; i += 2, j++) {
+				boolean k = BooleanArray.this.array[i];
 
 				product[j] = k;
 			}
@@ -1115,11 +1124,11 @@ public class CharacterArray extends Array<char[], Character> {
 			else
 				product[length] = null;
 
-			for (int i = CharacterArray.this.beginIndex, j = 0;
-				 i < CharacterArray.this.endIndex; i += 2, j++) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex, j = 0;
+				 i < BooleanArray.this.endIndex; i += 2, j++) {
+				boolean k = BooleanArray.this.array[i];
 
-				product[j] = (T) (Character) k;
+				product[j] = (T) (Boolean) k;
 			}
 
 			return product;
@@ -1127,19 +1136,19 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public String toString() {
-			if (CharacterArray.this.isEmpty())
+			if (BooleanArray.this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
 
-			int i = CharacterArray.this.beginIndex;
+			int i = BooleanArray.this.beginIndex;
 			while (true) {
-				char k = CharacterArray.this.array[i];
+				boolean k = BooleanArray.this.array[i];
 
 				builder.append(k);
 
 				i += 2;
-				if (i >= CharacterArray.this.endIndex)
+				if (i >= BooleanArray.this.endIndex)
 					return builder.append("]")
 							.toString();
 
@@ -1155,7 +1164,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.02
 	 */
-	public class KeySpliterator extends Array<char[], Character>.KeySpliterator<Character> {
+	public class KeySpliterator extends Array<boolean[], Boolean>.KeySpliterator<Boolean> {
 		/**
 		 * Construct a new spliterator iterating the keys in the enclosing array.
 		 *
@@ -1179,27 +1188,27 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void forEachRemaining(Consumer<? super Character> consumer) {
+		public void forEachRemaining(Consumer<? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = CharacterArray.this.endIndex;
+			this.index = BooleanArray.this.endIndex;
 
-			for (int i = index; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = index; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				consumer.accept(k);
 			}
 		}
 
 		@Override
-		public boolean tryAdvance(Consumer<? super Character> consumer) {
+		public boolean tryAdvance(Consumer<? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
 
-			if (index < CharacterArray.this.endIndex) {
+			if (index < BooleanArray.this.endIndex) {
 				this.index += 2;
 
-				char k = CharacterArray.this.array[index];
+				boolean k = BooleanArray.this.array[index];
 				consumer.accept(k);
 				return true;
 			}
@@ -1215,7 +1224,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public class List extends Array<char[], Character>.List {
+	public class List extends Array<boolean[], Boolean>.List {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 848985287158674978L;
 
@@ -1240,13 +1249,13 @@ public class CharacterArray extends Array<char[], Character> {
 				if (list.size() == this.size()) {
 					//same length
 
-					int i = CharacterArray.this.beginIndex;
+					int i = BooleanArray.this.beginIndex;
 					for (Object element : list) {
 						//for each element
 
-						if (i < CharacterArray.this.endIndex) {
+						if (i < BooleanArray.this.endIndex) {
 							//still same length
-							char e = CharacterArray.this.array[i++];
+							boolean e = BooleanArray.this.array[i++];
 
 							if (element != null && element.equals(e))
 								continue;
@@ -1268,10 +1277,10 @@ public class CharacterArray extends Array<char[], Character> {
 		public int hashCode() {
 			int hashCode = 1;
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
+				boolean e = BooleanArray.this.array[i];
 
-				hashCode = 31 * hashCode + Character.hashCode(e);
+				hashCode = 31 * hashCode + Boolean.hashCode(e);
 			}
 
 			return hashCode;
@@ -1279,11 +1288,11 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public int indexOf(Object object) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
+				boolean e = BooleanArray.this.array[i];
 
 				if (object != null && object.equals(e))
-					return i - CharacterArray.this.beginIndex;
+					return i - BooleanArray.this.beginIndex;
 			}
 
 			return -1;
@@ -1291,12 +1300,12 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public int lastIndexOf(Object object) {
-			for (int i = CharacterArray.this.endIndex - 1;
-				 i >= CharacterArray.this.beginIndex; i--) {
-				char e = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.endIndex - 1;
+				 i >= BooleanArray.this.beginIndex; i--) {
+				boolean e = BooleanArray.this.array[i];
 
 				if (object != null && object.equals(e))
-					return i - CharacterArray.this.beginIndex;
+					return i - BooleanArray.this.beginIndex;
 			}
 
 			return -1;
@@ -1308,10 +1317,10 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public boolean removeIf(Predicate<? super Character> predicate) {
+		public boolean removeIf(Predicate<? super Boolean> predicate) {
 			Objects.requireNonNull(predicate, "predicate");
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
+				boolean e = BooleanArray.this.array[i];
 
 				if (predicate.test(e))
 					//can not remove
@@ -1323,12 +1332,12 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void replaceAll(UnaryOperator<Character> operator) {
+		public void replaceAll(UnaryOperator<Boolean> operator) {
 			Objects.requireNonNull(operator, "operator");
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
+				boolean e = BooleanArray.this.array[i];
 
-				CharacterArray.this.array[i] = operator.apply(e);
+				BooleanArray.this.array[i] = operator.apply(e);
 			}
 		}
 
@@ -1337,8 +1346,8 @@ public class CharacterArray extends Array<char[], Character> {
 			Objects.requireNonNull(collection, "collection");
 
 			for0:
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
+				boolean e = BooleanArray.this.array[i];
 
 				for (Object element : collection)
 					if (element != null && element.equals(e))
@@ -1354,22 +1363,22 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void sort(Comparator<? super Character> comparator) {
+		public void sort(Comparator<? super Boolean> comparator) {
 			//todo
 			if (comparator == null)
-				CharacterArray.this.sort();
+				BooleanArray.this.sort();
 
-			Character[] temp = new Character[this.size()];
+			Boolean[] temp = new Boolean[this.size()];
 
-			for (int i = CharacterArray.this.beginIndex, j = 0;
-				 i < CharacterArray.this.endIndex; i++, j++)
-				temp[j] = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex, j = 0;
+				 i < BooleanArray.this.endIndex; i++, j++)
+				temp[j] = BooleanArray.this.array[i];
 
 			java.util.Arrays.sort(temp, comparator);
 
-			for (int i = CharacterArray.this.beginIndex, j = 0;
-				 i < CharacterArray.this.endIndex; i++, j++)
-				CharacterArray.this.array[i] = temp[j];
+			for (int i = BooleanArray.this.beginIndex, j = 0;
+				 i < BooleanArray.this.endIndex; i++, j++)
+				BooleanArray.this.array[i] = temp[j];
 		}
 	}
 
@@ -1380,7 +1389,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public class ListIterator extends Array<char[], Character>.ListIterator {
+	public class ListIterator extends Array<boolean[], Boolean>.ListIterator {
 		/**
 		 * Construct a new list iterator iterating the elements in the enclosing array.
 		 *
@@ -1402,55 +1411,55 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void forEachRemaining(Consumer<? super Character> consumer) {
+		public void forEachRemaining(Consumer<? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = CharacterArray.this.endIndex;
-			this.last = CharacterArray.this.endIndex - 1;
+			this.index = BooleanArray.this.endIndex;
+			this.last = BooleanArray.this.endIndex - 1;
 
-			for (int i = index; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = index; i < BooleanArray.this.endIndex; i++) {
+				boolean e = BooleanArray.this.array[i];
 
 				consumer.accept(e);
 			}
 		}
 
 		@Override
-		public Character next() {
+		public Boolean next() {
 			int index = this.index;
 
-			if (index < CharacterArray.this.endIndex) {
+			if (index < BooleanArray.this.endIndex) {
 				this.index++;
 				this.last = index;
 
-				return CharacterArray.this.array[index];
+				return BooleanArray.this.array[index];
 			}
 
 			throw new NoSuchElementException();
 		}
 
 		@Override
-		public Character previous() {
+		public Boolean previous() {
 			int index = this.index - 1;
 
-			if (index >= CharacterArray.this.beginIndex) {
+			if (index >= BooleanArray.this.beginIndex) {
 				this.index--;
 				this.last = index;
 
-				return CharacterArray.this.array[index];
+				return BooleanArray.this.array[index];
 			}
 
 			throw new NoSuchElementException();
 		}
 
 		@Override
-		public void set(Character element) {
+		public void set(Boolean element) {
 			int index = this.last;
 
 			if (index == -1)
 				throw new IllegalStateException();
 
-			CharacterArray.this.array[index] = element;
+			BooleanArray.this.array[index] = element;
 		}
 	}
 
@@ -1461,7 +1470,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public class Map extends Array<char[], Character>.Map<Character, Character> {
+	public class Map extends Array<boolean[], Boolean>.Map<Boolean, Boolean> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -2840280796050057228L;
 
@@ -1476,22 +1485,22 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public Character compute(Character key, BiFunction<? super Character, ? super Character, ? extends Character> function) {
+		public Boolean compute(Boolean key, BiFunction<? super Boolean, ? super Boolean, ? extends Boolean> function) {
 			Objects.requireNonNull(function, "function");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (key != null && key.equals(k)) {
-					char v = CharacterArray.this.array[i + 1];
-					Character value = function.apply(k, v);
+					boolean v = BooleanArray.this.array[i + 1];
+					Boolean value = function.apply(k, v);
 
 					if (value == null)
 						//old:notnull new:null
 						throw new UnsupportedOperationException("remove");
 
 					//old:found
-					CharacterArray.this.array[i + 1] = value;
+					BooleanArray.this.array[i + 1] = value;
 					return value;
 				}
 			}
@@ -1501,15 +1510,15 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public Character computeIfAbsent(Character key, Function<? super Character, ? extends Character> function) {
+		public Boolean computeIfAbsent(Boolean key, Function<? super Boolean, ? extends Boolean> function) {
 			Objects.requireNonNull(function, "function");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (key != null && key.equals(k))
 					//old:notnull
-					return CharacterArray.this.array[i + 1];
+					return BooleanArray.this.array[i + 1];
 			}
 
 			//old:notfound
@@ -1517,22 +1526,22 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public Character computeIfPresent(Character key, BiFunction<? super Character, ? super Character, ? extends Character> function) {
+		public Boolean computeIfPresent(Boolean key, BiFunction<? super Boolean, ? super Boolean, ? extends Boolean> function) {
 			Objects.requireNonNull(function, "function");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (key != null && key.equals(k)) {
-					char v = CharacterArray.this.array[i + 1];
-					Character value = function.apply(k, v);
+					boolean v = BooleanArray.this.array[i + 1];
+					Boolean value = function.apply(k, v);
 
 					if (value == null)
 						//old:notnull new:null
 						throw new UnsupportedOperationException("remove");
 
 					//old:notnull new:notnull
-					CharacterArray.this.array[i + 1] = value;
+					BooleanArray.this.array[i + 1] = value;
 					return value;
 				}
 			}
@@ -1543,8 +1552,8 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public boolean containsKey(Object key) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (key != null && key.equals(k))
 					return true;
@@ -1555,8 +1564,8 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public boolean containsValue(Object value) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char v = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean v = BooleanArray.this.array[i];
 
 				if (value != null && value.equals(v))
 					return true;
@@ -1577,13 +1586,13 @@ public class CharacterArray extends Array<char[], Character> {
 					for (java.util.Map.Entry entry : map.entrySet()) {
 						Object key = entry.getKey();
 
-						for (int i = CharacterArray.this.beginIndex;
-							 i < CharacterArray.this.endIndex; i += 2) {
-							char k = CharacterArray.this.array[i];
+						for (int i = BooleanArray.this.beginIndex;
+							 i < BooleanArray.this.endIndex; i += 2) {
+							boolean k = BooleanArray.this.array[i];
 
 							if (key != null && key.equals(k)) {
 								Object value = entry.getValue();
-								char v = CharacterArray.this.array[i + 1];
+								boolean v = BooleanArray.this.array[i + 1];
 
 								if (value != null && value.equals(v))
 									continue for0;
@@ -1603,35 +1612,35 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void forEach(BiConsumer<? super Character, ? super Character> consumer) {
+		public void forEach(BiConsumer<? super Boolean, ? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
-				char v = CharacterArray.this.array[i + 1];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
+				boolean v = BooleanArray.this.array[i + 1];
 				consumer.accept(k, v);
 			}
 		}
 
 		@Override
-		public Character get(Object key) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+		public Boolean get(Object key) {
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (key != null && key.equals(k))
-					return CharacterArray.this.array[i + 1];
+					return BooleanArray.this.array[i + 1];
 			}
 
 			return null;
 		}
 
 		@Override
-		public Character getOrDefault(Object key, Character defaultValue) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+		public Boolean getOrDefault(Object key, Boolean defaultValue) {
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (key != null && key.equals(k))
-					return CharacterArray.this.array[i + 1];
+					return BooleanArray.this.array[i + 1];
 			}
 
 			return defaultValue;
@@ -1641,33 +1650,33 @@ public class CharacterArray extends Array<char[], Character> {
 		public int hashCode() {
 			int hashCode = 0;
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
-				char v = CharacterArray.this.array[i + 1];
-				hashCode += Character.hashCode(k) ^
-							Character.hashCode(v);
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
+				boolean v = BooleanArray.this.array[i + 1];
+				hashCode += Boolean.hashCode(k) ^
+							Boolean.hashCode(v);
 			}
 
 			return hashCode;
 		}
 
 		@Override
-		public Character merge(Character key, Character value, BiFunction<? super Character, ? super Character, ? extends Character> function) {
+		public Boolean merge(Boolean key, Boolean value, BiFunction<? super Boolean, ? super Boolean, ? extends Boolean> function) {
 			Objects.requireNonNull(function, "function");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (key != null && key.equals(k)) {
-					char v = CharacterArray.this.array[i + 1];
-					Character newValue = function.apply(v, value);
+					boolean v = BooleanArray.this.array[i + 1];
+					Boolean newValue = function.apply(v, value);
 
 					if (newValue == null)
 						//old:found new:null
 						throw new UnsupportedOperationException("remove");
 
 					//old:found new:notnull
-					CharacterArray.this.array[i + 1] = newValue;
+					BooleanArray.this.array[i + 1] = newValue;
 					return newValue;
 				}
 			}
@@ -1681,14 +1690,14 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public Character put(Character key, Character value) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+		public Boolean put(Boolean key, Boolean value) {
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (key != null && key.equals(k)) {
 					//old:found
-					char v = CharacterArray.this.array[i + 1];
-					CharacterArray.this.array[i + 1] = value;
+					boolean v = BooleanArray.this.array[i + 1];
+					BooleanArray.this.array[i + 1] = value;
 					return v;
 				}
 			}
@@ -1698,20 +1707,20 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void putAll(java.util.Map<? extends Character, ? extends Character> map) {
+		public void putAll(java.util.Map<? extends Boolean, ? extends Boolean> map) {
 			Objects.requireNonNull(map, "map");
 
 			for0:
-			for (java.util.Map.Entry<? extends Character, ? extends Character> entry : map.entrySet()) {
-				Character key = entry.getKey();
+			for (java.util.Map.Entry<? extends Boolean, ? extends Boolean> entry : map.entrySet()) {
+				Boolean key = entry.getKey();
 
-				for (int i = CharacterArray.this.beginIndex;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char k = CharacterArray.this.array[i];
+				for (int i = BooleanArray.this.beginIndex;
+					 i < BooleanArray.this.endIndex; i += 2) {
+					boolean k = BooleanArray.this.array[i];
 
 					if (key != null && key.equals(k)) {
-						Character value = entry.getValue();
-						CharacterArray.this.array[i + 1] = value;
+						Boolean value = entry.getValue();
+						BooleanArray.this.array[i + 1] = value;
 						continue for0;
 					}
 				}
@@ -1722,13 +1731,13 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public Character putIfAbsent(Character key, Character value) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+		public Boolean putIfAbsent(Boolean key, Boolean value) {
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (key != null && key.equals(k))
 					//old:found
-					return CharacterArray.this.array[i + 1];
+					return BooleanArray.this.array[i + 1];
 			}
 
 			//old:notfound
@@ -1737,11 +1746,11 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public boolean remove(Object key, Object value) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (key != null && key.equals(k)) {
-					char v = CharacterArray.this.array[i + 1];
+					boolean v = BooleanArray.this.array[i + 1];
 
 					if (value != null && value.equals(v))
 						//old:match
@@ -1756,16 +1765,16 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public boolean replace(Character key, Character oldValue, Character newValue) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+		public boolean replace(Boolean key, Boolean oldValue, Boolean newValue) {
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (key != null && key.equals(k)) {
-					char v = CharacterArray.this.array[i + 1];
+					boolean v = BooleanArray.this.array[i + 1];
 
 					if (oldValue != null && oldValue.equals(v)) {
 						//old:match
-						CharacterArray.this.array[i + 1] = newValue;
+						BooleanArray.this.array[i + 1] = newValue;
 						return true;
 					}
 
@@ -1778,14 +1787,14 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public Character replace(Character key, Character value) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+		public Boolean replace(Boolean key, Boolean value) {
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
 
 				if (key != null && key.equals(k)) {
 					//old:match
-					char v = CharacterArray.this.array[i + 1];
-					CharacterArray.this.array[i + 1] = value;
+					boolean v = BooleanArray.this.array[i + 1];
+					BooleanArray.this.array[i + 1] = value;
 					return v;
 				}
 			}
@@ -1795,35 +1804,35 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void replaceAll(BiFunction<? super Character, ? super Character, ? extends Character> function) {
+		public void replaceAll(BiFunction<? super Boolean, ? super Boolean, ? extends Boolean> function) {
 			Objects.requireNonNull(function, "function");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
-				char v = CharacterArray.this.array[i + 1];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+				boolean k = BooleanArray.this.array[i];
+				boolean v = BooleanArray.this.array[i + 1];
 
-				CharacterArray.this.array[i + 1] = function.apply(k, v);
+				BooleanArray.this.array[i + 1] = function.apply(k, v);
 			}
 		}
 
 		@Override
 		public String toString() {
-			if (CharacterArray.this.endIndex <= CharacterArray.this.beginIndex)
+			if (BooleanArray.this.endIndex <= BooleanArray.this.beginIndex)
 				return "{}";
 
 			StringBuilder builder = new StringBuilder("{");
 
-			int i = CharacterArray.this.beginIndex;
+			int i = BooleanArray.this.beginIndex;
 			while (true) {
-				char k = CharacterArray.this.array[i];
-				char v = CharacterArray.this.array[i + 1];
+				boolean k = BooleanArray.this.array[i];
+				boolean v = BooleanArray.this.array[i + 1];
 
 				builder.append(k)
 						.append("=")
 						.append(v);
 
 				i += 2;
-				if (i >= CharacterArray.this.endIndex)
+				if (i >= BooleanArray.this.endIndex)
 					return builder.append("}")
 							.toString();
 
@@ -1839,7 +1848,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public class Set extends Array<char[], Character>.Set {
+	public class Set extends Array<boolean[], Boolean>.Set {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 4146929083993819823L;
 
@@ -1861,16 +1870,16 @@ public class CharacterArray extends Array<char[], Character> {
 				//same class
 				java.util.Set set = (java.util.Set) object;
 
-				if (set.size() == CharacterArray.this.endIndex - CharacterArray.this.beginIndex) {
+				if (set.size() == BooleanArray.this.endIndex - BooleanArray.this.beginIndex) {
 					//same length
 
 					for0:
 					for (Object element : set) {
 						//for each element
 
-						for (int i = CharacterArray.this.beginIndex;
-							 i < CharacterArray.this.endIndex; i++) {
-							char e = CharacterArray.this.array[i];
+						for (int i = BooleanArray.this.beginIndex;
+							 i < BooleanArray.this.endIndex; i++) {
+							boolean e = BooleanArray.this.array[i];
 
 							if (element != null && element.equals(e))
 								continue for0;
@@ -1892,21 +1901,21 @@ public class CharacterArray extends Array<char[], Character> {
 		public int hashCode() {
 			int hashCode = 0;
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
+				boolean e = BooleanArray.this.array[i];
 
-				hashCode += Character.hashCode(e);
+				hashCode += Boolean.hashCode(e);
 			}
 
 			return hashCode;
 		}
 
 		@Override
-		public boolean removeIf(Predicate<? super Character> predicate) {
+		public boolean removeIf(Predicate<? super Boolean> predicate) {
 			Objects.requireNonNull(predicate, "predicate");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
+				boolean e = BooleanArray.this.array[i];
 
 				if (predicate.test(e))
 					//can not remove
@@ -1922,8 +1931,8 @@ public class CharacterArray extends Array<char[], Character> {
 			Objects.requireNonNull(collection, "collection");
 
 			for0:
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
+				boolean e = BooleanArray.this.array[i];
 
 				for (Object element : collection)
 					if (element != null && element.equals(e))
@@ -1946,7 +1955,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.02
 	 */
-	public class Spliterator extends Array<char[], Character>.Spliterator {
+	public class Spliterator extends Array<boolean[], Boolean>.Spliterator {
 		/**
 		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
 		 * the given {@code index}.
@@ -1969,26 +1978,26 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void forEachRemaining(Consumer<? super Character> consumer) {
+		public void forEachRemaining(Consumer<? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = CharacterArray.this.endIndex;
+			this.index = BooleanArray.this.endIndex;
 
-			for (int i = index; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = index; i < BooleanArray.this.endIndex; i++) {
+				boolean e = BooleanArray.this.array[i];
 
 				consumer.accept(e);
 			}
 		}
 
 		@Override
-		public boolean tryAdvance(Consumer<? super Character> consumer) {
+		public boolean tryAdvance(Consumer<? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
 
-			if (index < CharacterArray.this.endIndex) {
+			if (index < BooleanArray.this.endIndex) {
 				this.index += 2;
-				char e = CharacterArray.this.array[index];
+				boolean e = BooleanArray.this.array[index];
 
 				consumer.accept(e);
 				return true;
@@ -2005,7 +2014,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public class ValueIterator extends Array<char[], Character>.ValueIterator<Character> {
+	public class ValueIterator extends Array<boolean[], Boolean>.ValueIterator<Boolean> {
 		/**
 		 * Construct a new iterator iterating the values in the enclosing array.
 		 *
@@ -2029,26 +2038,26 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void forEachRemaining(Consumer<? super Character> consumer) {
+		public void forEachRemaining(Consumer<? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = CharacterArray.this.endIndex;
+			this.index = BooleanArray.this.endIndex;
 
-			for (int i = index + 1; i < CharacterArray.this.endIndex; i += 2) {
-				char v = CharacterArray.this.array[i];
+			for (int i = index + 1; i < BooleanArray.this.endIndex; i += 2) {
+				boolean v = BooleanArray.this.array[i];
 
 				consumer.accept(v);
 			}
 		}
 
 		@Override
-		public Character next() {
+		public Boolean next() {
 			int index = this.index;
 
-			if (index < CharacterArray.this.endIndex) {
+			if (index < BooleanArray.this.endIndex) {
 				this.index += 2;
 
-				return CharacterArray.this.array[index + 1];
+				return BooleanArray.this.array[index + 1];
 			}
 
 			throw new NoSuchElementException();
@@ -2062,7 +2071,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.02
 	 */
-	public class ValueSpliterator extends Array<char[], Character>.ValueSpliterator<Character> {
+	public class ValueSpliterator extends Array<boolean[], Boolean>.ValueSpliterator<Boolean> {
 		/**
 		 * Construct a new spliterator iterating the values in the enclosing array.
 		 *
@@ -2086,27 +2095,27 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void forEachRemaining(Consumer<? super Character> consumer) {
+		public void forEachRemaining(Consumer<? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = CharacterArray.this.endIndex;
+			this.index = BooleanArray.this.endIndex;
 
-			for (int i = index + 1; i < CharacterArray.this.endIndex; i += 2) {
-				char v = CharacterArray.this.array[i];
+			for (int i = index + 1; i < BooleanArray.this.endIndex; i += 2) {
+				boolean v = BooleanArray.this.array[i];
 
 				consumer.accept(v);
 			}
 		}
 
 		@Override
-		public boolean tryAdvance(Consumer<? super Character> consumer) {
+		public boolean tryAdvance(Consumer<? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
 
-			if (index < CharacterArray.this.endIndex) {
+			if (index < BooleanArray.this.endIndex) {
 				this.index += 2;
 
-				char v = CharacterArray.this.array[index + 1];
+				boolean v = BooleanArray.this.array[index + 1];
 				consumer.accept(v);
 				return true;
 			}
@@ -2122,7 +2131,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public class Values extends Array<char[], Character>.Values<Character> {
+	public class Values extends Array<boolean[], Boolean>.Values<Boolean> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -7937502933699082438L;
 
@@ -2138,9 +2147,9 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public boolean contains(Object object) {
-			for (int i = CharacterArray.this.beginIndex + 1;
-				 i < CharacterArray.this.endIndex; i += 2) {
-				char v = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex + 1;
+				 i < BooleanArray.this.endIndex; i += 2) {
+				boolean v = BooleanArray.this.array[i];
 
 				if (object != null && object.equals(v))
 					return true;
@@ -2155,11 +2164,11 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public void forEach(Consumer<? super Character> consumer) {
+		public void forEach(Consumer<? super Boolean> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
-			for (int i = CharacterArray.this.beginIndex + 1;
-				 i < CharacterArray.this.endIndex; i += 2) {
-				char v = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex + 1;
+				 i < BooleanArray.this.endIndex; i += 2) {
+				boolean v = BooleanArray.this.array[i];
 
 				consumer.accept(v);
 			}
@@ -2169,11 +2178,11 @@ public class CharacterArray extends Array<char[], Character> {
 		public int hashCode() {
 			int hashCode = 0;
 
-			for (int i = CharacterArray.this.beginIndex + 1;
-				 i < CharacterArray.this.endIndex; i += 2) {
-				char v = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex + 1;
+				 i < BooleanArray.this.endIndex; i += 2) {
+				boolean v = BooleanArray.this.array[i];
 
-				hashCode += Character.hashCode(v);
+				hashCode += Boolean.hashCode(v);
 			}
 
 			return hashCode;
@@ -2185,12 +2194,12 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public boolean removeIf(Predicate<? super Character> predicate) {
+		public boolean removeIf(Predicate<? super Boolean> predicate) {
 			Objects.requireNonNull(predicate, "predicate");
 
-			for (int i = CharacterArray.this.beginIndex + 1;
-				 i < CharacterArray.this.endIndex; i += 2) {
-				char v = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex + 1;
+				 i < BooleanArray.this.endIndex; i += 2) {
+				boolean v = BooleanArray.this.array[i];
 
 				if (predicate.test(v))
 					//can not remove
@@ -2206,9 +2215,9 @@ public class CharacterArray extends Array<char[], Character> {
 			Objects.requireNonNull(collection, "collection");
 
 			for0:
-			for (int i = CharacterArray.this.beginIndex + 1;
-				 i < CharacterArray.this.endIndex; i += 2) {
-				char v = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex + 1;
+				 i < BooleanArray.this.endIndex; i += 2) {
+				boolean v = BooleanArray.this.array[i];
 
 				for (Object value : collection)
 					if (value != null && value.equals(v))
@@ -2230,12 +2239,12 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public Object[] toArray() {
-			int length = CharacterArray.this.endIndex - CharacterArray.this.beginIndex >>> 1;
+			int length = BooleanArray.this.endIndex - BooleanArray.this.beginIndex >>> 1;
 			Object[] product = new Object[length];
 
-			for (int i = CharacterArray.this.beginIndex + 1, j = 0;
-				 i < CharacterArray.this.endIndex; i += 2, j++) {
-				char v = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex + 1, j = 0;
+				 i < BooleanArray.this.endIndex; i += 2, j++) {
+				boolean v = BooleanArray.this.array[i];
 
 				product[j] = v;
 			}
@@ -2246,7 +2255,7 @@ public class CharacterArray extends Array<char[], Character> {
 		@Override
 		public <T> T[] toArray(T[] array) {
 			Objects.requireNonNull(array, "array");
-			int length = CharacterArray.this.endIndex - CharacterArray.this.beginIndex >>> 1;
+			int length = BooleanArray.this.endIndex - BooleanArray.this.beginIndex >>> 1;
 			T[] product = array;
 
 			if (array.length < length)
@@ -2254,11 +2263,11 @@ public class CharacterArray extends Array<char[], Character> {
 			else
 				product[length] = null;
 
-			for (int i = CharacterArray.this.beginIndex + 1, j = 0;
-				 i < CharacterArray.this.endIndex; i += 2, j++) {
-				char v = CharacterArray.this.array[i];
+			for (int i = BooleanArray.this.beginIndex + 1, j = 0;
+				 i < BooleanArray.this.endIndex; i += 2, j++) {
+				boolean v = BooleanArray.this.array[i];
 
-				product[j] = (T) (Character) v;
+				product[j] = (T) (Boolean) v;
 			}
 
 			return product;
@@ -2266,19 +2275,19 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public String toString() {
-			if (CharacterArray.this.endIndex <= CharacterArray.this.beginIndex)
+			if (BooleanArray.this.endIndex <= BooleanArray.this.beginIndex)
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
 
-			int i = CharacterArray.this.beginIndex + 1;
+			int i = BooleanArray.this.beginIndex + 1;
 			while (true) {
-				char v = CharacterArray.this.array[i];
+				boolean v = BooleanArray.this.array[i];
 
 				builder.append(v);
 
 				i += 2;
-				if (i >= CharacterArray.this.endIndex)
+				if (i >= BooleanArray.this.endIndex)
 					return builder.append("]")
 							.toString();
 
