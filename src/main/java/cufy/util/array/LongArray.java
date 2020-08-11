@@ -528,7 +528,7 @@ public class LongArray extends Array<long[], Long> {
 
 	@Override
 	public String toString() {
-		if (this.endIndex <= this.endIndex)
+		if (this.isEmpty())
 			return "[]";
 
 		StringBuilder builder = new StringBuilder("[");
@@ -805,7 +805,7 @@ public class LongArray extends Array<long[], Long> {
 
 		@Override
 		public String toString() {
-			if (LongArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1192,7 +1192,7 @@ public class LongArray extends Array<long[], Long> {
 
 		@Override
 		public String toString() {
-			if (LongArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1905,7 +1905,7 @@ public class LongArray extends Array<long[], Long> {
 
 		@Override
 		public String toString() {
-			if (LongArray.this.endIndex <= LongArray.this.beginIndex)
+			if (this.isEmpty())
 				return "{}";
 
 			StringBuilder builder = new StringBuilder("{");
@@ -2457,7 +2457,7 @@ public class LongArray extends Array<long[], Long> {
 
 		@Override
 		public String toString() {
-			if (LongArray.this.endIndex <= LongArray.this.beginIndex)
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");

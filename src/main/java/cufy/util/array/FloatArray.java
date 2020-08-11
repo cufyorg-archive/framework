@@ -530,7 +530,7 @@ public class FloatArray extends Array<float[], Float> {
 
 	@Override
 	public String toString() {
-		if (this.endIndex <= this.endIndex)
+		if (this.isEmpty())
 			return "[]";
 
 		StringBuilder builder = new StringBuilder("[");
@@ -807,7 +807,7 @@ public class FloatArray extends Array<float[], Float> {
 
 		@Override
 		public String toString() {
-			if (FloatArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1142,7 +1142,7 @@ public class FloatArray extends Array<float[], Float> {
 
 		@Override
 		public String toString() {
-			if (FloatArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1821,7 +1821,7 @@ public class FloatArray extends Array<float[], Float> {
 
 		@Override
 		public String toString() {
-			if (FloatArray.this.endIndex <= FloatArray.this.beginIndex)
+			if (this.isEmpty())
 				return "{}";
 
 			StringBuilder builder = new StringBuilder("{");
@@ -2279,7 +2279,7 @@ public class FloatArray extends Array<float[], Float> {
 
 		@Override
 		public String toString() {
-			if (FloatArray.this.endIndex <= FloatArray.this.beginIndex)
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");

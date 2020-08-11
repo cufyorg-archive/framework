@@ -530,7 +530,7 @@ public class CharacterArray extends Array<char[], Character> {
 
 	@Override
 	public String toString() {
-		if (this.endIndex <= this.endIndex)
+		if (this.isEmpty())
 			return "[]";
 
 		StringBuilder builder = new StringBuilder("[");
@@ -807,7 +807,7 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public String toString() {
-			if (CharacterArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1142,7 +1142,7 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public String toString() {
-			if (CharacterArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1823,7 +1823,7 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public String toString() {
-			if (CharacterArray.this.endIndex <= CharacterArray.this.beginIndex)
+			if (this.isEmpty())
 				return "{}";
 
 			StringBuilder builder = new StringBuilder("{");
@@ -2281,7 +2281,7 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public String toString() {
-			if (CharacterArray.this.endIndex <= CharacterArray.this.beginIndex)
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");

@@ -144,6 +144,48 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	}
 
 	/**
+	 * Construct a new array wrapper for the given {@code array}.
+	 *
+	 * @param array      the array to be wrapped.
+	 * @param beginIndex the first index of the area at the given {@code array} to be backing the
+	 *                   constructed array.
+	 * @param endIndex   one past the last index of the area at the given {@code array} to be
+	 *                   backing the constructed array.
+	 * @param <A>        the type of the array.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}. Or  if the given {@code
+	 *                                   array} is not an array.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static <A> Array<A, ?> of(A array, int beginIndex, int endIndex) {
+		Objects.requireNonNull(array, "array");
+
+		if (array instanceof Object[])
+			return new ObjectArray((Object[]) array, beginIndex, endIndex);
+		if (array instanceof boolean[])
+			return (Array) new BooleanArray((boolean[]) array, beginIndex, endIndex);
+		if (array instanceof byte[])
+			return (Array) new ByteArray((byte[]) array, beginIndex, endIndex);
+		if (array instanceof char[])
+			return (Array) new CharacterArray((char[]) array, beginIndex, endIndex);
+		if (array instanceof double[])
+			return (Array) new DoubleArray((double[]) array, beginIndex, endIndex);
+		if (array instanceof float[])
+			return (Array) new FloatArray((float[]) array, beginIndex, endIndex);
+		if (array instanceof int[])
+			return (Array) new IntegerArray((int[]) array, beginIndex, endIndex);
+		if (array instanceof long[])
+			return (Array) new LongArray((long[]) array, beginIndex, endIndex);
+		if (array instanceof short[])
+			return (Array) new ShortArray((short[]) array, beginIndex, endIndex);
+
+		throw new IllegalArgumentException("Not an array");
+	}
+
+	/**
 	 * Get an actual array copy of this array that has the given {@code klass}.
 	 *
 	 * @param klass the type of the constructed array.

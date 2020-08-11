@@ -530,7 +530,7 @@ public class ShortArray extends Array<short[], Short> {
 
 	@Override
 	public String toString() {
-		if (this.endIndex <= this.endIndex)
+		if (this.isEmpty())
 			return "[]";
 
 		StringBuilder builder = new StringBuilder("[");
@@ -807,7 +807,7 @@ public class ShortArray extends Array<short[], Short> {
 
 		@Override
 		public String toString() {
-			if (ShortArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1142,7 +1142,7 @@ public class ShortArray extends Array<short[], Short> {
 
 		@Override
 		public String toString() {
-			if (ShortArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1821,7 +1821,7 @@ public class ShortArray extends Array<short[], Short> {
 
 		@Override
 		public String toString() {
-			if (ShortArray.this.endIndex <= ShortArray.this.beginIndex)
+			if (this.isEmpty())
 				return "{}";
 
 			StringBuilder builder = new StringBuilder("{");
@@ -2279,7 +2279,7 @@ public class ShortArray extends Array<short[], Short> {
 
 		@Override
 		public String toString() {
-			if (ShortArray.this.endIndex <= ShortArray.this.beginIndex)
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");

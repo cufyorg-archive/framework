@@ -528,7 +528,7 @@ public class IntegerArray extends Array<int[], Integer> {
 
 	@Override
 	public String toString() {
-		if (this.endIndex <= this.endIndex)
+		if (this.isEmpty())
 			return "[]";
 
 		StringBuilder builder = new StringBuilder("[");
@@ -805,7 +805,7 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public String toString() {
-			if (IntegerArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1192,7 +1192,7 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public String toString() {
-			if (IntegerArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1907,7 +1907,7 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public String toString() {
-			if (IntegerArray.this.endIndex <= IntegerArray.this.beginIndex)
+			if (this.isEmpty())
 				return "{}";
 
 			StringBuilder builder = new StringBuilder("{");
@@ -2459,7 +2459,7 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public String toString() {
-			if (IntegerArray.this.endIndex <= IntegerArray.this.beginIndex)
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");

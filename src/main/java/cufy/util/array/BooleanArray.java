@@ -539,7 +539,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 	@Override
 	public String toString() {
-		if (this.endIndex <= this.endIndex)
+		if (this.isEmpty())
 			return "[]";
 
 		StringBuilder builder = new StringBuilder("[");
@@ -816,7 +816,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 		@Override
 		public String toString() {
-			if (BooleanArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1151,7 +1151,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 		@Override
 		public String toString() {
-			if (BooleanArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1832,7 +1832,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 		@Override
 		public String toString() {
-			if (BooleanArray.this.endIndex <= BooleanArray.this.beginIndex)
+			if (this.isEmpty())
 				return "{}";
 
 			StringBuilder builder = new StringBuilder("{");
@@ -2290,7 +2290,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 		@Override
 		public String toString() {
-			if (BooleanArray.this.endIndex <= BooleanArray.this.beginIndex)
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");

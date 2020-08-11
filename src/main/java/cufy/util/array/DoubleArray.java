@@ -528,7 +528,7 @@ public class DoubleArray extends Array<double[], Double> {
 
 	@Override
 	public String toString() {
-		if (this.endIndex <= this.endIndex)
+		if (this.isEmpty())
 			return "[]";
 
 		StringBuilder builder = new StringBuilder("[");
@@ -805,7 +805,7 @@ public class DoubleArray extends Array<double[], Double> {
 
 		@Override
 		public String toString() {
-			if (DoubleArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1192,7 +1192,7 @@ public class DoubleArray extends Array<double[], Double> {
 
 		@Override
 		public String toString() {
-			if (DoubleArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1907,7 +1907,7 @@ public class DoubleArray extends Array<double[], Double> {
 
 		@Override
 		public String toString() {
-			if (DoubleArray.this.endIndex <= DoubleArray.this.beginIndex)
+			if (this.isEmpty())
 				return "{}";
 
 			StringBuilder builder = new StringBuilder("{");
@@ -2459,7 +2459,7 @@ public class DoubleArray extends Array<double[], Double> {
 
 		@Override
 		public String toString() {
-			if (DoubleArray.this.endIndex <= DoubleArray.this.beginIndex)
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");

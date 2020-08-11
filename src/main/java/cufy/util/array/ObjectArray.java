@@ -709,7 +709,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 
 	@Override
 	public String toString() {
-		if (this.endIndex <= this.endIndex)
+		if (this.isEmpty())
 			return "[]";
 
 		StringBuilder builder = new StringBuilder("[");
@@ -1125,7 +1125,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 
 		@Override
 		public String toString() {
-			if (ObjectArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -1463,7 +1463,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 
 		@Override
 		public String toString() {
-			if (ObjectArray.this.isEmpty())
+			if (this.isEmpty())
 				return "[]";
 
 			StringBuilder builder = new StringBuilder("[");
@@ -2159,7 +2159,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 
 		@Override
 		public String toString() {
-			if (ObjectArray.this.isEmpty())
+			if (this.isEmpty())
 				return "{}";
 
 			StringBuilder builder = new StringBuilder("{");
