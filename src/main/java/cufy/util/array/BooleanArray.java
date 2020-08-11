@@ -446,7 +446,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 	@Override
 	public void parallelPrefix(BinaryOperator<Boolean> operator) {
-		//todo
+		//manual
 		Boolean[] temp = new Boolean[this.length()];
 
 		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
@@ -468,7 +468,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 	@Override
 	public void parallelSort() {
-		//todo
+		//manual
 		Boolean[] temp = new Boolean[this.length()];
 
 		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
@@ -510,7 +510,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 	@Override
 	public void sort() {
-		//todo
+		//manual
 		Boolean[] temp = new Boolean[this.length()];
 
 		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
@@ -1379,7 +1379,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 		@Override
 		public void sort(Comparator<? super Boolean> comparator) {
-			//todo
+			//manual
 			if (comparator == null)
 				BooleanArray.this.sort();
 

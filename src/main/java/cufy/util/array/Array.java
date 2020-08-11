@@ -109,6 +109,41 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	}
 
 	/**
+	 * Construct a new array wrapper for the given {@code array}.
+	 *
+	 * @param array the array to be wrapped.
+	 * @param <A>   the type of the array.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException     if the given {@code array} is null.
+	 * @throws IllegalArgumentException if the given {@code array} is not an array.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static <A> Array<A, ?> of(A array) {
+		Objects.requireNonNull(array, "array");
+
+		if (array instanceof Object[])
+			return new ObjectArray((Object[]) array);
+		if (array instanceof boolean[])
+			return (Array) new BooleanArray((boolean[]) array);
+		if (array instanceof byte[])
+			return (Array) new ByteArray((byte[]) array);
+		if (array instanceof char[])
+			return (Array) new CharacterArray((char[]) array);
+		if (array instanceof double[])
+			return (Array) new DoubleArray((double[]) array);
+		if (array instanceof float[])
+			return (Array) new FloatArray((float[]) array);
+		if (array instanceof int[])
+			return (Array) new IntegerArray((int[]) array);
+		if (array instanceof long[])
+			return (Array) new LongArray((long[]) array);
+		if (array instanceof short[])
+			return (Array) new ShortArray((short[]) array);
+
+		throw new IllegalArgumentException("Not an array");
+	}
+
+	/**
 	 * Get an actual array copy of this array that has the given {@code klass}.
 	 *
 	 * @param klass the type of the constructed array.

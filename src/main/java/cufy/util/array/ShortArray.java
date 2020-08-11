@@ -445,7 +445,7 @@ public class ShortArray extends Array<short[], Short> {
 
 	@Override
 	public void parallelPrefix(BinaryOperator<Short> operator) {
-		//todo
+		//manual
 		Short[] temp = new Short[this.length()];
 
 		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
@@ -467,7 +467,7 @@ public class ShortArray extends Array<short[], Short> {
 
 	@Override
 	public void parallelSort() {
-		//todo
+		//manual
 		java.util.Arrays.parallelSort(
 				this.array,
 				this.beginIndex,
@@ -505,7 +505,7 @@ public class ShortArray extends Array<short[], Short> {
 
 	@Override
 	public void sort() {
-		//todo
+		//manual
 		java.util.Arrays.sort(
 				this.array,
 				this.beginIndex,
@@ -1370,7 +1370,7 @@ public class ShortArray extends Array<short[], Short> {
 
 		@Override
 		public void sort(Comparator<? super Short> comparator) {
-			//todo
+			//manual
 			if (comparator == null)
 				ShortArray.this.sort();
 

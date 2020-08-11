@@ -445,7 +445,7 @@ public class FloatArray extends Array<float[], Float> {
 
 	@Override
 	public void parallelPrefix(BinaryOperator<Float> operator) {
-		//todo
+		//manual
 		Float[] temp = new Float[this.length()];
 
 		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
@@ -467,7 +467,7 @@ public class FloatArray extends Array<float[], Float> {
 
 	@Override
 	public void parallelSort() {
-		//todo
+		//manual
 		java.util.Arrays.parallelSort(
 				this.array,
 				this.beginIndex,
@@ -505,7 +505,7 @@ public class FloatArray extends Array<float[], Float> {
 
 	@Override
 	public void sort() {
-		//todo
+		//manual
 		java.util.Arrays.sort(
 				this.array,
 				this.beginIndex,
@@ -1370,7 +1370,7 @@ public class FloatArray extends Array<float[], Float> {
 
 		@Override
 		public void sort(Comparator<? super Float> comparator) {
-			//todo
+			//manual
 			if (comparator == null)
 				FloatArray.this.sort();
 

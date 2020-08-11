@@ -446,7 +446,7 @@ public class IntegerArray extends Array<int[], Integer> {
 
 	@Override
 	public void parallelPrefix(BinaryOperator<Integer> operator) {
-		//todo
+		//manual
 		java.util.Arrays.parallelPrefix(
 				this.array,
 				this.beginIndex,
@@ -465,7 +465,7 @@ public class IntegerArray extends Array<int[], Integer> {
 
 	@Override
 	public void parallelSort() {
-		//todo
+		//manual
 		java.util.Arrays.parallelSort(
 				this.array,
 				this.beginIndex,
@@ -503,7 +503,7 @@ public class IntegerArray extends Array<int[], Integer> {
 
 	@Override
 	public void sort() {
-		//todo
+		//manual
 		java.util.Arrays.sort(
 				this.array,
 				this.beginIndex,
@@ -1454,7 +1454,7 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public void sort(Comparator<? super Integer> comparator) {
-			//todo
+			//manual
 			if (comparator == null)
 				IntegerArray.this.sort();
 

@@ -627,7 +627,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 
 	@Override
 	public void parallelPrefix(BinaryOperator<E> operator) {
-		//todo
+		//manual
 		java.util.Arrays.parallelPrefix(
 				this.array,
 				this.beginIndex,
@@ -646,7 +646,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 
 	@Override
 	public void parallelSort() {
-		//todo
+		//manual
 		java.util.Arrays.parallelSort(
 				(Comparable[]) this.array,
 				this.beginIndex,
@@ -684,7 +684,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 
 	@Override
 	public void sort() {
-		//todo
+		//manual
 		java.util.Arrays.sort(
 				this.array,
 				this.beginIndex,
@@ -842,7 +842,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @see java.util.Arrays#parallelSort(Object[], Comparator)
 	 */
 	public void parallelSort(Comparator<? super E> comparator) {
-		//todo
+		//manual
 		java.util.Arrays.parallelSort(
 				this.array,
 				this.beginIndex,
@@ -859,7 +859,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @since 0.1.5 ~2020.08.06
 	 */
 	public void sort(Comparator<? super E> comparator) {
-		//todo
+		//manual
 		java.util.Arrays.sort(
 				this.array,
 				this.beginIndex,
@@ -1690,7 +1690,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 
 		@Override
 		public void sort(Comparator<? super E> comparator) {
-			//todo
+			//manual
 			java.util.Arrays.sort(
 					ObjectArray.this.array,
 					ObjectArray.this.beginIndex,

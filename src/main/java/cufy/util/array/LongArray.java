@@ -446,7 +446,7 @@ public class LongArray extends Array<long[], Long> {
 
 	@Override
 	public void parallelPrefix(BinaryOperator<Long> operator) {
-		//todo
+		//manual
 		java.util.Arrays.parallelPrefix(
 				this.array,
 				this.beginIndex,
@@ -465,7 +465,7 @@ public class LongArray extends Array<long[], Long> {
 
 	@Override
 	public void parallelSort() {
-		//todo
+		//manual
 		java.util.Arrays.parallelSort(
 				this.array,
 				this.beginIndex,
@@ -503,7 +503,7 @@ public class LongArray extends Array<long[], Long> {
 
 	@Override
 	public void sort() {
-		//todo
+		//manual
 		java.util.Arrays.sort(
 				this.array,
 				this.beginIndex,
@@ -1454,7 +1454,7 @@ public class LongArray extends Array<long[], Long> {
 
 		@Override
 		public void sort(Comparator<? super Long> comparator) {
-			//todo
+			//manual
 			if (comparator == null)
 				LongArray.this.sort();
 
