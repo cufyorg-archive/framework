@@ -92,7 +92,11 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	private Class wildclass;
 
 	/**
-	 * Backdoor constructor.
+	 * Construct a new type without initializing it. It is illegal to construct a new {@link Type}
+	 * but not initialize it before sharing it outside this class. yet, this class can't know such
+	 * thing.
+	 * <p>
+	 * Note: this is a backdoor constructor only to be utilized by this class.
 	 *
 	 * @since 0.1.5 ~2020.08.11
 	 */
@@ -116,17 +120,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @since 0.1.5 ~2020.08.11
 	 */
 	private Type(Class<T> typeclass, Class wildclass, Map<Object, Type> objecttypes, Type[] components) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(wildclass, "wildclass");
-		Objects.requireNonNull(objecttypes, "kinds");
-		Objects.requireNonNull(components, "components");
-		this.typeclass = typeclass;
-		this.wildclass = wildclass;
-		this.objecttypes = new ObjectArray(ObjectArray.from(objecttypes)).map();
-		this.components = components.clone();
-
-		//no cheating ;P
-		this.objecttypes.values().forEach(Type.class::cast);
+		this.init(typeclass, wildclass, objecttypes, components);
 	}
 
 	/**
@@ -1060,37 +1054,9 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 
 	@Override
 	public String getTypeName() {
-		StringBuilder typeName = new StringBuilder(this.typeclass.getTypeName());
-
-		if (this.wildclass != this.typeclass)
-			typeName.append(":")
-					.append(this.wildclass.getTypeName());
-
-		if (!this.objecttypes.isEmpty())
-			typeName.append("*");
-
-		if (this.components.length == 0)
-			return typeName.toString();
-
-		typeName.append("<");
-
-		int i = 0;
-		while (true) {
-			Type component = this.components[i];
-
-			if (component == null)
-				typeName.append("?");
-			else
-				typeName.append(component.getTypeName());
-
-			if (++i < this.components.length) {
-				typeName.append(", ");
-				continue;
-			}
-
-			return typeName.append(">")
-					.toString();
-		}
+		StringBuilder builder = new StringBuilder();
+		this.getTypeName0(builder, Collections.newSetFromMap(new IdentityHashMap()));
+		return builder.toString();
 	}
 
 	@Override
@@ -1147,37 +1113,9 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @since 0.1.5 ~2020.08.11
 	 */
 	public String getName() {
-		StringBuilder name = new StringBuilder(this.typeclass.getName());
-
-		if (this.wildclass != this.typeclass)
-			name.append(":")
-					.append(this.wildclass.getName());
-
-		if (!this.objecttypes.isEmpty())
-			name.append("*");
-
-		if (this.components.length == 0)
-			return name.toString();
-
-		name.append("<");
-
-		int i = 0;
-		while (true) {
-			Type component = this.components[i];
-
-			if (component == null)
-				name.append("?");
-			else
-				name.append(component.getName());
-
-			if (++i < this.components.length) {
-				name.append(", ");
-				continue;
-			}
-
-			return name.append(">")
-					.toString();
-		}
+		StringBuilder builder = new StringBuilder();
+		this.getName0(builder, Collections.newSetFromMap(new IdentityHashMap()));
+		return builder.toString();
 	}
 
 	/**
@@ -1211,37 +1149,9 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @since 0.1.5 ~2020.08.11
 	 */
 	public String getSimpleName() {
-		StringBuilder typeName = new StringBuilder(this.typeclass.getSimpleName());
-
-		if (this.wildclass != this.typeclass)
-			typeName.append(":")
-					.append(this.wildclass.getSimpleName());
-
-		if (!this.objecttypes.isEmpty())
-			typeName.append("*");
-
-		if (this.components.length == 0)
-			return typeName.toString();
-
-		typeName.append("<");
-
-		int i = 0;
-		while (true) {
-			Type component = this.components[i];
-
-			if (component == null)
-				typeName.append("?");
-			else
-				typeName.append(component.getSimpleName());
-
-			if (++i < this.components.length) {
-				typeName.append(", ");
-				continue;
-			}
-
-			return typeName.append(">")
-					.toString();
-		}
+		StringBuilder builder = new StringBuilder();
+		this.getSimpleName0(builder, Collections.newSetFromMap(new IdentityHashMap()));
+		return builder.toString();
 	}
 
 	/**
@@ -1775,6 +1685,182 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	}
 
 	/**
+	 * Get the name of this type skipping the components of this type that has been seen before and
+	 * stored at the given {@code dejaVu}.
+	 *
+	 * @param builder the builder to append the name of this type to.
+	 * @param dejaVu  the components that has been seen before.
+	 * @throws NullPointerException if the given {@code builder} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	private void getName0(StringBuilder builder, Set<Type> dejaVu) {
+		Objects.requireNonNull(dejaVu, "dejaVu");
+
+		dejaVu.add(this);
+
+		builder.append(this.typeclass.getName());
+
+		if (this.wildclass != this.typeclass)
+			builder.append(":")
+					.append(this.wildclass.getName());
+
+		if (!this.objecttypes.isEmpty())
+			builder.append("*");
+
+		if (this.components.length == 0)
+			return;
+
+		builder.append("<");
+
+		int i = 0;
+		while (true) {
+			Type component = this.components[i];
+
+			if (component == null || dejaVu.contains(component))
+				builder.append("?");
+			else
+				component.getName0(builder, dejaVu);
+
+			if (++i < this.components.length) {
+				builder.append(", ");
+				continue;
+			}
+
+			builder.append(">");
+			break;
+		}
+
+		dejaVu.remove(this);
+	}
+
+	/**
+	 * Get the simple name of this type skipping the components of this type that has been seen
+	 * before and stored at the given {@code dejaVu}.
+	 *
+	 * @param builder the builder to append the simple name of this type to.
+	 * @param dejaVu  the components that has been seen before.
+	 * @throws NullPointerException if the given {@code builder} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	private void getSimpleName0(StringBuilder builder, Set<Type> dejaVu) {
+		Objects.requireNonNull(dejaVu, "dejaVu");
+
+		dejaVu.add(this);
+
+		builder.append(this.typeclass.getSimpleName());
+
+		if (this.wildclass != this.typeclass)
+			builder.append(":")
+					.append(this.wildclass.getSimpleName());
+
+		if (!this.objecttypes.isEmpty())
+			builder.append("*");
+
+		if (this.components.length == 0)
+			return;
+
+		builder.append("<");
+
+		int i = 0;
+		while (true) {
+			Type component = this.components[i];
+
+			if (component == null || dejaVu.contains(component))
+				builder.append("?");
+			else
+				component.getSimpleName0(builder, dejaVu);
+
+			if (++i < this.components.length) {
+				builder.append(", ");
+				continue;
+			}
+
+			builder.append(">");
+			break;
+		}
+
+		dejaVu.remove(this);
+	}
+
+	/**
+	 * Get the type name of this type skipping the components of this type that has been seen before
+	 * and stored at the given {@code dejaVu}.
+	 *
+	 * @param builder the builder to append the type name of this type to.
+	 * @param dejaVu  the components that has been seen before.
+	 * @throws NullPointerException if the given {@code builder} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	private void getTypeName0(StringBuilder builder, Set<Type> dejaVu) {
+		Objects.requireNonNull(dejaVu, "dejaVu");
+
+		dejaVu.add(this);
+
+		builder.append(this.typeclass.getTypeName());
+
+		if (this.wildclass != this.typeclass)
+			builder.append(":")
+					.append(this.wildclass.getTypeName());
+
+		if (!this.objecttypes.isEmpty())
+			builder.append("*");
+
+		if (this.components.length == 0)
+			return;
+
+		builder.append("<");
+
+		int i = 0;
+		while (true) {
+			Type component = this.components[i];
+
+			if (component == null || dejaVu.contains(component))
+				builder.append("?");
+			else
+				component.getTypeName0(builder, dejaVu);
+
+			if (++i < this.components.length) {
+				builder.append(", ");
+				continue;
+			}
+
+			builder.append(">");
+			break;
+		}
+
+		dejaVu.remove(this);
+	}
+
+	/**
+	 * Initialize this type with the given parameters. It is illegal to initialize a type twice, yet
+	 * this method will never know such thing.
+	 *
+	 * @param typeclass   the class to be represented by this type.
+	 * @param wildclass   the class that an instance of this type should be treated as if was an
+	 *                    instance of it.
+	 * @param objecttypes mappings for other types for each specific instance.
+	 * @param components  the components of this type.
+	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code
+	 *                              objecttypes} or {@code components} is null.
+	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
+	 *                              instance of {@link Type}.
+	 * @since 2020.08.12
+	 */
+	private void init(Class<T> typeclass, Class wildclass, Map<Object, Type> objecttypes, Type[] components) {
+		Objects.requireNonNull(typeclass, "typeclass");
+		Objects.requireNonNull(wildclass, "wildclass");
+		Objects.requireNonNull(objecttypes, "objecttypes");
+		Objects.requireNonNull(components, "components");
+		this.typeclass = typeclass;
+		this.wildclass = wildclass;
+		this.objecttypes = new ObjectArray(objecttypes).map();
+		this.components = new ObjectArray<>(components).array();
+
+		//no cheating ;P
+		this.objecttypes.values().forEach(Type.class::cast);
+	}
+
+	/**
 	 * A builder to allow taking full control over what a type should be like more easily and
 	 * securely. Since the {@link Type} class should be a reliably constant type representation.
 	 *
@@ -1792,7 +1878,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		 *
 		 * @since 0.1.5 ~2020.08.11
 		 */
-		public Builder[] components;
+		public List<Builder> components;
 		/**
 		 * The {@link Type#objecttypes} of the type returned by the next calls to {@link #build()}.
 		 *
@@ -1832,7 +1918,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 			this.typeclass = type.typeclass;
 			this.wildclass = type.wildclass;
 			this.objecttypes = Builder.map(type.objecttypes);
-			this.components = Builder.array(type.components);
+			this.components = Arrays.asList(Builder.array(type.components));
 		}
 
 		/**
@@ -1893,15 +1979,15 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 				   Objects.equals(((Builder) object).typeclass, this.typeclass) &&
 				   Objects.equals(((Builder) object).wildclass, this.wildclass) &&
 				   Objects.equals(((Builder) object).objecttypes, this.objecttypes) &&
-				   Arrays.equals(((Builder) object).components, this.components);
+				   Objects.equals(((Builder) object).components, this.components);
 		}
 
 		@Override
 		public int hashCode() {
-			return this.wildclass.hashCode() ^
-				   this.typeclass.hashCode() ^
-				   this.objecttypes.hashCode() ^
-				   Arrays.hashCode(this.components);
+			return Objects.hashCode(this.wildclass) ^
+				   Objects.hashCode(this.typeclass) ^
+				   Objects.hashCode(this.objecttypes) ^
+				   Objects.hashCode(this.components);
 		}
 
 		@Override
@@ -1932,7 +2018,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		 * @return the current set source for the components.
 		 * @since 0.1.5 ~2020.08.11
 		 */
-		public Builder[] getComponents() {
+		public List<Builder> getComponents() {
 			return this.components;
 		}
 
@@ -1974,7 +2060,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		 * @return this.
 		 * @since 0.1.5 ~2020.08.11
 		 */
-		public Builder<T> setComponents(Builder[] components) {
+		public Builder<T> setComponents(List<Builder> components) {
 			this.components = components;
 			return this;
 		}
@@ -2031,34 +2117,40 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		 */
 		private Type<T> build(Map<Builder, Type> dejaVu) {
 			Objects.requireNonNull(dejaVu, "dejaVu");
-			//create
-			Type type = new Type();
-
-			//dejaVu
-			dejaVu.put(this, type);
 
 			//capture
 			Class builderTypeclass = this.typeclass;
 			Class builderWildclass = this.wildclass;
 			Map<Object, Builder> builderObjecttypes = this.objecttypes;
-			Builder[] builderComponents = this.components;
+			List<Builder> builderComponents = this.components;
 
-			//initialize
-			Class typeclass = builderTypeclass == null ?
-							  Object.class :
-							  builderTypeclass;
-			Class wildclass = builderWildclass == null ?
-							  typeclass :
-							  builderWildclass;
-			Map<Object, Type> objecttypes = builderObjecttypes == null ?
-											new HashMap() :
-											new HashMap(builderObjecttypes.size());
-			Type[] components = builderComponents == null ?
-								new Type[0] :
-								new Type[builderComponents.length];
+			//construct
+			Type type = new Type();
 
-			//compute map
-			if (builderObjecttypes != null)
+			//dejaVu effect
+			dejaVu.put(this, type);
+
+			//compute typeclass
+			Class typeclass;
+			if (builderTypeclass == null)
+				typeclass = Object.class;
+			else
+				typeclass = builderTypeclass;
+
+			//compute wildclass
+			Class wildclass;
+			if (builderWildclass == null)
+				wildclass = typeclass;
+			else
+				wildclass = builderWildclass;
+
+			//compute objecttypes
+			Map<Object, Type> objecttypes;
+			if (builderObjecttypes == null)
+				objecttypes = Collections.emptyMap();
+			else {
+				objecttypes = new HashMap(builderObjecttypes.size());
+
 				for (Map.Entry<Object, Builder> entry : builderObjecttypes.entrySet()) {
 					Object key = entry.getKey();
 					Builder value = entry.getValue();
@@ -2072,11 +2164,18 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 						objecttypes.put(key, built);
 					}
 				}
+			}
 
-			//compute array
-			if (builderComponents != null)
-				for (int i = 0; i < builderComponents.length; i++) {
-					Builder element = builderComponents[i];
+			//compute components
+			Type[] components;
+			if (builderComponents == null)
+				components = new Type[0];
+			else {
+				int length = builderComponents.size();
+				components = new Type[length];
+
+				for (int i = 0; i < length; i++) {
+					Builder element = builderComponents.get(i);
 
 					if (element != null) {
 						Type built = dejaVu.get(element);
@@ -2087,12 +2186,10 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 						components[i] = built;
 					}
 				}
+			}
 
-			//set trusted values
-			type.typeclass = typeclass;
-			type.wildclass = wildclass;
-			type.objecttypes = new ObjectArray(ObjectArray.from(objecttypes)).map();
-			type.components = components;
+			//initialize
+			type.init(typeclass, wildclass, objecttypes, components);
 			return type;
 		}
 	}
