@@ -65,6 +65,31 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	/**
+	 * Construct a new array backed by a new array from the given {@code map} using {@link
+	 * #from(java.util.Map)}.
+	 *
+	 * @param map the map to construct a new array from to be backing the constructed array.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public BooleanArray(java.util.Map map) {
+		super(BooleanArray.from(map));
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code collection} using {@link
+	 * #from(Collection)}.
+	 *
+	 * @param collection the collection to construct a new array from to be backing the constructed
+	 *                   array.
+	 * @throws NullPointerException if the given {@code collection} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public BooleanArray(java.util.Collection collection) {
+		super(BooleanArray.from(collection));
+	}
+
+	/**
 	 * Determine if the given {@code array} does equals the given {@code other} in length, elements,
 	 * and order.
 	 *
@@ -93,27 +118,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	/**
-	 * Calculate the hash code of the elements of the given {@code array}.
-	 *
-	 * @param array the array to compute its hash code.
-	 * @return the hash code of the elements of the given {@code array}.
-	 * @see java.util.Arrays#hashCode(boolean[])
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public static int hashCode(boolean[] array) {
-		if (array == null)
-			return 0;
-
-		int hashCode = 1;
-		for (int i = 0; i < array.length; i++) {
-			boolean e = array[i];
-			hashCode = 31 * hashCode + Boolean.hashCode(e);
-		}
-
-		return hashCode;
-	}
-
-	/**
 	 * Get an array from the given {@code collection}.
 	 *
 	 * @param collection the collection to get an array from it.
@@ -123,7 +127,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	 *                              the product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static boolean[] of(java.util.Collection collection) {
+	public static boolean[] from(java.util.Collection collection) {
 		Objects.requireNonNull(collection, "collection");
 		boolean[] array = new boolean[collection.size()];
 
@@ -150,7 +154,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	 *                              product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static boolean[] of(java.util.Map map) {
+	public static boolean[] from(java.util.Map map) {
 		Objects.requireNonNull(map, "map");
 		boolean[] array = new boolean[map.size() << 1];
 
@@ -168,6 +172,27 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		}
 
 		return array;
+	}
+
+	/**
+	 * Calculate the hash code of the elements of the given {@code array}.
+	 *
+	 * @param array the array to compute its hash code.
+	 * @return the hash code of the elements of the given {@code array}.
+	 * @see java.util.Arrays#hashCode(boolean[])
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static int hashCode(boolean[] array) {
+		if (array == null)
+			return 0;
+
+		int hashCode = 1;
+		for (int i = 0; i < array.length; i++) {
+			boolean e = array[i];
+			hashCode = 31 * hashCode + Boolean.hashCode(e);
+		}
+
+		return hashCode;
 	}
 
 	/**
@@ -355,14 +380,11 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	public int binarySearch(Boolean element) {
 		int low = this.beginIndex;
 		int high = this.endIndex - 1;
-
 		while (low <= high) {
 			int mid = low + high >>> 1;
 			boolean midVal = this.array[mid];
-
 			if (midVal == element)
 				return this.lowerIndex(mid);  // key found
-
 			if (element)
 				low = mid + 1;
 			else
@@ -372,25 +394,9 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	@Override
-	public boolean contains(Object element) {
-		for (int i = this.beginIndex; i < this.endIndex; i++) {
-			boolean e = this.array[i];
-
-			if (element != null && element.equals(e))
-				return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public Entry entry(int index) {
-		return new Entry(index);
-	}
-
-	@Override
-	public EntrySet entrySet() {
-		return new EntrySet();
+	public BooleanArray clone() {
+		// noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
+		return new BooleanArray(this.array());
 	}
 
 	@Override
@@ -488,11 +494,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	@Override
-	public KeySet keySet() {
-		return new KeySet();
-	}
-
-	@Override
 	public List list() {
 		return new List();
 	}
@@ -525,31 +526,13 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	@Override
-	public void parallelSort() {
-		//manual
+	public void parallelSort() {//hard manual
 		Boolean[] temp = new Boolean[this.length()];
-
 		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
 			temp[j] = this.array[i];
-
 		java.util.Arrays.parallelSort(temp);
-
 		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
 			this.array[i] = temp[j];
-	}
-
-	@Override
-	public Boolean replace(int index, Boolean element) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		boolean old = this.array[i];
-		this.array[i] = element;
-		return old;
-	}
-
-	@Override
-	public Set set() {
-		return new Set();
 	}
 
 	@Override
@@ -567,15 +550,11 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	@Override
-	public void sort() {
-		//manual
+	public void sort() {//hard manual
 		Boolean[] temp = new Boolean[this.length()];
-
 		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
 			temp[j] = this.array[i];
-
 		java.util.Arrays.sort(temp);
-
 		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
 			this.array[i] = temp[j];
 	}
@@ -597,7 +576,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 	@Override
 	public String toString() {
-		if (this.isEmpty())
+		if (this.endIndex <= this.beginIndex)
 			return "[]";
 
 		StringBuilder builder = new StringBuilder("[");
@@ -614,318 +593,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 						.toString();
 
 			builder.append(", ");
-		}
-	}
-
-	@Override
-	public Values values() {
-		return new Values();
-	}
-
-	/**
-	 * An entry backed by a range from {@code index} to {@code index + 1} in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class Entry extends Array<boolean[], Boolean>.Entry<Boolean, Boolean> {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = 5973497615323125824L;
-
-		/**
-		 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in the
-		 * enclosing array.
-		 *
-		 * @param index the index to where the key (followed by the value) will be in the
-		 *              constructed entry.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >= length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public Entry(int index) {
-			super(index);
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (object == this)
-				return true;
-			if (object instanceof java.util.Map.Entry) {
-				java.util.Map.Entry entry = (java.util.Map.Entry) object;
-				Object key = entry.getKey();
-				boolean k = BooleanArray.this.array[this.index];
-
-				if (key != null && key.equals(k)) {
-					Object value = entry.getValue();
-					boolean v = BooleanArray.this.array[this.index + 1];
-
-					return value != null && value.equals(v);
-				}
-			}
-
-			return false;
-		}
-
-		@Override
-		public Boolean getKey() {
-			return BooleanArray.this.array[this.index];
-		}
-
-		@Override
-		public Boolean getValue() {
-			return BooleanArray.this.array[this.index + 1];
-		}
-
-		@Override
-		public int hashCode() {
-			boolean k = BooleanArray.this.array[this.index];
-			boolean v = BooleanArray.this.array[this.index + 1];
-			return Boolean.hashCode(k) ^
-				   Boolean.hashCode(v);
-		}
-
-		@Override
-		public Boolean setValue(Boolean value) {
-			boolean v = BooleanArray.this.array[this.index + 1];
-			BooleanArray.this.array[this.index + 1] = value;
-			return v;
-		}
-
-		@Override
-		public String toString() {
-			boolean k = BooleanArray.this.array[this.index];
-			boolean v = BooleanArray.this.array[this.index + 1];
-			return k + "=" + v;
-		}
-	}
-
-	/**
-	 * An iterator iterating the entries in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class EntryIterator extends Array<boolean[], Boolean>.EntryIterator<Boolean, Boolean> {
-		/**
-		 * Construct a new iterator iterating the entries in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public EntryIterator() {
-		}
-
-		/**
-		 * Construct a new iterator iterating the entries in the enclosing array, starting from the
-		 * given {@code index}.
-		 *
-		 * @param index the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public EntryIterator(int index) {
-			super(index);
-		}
-	}
-
-	/**
-	 * A set backed by the entries in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class EntrySet extends Array<boolean[], Boolean>.EntrySet<Boolean, Boolean> {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = -4823635378224028987L;
-
-		/**
-		 * Construct a new set backed by the entries in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public EntrySet() {
-		}
-
-		@Override
-		public boolean contains(Object object) {
-			if (object instanceof java.util.Map.Entry) {
-				java.util.Map.Entry entry = (java.util.Map.Entry) object;
-				Object key = entry.getKey();
-
-				for (int i = BooleanArray.this.beginIndex;
-					 i < BooleanArray.this.endIndex; i += 2) {
-					boolean k = BooleanArray.this.array[i];
-
-					if (key != null && key.equals(k)) {
-						Object value = entry.getValue();
-						boolean v = BooleanArray.this.array[i + 1];
-
-						if (value != null && value.equals(v))
-							return true;
-
-						break;
-					}
-				}
-			}
-
-			return false;
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (object == this)
-				return true;
-			if (object instanceof java.util.Set) {
-				java.util.Set set = (java.util.Set) object;
-
-				if (set.size() == this.size()) {
-					for0:
-					for (Object object1 : set) {
-						if (object1 instanceof java.util.Map.Entry) {
-							java.util.Map.Entry entry = (java.util.Map.Entry) object1;
-							Object key = entry.getKey();
-
-							for (int i = BooleanArray.this.beginIndex;
-								 i < BooleanArray.this.endIndex; i += 2) {
-								boolean k = BooleanArray.this.array[i];
-
-								if (key != null && key.equals(k)) {
-									Object value = entry.getValue();
-									boolean v = BooleanArray.this.array[i + 1];
-
-									if (value != null && value.equals(v))
-										continue for0;
-
-									break;
-								}
-							}
-						}
-
-						return false;
-					}
-
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		@Override
-		public int hashCode() {
-			int hashCode = 0;
-
-			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
-				boolean k = BooleanArray.this.array[i];
-				boolean v = BooleanArray.this.array[i + 1];
-				hashCode += Boolean.hashCode(k) ^
-							Boolean.hashCode(v);
-			}
-
-			return hashCode;
-		}
-
-		@Override
-		public EntryIterator iterator() {
-			return new EntryIterator();
-		}
-
-		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
-				boolean k = BooleanArray.this.array[i];
-				boolean v = BooleanArray.this.array[i + 1];
-
-				for (Object object : collection)
-					if (object instanceof java.util.Map.Entry) {
-						java.util.Map.Entry entry = (java.util.Map.Entry) object;
-						Object key = entry.getKey();
-
-						if (key != null && key.equals(k)) {
-							Object value = entry.getValue();
-
-							if (value != null && value.equals(v))
-								//retained
-								continue for0;
-						}
-					}
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-		@Override
-		public EntrySpliterator spliterator() {
-			return new EntrySpliterator();
-		}
-
-		@Override
-		public String toString() {
-			if (this.isEmpty())
-				return "[]";
-
-			StringBuilder builder = new StringBuilder("[");
-
-			int i = BooleanArray.this.beginIndex;
-			while (true) {
-				boolean k = BooleanArray.this.array[i];
-				boolean v = BooleanArray.this.array[i + 1];
-
-				builder.append(k)
-						.append("=")
-						.append(v);
-
-				i += 2;
-				if (i >= BooleanArray.this.endIndex)
-					return builder.append("]")
-							.toString();
-
-				builder.append(", ");
-			}
-		}
-	}
-
-	/**
-	 * A spliterator iterating the entries in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.02
-	 */
-	public class EntrySpliterator extends Array<boolean[], Boolean>.EntrySpliterator<Boolean, Boolean> {
-		/**
-		 * Construct a new spliterator iterating the entries in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public EntrySpliterator() {
-		}
-
-		/**
-		 * Construct a new spliterator iterating the entries in the enclosing array, starting from
-		 * the given {@code index}.
-		 *
-		 * @param index the initial position of the constructed spliterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public EntrySpliterator(int index) {
-			super(index);
 		}
 	}
 
@@ -984,313 +651,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	/**
-	 * An iterator iterating the keys in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class KeyIterator extends Array<boolean[], Boolean>.KeyIterator<Boolean> {
-		/**
-		 * Construct a new iterator iterating the keys in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public KeyIterator() {
-		}
-
-		/**
-		 * Construct a new iterator iterating the keys in the enclosing array, starting from the
-		 * given {@code index}.
-		 *
-		 * @param index the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public KeyIterator(int index) {
-			super(index);
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super Boolean> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-			this.index = BooleanArray.this.endIndex;
-
-			for (int i = index; i < BooleanArray.this.endIndex; i += 2) {
-				boolean k = BooleanArray.this.array[i];
-
-				consumer.accept(k);
-			}
-		}
-
-		@Override
-		public Boolean next() {
-			int index = this.index;
-
-			if (index < BooleanArray.this.endIndex) {
-				this.index += 2;
-
-				return BooleanArray.this.array[index];
-			}
-
-			throw new NoSuchElementException();
-		}
-	}
-
-	/**
-	 * A set backed by the keys in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class KeySet extends Array<boolean[], Boolean>.KeySet<Boolean> {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = 7793360078444812816L;
-
-		/**
-		 * Construct a new set backed by the keys in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public KeySet() {
-		}
-
-		@Override
-		public boolean contains(Object object) {
-			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
-				boolean k = BooleanArray.this.array[i];
-
-				if (object != null && object.equals(k))
-					return true;
-			}
-
-			return false;
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (object == this)
-				return true;
-			if (object instanceof java.util.Set) {
-				java.util.Set set = (java.util.Set) object;
-
-				if (set.size() == this.size()) {
-					for0:
-					for (Object key : set) {
-						for (int i = BooleanArray.this.beginIndex;
-							 i < BooleanArray.this.endIndex; i += 2) {
-							boolean k = BooleanArray.this.array[i];
-
-							if (key != null && key.equals(k))
-								continue for0;
-						}
-
-						return false;
-					}
-
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		@Override
-		public void forEach(Consumer<? super Boolean> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
-				boolean k = BooleanArray.this.array[i];
-
-				consumer.accept(k);
-			}
-		}
-
-		@Override
-		public int hashCode() {
-			int hashCode = 0;
-
-			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
-				boolean k = BooleanArray.this.array[i];
-
-				hashCode += Boolean.hashCode(k);
-			}
-
-			return hashCode;
-		}
-
-		@Override
-		public KeyIterator iterator() {
-			return new KeyIterator();
-		}
-
-		@Override
-		public boolean removeIf(Predicate<? super Boolean> predicate) {
-			Objects.requireNonNull(predicate, "predicate");
-
-			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
-				boolean k = BooleanArray.this.array[i];
-
-				if (predicate.test(k))
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-			}
-
-			//nothing to remove
-			return false;
-		}
-
-		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
-				boolean k = BooleanArray.this.array[i];
-
-				for (Object key : collection)
-					if (key != null && key.equals(k))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-		@Override
-		public KeySpliterator spliterator() {
-			return new KeySpliterator();
-		}
-
-		@Override
-		public Object[] toArray() {
-			int length = this.size();
-			Object[] product = new Object[length];
-
-			for (int i = BooleanArray.this.beginIndex, j = 0;
-				 i < BooleanArray.this.endIndex; i += 2, j++) {
-				boolean k = BooleanArray.this.array[i];
-
-				product[j] = k;
-			}
-
-			return product;
-		}
-
-		@Override
-		public <T> T[] toArray(T[] array) {
-			Objects.requireNonNull(array, "array");
-			int length = this.size();
-			T[] product = array;
-
-			if (array.length < length)
-				product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-			else
-				product[length] = null;
-
-			for (int i = BooleanArray.this.beginIndex, j = 0;
-				 i < BooleanArray.this.endIndex; i += 2, j++) {
-				boolean k = BooleanArray.this.array[i];
-
-				product[j] = (T) (Boolean) k;
-			}
-
-			return product;
-		}
-
-		@Override
-		public String toString() {
-			if (this.isEmpty())
-				return "[]";
-
-			StringBuilder builder = new StringBuilder("[");
-
-			int i = BooleanArray.this.beginIndex;
-			while (true) {
-				boolean k = BooleanArray.this.array[i];
-
-				builder.append(k);
-
-				i += 2;
-				if (i >= BooleanArray.this.endIndex)
-					return builder.append("]")
-							.toString();
-
-				builder.append(", ");
-			}
-		}
-	}
-
-	/**
-	 * A spliterator iterating the keys in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.02
-	 */
-	public class KeySpliterator extends Array<boolean[], Boolean>.KeySpliterator<Boolean> {
-		/**
-		 * Construct a new spliterator iterating the keys in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public KeySpliterator() {
-		}
-
-		/**
-		 * Construct a new spliterator iterating the keys in the enclosing array, starting from the
-		 * given {@code index}.
-		 *
-		 * @param index the initial position of the constructed spliterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public KeySpliterator(int index) {
-			super(index);
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super Boolean> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-			this.index = BooleanArray.this.endIndex;
-
-			for (int i = index; i < BooleanArray.this.endIndex; i += 2) {
-				boolean k = BooleanArray.this.array[i];
-
-				consumer.accept(k);
-			}
-		}
-
-		@Override
-		public boolean tryAdvance(Consumer<? super Boolean> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-
-			if (index < BooleanArray.this.endIndex) {
-				this.index += 2;
-
-				boolean k = BooleanArray.this.array[index];
-				consumer.accept(k);
-				return true;
-			}
-
-			return false;
-		}
-	}
-
-	/**
 	 * A list backed by the enclosing array.
 	 *
 	 * @author LSafer
@@ -1308,6 +668,18 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		 */
 		@SuppressWarnings("RedundantNoArgConstructor")
 		public List() {
+		}
+
+		@Override
+		public boolean contains(Object object) {
+			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
+				boolean e = BooleanArray.this.array[i];
+
+				if (object != null && object.equals(e))
+					return true;
+			}
+
+			return false;
 		}
 
 		@Override
@@ -1344,6 +716,13 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 			//not equal
 			return false;
+		}
+
+		@Override
+		public Boolean get(int index) {
+			BooleanArray.this.requireIndex(index);
+			int i = BooleanArray.this.upperIndex(index);
+			return BooleanArray.this.array[i];
 		}
 
 		@Override
@@ -1392,6 +771,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		@Override
 		public boolean removeIf(Predicate<? super Boolean> predicate) {
 			Objects.requireNonNull(predicate, "predicate");
+
 			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
 				boolean e = BooleanArray.this.array[i];
 
@@ -1436,19 +816,23 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		}
 
 		@Override
-		public void sort(Comparator<? super Boolean> comparator) {
-			//manual
+		public Boolean set(int index, Boolean element) {
+			BooleanArray.this.requireIndex(index);
+			int i = BooleanArray.this.upperIndex(index);
+			boolean old = BooleanArray.this.array[i];
+			BooleanArray.this.array[i] = element;
+			return old;
+		}
+
+		@Override
+		public void sort(Comparator<? super Boolean> comparator) {//hard manual
 			if (comparator == null)
 				BooleanArray.this.sort();
-
 			Boolean[] temp = new Boolean[this.size()];
-
 			for (int i = BooleanArray.this.beginIndex, j = 0;
 				 i < BooleanArray.this.endIndex; i++, j++)
 				temp[j] = BooleanArray.this.array[i];
-
 			java.util.Arrays.sort(temp, comparator);
-
 			for (int i = BooleanArray.this.beginIndex, j = 0;
 				 i < BooleanArray.this.endIndex; i++, j++)
 				BooleanArray.this.array[i] = temp[j];
@@ -1648,6 +1032,11 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		}
 
 		@Override
+		public EntrySet entrySet() {
+			return new EntrySet();
+		}
+
+		@Override
 		public boolean equals(Object object) {
 			if (object == this)
 				return true;
@@ -1731,6 +1120,11 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 			}
 
 			return hashCode;
+		}
+
+		@Override
+		public KeySet keySet() {
+			return new KeySet();
 		}
 
 		@Override
@@ -1912,112 +1306,1011 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 				builder.append(", ");
 			}
 		}
-	}
-
-	/**
-	 * A set backed by the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public class Set extends Array<boolean[], Boolean>.Set {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = 4146929083993819823L;
-
-		/**
-		 * Construct a new set backed by the enclosing array.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public Set() {
-		}
 
 		@Override
-		public boolean equals(Object object) {
-			if (object == this)
-				//same identity
-				return true;
-			if (object instanceof java.util.Set) {
-				//same class
-				java.util.Set set = (java.util.Set) object;
+		public Values values() {
+			return new Values();
+		}
 
-				if (set.size() == BooleanArray.this.endIndex - BooleanArray.this.beginIndex) {
-					//same length
+		/**
+		 * An entry backed by a range from {@code index} to {@code index + 1} in the enclosing
+		 * array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class Entry extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.Entry {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = 5973497615323125824L;
 
-					for0:
-					for (Object element : set) {
-						//for each element
+			/**
+			 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in
+			 * the enclosing array.
+			 *
+			 * @param index the index to where the key (followed by the value) will be in the
+			 *              constructed entry.
+			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >=
+			 *                                   length}.
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public Entry(int index) {
+				super(index);
+			}
 
-						for (int i = BooleanArray.this.beginIndex;
-							 i < BooleanArray.this.endIndex; i++) {
-							boolean e = BooleanArray.this.array[i];
+			@Override
+			public boolean equals(Object object) {
+				if (object == this)
+					return true;
+				if (object instanceof java.util.Map.Entry) {
+					java.util.Map.Entry entry = (java.util.Map.Entry) object;
+					Object key = entry.getKey();
+					boolean k = BooleanArray.this.array[this.index];
 
-							if (element != null && element.equals(e))
-								continue for0;
+					if (key != null && key.equals(k)) {
+						Object value = entry.getValue();
+						boolean v = BooleanArray.this.array[this.index + 1];
+
+						return value != null && value.equals(v);
+					}
+				}
+
+				return false;
+			}
+
+			@Override
+			public Boolean getKey() {
+				return BooleanArray.this.array[this.index];
+			}
+
+			@Override
+			public Boolean getValue() {
+				return BooleanArray.this.array[this.index + 1];
+			}
+
+			@Override
+			public int hashCode() {
+				boolean k = BooleanArray.this.array[this.index];
+				boolean v = BooleanArray.this.array[this.index + 1];
+				return Boolean.hashCode(k) ^
+					   Boolean.hashCode(v);
+			}
+
+			@Override
+			public Boolean setValue(Boolean value) {
+				boolean v = BooleanArray.this.array[this.index + 1];
+				BooleanArray.this.array[this.index + 1] = value;
+				return v;
+			}
+
+			@Override
+			public String toString() {
+				boolean k = BooleanArray.this.array[this.index];
+				boolean v = BooleanArray.this.array[this.index + 1];
+				return k + "=" + v;
+			}
+		}
+
+		/**
+		 * A set backed by the entries in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class EntrySet extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.EntrySet {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = -4823635378224028987L;
+
+			/**
+			 * Construct a new set backed by the entries in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			@SuppressWarnings("RedundantNoArgConstructor")
+			public EntrySet() {
+			}
+
+			@Override
+			public boolean contains(Object object) {
+				if (object instanceof java.util.Map.Entry) {
+					java.util.Map.Entry entry = (java.util.Map.Entry) object;
+					Object key = entry.getKey();
+
+					for (int i = BooleanArray.this.beginIndex;
+						 i < BooleanArray.this.endIndex; i += 2) {
+						boolean k = BooleanArray.this.array[i];
+
+						if (key != null && key.equals(k)) {
+							Object value = entry.getValue();
+							boolean v = BooleanArray.this.array[i + 1];
+
+							if (value != null && value.equals(v))
+								return true;
+
+							break;
+						}
+					}
+				}
+
+				return false;
+			}
+
+			@Override
+			public boolean equals(Object object) {
+				if (object == this)
+					return true;
+				if (object instanceof java.util.Set) {
+					java.util.Set set = (java.util.Set) object;
+
+					if (set.size() == this.size()) {
+						for0:
+						for (Object object1 : set) {
+							if (object1 instanceof java.util.Map.Entry) {
+								java.util.Map.Entry entry = (java.util.Map.Entry) object1;
+								Object key = entry.getKey();
+
+								for (int i = BooleanArray.this.beginIndex;
+									 i < BooleanArray.this.endIndex; i += 2) {
+									boolean k = BooleanArray.this.array[i];
+
+									if (key != null && key.equals(k)) {
+										Object value = entry.getValue();
+										boolean v = BooleanArray.this.array[i + 1];
+
+										if (value != null && value.equals(v))
+											continue for0;
+
+										break;
+									}
+								}
+							}
+
+							return false;
 						}
 
-						return false;
+						return true;
 					}
+				}
 
-					//all elements equal
-					return true;
+				return false;
+			}
+
+			@Override
+			public void forEach(Consumer<? super java.util.Map.Entry<Boolean, Boolean>> consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+
+				int i = 0;
+				int l = BooleanArray.this.length();
+				for (; i < l; i += 2) {
+					Entry entry = new Entry(i);//trimmed index
+
+					consumer.accept(entry);
 				}
 			}
 
-			//not equal
-			return false;
-		}
+			@Override
+			public int hashCode() {
+				int hashCode = 0;
 
-		@Override
-		public int hashCode() {
-			int hashCode = 0;
+				for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+					boolean k = BooleanArray.this.array[i];
+					boolean v = BooleanArray.this.array[i + 1];
+					hashCode += Boolean.hashCode(k) ^
+								Boolean.hashCode(v);
+				}
 
-			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
-				boolean e = BooleanArray.this.array[i];
-
-				hashCode += Boolean.hashCode(e);
+				return hashCode;
 			}
 
-			return hashCode;
-		}
+			@Override
+			public Iterator iterator() {
+				return new Iterator();
+			}
 
-		@Override
-		public boolean removeIf(Predicate<? super Boolean> predicate) {
-			Objects.requireNonNull(predicate, "predicate");
+			@Override
+			public boolean removeIf(Predicate<? super java.util.Map.Entry<Boolean, Boolean>> predicate) {
+				Objects.requireNonNull(predicate, "predicate");
 
-			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
-				boolean e = BooleanArray.this.array[i];
+				int i = 0;
+				int l = BooleanArray.this.length();
+				for (; i < l; i += 2) {
+					Entry entry = new Entry(i); //trimmed index
 
-				if (predicate.test(e))
+					if (predicate.test(entry))
+						//can not remove
+						throw new UnsupportedOperationException("remove");
+				}
+
+				//no match
+				return false;
+			}
+
+			@Override
+			public boolean retainAll(Collection<?> collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				for0:
+				for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+					boolean k = BooleanArray.this.array[i];
+					boolean v = BooleanArray.this.array[i + 1];
+
+					for (Object object : collection)
+						if (object instanceof java.util.Map.Entry) {
+							java.util.Map.Entry entry = (java.util.Map.Entry) object;
+							Object key = entry.getKey();
+
+							if (key != null && key.equals(k)) {
+								Object value = entry.getValue();
+
+								if (value != null && value.equals(v))
+									//retained
+									continue for0;
+							}
+						}
+
 					//can not remove
 					throw new UnsupportedOperationException("remove");
+				}
+
+				//all retained
+				return false;
 			}
 
-			//nothing to remove
-			return false;
+			@Override
+			public Spliterator spliterator() {
+				return new Spliterator();
+			}
+
+			@Override
+			public Object[] toArray() {
+				int length = this.size();
+				Object[] product = new Object[length];
+
+				int i = 0;
+				int l = BooleanArray.this.length();
+				for (int j = 0; i < l; i += 2, j++) {
+					Entry entry = new Entry(i);//trimmed index
+
+					product[j] = entry;
+				}
+
+				return product;
+			}
+
+			@Override
+			public <T> T[] toArray(T[] array) {
+				Objects.requireNonNull(array, "array");
+				int length = this.size();
+				T[] product = array;
+
+				if (array.length < length)
+					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
+				else
+					product[length] = null;
+
+				//should trim the index for the entry creation
+				int i = 0;
+				int l = BooleanArray.this.length();
+				for (int j = 0; i < l; i += 2, j++) {
+					Entry entry = new Entry(i);//trimmed index
+
+					product[j] = (T) entry;
+				}
+
+				return product;
+			}
+
+			@Override
+			public String toString() {
+				if (this.isEmpty())
+					return "[]";
+
+				StringBuilder builder = new StringBuilder("[");
+
+				int i = BooleanArray.this.beginIndex;
+				while (true) {
+					boolean k = BooleanArray.this.array[i];
+					boolean v = BooleanArray.this.array[i + 1];
+
+					builder.append(k)
+							.append("=")
+							.append(v);
+
+					i += 2;
+					if (i >= BooleanArray.this.endIndex)
+						return builder.append("]")
+								.toString();
+
+					builder.append(", ");
+				}
+			}
+
+			/**
+			 * An iterator iterating the entries in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.03
+			 */
+			public class Iterator extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.EntrySet.Iterator {
+				/**
+				 * Construct a new iterator iterating the entries in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Iterator() {
+				}
+
+				/**
+				 * Construct a new iterator iterating the entries in the enclosing array, starting
+				 * from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed iterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Iterator(int index) {
+					super(index);
+				}
+
+				@Override
+				public void forEachRemaining(Consumer<? super java.util.Map.Entry<Boolean, Boolean>> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+					this.index = BooleanArray.this.endIndex;
+
+					int i = BooleanArray.this.lowerIndex(index);
+					int l = BooleanArray.this.length();
+					for (; i < l; i += 2) {
+						Entry entry = new Entry(i);//trimmed index
+
+						consumer.accept(entry);
+					}
+				}
+
+				@Override
+				public Entry next() {
+					int index = this.index;
+
+					if (index < BooleanArray.this.endIndex) {
+						this.index += 2;
+
+						int i = BooleanArray.this.lowerIndex(index);
+						return new Entry(i);//trimmed index
+					}
+
+					throw new NoSuchElementException();
+				}
+			}
+
+			/**
+			 * A spliterator iterating the entries in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.02
+			 */
+			public class Spliterator extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.EntrySet.Spliterator {
+				/**
+				 * Construct a new spliterator iterating the entries in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Spliterator() {
+				}
+
+				/**
+				 * Construct a new spliterator iterating the entries in the enclosing array,
+				 * starting from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed spliterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Spliterator(int index) {
+					super(index);
+				}
+
+				@Override
+				public void forEachRemaining(Consumer<? super java.util.Map.Entry<Boolean, Boolean>> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+					this.index = BooleanArray.this.endIndex;
+
+					int i = 0;
+					int l = BooleanArray.this.length();
+					for (; i < l; i += 2) {
+						Entry entry = new Entry(i);//trimmed index
+
+						consumer.accept(entry);
+					}
+				}
+
+				@Override
+				public boolean tryAdvance(Consumer<? super java.util.Map.Entry<Boolean, Boolean>> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+
+					if (index < BooleanArray.this.endIndex) {
+						this.index += 2;
+
+						int i = BooleanArray.this.lowerIndex(index);
+						Entry entry = new Entry(i);//trimmed index
+						consumer.accept(entry);
+						return true;
+					}
+
+					return false;
+				}
+			}
 		}
 
-		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
+		/**
+		 * A set backed by the keys in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class KeySet extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.KeySet {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = 7793360078444812816L;
 
-			for0:
-			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
-				boolean e = BooleanArray.this.array[i];
-
-				for (Object element : collection)
-					if (element != null && element.equals(e))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
+			/**
+			 * Construct a new set backed by the keys in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			@SuppressWarnings("RedundantNoArgConstructor")
+			public KeySet() {
 			}
 
-			//all retained
-			return false;
+			@Override
+			public boolean equals(Object object) {
+				if (object == this)
+					return true;
+				if (object instanceof java.util.Set) {
+					java.util.Set set = (java.util.Set) object;
+
+					if (set.size() == this.size()) {
+						for0:
+						for (Object key : set) {
+							for (int i = BooleanArray.this.beginIndex;
+								 i < BooleanArray.this.endIndex; i += 2) {
+								boolean k = BooleanArray.this.array[i];
+
+								if (key != null && key.equals(k))
+									continue for0;
+							}
+
+							return false;
+						}
+
+						return true;
+					}
+				}
+
+				return false;
+			}
+
+			@Override
+			public void forEach(Consumer<? super Boolean> consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+					boolean k = BooleanArray.this.array[i];
+
+					consumer.accept(k);
+				}
+			}
+
+			@Override
+			public int hashCode() {
+				int hashCode = 0;
+
+				for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+					boolean k = BooleanArray.this.array[i];
+
+					hashCode += Boolean.hashCode(k);
+				}
+
+				return hashCode;
+			}
+
+			@Override
+			public Iterator iterator() {
+				return new Iterator();
+			}
+
+			@Override
+			public boolean removeIf(Predicate<? super Boolean> predicate) {
+				Objects.requireNonNull(predicate, "predicate");
+
+				for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+					boolean k = BooleanArray.this.array[i];
+
+					if (predicate.test(k))
+						//can not remove
+						throw new UnsupportedOperationException("remove");
+				}
+
+				//nothing to remove
+				return false;
+			}
+
+			@Override
+			public boolean retainAll(Collection<?> collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				for0:
+				for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
+					boolean k = BooleanArray.this.array[i];
+
+					for (Object key : collection)
+						if (key != null && key.equals(k))
+							//retained
+							continue for0;
+
+					//can not remove
+					throw new UnsupportedOperationException("remove");
+				}
+
+				//all retained
+				return false;
+			}
+
+			@Override
+			public Spliterator spliterator() {
+				return new Spliterator();
+			}
+
+			@Override
+			public Object[] toArray() {
+				int length = this.size();
+				Object[] product = new Object[length];
+
+				for (int i = BooleanArray.this.beginIndex, j = 0;
+					 i < BooleanArray.this.endIndex; i += 2, j++) {
+					boolean k = BooleanArray.this.array[i];
+
+					product[j] = k;
+				}
+
+				return product;
+			}
+
+			@Override
+			public <T> T[] toArray(T[] array) {
+				Objects.requireNonNull(array, "array");
+				int length = this.size();
+				T[] product = array;
+
+				if (array.length < length)
+					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
+				else
+					product[length] = null;
+
+				for (int i = BooleanArray.this.beginIndex, j = 0;
+					 i < BooleanArray.this.endIndex; i += 2, j++) {
+					boolean k = BooleanArray.this.array[i];
+
+					product[j] = (T) (Boolean) k;
+				}
+
+				return product;
+			}
+
+			@Override
+			public String toString() {
+				if (this.isEmpty())
+					return "[]";
+
+				StringBuilder builder = new StringBuilder("[");
+
+				int i = BooleanArray.this.beginIndex;
+				while (true) {
+					boolean k = BooleanArray.this.array[i];
+
+					builder.append(k);
+
+					i += 2;
+					if (i >= BooleanArray.this.endIndex)
+						return builder.append("]")
+								.toString();
+
+					builder.append(", ");
+				}
+			}
+
+			/**
+			 * An iterator iterating the keys in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.03
+			 */
+			public class Iterator extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.KeySet.Iterator {
+				/**
+				 * Construct a new iterator iterating the keys in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Iterator() {
+				}
+
+				/**
+				 * Construct a new iterator iterating the keys in the enclosing array, starting from
+				 * the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed iterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Iterator(int index) {
+					super(index);
+				}
+
+				@Override
+				public void forEachRemaining(Consumer<? super Boolean> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+					this.index = BooleanArray.this.endIndex;
+
+					for (int i = index; i < BooleanArray.this.endIndex; i += 2) {
+						boolean k = BooleanArray.this.array[i];
+
+						consumer.accept(k);
+					}
+				}
+
+				@Override
+				public Boolean next() {
+					int index = this.index;
+
+					if (index < BooleanArray.this.endIndex) {
+						this.index += 2;
+
+						return BooleanArray.this.array[index];
+					}
+
+					throw new NoSuchElementException();
+				}
+			}
+
+			/**
+			 * A spliterator iterating the keys in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.02
+			 */
+			public class Spliterator extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.KeySet.Spliterator {
+				/**
+				 * Construct a new spliterator iterating the keys in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Spliterator() {
+				}
+
+				/**
+				 * Construct a new spliterator iterating the keys in the enclosing array, starting
+				 * from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed spliterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Spliterator(int index) {
+					super(index);
+				}
+
+				@Override
+				public void forEachRemaining(Consumer<? super Boolean> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+					this.index = BooleanArray.this.endIndex;
+
+					for (int i = index; i < BooleanArray.this.endIndex; i += 2) {
+						boolean k = BooleanArray.this.array[i];
+
+						consumer.accept(k);
+					}
+				}
+
+				@Override
+				public boolean tryAdvance(Consumer<? super Boolean> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+
+					if (index < BooleanArray.this.endIndex) {
+						this.index += 2;
+
+						boolean k = BooleanArray.this.array[index];
+						consumer.accept(k);
+						return true;
+					}
+
+					return false;
+				}
+			}
+		}
+
+		/**
+		 * A collection backed by the values in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class Values extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.Values {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = -7937502933699082438L;
+
+			/**
+			 * Construct a new collection backed by the values in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			@SuppressWarnings("RedundantNoArgConstructor")
+			public Values() {
+			}
+
+			@Override
+			public boolean equals(Object object) {
+				return object == this;
+			}
+
+			@Override
+			public void forEach(Consumer<? super Boolean> consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				for (int i = BooleanArray.this.beginIndex + 1;
+					 i < BooleanArray.this.endIndex; i += 2) {
+					boolean v = BooleanArray.this.array[i];
+
+					consumer.accept(v);
+				}
+			}
+
+			@Override
+			public int hashCode() {
+				int hashCode = 0;
+
+				for (int i = BooleanArray.this.beginIndex + 1;
+					 i < BooleanArray.this.endIndex; i += 2) {
+					boolean v = BooleanArray.this.array[i];
+
+					hashCode += Boolean.hashCode(v);
+				}
+
+				return hashCode;
+			}
+
+			@Override
+			public Iterator iterator() {
+				return new Iterator();
+			}
+
+			@Override
+			public boolean removeIf(Predicate<? super Boolean> predicate) {
+				Objects.requireNonNull(predicate, "predicate");
+
+				for (int i = BooleanArray.this.beginIndex + 1;
+					 i < BooleanArray.this.endIndex; i += 2) {
+					boolean v = BooleanArray.this.array[i];
+
+					if (predicate.test(v))
+						//can not remove
+						throw new UnsupportedOperationException("remove");
+				}
+
+				//nothing to remove
+				return false;
+			}
+
+			@Override
+			public boolean retainAll(Collection<?> collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				for0:
+				for (int i = BooleanArray.this.beginIndex + 1;
+					 i < BooleanArray.this.endIndex; i += 2) {
+					boolean v = BooleanArray.this.array[i];
+
+					for (Object value : collection)
+						if (value != null && value.equals(v))
+							//retained
+							continue for0;
+
+					//can not remove
+					throw new UnsupportedOperationException("remove");
+				}
+
+				//all retained
+				return false;
+			}
+
+			@Override
+			public Spliterator spliterator() {
+				return new Spliterator();
+			}
+
+			@Override
+			public Object[] toArray() {
+				int length = BooleanArray.this.endIndex - BooleanArray.this.beginIndex >>> 1;
+				Object[] product = new Object[length];
+
+				for (int i = BooleanArray.this.beginIndex + 1, j = 0;
+					 i < BooleanArray.this.endIndex; i += 2, j++) {
+					boolean v = BooleanArray.this.array[i];
+
+					product[j] = v;
+				}
+
+				return product;
+			}
+
+			@Override
+			public <T> T[] toArray(T[] array) {
+				Objects.requireNonNull(array, "array");
+				int length = BooleanArray.this.endIndex - BooleanArray.this.beginIndex >>> 1;
+				T[] product = array;
+
+				if (array.length < length)
+					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
+				else
+					product[length] = null;
+
+				for (int i = BooleanArray.this.beginIndex + 1, j = 0;
+					 i < BooleanArray.this.endIndex; i += 2, j++) {
+					boolean v = BooleanArray.this.array[i];
+
+					product[j] = (T) (Boolean) v;
+				}
+
+				return product;
+			}
+
+			@Override
+			public String toString() {
+				if (this.isEmpty())
+					return "[]";
+
+				StringBuilder builder = new StringBuilder("[");
+
+				int i = BooleanArray.this.beginIndex + 1;
+				while (true) {
+					boolean v = BooleanArray.this.array[i];
+
+					builder.append(v);
+
+					i += 2;
+					if (i >= BooleanArray.this.endIndex)
+						return builder.append("]")
+								.toString();
+
+					builder.append(", ");
+				}
+			}
+
+			/**
+			 * An iterator iterating the values in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.03
+			 */
+			public class Iterator extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.Values.Iterator {
+				/**
+				 * Construct a new iterator iterating the values in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Iterator() {
+				}
+
+				/**
+				 * Construct a new iterator iterating the values in the enclosing array, starting
+				 * from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed iterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Iterator(int index) {
+					super(index);
+				}
+
+				@Override
+				public void forEachRemaining(Consumer<? super Boolean> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+					this.index = BooleanArray.this.endIndex;
+
+					for (int i = index + 1; i < BooleanArray.this.endIndex; i += 2) {
+						boolean v = BooleanArray.this.array[i];
+
+						consumer.accept(v);
+					}
+				}
+
+				@Override
+				public Boolean next() {
+					int index = this.index;
+
+					if (index < BooleanArray.this.endIndex) {
+						this.index += 2;
+
+						return BooleanArray.this.array[index + 1];
+					}
+
+					throw new NoSuchElementException();
+				}
+			}
+
+			/**
+			 * A spliterator iterating the values in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.02
+			 */
+			public class Spliterator extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.Values.Spliterator {
+				/**
+				 * Construct a new spliterator iterating the values in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Spliterator() {
+				}
+
+				/**
+				 * Construct a new spliterator iterating the values in the enclosing array, starting
+				 * from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed spliterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Spliterator(int index) {
+					super(index);
+				}
+
+				@Override
+				public void forEachRemaining(Consumer<? super Boolean> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+					this.index = BooleanArray.this.endIndex;
+
+					for (int i = index + 1; i < BooleanArray.this.endIndex; i += 2) {
+						boolean v = BooleanArray.this.array[i];
+
+						consumer.accept(v);
+					}
+				}
+
+				@Override
+				public boolean tryAdvance(Consumer<? super Boolean> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+
+					if (index < BooleanArray.this.endIndex) {
+						this.index += 2;
+
+						boolean v = BooleanArray.this.array[index + 1];
+						consumer.accept(v);
+						return true;
+					}
+
+					return false;
+				}
+			}
 		}
 	}
 
@@ -2077,295 +2370,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 			}
 
 			return false;
-		}
-	}
-
-	/**
-	 * An iterator iterating the values in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class ValueIterator extends Array<boolean[], Boolean>.ValueIterator<Boolean> {
-		/**
-		 * Construct a new iterator iterating the values in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public ValueIterator() {
-		}
-
-		/**
-		 * Construct a new iterator iterating the values in the enclosing array, starting from the
-		 * given {@code index}.
-		 *
-		 * @param index the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public ValueIterator(int index) {
-			super(index);
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super Boolean> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-			this.index = BooleanArray.this.endIndex;
-
-			for (int i = index + 1; i < BooleanArray.this.endIndex; i += 2) {
-				boolean v = BooleanArray.this.array[i];
-
-				consumer.accept(v);
-			}
-		}
-
-		@Override
-		public Boolean next() {
-			int index = this.index;
-
-			if (index < BooleanArray.this.endIndex) {
-				this.index += 2;
-
-				return BooleanArray.this.array[index + 1];
-			}
-
-			throw new NoSuchElementException();
-		}
-	}
-
-	/**
-	 * A spliterator iterating the values in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.02
-	 */
-	public class ValueSpliterator extends Array<boolean[], Boolean>.ValueSpliterator<Boolean> {
-		/**
-		 * Construct a new spliterator iterating the values in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public ValueSpliterator() {
-		}
-
-		/**
-		 * Construct a new spliterator iterating the values in the enclosing array, starting from
-		 * the given {@code index}.
-		 *
-		 * @param index the initial position of the constructed spliterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public ValueSpliterator(int index) {
-			super(index);
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super Boolean> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-			this.index = BooleanArray.this.endIndex;
-
-			for (int i = index + 1; i < BooleanArray.this.endIndex; i += 2) {
-				boolean v = BooleanArray.this.array[i];
-
-				consumer.accept(v);
-			}
-		}
-
-		@Override
-		public boolean tryAdvance(Consumer<? super Boolean> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-
-			if (index < BooleanArray.this.endIndex) {
-				this.index += 2;
-
-				boolean v = BooleanArray.this.array[index + 1];
-				consumer.accept(v);
-				return true;
-			}
-
-			return false;
-		}
-	}
-
-	/**
-	 * A collection backed by the values in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class Values extends Array<boolean[], Boolean>.Values<Boolean> {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = -7937502933699082438L;
-
-		/**
-		 * Construct a new collection backed by the values in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public Values() {
-		}
-
-		@Override
-		public boolean contains(Object object) {
-			for (int i = BooleanArray.this.beginIndex + 1;
-				 i < BooleanArray.this.endIndex; i += 2) {
-				boolean v = BooleanArray.this.array[i];
-
-				if (object != null && object.equals(v))
-					return true;
-			}
-
-			return false;
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			return object == this;
-		}
-
-		@Override
-		public void forEach(Consumer<? super Boolean> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			for (int i = BooleanArray.this.beginIndex + 1;
-				 i < BooleanArray.this.endIndex; i += 2) {
-				boolean v = BooleanArray.this.array[i];
-
-				consumer.accept(v);
-			}
-		}
-
-		@Override
-		public int hashCode() {
-			int hashCode = 0;
-
-			for (int i = BooleanArray.this.beginIndex + 1;
-				 i < BooleanArray.this.endIndex; i += 2) {
-				boolean v = BooleanArray.this.array[i];
-
-				hashCode += Boolean.hashCode(v);
-			}
-
-			return hashCode;
-		}
-
-		@Override
-		public ValueIterator iterator() {
-			return new ValueIterator();
-		}
-
-		@Override
-		public boolean removeIf(Predicate<? super Boolean> predicate) {
-			Objects.requireNonNull(predicate, "predicate");
-
-			for (int i = BooleanArray.this.beginIndex + 1;
-				 i < BooleanArray.this.endIndex; i += 2) {
-				boolean v = BooleanArray.this.array[i];
-
-				if (predicate.test(v))
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-			}
-
-			//nothing to remove
-			return false;
-		}
-
-		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = BooleanArray.this.beginIndex + 1;
-				 i < BooleanArray.this.endIndex; i += 2) {
-				boolean v = BooleanArray.this.array[i];
-
-				for (Object value : collection)
-					if (value != null && value.equals(v))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-		@Override
-		public ValueSpliterator spliterator() {
-			return new ValueSpliterator();
-		}
-
-		@Override
-		public Object[] toArray() {
-			int length = BooleanArray.this.endIndex - BooleanArray.this.beginIndex >>> 1;
-			Object[] product = new Object[length];
-
-			for (int i = BooleanArray.this.beginIndex + 1, j = 0;
-				 i < BooleanArray.this.endIndex; i += 2, j++) {
-				boolean v = BooleanArray.this.array[i];
-
-				product[j] = v;
-			}
-
-			return product;
-		}
-
-		@Override
-		public <T> T[] toArray(T[] array) {
-			Objects.requireNonNull(array, "array");
-			int length = BooleanArray.this.endIndex - BooleanArray.this.beginIndex >>> 1;
-			T[] product = array;
-
-			if (array.length < length)
-				product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-			else
-				product[length] = null;
-
-			for (int i = BooleanArray.this.beginIndex + 1, j = 0;
-				 i < BooleanArray.this.endIndex; i += 2, j++) {
-				boolean v = BooleanArray.this.array[i];
-
-				product[j] = (T) (Boolean) v;
-			}
-
-			return product;
-		}
-
-		@Override
-		public String toString() {
-			if (this.isEmpty())
-				return "[]";
-
-			StringBuilder builder = new StringBuilder("[");
-
-			int i = BooleanArray.this.beginIndex + 1;
-			while (true) {
-				boolean v = BooleanArray.this.array[i];
-
-				builder.append(v);
-
-				i += 2;
-				if (i >= BooleanArray.this.endIndex)
-					return builder.append("]")
-							.toString();
-
-				builder.append(", ");
-			}
 		}
 	}
 }

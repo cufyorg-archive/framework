@@ -20,7 +20,6 @@ import cufy.util.Objects;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 import java.util.function.*;
 import java.util.stream.Stream;
@@ -35,7 +34,7 @@ import java.util.stream.StreamSupport;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.03
  */
-public abstract class Array<A, E> implements Iterable<E>, Serializable {
+public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E> {
 	@SuppressWarnings("JavaDoc")
 	private static final long serialVersionUID = 3238786977844647983L;
 
@@ -427,16 +426,6 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	}
 
 	/**
-	 * Determine if this array is empty or not.
-	 *
-	 * @return true, if this array is empty.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public boolean isEmpty() {
-		return this.endIndex <= this.beginIndex;
-	}
-
-	/**
 	 * Get the length of this array.
 	 *
 	 * @return the length of this array.
@@ -444,16 +433,6 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 */
 	public int length() {
 		return this.endIndex - this.beginIndex;
-	}
-
-	/**
-	 * Get a parallel stream streaming the elements in this array.
-	 *
-	 * @return a parallel stream streaming the elements in this array.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public Stream<E> parallelStream() {
-		return StreamSupport.stream(this.spliterator(), true);
 	}
 
 	/**
@@ -476,19 +455,6 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 */
 	protected int lowerIndex(int index) {
 		return index - this.beginIndex;
-	}
-
-	/**
-	 * Insure that this array has even length.
-	 *
-	 * @throws IllegalArgumentException if {@code length % 2 != 0}
-	 * @since 0.1.5 ~2020.08.06
-	 */
-	protected void requireEven() {
-		int length = this.length();
-
-		if (length % 2 != 0)
-			throw new IllegalArgumentException("length(" + length + ") % 2 != 0");
 	}
 
 	/**
@@ -557,6 +523,9 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	}
 
 	@Override
+	public abstract Array<A, E> clone();
+
+	@Override
 	public abstract boolean equals(Object object);
 
 	@Override
@@ -584,6 +553,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @throws NullPointerException if the given {@code elements} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
+	@Deprecated
 	public abstract int all(E... elements);
 
 	/**
@@ -596,6 +566,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @throws NullPointerException if the given {@code elements} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
+	@Deprecated
 	public abstract int all(A elements);
 
 	/**
@@ -608,6 +579,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @throws NullPointerException if the {@code elements} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
+	@Deprecated
 	public abstract int any(E... elements);
 
 	/**
@@ -620,6 +592,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @throws NullPointerException if the {@code elements} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
+	@Deprecated
 	public abstract int any(A elements);
 
 	/**
@@ -693,41 +666,6 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	public abstract int binarySearch(E element);
 
 	/**
-	 * Determine if this array contains the given element.
-	 *
-	 * @param element the element to look for.
-	 * @return true, if the given {@code element} equals any element in this array.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public abstract boolean contains(Object element);
-
-	/**
-	 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in this
-	 * array. With the key been the first index in that range and the value been the last index.
-	 *
-	 * @param index the index to where the key (followed by the value) will be in the constructed
-	 *              entry.
-	 * @param <K>   the type of the key in the constructed entry.
-	 * @param <V>   the type of the value in the constructed entry.
-	 * @return a new entry backed by a range from {@code index} to {@code index + 1}.
-	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >= length}.
-	 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-	 * @since 0.1.5 ~2020.08.06
-	 */
-	public abstract <K extends E, V extends E> Entry<K, V> entry(int index);
-
-	/**
-	 * Construct a new set backed by the entries in this array.
-	 *
-	 * @param <K> the type of the keys.
-	 * @param <V> the type of the values.
-	 * @return a new set backed by the entries in this array.
-	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-	 * @since 0.1.5 ~2020.08.06
-	 */
-	public abstract <K extends E, V extends E> EntrySet<K, V> entrySet();
-
-	/**
 	 * Assign the given {@code element} to each element of this array.
 	 *
 	 * @param element the element to fill this array with.
@@ -762,16 +700,6 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract void hardcopy(Object[] array, int pos);
-
-	/**
-	 * Construct a new set backed by the keys in this array.
-	 *
-	 * @param <K> the type of the keys.
-	 * @return a new set backed by the keys in this array.
-	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-	 * @since 0.1.5 ~2020.08.06
-	 */
-	public abstract <K extends E> KeySet<K> keySet();
 
 	/**
 	 * Construct a new list backed by this array.
@@ -835,27 +763,6 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 *
 	 * @param index   the index to set the given {@code element} to.
 	 * @param element the element to be set.
-	 * @return the previous element associated to the given {@code index} in this array.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= length}.
-	 * @throws ArrayStoreException            if the given {@code element} can not be stored to the
-	 *                                        array.
-	 * @since 0.1.5 ~2020.08.06
-	 */
-	public abstract E replace(int index, E element);
-
-	/**
-	 * Construct a new set backed by this array.
-	 *
-	 * @return a set backed by this array.
-	 * @since 0.1.5 ~2020.08.06
-	 */
-	public abstract Set set();
-
-	/**
-	 * Set the element at the given {@code index} in this array to the given {@code element}.
-	 *
-	 * @param index   the index to set the given {@code element} to.
-	 * @param element the element to be set.
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= length}.
 	 * @throws ArrayStoreException            if the given {@code element} can not be stored to the
 	 *                                        array.
@@ -898,504 +805,6 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @since 0.1.5 ~2020.08.06
 	 */
 	public abstract Array<A, E> sub(int beginIndex, int endIndex);
-
-	/**
-	 * Construct a new collection backed by the values in this array.
-	 *
-	 * @param <V> the type of the values.
-	 * @return a new collection backed by the values of this array.
-	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-	 * @since 0.1.5 ~2020.08.06
-	 */
-	public abstract <V extends E> Values<V> values();
-
-	/**
-	 * An entry backed by a range from {@code index} to {@code index + 1} in the enclosing array.
-	 *
-	 * @param <K> the type of the key in the entry.
-	 * @param <V> the type of the value in the entry.
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public abstract class Entry<K extends E, V extends E> implements java.util.Map.Entry<K, V>, Serializable {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = -1793396182662638233L;
-
-		/**
-		 * The index of the key of this entry in the backing array.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected final int index;
-
-		{
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireEven();
-		}
-
-		/**
-		 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in the
-		 * enclosing array.
-		 *
-		 * @param index the index to where the key (followed by the value) will be in the
-		 *              constructed entry.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >= length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected Entry(int index) {
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireRange(index, index + 1);
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			this.index = Array.this.upperIndex(index);
-		}
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean equals(Object object);
-
-		@Override
-		public abstract K getKey();
-
-		@Override
-		public abstract V getValue();
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract int hashCode();
-
-		@Override
-		public abstract V setValue(V value);
-
-		@Override
-		public abstract String toString();
-	}
-
-	/**
-	 * An iterator iterating the entries in the enclosing array.
-	 *
-	 * @param <K> the type of the keys.
-	 * @param <V> the type of the values.
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	@SuppressWarnings("AbstractClassWithoutAbstractMethods")
-	public abstract class EntryIterator<K extends E, V extends E> implements java.util.Iterator<java.util.Map.Entry<K, V>> {
-		/**
-		 * The next index.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected int index;
-
-		{
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireEven();
-		}
-
-		/**
-		 * Construct a new iterator iterating the entries in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected EntryIterator() {
-			this.index = Array.this.beginIndex;
-		}
-
-		/**
-		 * Construct a new iterator iterating the entries in the enclosing array, starting from the
-		 * given {@code index}.
-		 *
-		 * @param index the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected EntryIterator(int index) {
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireRange(index);
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			this.index = Array.this.upperIndex(index);
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super java.util.Map.Entry<K, V>> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-			this.index = Array.this.endIndex;
-
-			int i = Array.this.lowerIndex(index);
-			int l = Array.this.length();
-			for (; i < l; i += 2) {
-				Entry<K, V> entry = Array.this.entry(i);//trimmed index
-
-				consumer.accept(entry);
-			}
-		}
-
-		@Override
-		public boolean hasNext() {
-			return this.index < Array.this.endIndex;
-		}
-
-		@Override
-		public java.util.Map.Entry<K, V> next() {
-			int index = this.index;
-
-			if (index < Array.this.endIndex) {
-				this.index += 2;
-
-				int i = Array.this.lowerIndex(index);
-				return Array.this.entry(i);//trimmed index
-			}
-
-			throw new NoSuchElementException();
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException("remove");
-		}
-	}
-
-	/**
-	 * A set backed by the entries in the enclosing array.
-	 *
-	 * @param <K> the type of the keys.
-	 * @param <V> the type of the values.
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public abstract class EntrySet<K extends E, V extends E> implements java.util.Set<java.util.Map.Entry<K, V>>, Serializable {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = -7515045887948351373L;
-
-		{
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireEven();
-		}
-
-		/**
-		 * Construct a new set backed by the entries in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected EntrySet() {
-		}
-
-		@Override
-		public boolean add(java.util.Map.Entry<K, V> entry) {
-			if (this.contains(entry))
-				return false;
-
-			throw new UnsupportedOperationException("add");
-		}
-
-		@Override
-		public boolean addAll(Collection<? extends java.util.Map.Entry<K, V>> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			if (this.containsAll(collection))
-				return false;
-
-			throw new UnsupportedOperationException("add");
-		}
-
-		@Override
-		public void clear() {
-			if (Array.this.isEmpty())
-				return;
-
-			throw new UnsupportedOperationException("clear");
-		}
-
-		@Override
-		public boolean containsAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for (Object object : collection) {
-				if (this.contains(object))
-					continue;
-
-				return false;
-			}
-
-			return true;
-		}
-
-		@Override
-		public void forEach(Consumer<? super java.util.Map.Entry<K, V>> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-
-			int i = 0;
-			int l = Array.this.length();
-			for (; i < l; i += 2) {
-				Entry<K, V> entry = Array.this.entry(i);//trimmed index
-
-				consumer.accept(entry);
-			}
-		}
-
-		@Override
-		public boolean isEmpty() {
-			return Array.this.isEmpty();
-		}
-
-		@Override
-		public Stream<java.util.Map.Entry<K, V>> parallelStream() {
-			return StreamSupport.stream(this.spliterator(), true);
-		}
-
-		@Override
-		public boolean remove(Object object) {
-			if (this.contains(object))
-				throw new UnsupportedOperationException("remove");
-
-			return false;
-		}
-
-		@Override
-		public boolean removeAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for (Object object : collection)
-				if (this.contains(object))
-					throw new UnsupportedOperationException("remove");
-
-			return false;
-		}
-
-		@Override
-		public boolean removeIf(Predicate<? super java.util.Map.Entry<K, V>> predicate) {
-			Objects.requireNonNull(predicate, "predicate");
-
-			int i = 0;
-			int l = Array.this.length();
-			for (; i < l; i += 2) {
-				Entry<K, V> entry = Array.this.entry(i); //trimmed index
-
-				if (predicate.test(entry))
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-			}
-
-			//no match
-			return false;
-		}
-
-		@Override
-		public int size() {
-			return Array.this.length() >>> 1;
-		}
-
-		@Override
-		public Stream<java.util.Map.Entry<K, V>> stream() {
-			return StreamSupport.stream(this.spliterator(), false);
-		}
-
-		@Override
-		public Object[] toArray() {
-			int length = this.size();
-			Object[] product = new Object[length];
-
-			int i = 0;
-			int l = Array.this.length();
-			for (int j = 0; i < l; i += 2, j++) {
-				Entry<K, V> entry = Array.this.entry(i);//trimmed index
-
-				product[j] = entry;
-			}
-
-			return product;
-		}
-
-		@Override
-		public <T> T[] toArray(T[] array) {
-			Objects.requireNonNull(array, "array");
-			int length = this.size();
-			T[] product = array;
-
-			if (array.length < length)
-				product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-			else
-				product[length] = null;
-
-			//should trim the index for the entry creation
-			int i = 0;
-			int l = Array.this.length();
-			for (int j = 0; i < l; i += 2, j++) {
-				Entry<K, V> entry = Array.this.entry(i);//trimmed index
-
-				product[j] = (T) entry;
-			}
-
-			return product;
-		}
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean contains(Object object);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean equals(Object object);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract int hashCode();
-
-		@Override
-		public abstract EntryIterator<K, V> iterator();
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean retainAll(Collection<?> collection);
-
-		@Override
-		public abstract EntrySpliterator<K, V> spliterator();
-
-		@Override
-		public abstract String toString();
-	}
-
-	/**
-	 * A spliterator iterating the entries in the enclosing array.
-	 *
-	 * @param <K> the type of the keys.
-	 * @param <V> the type of the values.
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.02
-	 */
-	@SuppressWarnings("AbstractClassWithoutAbstractMethods")
-	public abstract class EntrySpliterator<K extends E, V extends E> implements java.util.Spliterator<java.util.Map.Entry<K, V>> {
-		/**
-		 * The characteristics of this spliterator.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected final int characteristics = java.util.Spliterator.SIZED |
-											  java.util.Spliterator.SUBSIZED |
-											  java.util.Spliterator.ORDERED |
-											  java.util.Spliterator.IMMUTABLE;
-		/**
-		 * The next index.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected int index;
-
-		{
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireEven();
-		}
-
-		/**
-		 * Construct a new spliterator iterating the entries in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected EntrySpliterator() {
-			this.index = Array.this.beginIndex;
-		}
-
-		/**
-		 * Construct a new spliterator iterating the entries in the enclosing array, starting from
-		 * the given {@code index}.
-		 *
-		 * @param index the initial position of the constructed spliterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected EntrySpliterator(int index) {
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireRange(index);
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			this.index = Array.this.upperIndex(index);
-		}
-
-		@Override
-		public int characteristics() {
-			return this.characteristics;
-		}
-
-		@Override
-		public long estimateSize() {
-			return Array.this.endIndex - this.index >>> 1;
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super java.util.Map.Entry<K, V>> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-			this.index = Array.this.endIndex;
-
-			int i = 0;
-			int l = Array.this.length();
-			for (; i < l; i += 2) {
-				Entry<K, V> entry = Array.this.entry(i);//trimmed index
-
-				consumer.accept(entry);
-			}
-		}
-
-		@Override
-		public Comparator<? super java.util.Map.Entry<K, V>> getComparator() {
-			if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
-				return null;
-
-			throw new IllegalStateException();
-		}
-
-		@Override
-		public long getExactSizeIfKnown() {
-			return Array.this.endIndex - this.index >>> 1;
-		}
-
-		@Override
-		public boolean hasCharacteristics(int characteristics) {
-			return (this.characteristics & characteristics) == characteristics;
-		}
-
-		@Override
-		public boolean tryAdvance(Consumer<? super java.util.Map.Entry<K, V>> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-
-			if (index < Array.this.endIndex) {
-				this.index += 2;
-
-				int i = Array.this.lowerIndex(index);
-				Entry<K, V> entry = Array.this.entry(i);//trimmed index
-				consumer.accept(entry);
-				return true;
-			}
-
-			return false;
-		}
-
-		@Override
-		public EntrySpliterator<K, V> trySplit() {
-			int index = this.index;
-			int midIndex = index + Array.this.endIndex >>> 1;
-
-			if (index < midIndex) {
-				this.index = midIndex;
-				return Array.this.sub(index, midIndex)
-						.<K, V>entrySet()
-						.spliterator();
-			}
-
-			return null;
-		}
-	}
 
 	/**
 	 * An iterator iterating the elements in the enclosing array.
@@ -1454,321 +863,6 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	}
 
 	/**
-	 * An iterator iterating the keys in the enclosing array.
-	 *
-	 * @param <K> the type of the keys.
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public abstract class KeyIterator<K extends E> implements java.util.Iterator<K> {
-		/**
-		 * The next index.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected int index;
-
-		{
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireEven();
-		}
-
-		/**
-		 * Construct a new iterator iterating the keys in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected KeyIterator() {
-			this.index = Array.this.beginIndex;
-		}
-
-		/**
-		 * Construct a new iterator iterating the keys in the enclosing array, starting from the
-		 * given {@code index}.
-		 *
-		 * @param index the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected KeyIterator(int index) {
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireRange(index);
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			this.index = Array.this.upperIndex(index);
-		}
-
-		@Override
-		public boolean hasNext() {
-			return this.index < Array.this.endIndex;
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException("remove");
-		}
-
-		@Override
-		public abstract void forEachRemaining(Consumer<? super K> consumer);
-
-		@SuppressWarnings("IteratorNextCanNotThrowNoSuchElementException")
-		@Override
-		public abstract K next();
-	}
-
-	/**
-	 * A set backed by the keys in the enclosing array.
-	 *
-	 * @param <K> the type of the keys.
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public abstract class KeySet<K extends E> implements java.util.Set<K>, Serializable {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = 4627018232494058734L;
-
-		{
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireEven();
-		}
-
-		/**
-		 * Construct a new set backed by the keys in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected KeySet() {
-		}
-
-		@Override
-		public boolean add(K key) {
-			if (this.contains(key))
-				return false;
-
-			throw new UnsupportedOperationException("add");
-		}
-
-		@Override
-		public boolean addAll(Collection<? extends K> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			if (this.containsAll(collection))
-				return false;
-
-			throw new UnsupportedOperationException("add");
-		}
-
-		@Override
-		public void clear() {
-			if (Array.this.isEmpty())
-				return;
-
-			throw new UnsupportedOperationException("clear");
-		}
-
-		@Override
-		public boolean containsAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for (Object object : collection) {
-				if (this.contains(object))
-					continue;
-
-				return false;
-			}
-
-			return true;
-		}
-
-		@Override
-		public boolean isEmpty() {
-			return Array.this.isEmpty();
-		}
-
-		@Override
-		public Stream<K> parallelStream() {
-			return StreamSupport.stream(this.spliterator(), true);
-		}
-
-		@Override
-		public boolean remove(Object object) {
-			if (this.contains(object))
-				throw new UnsupportedOperationException("remove");
-
-			return false;
-		}
-
-		@Override
-		public boolean removeAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for (Object object : collection)
-				if (this.contains(object))
-					throw new UnsupportedOperationException("remove");
-
-			return false;
-		}
-
-		@Override
-		public int size() {
-			return Array.this.length() >>> 1;
-		}
-
-		@Override
-		public Stream<K> stream() {
-			return StreamSupport.stream(this.spliterator(), false);
-		}
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean contains(Object object);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean equals(Object object);
-
-		@Override
-		public abstract void forEach(Consumer<? super K> consumer);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract int hashCode();
-
-		@Override
-		public abstract KeyIterator<K> iterator();
-
-		@Override
-		public abstract boolean removeIf(Predicate<? super K> predicate);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean retainAll(Collection<?> collection);
-
-		@Override
-		public abstract KeySpliterator<K> spliterator();
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract Object[] toArray();
-
-		@Override
-		public abstract <T> T[] toArray(T[] array);
-
-		@Override
-		public abstract String toString();
-	}
-
-	/**
-	 * A spliterator iterating the keys in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.02
-	 */
-	public abstract class KeySpliterator<K extends E> implements java.util.Spliterator<K> {
-		/**
-		 * The characteristics of this spliterator.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected final int characteristics = java.util.Spliterator.SIZED |
-											  java.util.Spliterator.SUBSIZED |
-											  java.util.Spliterator.ORDERED |
-											  java.util.Spliterator.IMMUTABLE;
-		/**
-		 * The next index.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected int index;
-
-		{
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireEven();
-		}
-
-		/**
-		 * Construct a new spliterator iterating the keys in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected KeySpliterator() {
-			this.index = Array.this.beginIndex;
-		}
-
-		/**
-		 * Construct a new spliterator iterating the keys in the enclosing array, starting from the
-		 * given {@code index}.
-		 *
-		 * @param index the initial position of the constructed spliterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected KeySpliterator(int index) {
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireRange(index);
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			this.index = Array.this.upperIndex(index);
-		}
-
-		@Override
-		public int characteristics() {
-			return this.characteristics;
-		}
-
-		@Override
-		public long estimateSize() {
-			return Array.this.endIndex - this.index >>> 1;
-		}
-
-		@Override
-		public Comparator<? super E> getComparator() {
-			if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
-				return null;
-
-			throw new IllegalStateException();
-		}
-
-		@Override
-		public long getExactSizeIfKnown() {
-			return Array.this.endIndex - this.index >>> 1;
-		}
-
-		@Override
-		public boolean hasCharacteristics(int characteristics) {
-			return (this.characteristics & characteristics) == characteristics;
-		}
-
-		@Override
-		public KeySpliterator<K> trySplit() {
-			int index = this.index;
-			int midIndex = index + Array.this.endIndex >>> 1;
-
-			if (index < midIndex) {
-				this.index = midIndex;
-				return Array.this.sub(index, midIndex)
-						.<K>keySet()
-						.spliterator();
-			}
-
-			return null;
-		}
-
-		@Override
-		public abstract void forEachRemaining(Consumer<? super K> consumer);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean tryAdvance(Consumer<? super K> consumer);
-	}
-
-	/**
 	 * A list backed by the enclosing array.
 	 *
 	 * @author LSafer
@@ -1802,7 +896,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 		public boolean addAll(Collection<? extends E> collection) {
 			Objects.requireNonNull(collection, "collection");
 			if (!collection.isEmpty())
-				throw new UnsupportedOperationException("addAll");
+				throw new UnsupportedOperationException("add");
 
 			return false;
 		}
@@ -1819,15 +913,8 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 
 		@Override
 		public void clear() {
-			if (Array.this.isEmpty())
-				return;
-
-			throw new UnsupportedOperationException("clear");
-		}
-
-		@Override
-		public boolean contains(Object object) {
-			return Array.this.contains(object);
+			if (!this.isEmpty())
+				throw new UnsupportedOperationException("clear");
 		}
 
 		@Override
@@ -1850,13 +937,8 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 		}
 
 		@Override
-		public E get(int index) {
-			return Array.this.get(index);
-		}
-
-		@Override
 		public boolean isEmpty() {
-			return Array.this.isEmpty();
+			return Array.this.endIndex <= Array.this.beginIndex;
 		}
 
 		@Override
@@ -1871,7 +953,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 
 		@Override
 		public Stream<E> parallelStream() {
-			return Array.this.parallelStream();
+			return StreamSupport.stream(this.spliterator(), true);
 		}
 
 		@Override
@@ -1900,11 +982,6 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 		}
 
 		@Override
-		public E set(int index, E element) {
-			return Array.this.replace(index, element);
-		}
-
-		@Override
 		public int size() {
 			return Array.this.length();
 		}
@@ -1916,7 +993,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 
 		@Override
 		public Stream<E> stream() {
-			return Array.this.stream();
+			return StreamSupport.stream(this.spliterator(), false);
 		}
 
 		@Override
@@ -1942,7 +1019,14 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
+		public abstract boolean contains(Object object);
+
+		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+		@Override
 		public abstract boolean equals(Object object);
+
+		@Override
+		public abstract E get(int index);
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
@@ -1968,6 +1052,9 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract boolean retainAll(Collection<?> collection);
+
+		@Override
+		public abstract E set(int index, E element);
 
 		@Override
 		public abstract void sort(Comparator<? super E> comparator);
@@ -2078,7 +1165,9 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 
 		{
 			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireEven();
+			int length = Array.this.length();
+			if (length % 2 != 0)
+				throw new IllegalArgumentException("length(" + length + ") % 2 != 0");
 		}
 
 		/**
@@ -2092,25 +1181,13 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 
 		@Override
 		public void clear() {
-			if (this.isEmpty())
-				return;
-
-			throw new UnsupportedOperationException("clear");
-		}
-
-		@Override
-		public EntrySet<K, V> entrySet() {
-			return Array.this.entrySet();
+			if (!this.isEmpty())
+				throw new UnsupportedOperationException("clear");
 		}
 
 		@Override
 		public boolean isEmpty() {
-			return Array.this.isEmpty();
-		}
-
-		@Override
-		public KeySet<K> keySet() {
-			return Array.this.keySet();
+			return Array.this.endIndex <= Array.this.beginIndex;
 		}
 
 		@Override
@@ -2124,11 +1201,6 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 		@Override
 		public int size() {
 			return Array.this.length() >>> 1;
-		}
-
-		@Override
-		public Values<V> values() {
-			return Array.this.values();
 		}
 
 		@Override
@@ -2148,6 +1220,9 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 		@Override
 		public abstract boolean containsValue(Object value);
 
+		@Override
+		public abstract EntrySet entrySet();
+
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract boolean equals(Object object);
@@ -2164,6 +1239,9 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract int hashCode();
+
+		@Override
+		public abstract KeySet keySet();
 
 		@Override
 		public abstract V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> function);
@@ -2192,159 +1270,947 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 
 		@Override
 		public abstract String toString();
-	}
 
-	/**
-	 * A set backed by the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public abstract class Set implements java.util.Set<E>, Serializable {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = 2092169091443806884L;
+		@Override
+		public abstract Values values();
 
 		/**
-		 * Construct a new set backed by the enclosing array.
+		 * An entry backed by a range from {@code index} to {@code index + 1} in the enclosing
+		 * array.
 		 *
-		 * @since 0.1.5 ~2020.08.06
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
 		 */
-		protected Set() {
+		public abstract class Entry implements java.util.Map.Entry<K, V>, Serializable {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = -1793396182662638233L;
+
+			/**
+			 * The index of the key of this entry in the backing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			protected final int index;
+
+			/**
+			 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in
+			 * the enclosing array.
+			 *
+			 * @param index the index to where the key (followed by the value) will be in the
+			 *              constructed entry.
+			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >=
+			 *                                   length}.
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			protected Entry(int index) {
+				//noinspection OverridableMethodCallDuringObjectConstruction
+				Array.this.requireRange(index, index + 1);
+				//noinspection OverridableMethodCallDuringObjectConstruction
+				this.index = Array.this.upperIndex(index);
+			}
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract boolean equals(Object object);
+
+			@Override
+			public abstract K getKey();
+
+			@Override
+			public abstract V getValue();
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract int hashCode();
+
+			@Override
+			public abstract V setValue(V value);
+
+			@Override
+			public abstract String toString();
 		}
 
-		@Override
-		public boolean add(E element) {
-			if (this.contains(element))
-				return false;
+		/**
+		 * A set backed by the entries in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public abstract class EntrySet implements java.util.Set<java.util.Map.Entry<K, V>>, Serializable {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = -7515045887948351373L;
 
-			throw new UnsupportedOperationException("add");
-		}
+			/**
+			 * Construct a new set backed by the entries in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			protected EntrySet() {
+			}
 
-		@Override
-		public boolean addAll(Collection<? extends E> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for (Object object : collection) {
-				if (this.contains(object))
-					continue;
+			@Override
+			public boolean add(java.util.Map.Entry<K, V> entry) {
+				if (this.contains(entry))
+					return false;
 
 				throw new UnsupportedOperationException("add");
 			}
 
-			return false;
-		}
+			@Override
+			public boolean addAll(Collection<? extends java.util.Map.Entry<K, V>> collection) {
+				Objects.requireNonNull(collection, "collection");
 
-		@Override
-		public void clear() {
-			if (this.isEmpty())
-				return;
+				for (Object object : collection) {
+					if (this.contains(object))
+						continue;
 
-			throw new UnsupportedOperationException("clear");
-		}
-
-		@Override
-		public boolean contains(Object object) {
-			return Array.this.contains(object);
-		}
-
-		@Override
-		public boolean containsAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for (Object object : collection) {
-				if (this.contains(object))
-					continue;
+					throw new UnsupportedOperationException("add");
+				}
 
 				return false;
 			}
 
-			return true;
-		}
+			@Override
+			public void clear() {
+				Map.this.clear();
+			}
 
-		@Override
-		public void forEach(Consumer<? super E> consumer) {
-			Array.this.forEach(consumer);
-		}
+			@Override
+			public boolean containsAll(Collection<?> collection) {
+				Objects.requireNonNull(collection, "collection");
 
-		@Override
-		public boolean isEmpty() {
-			return Array.this.isEmpty();
-		}
+				for (Object object : collection) {
+					if (this.contains(object))
+						continue;
 
-		@Override
-		public Iterator iterator() {
-			return Array.this.iterator();
-		}
+					return false;
+				}
 
-		@Override
-		public Stream<E> parallelStream() {
-			return Array.this.parallelStream();
-		}
+				return true;
+			}
 
-		@Override
-		public boolean remove(Object object) {
-			if (this.contains(object))
-				throw new UnsupportedOperationException("remove");
+			@Override
+			public boolean isEmpty() {
+				return Map.this.isEmpty();
+			}
 
-			return false;
-		}
+			@Override
+			public Stream<java.util.Map.Entry<K, V>> parallelStream() {
+				return StreamSupport.stream(this.spliterator(), true);
+			}
 
-		@Override
-		public boolean removeAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for (Object object : collection)
+			@Override
+			public boolean remove(Object object) {
 				if (this.contains(object))
 					throw new UnsupportedOperationException("remove");
 
-			return false;
+				return false;
+			}
+
+			@Override
+			public boolean removeAll(Collection<?> collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				for (Object object : collection)
+					if (this.contains(object))
+						throw new UnsupportedOperationException("remove");
+
+				return false;
+			}
+
+			@Override
+			public int size() {
+				return Map.this.size();
+			}
+
+			@Override
+			public Stream<java.util.Map.Entry<K, V>> stream() {
+				return StreamSupport.stream(this.spliterator(), false);
+			}
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract boolean contains(Object object);
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract boolean equals(Object object);
+
+			@Override
+			public abstract void forEach(Consumer<? super java.util.Map.Entry<K, V>> consumer);
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract int hashCode();
+
+			@Override
+			public abstract Iterator iterator();
+
+			@Override
+			public abstract boolean removeIf(Predicate<? super java.util.Map.Entry<K, V>> predicate);
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract boolean retainAll(Collection<?> collection);
+
+			@Override
+			public abstract Spliterator spliterator();
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract Object[] toArray();
+
+			@Override
+			public abstract <T> T[] toArray(T[] array);
+
+			@Override
+			public abstract String toString();
+
+			/**
+			 * An iterator iterating the entries in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.03
+			 */
+			public abstract class Iterator implements java.util.Iterator<java.util.Map.Entry<K, V>> {
+				/**
+				 * The next index.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected int index;
+
+				/**
+				 * Construct a new iterator iterating the entries in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected Iterator() {
+					this.index = Array.this.beginIndex;
+				}
+
+				/**
+				 * Construct a new iterator iterating the entries in the enclosing array, starting
+				 * from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed iterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected Iterator(int index) {
+					//noinspection OverridableMethodCallDuringObjectConstruction
+					Array.this.requireRange(index);
+					//noinspection OverridableMethodCallDuringObjectConstruction
+					this.index = Array.this.upperIndex(index);
+				}
+
+				@Override
+				public boolean hasNext() {
+					return this.index < Array.this.endIndex;
+				}
+
+				@Override
+				public void remove() {
+					throw new UnsupportedOperationException("remove");
+				}
+
+				@Override
+				public abstract void forEachRemaining(Consumer<? super java.util.Map.Entry<K, V>> consumer);
+
+				@SuppressWarnings("IteratorNextCanNotThrowNoSuchElementException")
+				@Override
+				public abstract Entry next();
+			}
+
+			/**
+			 * A spliterator iterating the entries in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.02
+			 */
+			public abstract class Spliterator implements java.util.Spliterator<java.util.Map.Entry<K, V>> {
+				/**
+				 * The characteristics of this spliterator.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected final int characteristics = java.util.Spliterator.SIZED |
+													  java.util.Spliterator.SUBSIZED |
+													  java.util.Spliterator.ORDERED |
+													  java.util.Spliterator.IMMUTABLE;
+				/**
+				 * The next index.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected int index;
+
+				/**
+				 * Construct a new spliterator iterating the entries in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected Spliterator() {
+					this.index = Array.this.beginIndex;
+				}
+
+				/**
+				 * Construct a new spliterator iterating the entries in the enclosing array,
+				 * starting from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed spliterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected Spliterator(int index) {
+					//noinspection OverridableMethodCallDuringObjectConstruction
+					Array.this.requireRange(index);
+					//noinspection OverridableMethodCallDuringObjectConstruction
+					this.index = Array.this.upperIndex(index);
+				}
+
+				@Override
+				public int characteristics() {
+					return this.characteristics;
+				}
+
+				@Override
+				public long estimateSize() {
+					return Array.this.endIndex - this.index >>> 1;
+				}
+
+				@Override
+				public Comparator<? super java.util.Map.Entry<K, V>> getComparator() {
+					if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
+						return null;
+
+					throw new IllegalStateException();
+				}
+
+				@Override
+				public long getExactSizeIfKnown() {
+					return Array.this.endIndex - this.index >>> 1;
+				}
+
+				@Override
+				public boolean hasCharacteristics(int characteristics) {
+					return (this.characteristics & characteristics) == characteristics;
+				}
+
+				@Override
+				public Spliterator trySplit() {
+					int index = this.index;
+					int midIndex = index + Array.this.endIndex >>> 1;
+
+					if (index < midIndex) {
+						this.index = midIndex;
+						return Array.this.sub(index, midIndex)
+								.<K, V>map()
+								.entrySet()
+								.spliterator();
+					}
+
+					return null;
+				}
+
+				@Override
+				public abstract void forEachRemaining(Consumer<? super java.util.Map.Entry<K, V>> consumer);
+
+				@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+				@Override
+				public abstract boolean tryAdvance(Consumer<? super java.util.Map.Entry<K, V>> consumer);
+			}
 		}
 
-		@Override
-		public int size() {
-			return Array.this.length();
+		/**
+		 * A set backed by the keys in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public abstract class KeySet implements java.util.Set<K>, Serializable {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = 4627018232494058734L;
+
+			/**
+			 * Construct a new set backed by the keys in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			protected KeySet() {
+			}
+
+			@Override
+			public boolean add(K key) {
+				if (Map.this.containsKey(key))
+					return false;
+
+				throw new UnsupportedOperationException("add");
+			}
+
+			@Override
+			public boolean addAll(Collection<? extends K> collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				for (Object object : collection) {
+					if (Map.this.containsKey(object))
+						continue;
+
+					throw new UnsupportedOperationException("add");
+				}
+
+				return false;
+			}
+
+			@Override
+			public void clear() {
+				Map.this.clear();
+			}
+
+			@Override
+			public boolean contains(Object object) {
+				return Map.this.containsKey(object);
+			}
+
+			@Override
+			public boolean containsAll(Collection<?> collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				for (Object object : collection) {
+					if (Map.this.containsKey(object))
+						continue;
+
+					return false;
+				}
+
+				return true;
+			}
+
+			@Override
+			public boolean isEmpty() {
+				return Map.this.isEmpty();
+			}
+
+			@Override
+			public Stream<K> parallelStream() {
+				return StreamSupport.stream(this.spliterator(), true);
+			}
+
+			@Override
+			public boolean remove(Object object) {
+				if (Map.this.containsKey(object))
+					throw new UnsupportedOperationException("remove");
+
+				return false;
+			}
+
+			@Override
+			public boolean removeAll(Collection<?> collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				for (Object object : collection)
+					if (Map.this.containsKey(object))
+						throw new UnsupportedOperationException("remove");
+
+				return false;
+			}
+
+			@Override
+			public int size() {
+				return Map.this.size();
+			}
+
+			@Override
+			public Stream<K> stream() {
+				return StreamSupport.stream(this.spliterator(), false);
+			}
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract boolean equals(Object object);
+
+			@Override
+			public abstract void forEach(Consumer<? super K> consumer);
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract int hashCode();
+
+			@Override
+			public abstract Iterator iterator();
+
+			@Override
+			public abstract boolean removeIf(Predicate<? super K> predicate);
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract boolean retainAll(Collection<?> collection);
+
+			@Override
+			public abstract Spliterator spliterator();
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract Object[] toArray();
+
+			@Override
+			public abstract <T> T[] toArray(T[] array);
+
+			@Override
+			public abstract String toString();
+
+			/**
+			 * An iterator iterating the keys in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.03
+			 */
+			public abstract class Iterator implements java.util.Iterator<K> {
+				/**
+				 * The next index.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected int index;
+
+				/**
+				 * Construct a new iterator iterating the keys in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected Iterator() {
+					this.index = Array.this.beginIndex;
+				}
+
+				/**
+				 * Construct a new iterator iterating the keys in the enclosing array, starting from
+				 * the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed iterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected Iterator(int index) {
+					//noinspection OverridableMethodCallDuringObjectConstruction
+					Array.this.requireRange(index);
+					//noinspection OverridableMethodCallDuringObjectConstruction
+					this.index = Array.this.upperIndex(index);
+				}
+
+				@Override
+				public boolean hasNext() {
+					return this.index < Array.this.endIndex;
+				}
+
+				@Override
+				public void remove() {
+					throw new UnsupportedOperationException("remove");
+				}
+
+				@Override
+				public abstract void forEachRemaining(Consumer<? super K> consumer);
+
+				@SuppressWarnings("IteratorNextCanNotThrowNoSuchElementException")
+				@Override
+				public abstract K next();
+			}
+
+			/**
+			 * A spliterator iterating the keys in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.02
+			 */
+			public abstract class Spliterator implements java.util.Spliterator<K> {
+				/**
+				 * The characteristics of this spliterator.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected final int characteristics = java.util.Spliterator.SIZED |
+													  java.util.Spliterator.SUBSIZED |
+													  java.util.Spliterator.ORDERED |
+													  java.util.Spliterator.IMMUTABLE;
+				/**
+				 * The next index.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected int index;
+
+				/**
+				 * Construct a new spliterator iterating the keys in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected Spliterator() {
+					this.index = Array.this.beginIndex;
+				}
+
+				/**
+				 * Construct a new spliterator iterating the keys in the enclosing array, starting
+				 * from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed spliterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected Spliterator(int index) {
+					//noinspection OverridableMethodCallDuringObjectConstruction
+					Array.this.requireRange(index);
+					//noinspection OverridableMethodCallDuringObjectConstruction
+					this.index = Array.this.upperIndex(index);
+				}
+
+				@Override
+				public int characteristics() {
+					return this.characteristics;
+				}
+
+				@Override
+				public long estimateSize() {
+					return Array.this.endIndex - this.index >>> 1;
+				}
+
+				@Override
+				public Comparator<? super E> getComparator() {
+					if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
+						return null;
+
+					throw new IllegalStateException();
+				}
+
+				@Override
+				public long getExactSizeIfKnown() {
+					return Array.this.endIndex - this.index >>> 1;
+				}
+
+				@Override
+				public boolean hasCharacteristics(int characteristics) {
+					return (this.characteristics & characteristics) == characteristics;
+				}
+
+				@Override
+				public Spliterator trySplit() {
+					int index = this.index;
+					int midIndex = index + Array.this.endIndex >>> 1;
+
+					if (index < midIndex) {
+						this.index = midIndex;
+						return Array.this.sub(index, midIndex)
+								.<K, V>map()
+								.keySet()
+								.spliterator();
+					}
+
+					return null;
+				}
+
+				@Override
+				public abstract void forEachRemaining(Consumer<? super K> consumer);
+
+				@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+				@Override
+				public abstract boolean tryAdvance(Consumer<? super K> consumer);
+			}
 		}
 
-		@Override
-		public Spliterator spliterator() {
-			return Array.this.spliterator();
+		/**
+		 * A collection backed by the values in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public abstract class Values implements Collection<V>, Serializable {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = 7634421013079755116L;
+
+			/**
+			 * Construct a new collection backed by the values in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			protected Values() {
+			}
+
+			@Override
+			public boolean add(V value) {
+				throw new UnsupportedOperationException("add");
+			}
+
+			@Override
+			public boolean addAll(Collection<? extends V> collection) {
+				throw new UnsupportedOperationException("addAll");
+			}
+
+			@Override
+			public void clear() {
+				Map.this.clear();
+			}
+
+			@Override
+			public boolean contains(Object object) {
+				return Map.this.containsValue(object);
+			}
+
+			@Override
+			public boolean containsAll(Collection<?> collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				for (Object object : collection) {
+					if (Map.this.containsValue(object))
+						continue;
+
+					return false;
+				}
+
+				return true;
+			}
+
+			@Override
+			public boolean isEmpty() {
+				return Map.this.isEmpty();
+			}
+
+			@Override
+			public Stream<V> parallelStream() {
+				return StreamSupport.stream(this.spliterator(), true);
+			}
+
+			@Override
+			public boolean remove(Object object) {
+				if (Map.this.containsValue(object))
+					throw new UnsupportedOperationException("remove");
+
+				return false;
+			}
+
+			@Override
+			public boolean removeAll(Collection<?> collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				for (Object object : collection)
+					if (Map.this.containsValue(object))
+						throw new UnsupportedOperationException("remove");
+
+				return false;
+			}
+
+			@Override
+			public int size() {
+				return Map.this.size();
+			}
+
+			@Override
+			public Stream<V> stream() {
+				return StreamSupport.stream(this.spliterator(), false);
+			}
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract boolean equals(Object object);
+
+			@Override
+			public abstract void forEach(Consumer<? super V> consumer);
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract int hashCode();
+
+			@Override
+			public abstract Iterator iterator();
+
+			@Override
+			public abstract boolean removeIf(Predicate<? super V> predicate);
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract boolean retainAll(Collection<?> collection);
+
+			@Override
+			public abstract Spliterator spliterator();
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract Object[] toArray();
+
+			@Override
+			public abstract <T> T[] toArray(T[] array);
+
+			@Override
+			public abstract String toString();
+
+			/**
+			 * An iterator iterating the values in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.03
+			 */
+			public abstract class Iterator implements java.util.Iterator<V> {
+				/**
+				 * The next index.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected int index;
+
+				/**
+				 * Construct a new iterator iterating the values in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected Iterator() {
+					this.index = Array.this.beginIndex;
+				}
+
+				/**
+				 * Construct a new iterator iterating the values in the enclosing array, starting
+				 * from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed iterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected Iterator(int index) {
+					//noinspection OverridableMethodCallDuringObjectConstruction
+					Array.this.requireRange(index);
+					//noinspection OverridableMethodCallDuringObjectConstruction
+					this.index = Array.this.upperIndex(index);
+				}
+
+				@Override
+				public boolean hasNext() {
+					return this.index < Array.this.endIndex;
+				}
+
+				@Override
+				public void remove() {
+					throw new UnsupportedOperationException("remove");
+				}
+
+				@Override
+				public abstract void forEachRemaining(Consumer<? super V> consumer);
+
+				@SuppressWarnings("IteratorNextCanNotThrowNoSuchElementException")
+				@Override
+				public abstract V next();
+			}
+
+			/**
+			 * A spliterator iterating the values in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.02
+			 */
+			public abstract class Spliterator implements java.util.Spliterator<V> {
+				/**
+				 * The characteristics of this spliterator.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected final int characteristics = java.util.Spliterator.SIZED |
+													  java.util.Spliterator.SUBSIZED |
+													  java.util.Spliterator.ORDERED |
+													  java.util.Spliterator.IMMUTABLE;
+				/**
+				 * The next index.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected int index;
+
+				/**
+				 * Construct a new spliterator iterating the values in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected Spliterator() {
+					this.index = Array.this.beginIndex;
+				}
+
+				/**
+				 * Construct a new spliterator iterating the values in the enclosing array, starting
+				 * from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed spliterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				protected Spliterator(int index) {
+					//noinspection OverridableMethodCallDuringObjectConstruction
+					Array.this.requireRange(index);
+					//noinspection OverridableMethodCallDuringObjectConstruction
+					this.index = Array.this.upperIndex(index);
+				}
+
+				@Override
+				public int characteristics() {
+					return this.characteristics;
+				}
+
+				@Override
+				public long estimateSize() {
+					return Array.this.endIndex - this.index >>> 1;
+				}
+
+				@Override
+				public Comparator<? super V> getComparator() {
+					if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
+						return null;
+
+					throw new IllegalStateException();
+				}
+
+				@Override
+				public long getExactSizeIfKnown() {
+					return Array.this.endIndex - this.index >>> 1;
+				}
+
+				@Override
+				public boolean hasCharacteristics(int characteristics) {
+					return (this.characteristics & characteristics) == characteristics;
+				}
+
+				@Override
+				public Spliterator trySplit() {
+					int index = this.index;
+					int midIndex = index + Array.this.endIndex >>> 1;
+
+					if (index < midIndex) {
+						this.index = midIndex;
+						return Array.this.sub(index, midIndex)
+								.<K, V>map()
+								.values()
+								.spliterator();
+					}
+
+					return null;
+				}
+
+				@Override
+				public abstract void forEachRemaining(Consumer<? super V> consumer);
+
+				@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+				@Override
+				public abstract boolean tryAdvance(Consumer<? super V> consumer);
+			}
 		}
-
-		@Override
-		public Stream<E> stream() {
-			return Array.this.stream();
-		}
-
-		@Override
-		public Object[] toArray() {
-			return Array.this.array(Object[].class);
-		}
-
-		@Override
-		public <T> T[] toArray(T[] array) {
-			return Array.this.array(array);
-		}
-
-		@Override
-		public String toString() {
-			return Array.this.toString();
-		}
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean equals(Object object);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract int hashCode();
-
-		@Override
-		public abstract boolean removeIf(Predicate<? super E> predicate);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean retainAll(Collection<?> collection);
 	}
 
 	/**
@@ -2444,313 +2310,5 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract boolean tryAdvance(Consumer<? super E> consumer);
-	}
-
-	/**
-	 * An iterator iterating the values in the enclosing array.
-	 *
-	 * @param <V> the type of the values.
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public abstract class ValueIterator<V extends E> implements java.util.Iterator<V> {
-		/**
-		 * The next index.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected int index;
-
-		{
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireEven();
-		}
-
-		/**
-		 * Construct a new iterator iterating the values in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected ValueIterator() {
-			this.index = Array.this.beginIndex;
-		}
-
-		/**
-		 * Construct a new iterator iterating the values in the enclosing array, starting from the
-		 * given {@code index}.
-		 *
-		 * @param index the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected ValueIterator(int index) {
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireRange(index);
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			this.index = Array.this.upperIndex(index);
-		}
-
-		@Override
-		public boolean hasNext() {
-			return this.index < Array.this.endIndex;
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException("remove");
-		}
-
-		@Override
-		public abstract void forEachRemaining(Consumer<? super V> consumer);
-
-		@SuppressWarnings("IteratorNextCanNotThrowNoSuchElementException")
-		@Override
-		public abstract V next();
-	}
-
-	/**
-	 * A spliterator iterating the values in the enclosing array.
-	 *
-	 * @param <V> the type of the values.
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.02
-	 */
-	public abstract class ValueSpliterator<V extends E> implements java.util.Spliterator<V> {
-		/**
-		 * The characteristics of this spliterator.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected final int characteristics = java.util.Spliterator.SIZED |
-											  java.util.Spliterator.SUBSIZED |
-											  java.util.Spliterator.ORDERED |
-											  java.util.Spliterator.IMMUTABLE;
-		/**
-		 * The next index.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected int index;
-
-		{
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireEven();
-		}
-
-		/**
-		 * Construct a new spliterator iterating the values in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected ValueSpliterator() {
-			this.index = Array.this.beginIndex;
-		}
-
-		/**
-		 * Construct a new spliterator iterating the values in the enclosing array, starting from
-		 * the given {@code index}.
-		 *
-		 * @param index the initial position of the constructed spliterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected ValueSpliterator(int index) {
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireRange(index);
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			this.index = Array.this.upperIndex(index);
-		}
-
-		@Override
-		public int characteristics() {
-			return this.characteristics;
-		}
-
-		@Override
-		public long estimateSize() {
-			return Array.this.endIndex - this.index >>> 1;
-		}
-
-		@Override
-		public Comparator<? super V> getComparator() {
-			if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
-				return null;
-
-			throw new IllegalStateException();
-		}
-
-		@Override
-		public long getExactSizeIfKnown() {
-			return Array.this.endIndex - this.index >>> 1;
-		}
-
-		@Override
-		public boolean hasCharacteristics(int characteristics) {
-			return (this.characteristics & characteristics) == characteristics;
-		}
-
-		@Override
-		public ValueSpliterator<V> trySplit() {
-			int index = this.index;
-			int midIndex = index + Array.this.endIndex >>> 1;
-
-			if (index < midIndex) {
-				this.index = midIndex;
-				return Array.this.sub(index, midIndex)
-						.<V>values()
-						.spliterator();
-			}
-
-			return null;
-		}
-
-		@Override
-		public abstract void forEachRemaining(Consumer<? super V> consumer);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean tryAdvance(Consumer<? super V> consumer);
-	}
-
-	/**
-	 * A collection backed by the values in the enclosing array.
-	 *
-	 * @param <V> the type of the values.
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public abstract class Values<V extends E> implements Collection<V>, Serializable {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = 7634421013079755116L;
-
-		{
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireEven();
-		}
-
-		/**
-		 * Construct a new collection backed by the values in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected Values() {
-		}
-
-		@Override
-		public boolean add(V value) {
-			throw new UnsupportedOperationException("add");
-		}
-
-		@Override
-		public boolean addAll(Collection<? extends V> collection) {
-			throw new UnsupportedOperationException("addAll");
-		}
-
-		@Override
-		public void clear() {
-			if (this.isEmpty())
-				return;
-
-			throw new UnsupportedOperationException("clear");
-		}
-
-		@Override
-		public boolean containsAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for (Object object : collection) {
-				if (this.contains(object))
-					continue;
-
-				return false;
-			}
-
-			return true;
-		}
-
-		@Override
-		public boolean isEmpty() {
-			return Array.this.isEmpty();
-		}
-
-		@Override
-		public Stream<V> parallelStream() {
-			return StreamSupport.stream(this.spliterator(), true);
-		}
-
-		@Override
-		public boolean remove(Object object) {
-			if (this.contains(object))
-				throw new UnsupportedOperationException("remove");
-
-			return false;
-		}
-
-		@Override
-		public boolean removeAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for (Object object : collection)
-				if (this.contains(object))
-					throw new UnsupportedOperationException("remove");
-
-			return false;
-		}
-
-		@Override
-		public int size() {
-			return Array.this.length() >>> 1;
-		}
-
-		@Override
-		public Stream<V> stream() {
-			return StreamSupport.stream(this.spliterator(), false);
-		}
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean contains(Object object);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean equals(Object object);
-
-		@Override
-		public abstract void forEach(Consumer<? super V> consumer);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract int hashCode();
-
-		@Override
-		public abstract ValueIterator<V> iterator();
-
-		@Override
-		public abstract boolean removeIf(Predicate<? super V> predicate);
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract boolean retainAll(Collection<?> collection);
-
-		@Override
-		public abstract ValueSpliterator<V> spliterator();
-
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-		@Override
-		public abstract Object[] toArray();
-
-		@Override
-		public abstract <T> T[] toArray(T[] array);
-
-		@Override
-		public abstract String toString();
 	}
 }

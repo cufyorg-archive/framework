@@ -65,6 +65,31 @@ public class ShortArray extends Array<short[], Short> {
 	}
 
 	/**
+	 * Construct a new array backed by a new array from the given {@code map} using {@link
+	 * #from(java.util.Map)}.
+	 *
+	 * @param map the map to construct a new array from to be backing the constructed array.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public ShortArray(java.util.Map map) {
+		super(ShortArray.from(map));
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code collection} using {@link
+	 * #from(Collection)}.
+	 *
+	 * @param collection the collection to construct a new array from to be backing the constructed
+	 *                   array.
+	 * @throws NullPointerException if the given {@code collection} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public ShortArray(java.util.Collection collection) {
+		super(ShortArray.from(collection));
+	}
+
+	/**
 	 * Determine if the given {@code array} does equals the given {@code other} in length, elements,
 	 * and order.
 	 *
@@ -355,11 +380,9 @@ public class ShortArray extends Array<short[], Short> {
 	public int binarySearch(Short element) {
 		int low = this.beginIndex;
 		int high = this.endIndex - 1;
-
 		while (low <= high) {
 			int mid = low + high >>> 1;
 			short midVal = this.array[mid];
-
 			if (midVal < element)
 				low = mid + 1;
 			else if (midVal > element)
@@ -371,25 +394,9 @@ public class ShortArray extends Array<short[], Short> {
 	}
 
 	@Override
-	public boolean contains(Object element) {
-		for (int i = this.beginIndex; i < this.endIndex; i++) {
-			short e = this.array[i];
-
-			if (element != null && element.equals(e))
-				return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public Entry entry(int index) {
-		return new Entry(index);
-	}
-
-	@Override
-	public EntrySet entrySet() {
-		return new EntrySet();
+	public ShortArray clone() {
+		// noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
+		return new ShortArray(this.array());
 	}
 
 	@Override
@@ -487,11 +494,6 @@ public class ShortArray extends Array<short[], Short> {
 	}
 
 	@Override
-	public KeySet keySet() {
-		return new KeySet();
-	}
-
-	@Override
 	public List list() {
 		return new List();
 	}
@@ -531,20 +533,6 @@ public class ShortArray extends Array<short[], Short> {
 				this.beginIndex,
 				this.endIndex
 		);
-	}
-
-	@Override
-	public Short replace(int index, Short element) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		short old = this.array[i];
-		this.array[i] = element;
-		return old;
-	}
-
-	@Override
-	public Set set() {
-		return new Set();
 	}
 
 	@Override
@@ -588,7 +576,7 @@ public class ShortArray extends Array<short[], Short> {
 
 	@Override
 	public String toString() {
-		if (this.isEmpty())
+		if (this.endIndex <= this.beginIndex)
 			return "[]";
 
 		StringBuilder builder = new StringBuilder("[");
@@ -605,318 +593,6 @@ public class ShortArray extends Array<short[], Short> {
 						.toString();
 
 			builder.append(", ");
-		}
-	}
-
-	@Override
-	public Values values() {
-		return new Values();
-	}
-
-	/**
-	 * An entry backed by a range from {@code index} to {@code index + 1} in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class Entry extends Array<short[], Short>.Entry<Short, Short> {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = 5973497615323125824L;
-
-		/**
-		 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in the
-		 * enclosing array.
-		 *
-		 * @param index the index to where the key (followed by the value) will be in the
-		 *              constructed entry.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >= length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public Entry(int index) {
-			super(index);
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (object == this)
-				return true;
-			if (object instanceof java.util.Map.Entry) {
-				java.util.Map.Entry entry = (java.util.Map.Entry) object;
-				Object key = entry.getKey();
-				short k = ShortArray.this.array[this.index];
-
-				if (key != null && key.equals(k)) {
-					Object value = entry.getValue();
-					short v = ShortArray.this.array[this.index + 1];
-
-					return value != null && value.equals(v);
-				}
-			}
-
-			return false;
-		}
-
-		@Override
-		public Short getKey() {
-			return ShortArray.this.array[this.index];
-		}
-
-		@Override
-		public Short getValue() {
-			return ShortArray.this.array[this.index + 1];
-		}
-
-		@Override
-		public int hashCode() {
-			short k = ShortArray.this.array[this.index];
-			short v = ShortArray.this.array[this.index + 1];
-			return Short.hashCode(k) ^
-				   Short.hashCode(v);
-		}
-
-		@Override
-		public Short setValue(Short value) {
-			short v = ShortArray.this.array[this.index + 1];
-			ShortArray.this.array[this.index + 1] = value;
-			return v;
-		}
-
-		@Override
-		public String toString() {
-			short k = ShortArray.this.array[this.index];
-			short v = ShortArray.this.array[this.index + 1];
-			return k + "=" + v;
-		}
-	}
-
-	/**
-	 * An iterator iterating the entries in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class EntryIterator extends Array<short[], Short>.EntryIterator<Short, Short> {
-		/**
-		 * Construct a new iterator iterating the entries in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public EntryIterator() {
-		}
-
-		/**
-		 * Construct a new iterator iterating the entries in the enclosing array, starting from the
-		 * given {@code index}.
-		 *
-		 * @param index the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public EntryIterator(int index) {
-			super(index);
-		}
-	}
-
-	/**
-	 * A set backed by the entries in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class EntrySet extends Array<short[], Short>.EntrySet<Short, Short> {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = -4823635378224028987L;
-
-		/**
-		 * Construct a new set backed by the entries in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public EntrySet() {
-		}
-
-		@Override
-		public boolean contains(Object object) {
-			if (object instanceof java.util.Map.Entry) {
-				java.util.Map.Entry entry = (java.util.Map.Entry) object;
-				Object key = entry.getKey();
-
-				for (int i = ShortArray.this.beginIndex;
-					 i < ShortArray.this.endIndex; i += 2) {
-					short k = ShortArray.this.array[i];
-
-					if (key != null && key.equals(k)) {
-						Object value = entry.getValue();
-						short v = ShortArray.this.array[i + 1];
-
-						if (value != null && value.equals(v))
-							return true;
-
-						break;
-					}
-				}
-			}
-
-			return false;
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (object == this)
-				return true;
-			if (object instanceof java.util.Set) {
-				java.util.Set set = (java.util.Set) object;
-
-				if (set.size() == this.size()) {
-					for0:
-					for (Object object1 : set) {
-						if (object1 instanceof java.util.Map.Entry) {
-							java.util.Map.Entry entry = (java.util.Map.Entry) object1;
-							Object key = entry.getKey();
-
-							for (int i = ShortArray.this.beginIndex;
-								 i < ShortArray.this.endIndex; i += 2) {
-								short k = ShortArray.this.array[i];
-
-								if (key != null && key.equals(k)) {
-									Object value = entry.getValue();
-									short v = ShortArray.this.array[i + 1];
-
-									if (value != null && value.equals(v))
-										continue for0;
-
-									break;
-								}
-							}
-						}
-
-						return false;
-					}
-
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		@Override
-		public int hashCode() {
-			int hashCode = 0;
-
-			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
-				short k = ShortArray.this.array[i];
-				short v = ShortArray.this.array[i + 1];
-				hashCode += Short.hashCode(k) ^
-							Short.hashCode(v);
-			}
-
-			return hashCode;
-		}
-
-		@Override
-		public EntryIterator iterator() {
-			return new EntryIterator();
-		}
-
-		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
-				short k = ShortArray.this.array[i];
-				short v = ShortArray.this.array[i + 1];
-
-				for (Object object : collection)
-					if (object instanceof java.util.Map.Entry) {
-						java.util.Map.Entry entry = (java.util.Map.Entry) object;
-						Object key = entry.getKey();
-
-						if (key != null && key.equals(k)) {
-							Object value = entry.getValue();
-
-							if (value != null && value.equals(v))
-								//retained
-								continue for0;
-						}
-					}
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-		@Override
-		public EntrySpliterator spliterator() {
-			return new EntrySpliterator();
-		}
-
-		@Override
-		public String toString() {
-			if (this.isEmpty())
-				return "[]";
-
-			StringBuilder builder = new StringBuilder("[");
-
-			int i = ShortArray.this.beginIndex;
-			while (true) {
-				short k = ShortArray.this.array[i];
-				short v = ShortArray.this.array[i + 1];
-
-				builder.append(k)
-						.append("=")
-						.append(v);
-
-				i += 2;
-				if (i >= ShortArray.this.endIndex)
-					return builder.append("]")
-							.toString();
-
-				builder.append(", ");
-			}
-		}
-	}
-
-	/**
-	 * A spliterator iterating the entries in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.02
-	 */
-	public class EntrySpliterator extends Array<short[], Short>.EntrySpliterator<Short, Short> {
-		/**
-		 * Construct a new spliterator iterating the entries in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public EntrySpliterator() {
-		}
-
-		/**
-		 * Construct a new spliterator iterating the entries in the enclosing array, starting from
-		 * the given {@code index}.
-		 *
-		 * @param index the initial position of the constructed spliterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public EntrySpliterator(int index) {
-			super(index);
 		}
 	}
 
@@ -975,313 +651,6 @@ public class ShortArray extends Array<short[], Short> {
 	}
 
 	/**
-	 * An iterator iterating the keys in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class KeyIterator extends Array<short[], Short>.KeyIterator<Short> {
-		/**
-		 * Construct a new iterator iterating the keys in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public KeyIterator() {
-		}
-
-		/**
-		 * Construct a new iterator iterating the keys in the enclosing array, starting from the
-		 * given {@code index}.
-		 *
-		 * @param index the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public KeyIterator(int index) {
-			super(index);
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super Short> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-			this.index = ShortArray.this.endIndex;
-
-			for (int i = index; i < ShortArray.this.endIndex; i += 2) {
-				short k = ShortArray.this.array[i];
-
-				consumer.accept(k);
-			}
-		}
-
-		@Override
-		public Short next() {
-			int index = this.index;
-
-			if (index < ShortArray.this.endIndex) {
-				this.index += 2;
-
-				return ShortArray.this.array[index];
-			}
-
-			throw new NoSuchElementException();
-		}
-	}
-
-	/**
-	 * A set backed by the keys in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class KeySet extends Array<short[], Short>.KeySet<Short> {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = 7793360078444812816L;
-
-		/**
-		 * Construct a new set backed by the keys in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public KeySet() {
-		}
-
-		@Override
-		public boolean contains(Object object) {
-			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
-				short k = ShortArray.this.array[i];
-
-				if (object != null && object.equals(k))
-					return true;
-			}
-
-			return false;
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (object == this)
-				return true;
-			if (object instanceof java.util.Set) {
-				java.util.Set set = (java.util.Set) object;
-
-				if (set.size() == this.size()) {
-					for0:
-					for (Object key : set) {
-						for (int i = ShortArray.this.beginIndex;
-							 i < ShortArray.this.endIndex; i += 2) {
-							short k = ShortArray.this.array[i];
-
-							if (key != null && key.equals(k))
-								continue for0;
-						}
-
-						return false;
-					}
-
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		@Override
-		public void forEach(Consumer<? super Short> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
-				short k = ShortArray.this.array[i];
-
-				consumer.accept(k);
-			}
-		}
-
-		@Override
-		public int hashCode() {
-			int hashCode = 0;
-
-			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
-				short k = ShortArray.this.array[i];
-
-				hashCode += Short.hashCode(k);
-			}
-
-			return hashCode;
-		}
-
-		@Override
-		public KeyIterator iterator() {
-			return new KeyIterator();
-		}
-
-		@Override
-		public boolean removeIf(Predicate<? super Short> predicate) {
-			Objects.requireNonNull(predicate, "predicate");
-
-			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
-				short k = ShortArray.this.array[i];
-
-				if (predicate.test(k))
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-			}
-
-			//nothing to remove
-			return false;
-		}
-
-		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
-				short k = ShortArray.this.array[i];
-
-				for (Object key : collection)
-					if (key != null && key.equals(k))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-		@Override
-		public KeySpliterator spliterator() {
-			return new KeySpliterator();
-		}
-
-		@Override
-		public Object[] toArray() {
-			int length = this.size();
-			Object[] product = new Object[length];
-
-			for (int i = ShortArray.this.beginIndex, j = 0;
-				 i < ShortArray.this.endIndex; i += 2, j++) {
-				short k = ShortArray.this.array[i];
-
-				product[j] = k;
-			}
-
-			return product;
-		}
-
-		@Override
-		public <T> T[] toArray(T[] array) {
-			Objects.requireNonNull(array, "array");
-			int length = this.size();
-			T[] product = array;
-
-			if (array.length < length)
-				product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-			else
-				product[length] = null;
-
-			for (int i = ShortArray.this.beginIndex, j = 0;
-				 i < ShortArray.this.endIndex; i += 2, j++) {
-				short k = ShortArray.this.array[i];
-
-				product[j] = (T) (Short) k;
-			}
-
-			return product;
-		}
-
-		@Override
-		public String toString() {
-			if (this.isEmpty())
-				return "[]";
-
-			StringBuilder builder = new StringBuilder("[");
-
-			int i = ShortArray.this.beginIndex;
-			while (true) {
-				short k = ShortArray.this.array[i];
-
-				builder.append(k);
-
-				i += 2;
-				if (i >= ShortArray.this.endIndex)
-					return builder.append("]")
-							.toString();
-
-				builder.append(", ");
-			}
-		}
-	}
-
-	/**
-	 * A spliterator iterating the keys in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.02
-	 */
-	public class KeySpliterator extends Array<short[], Short>.KeySpliterator<Short> {
-		/**
-		 * Construct a new spliterator iterating the keys in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public KeySpliterator() {
-		}
-
-		/**
-		 * Construct a new spliterator iterating the keys in the enclosing array, starting from the
-		 * given {@code index}.
-		 *
-		 * @param index the initial position of the constructed spliterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public KeySpliterator(int index) {
-			super(index);
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super Short> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-			this.index = ShortArray.this.endIndex;
-
-			for (int i = index; i < ShortArray.this.endIndex; i += 2) {
-				short k = ShortArray.this.array[i];
-
-				consumer.accept(k);
-			}
-		}
-
-		@Override
-		public boolean tryAdvance(Consumer<? super Short> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-
-			if (index < ShortArray.this.endIndex) {
-				this.index += 2;
-
-				short k = ShortArray.this.array[index];
-				consumer.accept(k);
-				return true;
-			}
-
-			return false;
-		}
-	}
-
-	/**
 	 * A list backed by the enclosing array.
 	 *
 	 * @author LSafer
@@ -1299,6 +668,18 @@ public class ShortArray extends Array<short[], Short> {
 		 */
 		@SuppressWarnings("RedundantNoArgConstructor")
 		public List() {
+		}
+
+		@Override
+		public boolean contains(Object object) {
+			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i++) {
+				short e = ShortArray.this.array[i];
+
+				if (object != null && object.equals(e))
+					return true;
+			}
+
+			return false;
 		}
 
 		@Override
@@ -1335,6 +716,13 @@ public class ShortArray extends Array<short[], Short> {
 
 			//not equal
 			return false;
+		}
+
+		@Override
+		public Short get(int index) {
+			ShortArray.this.requireIndex(index);
+			int i = ShortArray.this.upperIndex(index);
+			return ShortArray.this.array[i];
 		}
 
 		@Override
@@ -1383,6 +771,7 @@ public class ShortArray extends Array<short[], Short> {
 		@Override
 		public boolean removeIf(Predicate<? super Short> predicate) {
 			Objects.requireNonNull(predicate, "predicate");
+
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i++) {
 				short e = ShortArray.this.array[i];
 
@@ -1427,18 +816,24 @@ public class ShortArray extends Array<short[], Short> {
 		}
 
 		@Override
+		public Short set(int index, Short element) {
+			ShortArray.this.requireIndex(index);
+			int i = ShortArray.this.upperIndex(index);
+			short old = ShortArray.this.array[i];
+			ShortArray.this.array[i] = element;
+			return old;
+		}
+
+		@Override
 		public void sort(Comparator<? super Short> comparator) {
-			//manual
+			//hard manual
 			if (comparator == null)
 				ShortArray.this.sort();
 
 			Short[] temp = new Short[this.size()];
-
 			for (int i = ShortArray.this.beginIndex, j = 0; i < ShortArray.this.endIndex; i++, j++)
 				temp[j] = ShortArray.this.array[i];
-
 			java.util.Arrays.sort(temp, comparator);
-
 			for (int i = ShortArray.this.beginIndex, j = 0; i < ShortArray.this.endIndex; i++, j++)
 				ShortArray.this.array[i] = temp[j];
 		}
@@ -1637,6 +1032,11 @@ public class ShortArray extends Array<short[], Short> {
 		}
 
 		@Override
+		public EntrySet entrySet() {
+			return new EntrySet();
+		}
+
+		@Override
 		public boolean equals(Object object) {
 			if (object == this)
 				return true;
@@ -1720,6 +1120,11 @@ public class ShortArray extends Array<short[], Short> {
 			}
 
 			return hashCode;
+		}
+
+		@Override
+		public KeySet keySet() {
+			return new KeySet();
 		}
 
 		@Override
@@ -1901,112 +1306,1011 @@ public class ShortArray extends Array<short[], Short> {
 				builder.append(", ");
 			}
 		}
-	}
-
-	/**
-	 * A set backed by the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	public class Set extends Array<short[], Short>.Set {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = 4146929083993819823L;
-
-		/**
-		 * Construct a new set backed by the enclosing array.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public Set() {
-		}
 
 		@Override
-		public boolean equals(Object object) {
-			if (object == this)
-				//same identity
-				return true;
-			if (object instanceof java.util.Set) {
-				//same class
-				java.util.Set set = (java.util.Set) object;
+		public Values values() {
+			return new Values();
+		}
 
-				if (set.size() == ShortArray.this.endIndex - ShortArray.this.beginIndex) {
-					//same length
+		/**
+		 * An entry backed by a range from {@code index} to {@code index + 1} in the enclosing
+		 * array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class Entry extends Array<short[], Short>.Map<Short, Short>.Entry {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = 5973497615323125824L;
 
-					for0:
-					for (Object element : set) {
-						//for each element
+			/**
+			 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in
+			 * the enclosing array.
+			 *
+			 * @param index the index to where the key (followed by the value) will be in the
+			 *              constructed entry.
+			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >=
+			 *                                   length}.
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public Entry(int index) {
+				super(index);
+			}
 
-						for (int i = ShortArray.this.beginIndex;
-							 i < ShortArray.this.endIndex; i++) {
-							short e = ShortArray.this.array[i];
+			@Override
+			public boolean equals(Object object) {
+				if (object == this)
+					return true;
+				if (object instanceof java.util.Map.Entry) {
+					java.util.Map.Entry entry = (java.util.Map.Entry) object;
+					Object key = entry.getKey();
+					short k = ShortArray.this.array[this.index];
 
-							if (element != null && element.equals(e))
-								continue for0;
+					if (key != null && key.equals(k)) {
+						Object value = entry.getValue();
+						short v = ShortArray.this.array[this.index + 1];
+
+						return value != null && value.equals(v);
+					}
+				}
+
+				return false;
+			}
+
+			@Override
+			public Short getKey() {
+				return ShortArray.this.array[this.index];
+			}
+
+			@Override
+			public Short getValue() {
+				return ShortArray.this.array[this.index + 1];
+			}
+
+			@Override
+			public int hashCode() {
+				short k = ShortArray.this.array[this.index];
+				short v = ShortArray.this.array[this.index + 1];
+				return Short.hashCode(k) ^
+					   Short.hashCode(v);
+			}
+
+			@Override
+			public Short setValue(Short value) {
+				short v = ShortArray.this.array[this.index + 1];
+				ShortArray.this.array[this.index + 1] = value;
+				return v;
+			}
+
+			@Override
+			public String toString() {
+				short k = ShortArray.this.array[this.index];
+				short v = ShortArray.this.array[this.index + 1];
+				return k + "=" + v;
+			}
+		}
+
+		/**
+		 * A set backed by the entries in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class EntrySet extends Array<short[], Short>.Map<Short, Short>.EntrySet {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = -4823635378224028987L;
+
+			/**
+			 * Construct a new set backed by the entries in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			@SuppressWarnings("RedundantNoArgConstructor")
+			public EntrySet() {
+			}
+
+			@Override
+			public boolean contains(Object object) {
+				if (object instanceof java.util.Map.Entry) {
+					java.util.Map.Entry entry = (java.util.Map.Entry) object;
+					Object key = entry.getKey();
+
+					for (int i = ShortArray.this.beginIndex;
+						 i < ShortArray.this.endIndex; i += 2) {
+						short k = ShortArray.this.array[i];
+
+						if (key != null && key.equals(k)) {
+							Object value = entry.getValue();
+							short v = ShortArray.this.array[i + 1];
+
+							if (value != null && value.equals(v))
+								return true;
+
+							break;
+						}
+					}
+				}
+
+				return false;
+			}
+
+			@Override
+			public boolean equals(Object object) {
+				if (object == this)
+					return true;
+				if (object instanceof java.util.Set) {
+					java.util.Set set = (java.util.Set) object;
+
+					if (set.size() == this.size()) {
+						for0:
+						for (Object object1 : set) {
+							if (object1 instanceof java.util.Map.Entry) {
+								java.util.Map.Entry entry = (java.util.Map.Entry) object1;
+								Object key = entry.getKey();
+
+								for (int i = ShortArray.this.beginIndex;
+									 i < ShortArray.this.endIndex; i += 2) {
+									short k = ShortArray.this.array[i];
+
+									if (key != null && key.equals(k)) {
+										Object value = entry.getValue();
+										short v = ShortArray.this.array[i + 1];
+
+										if (value != null && value.equals(v))
+											continue for0;
+
+										break;
+									}
+								}
+							}
+
+							return false;
 						}
 
-						return false;
+						return true;
 					}
+				}
 
-					//all elements equal
-					return true;
+				return false;
+			}
+
+			@Override
+			public void forEach(Consumer<? super java.util.Map.Entry<Short, Short>> consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+
+				int i = 0;
+				int l = ShortArray.this.length();
+				for (; i < l; i += 2) {
+					Entry entry = new Entry(i);//trimmed index
+
+					consumer.accept(entry);
 				}
 			}
 
-			//not equal
-			return false;
-		}
+			@Override
+			public int hashCode() {
+				int hashCode = 0;
 
-		@Override
-		public int hashCode() {
-			int hashCode = 0;
+				for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
+					short k = ShortArray.this.array[i];
+					short v = ShortArray.this.array[i + 1];
+					hashCode += Short.hashCode(k) ^
+								Short.hashCode(v);
+				}
 
-			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i++) {
-				short e = ShortArray.this.array[i];
-
-				hashCode += Short.hashCode(e);
+				return hashCode;
 			}
 
-			return hashCode;
-		}
+			@Override
+			public Iterator iterator() {
+				return new Iterator();
+			}
 
-		@Override
-		public boolean removeIf(Predicate<? super Short> predicate) {
-			Objects.requireNonNull(predicate, "predicate");
+			@Override
+			public boolean removeIf(Predicate<? super java.util.Map.Entry<Short, Short>> predicate) {
+				Objects.requireNonNull(predicate, "predicate");
 
-			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i++) {
-				short e = ShortArray.this.array[i];
+				int i = 0;
+				int l = ShortArray.this.length();
+				for (; i < l; i += 2) {
+					Entry entry = new Entry(i); //trimmed index
 
-				if (predicate.test(e))
+					if (predicate.test(entry))
+						//can not remove
+						throw new UnsupportedOperationException("remove");
+				}
+
+				//no match
+				return false;
+			}
+
+			@Override
+			public boolean retainAll(Collection<?> collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				for0:
+				for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
+					short k = ShortArray.this.array[i];
+					short v = ShortArray.this.array[i + 1];
+
+					for (Object object : collection)
+						if (object instanceof java.util.Map.Entry) {
+							java.util.Map.Entry entry = (java.util.Map.Entry) object;
+							Object key = entry.getKey();
+
+							if (key != null && key.equals(k)) {
+								Object value = entry.getValue();
+
+								if (value != null && value.equals(v))
+									//retained
+									continue for0;
+							}
+						}
+
 					//can not remove
 					throw new UnsupportedOperationException("remove");
+				}
+
+				//all retained
+				return false;
 			}
 
-			//nothing to remove
-			return false;
+			@Override
+			public Spliterator spliterator() {
+				return new Spliterator();
+			}
+
+			@Override
+			public Object[] toArray() {
+				int length = this.size();
+				Object[] product = new Object[length];
+
+				int i = 0;
+				int l = ShortArray.this.length();
+				for (int j = 0; i < l; i += 2, j++) {
+					Entry entry = new Entry(i);//trimmed index
+
+					product[j] = entry;
+				}
+
+				return product;
+			}
+
+			@Override
+			public <T> T[] toArray(T[] array) {
+				Objects.requireNonNull(array, "array");
+				int length = this.size();
+				T[] product = array;
+
+				if (array.length < length)
+					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
+				else
+					product[length] = null;
+
+				//should trim the index for the entry creation
+				int i = 0;
+				int l = ShortArray.this.length();
+				for (int j = 0; i < l; i += 2, j++) {
+					Entry entry = new Entry(i);//trimmed index
+
+					product[j] = (T) entry;
+				}
+
+				return product;
+			}
+
+			@Override
+			public String toString() {
+				if (this.isEmpty())
+					return "[]";
+
+				StringBuilder builder = new StringBuilder("[");
+
+				int i = ShortArray.this.beginIndex;
+				while (true) {
+					short k = ShortArray.this.array[i];
+					short v = ShortArray.this.array[i + 1];
+
+					builder.append(k)
+							.append("=")
+							.append(v);
+
+					i += 2;
+					if (i >= ShortArray.this.endIndex)
+						return builder.append("]")
+								.toString();
+
+					builder.append(", ");
+				}
+			}
+
+			/**
+			 * An iterator iterating the entries in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.03
+			 */
+			public class Iterator extends Array<short[], Short>.Map<Short, Short>.EntrySet.Iterator {
+				/**
+				 * Construct a new iterator iterating the entries in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Iterator() {
+				}
+
+				/**
+				 * Construct a new iterator iterating the entries in the enclosing array, starting
+				 * from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed iterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Iterator(int index) {
+					super(index);
+				}
+
+				@Override
+				public void forEachRemaining(Consumer<? super java.util.Map.Entry<Short, Short>> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+					this.index = ShortArray.this.endIndex;
+
+					int i = ShortArray.this.lowerIndex(index);
+					int l = ShortArray.this.length();
+					for (; i < l; i += 2) {
+						ShortArray.Map.Entry entry = new ShortArray.Map.Entry(i);//trimmed index
+
+						consumer.accept(entry);
+					}
+				}
+
+				@Override
+				public ShortArray.Map.Entry next() {
+					int index = this.index;
+
+					if (index < ShortArray.this.endIndex) {
+						this.index += 2;
+
+						int i = ShortArray.this.lowerIndex(index);
+						return new ShortArray.Map.Entry(i);//trimmed index
+					}
+
+					throw new NoSuchElementException();
+				}
+			}
+
+			/**
+			 * A spliterator iterating the entries in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.02
+			 */
+			public class Spliterator extends Array<short[], Short>.Map<Short, Short>.EntrySet.Spliterator {
+				/**
+				 * Construct a new spliterator iterating the entries in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Spliterator() {
+				}
+
+				/**
+				 * Construct a new spliterator iterating the entries in the enclosing array,
+				 * starting from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed spliterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Spliterator(int index) {
+					super(index);
+				}
+
+				@Override
+				public void forEachRemaining(Consumer<? super java.util.Map.Entry<Short, Short>> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+					this.index = ShortArray.this.endIndex;
+
+					int i = 0;
+					int l = ShortArray.this.length();
+					for (; i < l; i += 2) {
+						Entry entry = new Entry(i);//trimmed index
+
+						consumer.accept(entry);
+					}
+				}
+
+				@Override
+				public boolean tryAdvance(Consumer<? super java.util.Map.Entry<Short, Short>> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+
+					if (index < ShortArray.this.endIndex) {
+						this.index += 2;
+
+						int i = ShortArray.this.lowerIndex(index);
+						Entry entry = new Entry(i);//trimmed index
+						consumer.accept(entry);
+						return true;
+					}
+
+					return false;
+				}
+			}
 		}
 
-		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
+		/**
+		 * A set backed by the keys in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class KeySet extends Array<short[], Short>.Map<Short, Short>.KeySet {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = 7793360078444812816L;
 
-			for0:
-			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i++) {
-				short e = ShortArray.this.array[i];
-
-				for (Object element : collection)
-					if (element != null && element.equals(e))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
+			/**
+			 * Construct a new set backed by the keys in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			@SuppressWarnings("RedundantNoArgConstructor")
+			public KeySet() {
 			}
 
-			//all retained
-			return false;
+			@Override
+			public boolean equals(Object object) {
+				if (object == this)
+					return true;
+				if (object instanceof java.util.Set) {
+					java.util.Set set = (java.util.Set) object;
+
+					if (set.size() == this.size()) {
+						for0:
+						for (Object key : set) {
+							for (int i = ShortArray.this.beginIndex;
+								 i < ShortArray.this.endIndex; i += 2) {
+								short k = ShortArray.this.array[i];
+
+								if (key != null && key.equals(k))
+									continue for0;
+							}
+
+							return false;
+						}
+
+						return true;
+					}
+				}
+
+				return false;
+			}
+
+			@Override
+			public void forEach(Consumer<? super Short> consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
+					short k = ShortArray.this.array[i];
+
+					consumer.accept(k);
+				}
+			}
+
+			@Override
+			public int hashCode() {
+				int hashCode = 0;
+
+				for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
+					short k = ShortArray.this.array[i];
+
+					hashCode += Short.hashCode(k);
+				}
+
+				return hashCode;
+			}
+
+			@Override
+			public Iterator iterator() {
+				return new Iterator();
+			}
+
+			@Override
+			public boolean removeIf(Predicate<? super Short> predicate) {
+				Objects.requireNonNull(predicate, "predicate");
+
+				for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
+					short k = ShortArray.this.array[i];
+
+					if (predicate.test(k))
+						//can not remove
+						throw new UnsupportedOperationException("remove");
+				}
+
+				//nothing to remove
+				return false;
+			}
+
+			@Override
+			public boolean retainAll(Collection<?> collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				for0:
+				for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
+					short k = ShortArray.this.array[i];
+
+					for (Object key : collection)
+						if (key != null && key.equals(k))
+							//retained
+							continue for0;
+
+					//can not remove
+					throw new UnsupportedOperationException("remove");
+				}
+
+				//all retained
+				return false;
+			}
+
+			@Override
+			public Spliterator spliterator() {
+				return new Spliterator();
+			}
+
+			@Override
+			public Object[] toArray() {
+				int length = this.size();
+				Object[] product = new Object[length];
+
+				for (int i = ShortArray.this.beginIndex, j = 0;
+					 i < ShortArray.this.endIndex; i += 2, j++) {
+					short k = ShortArray.this.array[i];
+
+					product[j] = k;
+				}
+
+				return product;
+			}
+
+			@Override
+			public <T> T[] toArray(T[] array) {
+				Objects.requireNonNull(array, "array");
+				int length = this.size();
+				T[] product = array;
+
+				if (array.length < length)
+					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
+				else
+					product[length] = null;
+
+				for (int i = ShortArray.this.beginIndex, j = 0;
+					 i < ShortArray.this.endIndex; i += 2, j++) {
+					short k = ShortArray.this.array[i];
+
+					product[j] = (T) (Short) k;
+				}
+
+				return product;
+			}
+
+			@Override
+			public String toString() {
+				if (this.isEmpty())
+					return "[]";
+
+				StringBuilder builder = new StringBuilder("[");
+
+				int i = ShortArray.this.beginIndex;
+				while (true) {
+					short k = ShortArray.this.array[i];
+
+					builder.append(k);
+
+					i += 2;
+					if (i >= ShortArray.this.endIndex)
+						return builder.append("]")
+								.toString();
+
+					builder.append(", ");
+				}
+			}
+
+			/**
+			 * An iterator iterating the keys in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.03
+			 */
+			public class Iterator extends Array<short[], Short>.Map<Short, Short>.KeySet.Iterator {
+				/**
+				 * Construct a new iterator iterating the keys in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Iterator() {
+				}
+
+				/**
+				 * Construct a new iterator iterating the keys in the enclosing array, starting from
+				 * the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed iterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Iterator(int index) {
+					super(index);
+				}
+
+				@Override
+				public void forEachRemaining(Consumer<? super Short> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+					this.index = ShortArray.this.endIndex;
+
+					for (int i = index; i < ShortArray.this.endIndex; i += 2) {
+						short k = ShortArray.this.array[i];
+
+						consumer.accept(k);
+					}
+				}
+
+				@Override
+				public Short next() {
+					int index = this.index;
+
+					if (index < ShortArray.this.endIndex) {
+						this.index += 2;
+
+						return ShortArray.this.array[index];
+					}
+
+					throw new NoSuchElementException();
+				}
+			}
+
+			/**
+			 * A spliterator iterating the keys in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.02
+			 */
+			public class Spliterator extends Array<short[], Short>.Map<Short, Short>.KeySet.Spliterator {
+				/**
+				 * Construct a new spliterator iterating the keys in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Spliterator() {
+				}
+
+				/**
+				 * Construct a new spliterator iterating the keys in the enclosing array, starting
+				 * from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed spliterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Spliterator(int index) {
+					super(index);
+				}
+
+				@Override
+				public void forEachRemaining(Consumer<? super Short> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+					this.index = ShortArray.this.endIndex;
+
+					for (int i = index; i < ShortArray.this.endIndex; i += 2) {
+						short k = ShortArray.this.array[i];
+
+						consumer.accept(k);
+					}
+				}
+
+				@Override
+				public boolean tryAdvance(Consumer<? super Short> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+
+					if (index < ShortArray.this.endIndex) {
+						this.index += 2;
+
+						short k = ShortArray.this.array[index];
+						consumer.accept(k);
+						return true;
+					}
+
+					return false;
+				}
+			}
+		}
+
+		/**
+		 * A collection backed by the values in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class Values extends Array<short[], Short>.Map<Short, Short>.Values {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = -7937502933699082438L;
+
+			/**
+			 * Construct a new collection backed by the values in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			@SuppressWarnings("RedundantNoArgConstructor")
+			public Values() {
+			}
+
+			@Override
+			public boolean equals(Object object) {
+				return object == this;
+			}
+
+			@Override
+			public void forEach(Consumer<? super Short> consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				for (int i = ShortArray.this.beginIndex + 1;
+					 i < ShortArray.this.endIndex; i += 2) {
+					short v = ShortArray.this.array[i];
+
+					consumer.accept(v);
+				}
+			}
+
+			@Override
+			public int hashCode() {
+				int hashCode = 0;
+
+				for (int i = ShortArray.this.beginIndex + 1;
+					 i < ShortArray.this.endIndex; i += 2) {
+					short v = ShortArray.this.array[i];
+
+					hashCode += Short.hashCode(v);
+				}
+
+				return hashCode;
+			}
+
+			@Override
+			public Iterator iterator() {
+				return new Iterator();
+			}
+
+			@Override
+			public boolean removeIf(Predicate<? super Short> predicate) {
+				Objects.requireNonNull(predicate, "predicate");
+
+				for (int i = ShortArray.this.beginIndex + 1;
+					 i < ShortArray.this.endIndex; i += 2) {
+					short v = ShortArray.this.array[i];
+
+					if (predicate.test(v))
+						//can not remove
+						throw new UnsupportedOperationException("remove");
+				}
+
+				//nothing to remove
+				return false;
+			}
+
+			@Override
+			public boolean retainAll(Collection<?> collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				for0:
+				for (int i = ShortArray.this.beginIndex + 1;
+					 i < ShortArray.this.endIndex; i += 2) {
+					short v = ShortArray.this.array[i];
+
+					for (Object value : collection)
+						if (value != null && value.equals(v))
+							//retained
+							continue for0;
+
+					//can not remove
+					throw new UnsupportedOperationException("remove");
+				}
+
+				//all retained
+				return false;
+			}
+
+			@Override
+			public Spliterator spliterator() {
+				return new Spliterator();
+			}
+
+			@Override
+			public Object[] toArray() {
+				int length = ShortArray.this.endIndex - ShortArray.this.beginIndex >>> 1;
+				Object[] product = new Object[length];
+
+				for (int i = ShortArray.this.beginIndex + 1, j = 0;
+					 i < ShortArray.this.endIndex; i += 2, j++) {
+					short v = ShortArray.this.array[i];
+
+					product[j] = v;
+				}
+
+				return product;
+			}
+
+			@Override
+			public <T> T[] toArray(T[] array) {
+				Objects.requireNonNull(array, "array");
+				int length = ShortArray.this.endIndex - ShortArray.this.beginIndex >>> 1;
+				T[] product = array;
+
+				if (array.length < length)
+					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
+				else
+					product[length] = null;
+
+				for (int i = ShortArray.this.beginIndex + 1, j = 0;
+					 i < ShortArray.this.endIndex; i += 2, j++) {
+					short v = ShortArray.this.array[i];
+
+					product[j] = (T) (Short) v;
+				}
+
+				return product;
+			}
+
+			@Override
+			public String toString() {
+				if (this.isEmpty())
+					return "[]";
+
+				StringBuilder builder = new StringBuilder("[");
+
+				int i = ShortArray.this.beginIndex + 1;
+				while (true) {
+					short v = ShortArray.this.array[i];
+
+					builder.append(v);
+
+					i += 2;
+					if (i >= ShortArray.this.endIndex)
+						return builder.append("]")
+								.toString();
+
+					builder.append(", ");
+				}
+			}
+
+			/**
+			 * An iterator iterating the values in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.03
+			 */
+			public class Iterator extends Array<short[], Short>.Map<Short, Short>.Values.Iterator {
+				/**
+				 * Construct a new iterator iterating the values in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Iterator() {
+				}
+
+				/**
+				 * Construct a new iterator iterating the values in the enclosing array, starting
+				 * from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed iterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Iterator(int index) {
+					super(index);
+				}
+
+				@Override
+				public void forEachRemaining(Consumer<? super Short> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+					this.index = ShortArray.this.endIndex;
+
+					for (int i = index + 1; i < ShortArray.this.endIndex; i += 2) {
+						short v = ShortArray.this.array[i];
+
+						consumer.accept(v);
+					}
+				}
+
+				@Override
+				public Short next() {
+					int index = this.index;
+
+					if (index < ShortArray.this.endIndex) {
+						this.index += 2;
+
+						return ShortArray.this.array[index + 1];
+					}
+
+					throw new NoSuchElementException();
+				}
+			}
+
+			/**
+			 * A spliterator iterating the values in the enclosing array.
+			 *
+			 * @author LSafer
+			 * @version 0.1.5
+			 * @since 0.1.5 ~2020.08.02
+			 */
+			public class Spliterator extends Array<short[], Short>.Map<Short, Short>.Values.Spliterator {
+				/**
+				 * Construct a new spliterator iterating the values in the enclosing array.
+				 *
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Spliterator() {
+				}
+
+				/**
+				 * Construct a new spliterator iterating the values in the enclosing array, starting
+				 * from the given {@code index}.
+				 *
+				 * @param index the initial position of the constructed spliterator.
+				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
+				 *                                   length}.
+				 * @since 0.1.5 ~2020.08.06
+				 */
+				public Spliterator(int index) {
+					super(index);
+				}
+
+				@Override
+				public void forEachRemaining(Consumer<? super Short> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+					this.index = ShortArray.this.endIndex;
+
+					for (int i = index + 1; i < ShortArray.this.endIndex; i += 2) {
+						short v = ShortArray.this.array[i];
+
+						consumer.accept(v);
+					}
+				}
+
+				@Override
+				public boolean tryAdvance(Consumer<? super Short> consumer) {
+					Objects.requireNonNull(consumer, "consumer");
+					int index = this.index;
+
+					if (index < ShortArray.this.endIndex) {
+						this.index += 2;
+
+						short v = ShortArray.this.array[index + 1];
+						consumer.accept(v);
+						return true;
+					}
+
+					return false;
+				}
+			}
 		}
 	}
 
@@ -2066,295 +2370,6 @@ public class ShortArray extends Array<short[], Short> {
 			}
 
 			return false;
-		}
-	}
-
-	/**
-	 * An iterator iterating the values in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class ValueIterator extends Array<short[], Short>.ValueIterator<Short> {
-		/**
-		 * Construct a new iterator iterating the values in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public ValueIterator() {
-		}
-
-		/**
-		 * Construct a new iterator iterating the values in the enclosing array, starting from the
-		 * given {@code index}.
-		 *
-		 * @param index the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public ValueIterator(int index) {
-			super(index);
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super Short> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-			this.index = ShortArray.this.endIndex;
-
-			for (int i = index + 1; i < ShortArray.this.endIndex; i += 2) {
-				short v = ShortArray.this.array[i];
-
-				consumer.accept(v);
-			}
-		}
-
-		@Override
-		public Short next() {
-			int index = this.index;
-
-			if (index < ShortArray.this.endIndex) {
-				this.index += 2;
-
-				return ShortArray.this.array[index + 1];
-			}
-
-			throw new NoSuchElementException();
-		}
-	}
-
-	/**
-	 * A spliterator iterating the values in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.02
-	 */
-	public class ValueSpliterator extends Array<short[], Short>.ValueSpliterator<Short> {
-		/**
-		 * Construct a new spliterator iterating the values in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public ValueSpliterator() {
-		}
-
-		/**
-		 * Construct a new spliterator iterating the values in the enclosing array, starting from
-		 * the given {@code index}.
-		 *
-		 * @param index the initial position of the constructed spliterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-		 * @throws IllegalArgumentException  if {@code length % 2 != 0}
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		public ValueSpliterator(int index) {
-			super(index);
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super Short> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-			this.index = ShortArray.this.endIndex;
-
-			for (int i = index + 1; i < ShortArray.this.endIndex; i += 2) {
-				short v = ShortArray.this.array[i];
-
-				consumer.accept(v);
-			}
-		}
-
-		@Override
-		public boolean tryAdvance(Consumer<? super Short> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			int index = this.index;
-
-			if (index < ShortArray.this.endIndex) {
-				this.index += 2;
-
-				short v = ShortArray.this.array[index + 1];
-				consumer.accept(v);
-				return true;
-			}
-
-			return false;
-		}
-	}
-
-	/**
-	 * A collection backed by the values in the enclosing array.
-	 *
-	 * @author LSafer
-	 * @version 0.1.5
-	 * @since 0.1.5 ~2020.08.03
-	 */
-	public class Values extends Array<short[], Short>.Values<Short> {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = -7937502933699082438L;
-
-		/**
-		 * Construct a new collection backed by the values in the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public Values() {
-		}
-
-		@Override
-		public boolean contains(Object object) {
-			for (int i = ShortArray.this.beginIndex + 1;
-				 i < ShortArray.this.endIndex; i += 2) {
-				short v = ShortArray.this.array[i];
-
-				if (object != null && object.equals(v))
-					return true;
-			}
-
-			return false;
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			return object == this;
-		}
-
-		@Override
-		public void forEach(Consumer<? super Short> consumer) {
-			Objects.requireNonNull(consumer, "consumer");
-			for (int i = ShortArray.this.beginIndex + 1;
-				 i < ShortArray.this.endIndex; i += 2) {
-				short v = ShortArray.this.array[i];
-
-				consumer.accept(v);
-			}
-		}
-
-		@Override
-		public int hashCode() {
-			int hashCode = 0;
-
-			for (int i = ShortArray.this.beginIndex + 1;
-				 i < ShortArray.this.endIndex; i += 2) {
-				short v = ShortArray.this.array[i];
-
-				hashCode += Short.hashCode(v);
-			}
-
-			return hashCode;
-		}
-
-		@Override
-		public ValueIterator iterator() {
-			return new ValueIterator();
-		}
-
-		@Override
-		public boolean removeIf(Predicate<? super Short> predicate) {
-			Objects.requireNonNull(predicate, "predicate");
-
-			for (int i = ShortArray.this.beginIndex + 1;
-				 i < ShortArray.this.endIndex; i += 2) {
-				short v = ShortArray.this.array[i];
-
-				if (predicate.test(v))
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-			}
-
-			//nothing to remove
-			return false;
-		}
-
-		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = ShortArray.this.beginIndex + 1;
-				 i < ShortArray.this.endIndex; i += 2) {
-				short v = ShortArray.this.array[i];
-
-				for (Object value : collection)
-					if (value != null && value.equals(v))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-		@Override
-		public ValueSpliterator spliterator() {
-			return new ValueSpliterator();
-		}
-
-		@Override
-		public Object[] toArray() {
-			int length = ShortArray.this.endIndex - ShortArray.this.beginIndex >>> 1;
-			Object[] product = new Object[length];
-
-			for (int i = ShortArray.this.beginIndex + 1, j = 0;
-				 i < ShortArray.this.endIndex; i += 2, j++) {
-				short v = ShortArray.this.array[i];
-
-				product[j] = v;
-			}
-
-			return product;
-		}
-
-		@Override
-		public <T> T[] toArray(T[] array) {
-			Objects.requireNonNull(array, "array");
-			int length = ShortArray.this.endIndex - ShortArray.this.beginIndex >>> 1;
-			T[] product = array;
-
-			if (array.length < length)
-				product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-			else
-				product[length] = null;
-
-			for (int i = ShortArray.this.beginIndex + 1, j = 0;
-				 i < ShortArray.this.endIndex; i += 2, j++) {
-				short v = ShortArray.this.array[i];
-
-				product[j] = (T) (Short) v;
-			}
-
-			return product;
-		}
-
-		@Override
-		public String toString() {
-			if (this.isEmpty())
-				return "[]";
-
-			StringBuilder builder = new StringBuilder("[");
-
-			int i = ShortArray.this.beginIndex + 1;
-			while (true) {
-				short v = ShortArray.this.array[i];
-
-				builder.append(v);
-
-				i += 2;
-				if (i >= ShortArray.this.endIndex)
-					return builder.append("]")
-							.toString();
-
-				builder.append(", ");
-			}
 		}
 	}
 }
