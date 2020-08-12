@@ -1918,7 +1918,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 			this.typeclass = type.typeclass;
 			this.wildclass = type.wildclass;
 			this.objecttypes = Builder.map(type.objecttypes);
-			this.components = Arrays.asList(Builder.array(type.components));
+			this.components = new ArrayList(Arrays.asList(Builder.array(type.components)));
 		}
 
 		/**
