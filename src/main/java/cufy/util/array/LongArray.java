@@ -23,6 +23,8 @@ import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 import java.util.function.*;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.StreamSupport;
 
 /**
  * A holder for an array of {@link Object}s.
@@ -73,6 +75,7 @@ public class LongArray extends Array<long[], Long> {
 	 * @param other the second array to be matched.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length,
 	 * 		elements, and order.
+	 * @see java.util.Arrays#equals(long[], long[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(long[] array, long[] other) {
@@ -90,6 +93,63 @@ public class LongArray extends Array<long[], Long> {
 			}
 
 		return false;
+	}
+
+	/**
+	 * Get an array from the given {@code collection}.
+	 *
+	 * @param collection the collection to get an array from it.
+	 * @return an array from the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} is null.
+	 * @throws ArrayStoreException  if an item in the given {@code collection} can not be stored in
+	 *                              the product array.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static long[] from(java.util.Collection collection) {
+		Objects.requireNonNull(collection, "collection");
+		long[] array = new long[collection.size()];
+
+		java.util.Iterator iterator = collection.iterator();
+		for (int i = 0; i < array.length; i++) {
+			Object element = iterator.next();
+
+			if (element instanceof Long)
+				array[i] = (long) element;
+			else
+				throw new ArrayStoreException();
+		}
+
+		return array;
+	}
+
+	/**
+	 * Get an array from the given {@code map}.
+	 *
+	 * @param map the map to get an array from it.
+	 * @return an array from the given {@code map}.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @throws ArrayStoreException  if an item in the given {@code map} can not be stored in the
+	 *                              product array.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static long[] from(java.util.Map map) {
+		Objects.requireNonNull(map, "map");
+		long[] array = new long[map.size() << 1];
+
+		java.util.Iterator<java.util.Map.Entry> iterator = map.entrySet().iterator();
+		for (int i = 0; i < array.length; i += 2) {
+			java.util.Map.Entry entry = iterator.next();
+			Object key = entry.getKey();
+			Object value = entry.getValue();
+
+			if (key instanceof Long && value instanceof Long) {
+				array[i] = (long) key;
+				array[i + 1] = (long) value;
+			} else
+				throw new ArrayStoreException();
+		}
+
+		return array;
 	}
 
 	/**
@@ -551,6 +611,28 @@ public class LongArray extends Array<long[], Long> {
 	@Override
 	public Values values() {
 		return new Values();
+	}
+
+	/**
+	 * Get a {@link LongStream} streaming the elements in this array.
+	 *
+	 * @return a stream streaming the elements in this array.
+	 * @see java.util.Arrays#stream(long[])
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public LongStream longStream() {
+		return StreamSupport.longStream(this.spliterator(), false);
+	}
+
+	/**
+	 * Get a parallel {@link LongStream} streaming the elements in this array.
+	 *
+	 * @return a stream streaming the elements in this array.
+	 * @see java.util.Arrays#stream(long[])
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public LongStream parallelLongStream() {
+		return StreamSupport.longStream(this.spliterator(), true);
 	}
 
 	/**

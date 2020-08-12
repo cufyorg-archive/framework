@@ -109,6 +109,188 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	}
 
 	/**
+	 * Determine if the given {@code array} deeply equals the given {@code other} in deep lengths,
+	 * deep elements, and deep orderings.
+	 *
+	 * @param array the first array to be matched.
+	 * @param other the second array to be matched.
+	 * @return true, if the given {@code array} deeply equals the given {@code other} in deep
+	 * 		lengths, deep elements, and deep orderings.
+	 * @throws IllegalArgumentException if the given {@code array} or {@code other} is not an
+	 *                                  array.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static boolean deepEquals(Object array, Object other) {
+		if (array != null && !array.getClass().isArray())
+			throw new IllegalArgumentException("Not an array");
+		if (other != null && !other.getClass().isArray())
+			throw new IllegalArgumentException("Not an array");
+
+		if (array instanceof Object[] && other instanceof Object[])
+			return ObjectArray.deepEquals((Object[]) array, (Object[]) other);
+		if (array instanceof boolean[] && other instanceof boolean[])
+			return BooleanArray.equals((boolean[]) array, (boolean[]) other);
+		if (array instanceof byte[] && other instanceof byte[])
+			return ByteArray.equals((byte[]) array, (byte[]) other);
+		if (array instanceof char[] && other instanceof char[])
+			return CharacterArray.equals((char[]) array, (char[]) other);
+		if (array instanceof double[] && other instanceof double[])
+			return DoubleArray.equals((double[]) array, (double[]) other);
+		if (array instanceof float[] && other instanceof float[])
+			return FloatArray.equals((float[]) array, (float[]) other);
+		if (array instanceof int[] && other instanceof int[])
+			return IntegerArray.equals((int[]) array, (int[]) other);
+		if (array instanceof long[] && other instanceof long[])
+			return LongArray.equals((long[]) array, (long[]) other);
+		if (array instanceof short[] && other instanceof short[])
+			return ShortArray.equals((short[]) array, (short[]) other);
+
+		return array == other;
+	}
+
+	/**
+	 * Calculate the hash code of the elements deeply stored in the given {@code array}.
+	 *
+	 * @param array the array to compute its deep hash code.
+	 * @return the hash code of the elements deeply stored in the given {@code array}.
+	 * @throws IllegalArgumentException if the given {@code array} is not an array.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static int deepHashCode(Object array) {
+		if (array != null && !array.getClass().isArray())
+			throw new IllegalArgumentException("Not an array");
+
+		if (array instanceof Object[])
+			return ObjectArray.deepHashCode((Object[]) array);
+		if (array instanceof boolean[])
+			return BooleanArray.hashCode((boolean[]) array);
+		if (array instanceof byte[])
+			return ByteArray.hashCode((byte[]) array);
+		if (array instanceof char[])
+			return CharacterArray.hashCode((char[]) array);
+		if (array instanceof double[])
+			return DoubleArray.hashCode((double[]) array);
+		if (array instanceof float[])
+			return FloatArray.hashCode((float[]) array);
+		if (array instanceof int[])
+			return IntegerArray.hashCode((int[]) array);
+		if (array instanceof long[])
+			return LongArray.hashCode((long[]) array);
+		if (array instanceof short[])
+			return ShortArray.hashCode((short[]) array);
+
+		return 0;
+	}
+
+	/**
+	 * Build a string representation of the deep contents of the given {@code array}.
+	 *
+	 * @param array the array to build a string representation for it.
+	 * @return a string representation of the deep contents of the given {@code array}.
+	 * @throws IllegalArgumentException if the given {@code array} is not an array.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static String deepToString(Object array) {
+		if (array != null && !array.getClass().isArray())
+			throw new IllegalArgumentException("Not an array");
+
+		if (array instanceof Object[])
+			return ObjectArray.deepToString((Object[]) array);
+		if (array instanceof boolean[])
+			return BooleanArray.toString((boolean[]) array);
+		if (array instanceof byte[])
+			return ByteArray.toString((byte[]) array);
+		if (array instanceof char[])
+			return CharacterArray.toString((char[]) array);
+		if (array instanceof double[])
+			return DoubleArray.toString((double[]) array);
+		if (array instanceof float[])
+			return FloatArray.toString((float[]) array);
+		if (array instanceof int[])
+			return IntegerArray.toString((int[]) array);
+		if (array instanceof long[])
+			return LongArray.toString((long[]) array);
+		if (array instanceof short[])
+			return ShortArray.toString((short[]) array);
+
+		return "null";
+	}
+
+	/**
+	 * Determine if the given {@code array} does equals the given {@code other} in length, elements,
+	 * and order.
+	 *
+	 * @param array the first array to be matched.
+	 * @param other the second array to be matched.
+	 * @return true, if the given {@code array} does equals the given {@code other} in length,
+	 * 		elements, and order.
+	 * @throws IllegalArgumentException if the given {@code array} is not an array.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static boolean equals(Object array, Object other) {
+		if (array != null && !array.getClass().isArray())
+			throw new IllegalArgumentException("Not an array");
+		if (other != null && !other.getClass().isArray())
+			throw new IllegalArgumentException("Not an array");
+
+		if (array instanceof Object[] && other instanceof Object[])
+			return ObjectArray.equals((Object[]) array, (Object[]) other);
+		if (array instanceof boolean[] && other instanceof boolean[])
+			return BooleanArray.equals((boolean[]) array, (boolean[]) other);
+		if (array instanceof byte[] && other instanceof byte[])
+			return ByteArray.equals((byte[]) array, (byte[]) other);
+		if (array instanceof char[] && other instanceof char[])
+			return CharacterArray.equals((char[]) array, (char[]) other);
+		if (array instanceof double[] && other instanceof double[])
+			return DoubleArray.equals((double[]) array, (double[]) other);
+		if (array instanceof float[] && other instanceof float[])
+			return FloatArray.equals((float[]) array, (float[]) other);
+		if (array instanceof int[] && other instanceof int[])
+			return IntegerArray.equals((int[]) array, (int[]) other);
+		if (array instanceof long[] && other instanceof long[])
+			return LongArray.equals((long[]) array, (long[]) other);
+		if (array instanceof short[] && other instanceof short[])
+			return ShortArray.equals((short[]) array, (short[]) other);
+
+		return array == other;
+	}
+
+	/**
+	 * Calculate the hash code of the elements of the given {@code array}.
+	 *
+	 * @param array the array to compute its hash code.
+	 * @return the hash code of the elements of the given {@code array}.
+	 * @throws IllegalArgumentException if the given {@code array} is not an array.
+	 * @see java.util.Arrays#hashCode(Object[])
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static int hashCode(Object array) {
+		if (array != null && !array.getClass().isArray())
+			throw new IllegalArgumentException("Not an array");
+
+		if (array instanceof Object[])
+			return ObjectArray.hashCode((Object[]) array);
+		if (array instanceof boolean[])
+			return BooleanArray.hashCode((boolean[]) array);
+		if (array instanceof byte[])
+			return ByteArray.hashCode((byte[]) array);
+		if (array instanceof char[])
+			return CharacterArray.hashCode((char[]) array);
+		if (array instanceof double[])
+			return DoubleArray.hashCode((double[]) array);
+		if (array instanceof float[])
+			return FloatArray.hashCode((float[]) array);
+		if (array instanceof int[])
+			return IntegerArray.hashCode((int[]) array);
+		if (array instanceof long[])
+			return LongArray.hashCode((long[]) array);
+		if (array instanceof short[])
+			return ShortArray.hashCode((short[]) array);
+
+		return 0;
+	}
+
+	/**
 	 * Construct a new array wrapper for the given {@code array}.
 	 *
 	 * @param array the array to be wrapped.
@@ -186,6 +368,40 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	}
 
 	/**
+	 * Build a string representation of the contents of the given {@code array}.
+	 *
+	 * @param array the array to build a string representation for it.
+	 * @return a string representation of the contents of the given {@code array}.
+	 * @throws IllegalArgumentException if the given {@code array} is not an array.
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static String toString(Object array) {
+		if (array != null && !array.getClass().isArray())
+			throw new IllegalArgumentException("Not an array");
+
+		if (array instanceof Object[])
+			return ObjectArray.toString((Object[]) array);
+		if (array instanceof boolean[])
+			return BooleanArray.toString((boolean[]) array);
+		if (array instanceof byte[])
+			return ByteArray.toString((byte[]) array);
+		if (array instanceof char[])
+			return CharacterArray.toString((char[]) array);
+		if (array instanceof double[])
+			return DoubleArray.toString((double[]) array);
+		if (array instanceof float[])
+			return FloatArray.toString((float[]) array);
+		if (array instanceof int[])
+			return IntegerArray.toString((int[]) array);
+		if (array instanceof long[])
+			return LongArray.toString((long[]) array);
+		if (array instanceof short[])
+			return ShortArray.toString((short[]) array);
+
+		return "null";
+	}
+
+	/**
 	 * Get an actual array copy of this array that has the given {@code klass}.
 	 *
 	 * @param klass the type of the constructed array.
@@ -194,6 +410,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @throws NullPointerException     if the given {@code klass} is null.
 	 * @throws ArrayStoreException      if an element can not be stored at the constructed array.
 	 * @throws IllegalArgumentException if the given {@code klass} is not an object array class.
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public <T extends E> T[] array(Class<? super T[]> klass) {
 		return this.array(this.length(), klass);
@@ -203,6 +420,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * Get an actual array copy of this array.
 	 *
 	 * @return an actual array copy of this array.
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public A array() {
 		return this.array(this.length());
@@ -212,6 +430,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * Determine if this array is empty or not.
 	 *
 	 * @return true, if this array is empty.
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public boolean isEmpty() {
 		return this.endIndex <= this.beginIndex;
@@ -231,6 +450,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * Get a parallel stream streaming the elements in this array.
 	 *
 	 * @return a parallel stream streaming the elements in this array.
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public Stream<E> parallelStream() {
 		return StreamSupport.stream(this.spliterator(), true);
@@ -241,6 +461,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 *
 	 * @return a stream streaming the elements in this array.
 	 * @see java.util.Arrays#stream(Object[])
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public Stream<E> stream() {
 		return StreamSupport.stream(this.spliterator(), false);
@@ -251,6 +472,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 *
 	 * @param index the real index to get a boxed index for.
 	 * @return the boxed index for the given real {@code index}.
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	protected int lowerIndex(int index) {
 		return index - this.beginIndex;
@@ -328,6 +550,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 *
 	 * @param index the boxed index to get a real index for.
 	 * @return the real index for the given boxed index.
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	protected int upperIndex(int index) {
 		return this.beginIndex + index;
@@ -405,6 +628,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @param length the length of the constructed array.
 	 * @return an actual array copy of this array.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract A array(int length);
 
@@ -419,6 +643,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @throws IllegalArgumentException   if the given {@code klass} is not an object array class.
 	 * @throws ArrayStoreException        if an element can not be stored at the constructed array.
 	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract <T extends E> T[] array(int length, Class<? super T[]> klass);
 
@@ -434,6 +659,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * 		with the same length as this array.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @throws ArrayStoreException  if an element can not be stored at the given {@code array}.
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract <T> T[] array(T[] array);
 
@@ -448,6 +674,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code
 	 *                                   array}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract void arraycopy(A array, int pos);
 
@@ -460,6 +687,8 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @param element the value to be searched for.
 	 * @return index of the search element, if it is contained in the array; otherwise,
 	 * 		(-(<i>insertion point</i>) - 1).
+	 * @see java.util.Arrays#binarySearch(Object[], Object)
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract int binarySearch(E element);
 
@@ -468,6 +697,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 *
 	 * @param element the element to look for.
 	 * @return true, if the given {@code element} equals any element in this array.
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract boolean contains(Object element);
 
@@ -503,6 +733,8 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @param element the element to fill this array with.
 	 * @throws ArrayStoreException if the given {@code element} can not be stored in this {@code
 	 *                             array}.
+	 * @see java.util.Arrays#fill(Object[], Object)
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract void fill(E element);
 
@@ -512,6 +744,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @param index the index to get the element from.
 	 * @return the element at the given {@code index} in this array.
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= length}.
+	 * @see java.lang.reflect.Array#get(Object, int)
 	 * @since 0.1.5 ~2020.08.06
 	 */
 	public abstract E get(int index);
@@ -526,6 +759,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @throws ArrayStoreException       if an element can not be stored in the given {@code
 	 *                                   array}.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract void hardcopy(Object[] array, int pos);
 
@@ -568,6 +802,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @param operator a side-effect-free, associative function to perform the cumulation.
 	 * @throws NullPointerException if the given {@code operator} is null.
 	 * @see java.util.Arrays#parallelPrefix(Object[], BinaryOperator)
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract void parallelPrefix(BinaryOperator<E> operator);
 
@@ -579,6 +814,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @throws NullPointerException if the given {@code function} is null.
 	 * @throws ArrayStoreException  if an element can not be stored in this {@code array}.
 	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract void parallelSetAll(IntFunction<? extends E> function);
 
@@ -590,6 +826,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * to be stable: equal elements will not be reordered as a result of the sort.
 	 *
 	 * @see java.util.Arrays#parallelSort(Comparable[])
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract void parallelSort();
 
@@ -622,6 +859,7 @@ public abstract class Array<A, E> implements Iterable<E>, Serializable {
 	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= length}.
 	 * @throws ArrayStoreException            if the given {@code element} can not be stored to the
 	 *                                        array.
+	 * @see java.lang.reflect.Array#set(Object, int, Object)
 	 * @since 0.1.5 ~2020.08.06
 	 */
 	public abstract void set(int index, E element);

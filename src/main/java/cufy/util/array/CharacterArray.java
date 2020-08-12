@@ -72,6 +72,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @param other the second array to be matched.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length,
 	 * 		elements, and order.
+	 * @see java.util.Arrays#equals(char[], char[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(char[] array, char[] other) {
@@ -89,6 +90,63 @@ public class CharacterArray extends Array<char[], Character> {
 			}
 
 		return false;
+	}
+
+	/**
+	 * Get an array from the given {@code collection}.
+	 *
+	 * @param collection the collection to get an array from it.
+	 * @return an array from the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} is null.
+	 * @throws ArrayStoreException  if an item in the given {@code collection} can not be stored in
+	 *                              the product array.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static char[] from(java.util.Collection collection) {
+		Objects.requireNonNull(collection, "collection");
+		char[] array = new char[collection.size()];
+
+		java.util.Iterator iterator = collection.iterator();
+		for (int i = 0; i < array.length; i++) {
+			Object element = iterator.next();
+
+			if (element instanceof Character)
+				array[i] = (char) element;
+			else
+				throw new ArrayStoreException();
+		}
+
+		return array;
+	}
+
+	/**
+	 * Get an array from the given {@code map}.
+	 *
+	 * @param map the map to get an array from it.
+	 * @return an array from the given {@code map}.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @throws ArrayStoreException  if an item in the given {@code map} can not be stored in the
+	 *                              product array.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static char[] from(java.util.Map map) {
+		Objects.requireNonNull(map, "map");
+		char[] array = new char[map.size() << 1];
+
+		java.util.Iterator<java.util.Map.Entry> iterator = map.entrySet().iterator();
+		for (int i = 0; i < array.length; i += 2) {
+			java.util.Map.Entry entry = iterator.next();
+			Object key = entry.getKey();
+			Object value = entry.getValue();
+
+			if (key instanceof Character && value instanceof Character) {
+				array[i] = (char) key;
+				array[i + 1] = (char) value;
+			} else
+				throw new ArrayStoreException();
+		}
+
+		return array;
 	}
 
 	/**

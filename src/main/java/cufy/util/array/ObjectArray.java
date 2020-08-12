@@ -127,6 +127,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 *
 	 * @param array the array to compute its deep hash code.
 	 * @return the hash code of the elements deeply stored in the given {@code array}.
+	 * @see java.util.Arrays#deepHashCode(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static int deepHashCode(Object[] array) {
@@ -169,6 +170,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 *
 	 * @param array the array to build a string representation for it.
 	 * @return a string representation of the deep contents of the given {@code array}.
+	 * @see java.util.Arrays#deepToString(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static String deepToString(Object[] array) {
@@ -192,6 +194,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @param other the second array to be matched.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length,
 	 * 		elements, and order.
+	 * @see java.util.Arrays#equals(Object[], Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(Object[] array, Object[] other) {
@@ -211,6 +214,111 @@ public class ObjectArray<E> extends Array<E[], E> {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Get an array from the given {@code collection}.
+	 *
+	 * @param collection the collection to get an array from it.
+	 * @return an array from the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} is null.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static Object[] from(java.util.Collection collection) {
+		Objects.requireNonNull(collection, "collection");
+		Object[] array = new Object[collection.size()];
+
+		java.util.Iterator iterator = collection.iterator();
+		for (int i = 0; i < array.length; i++) {
+			Object element = iterator.next();
+
+			array[i] = element;
+		}
+
+		return array;
+	}
+
+	/**
+	 * Get an array from the given {@code map}.
+	 *
+	 * @param map the map to get an array from it.
+	 * @return an array from the given {@code map}.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static Object[] from(java.util.Map map) {
+		Objects.requireNonNull(map, "map");
+		Object[] array = new Object[map.size() << 1];
+
+		java.util.Iterator<java.util.Map.Entry> iterator = map.entrySet().iterator();
+		for (int i = 0; i < array.length; i += 2) {
+			java.util.Map.Entry entry = iterator.next();
+			Object key = entry.getKey();
+			Object value = entry.getValue();
+
+			array[i] = key;
+			array[i + 1] = value;
+		}
+
+		return array;
+	}
+
+	/**
+	 * Get an array from the given {@code collection}.
+	 *
+	 * @param collection the collection to get an array from it.
+	 * @param klass      the class desired for the product array.
+	 * @param <E>        the type of the elements.
+	 * @return an array from the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} or {@code klass} is null.
+	 * @throws ArrayStoreException  if an item in the given {@code map} can not be stored in the
+	 *                              product array.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static <E> E[] from(java.util.Collection<? extends E> collection, Class<E[]> klass) {
+		Objects.requireNonNull(collection, "collection");
+		Objects.requireNonNull(klass, "klass");
+		E[] array = (E[]) java.lang.reflect.Array.newInstance(klass.getComponentType(), collection.size());
+
+		java.util.Iterator<? extends E> iterator = collection.iterator();
+		for (int i = 0; i < array.length; i++) {
+			E element = iterator.next();
+
+			array[i] = element;
+		}
+
+		return array;
+	}
+
+	/**
+	 * Get an array from the given {@code map}.
+	 *
+	 * @param map   the map to get an array from it.
+	 * @param klass the class desired for the product array.
+	 * @param <E>   the type of the elements.
+	 * @return an array from the given {@code map}.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @throws ArrayStoreException  if an item in the given {@code map} can not be stored in the
+	 *                              product array.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static <E> E[] from(java.util.Map<? extends E, ? extends E> map, Class<E[]> klass) {
+		Objects.requireNonNull(map, "map");
+		Objects.requireNonNull(klass, "klass");
+		E[] array = (E[]) java.lang.reflect.Array.newInstance(klass.getComponentType(),
+				map.size() << 1);
+
+		java.util.Iterator<? extends java.util.Map.Entry<? extends E, ? extends E>> iterator = map.entrySet().iterator();
+		for (int i = 0; i < array.length; i += 2) {
+			java.util.Map.Entry<? extends E, ? extends E> entry = iterator.next();
+			E key = entry.getKey();
+			E value = entry.getValue();
+
+			array[i] = key;
+			array[i + 1] = value;
+		}
+
+		return array;
 	}
 
 	/**
@@ -745,6 +853,8 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 *                   the elements' natural ordering should be used.
 	 * @return index of the search element, if it is contained in the array; otherwise,
 	 * 		(-(<i>insertion point</i>) - 1).
+	 * @see java.util.Arrays#binarySearch(Object[], Object, Comparator)
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public int binarySearch(E element, Comparator<? super E> comparator) {
 		if (comparator == null)
@@ -779,6 +889,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 *                                   array}.
 	 * @throws IllegalArgumentException  if the given {@code array} is not an array.
 	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public void hardcopy(Object array, int pos) {
 		Objects.requireNonNull(array, "array");
@@ -840,6 +951,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @param comparator the comparator to determine the order of this array. A null value indicates
 	 *                   that the elements' natural ordering should be used.
 	 * @see java.util.Arrays#parallelSort(Object[], Comparator)
+	 * @since 0.1.5 ~2020.08.11
 	 */
 	public void parallelSort(Comparator<? super E> comparator) {
 		//manual

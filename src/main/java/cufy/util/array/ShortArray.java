@@ -72,6 +72,7 @@ public class ShortArray extends Array<short[], Short> {
 	 * @param other the second array to be matched.
 	 * @return true, if the given {@code array} does equals the given {@code other} in length,
 	 * 		elements, and order.
+	 * @see java.util.Arrays#equals(short[], short[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static boolean equals(short[] array, short[] other) {
@@ -89,6 +90,63 @@ public class ShortArray extends Array<short[], Short> {
 			}
 
 		return false;
+	}
+
+	/**
+	 * Get an array from the given {@code collection}.
+	 *
+	 * @param collection the collection to get an array from it.
+	 * @return an array from the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} is null.
+	 * @throws ArrayStoreException  if an item in the given {@code collection} can not be stored in
+	 *                              the product array.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static short[] from(java.util.Collection collection) {
+		Objects.requireNonNull(collection, "collection");
+		short[] array = new short[collection.size()];
+
+		java.util.Iterator iterator = collection.iterator();
+		for (int i = 0; i < array.length; i++) {
+			Object element = iterator.next();
+
+			if (element instanceof Short)
+				array[i] = (short) element;
+			else
+				throw new ArrayStoreException();
+		}
+
+		return array;
+	}
+
+	/**
+	 * Get an array from the given {@code map}.
+	 *
+	 * @param map the map to get an array from it.
+	 * @return an array from the given {@code map}.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @throws ArrayStoreException  if an item in the given {@code map} can not be stored in the
+	 *                              product array.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static short[] from(java.util.Map map) {
+		Objects.requireNonNull(map, "map");
+		short[] array = new short[map.size() << 1];
+
+		java.util.Iterator<java.util.Map.Entry> iterator = map.entrySet().iterator();
+		for (int i = 0; i < array.length; i += 2) {
+			java.util.Map.Entry entry = iterator.next();
+			Object key = entry.getKey();
+			Object value = entry.getValue();
+
+			if (key instanceof Short && value instanceof Short) {
+				array[i] = (short) key;
+				array[i + 1] = (short) value;
+			} else
+				throw new ArrayStoreException();
+		}
+
+		return array;
 	}
 
 	/**
