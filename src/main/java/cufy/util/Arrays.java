@@ -17,7 +17,6 @@ package cufy.util;
 
 import cufy.util.array.*;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
@@ -902,11 +901,6 @@ public class Arrays {
 	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from
 	 * the given {@code src} at the given {@code srcPos}. Start writing to the given {@code dest} at
 	 * the given {@code destPos}. Copy the specified number of elements {@code length}.
-	 * <p>
-	 * Implementation Note:
-	 * <p>
-	 * Chosen the interface {@link Serializable} to reduce the chances of passing non-array object.
-	 * The thing is {@code why not}.
 	 *
 	 * @param src     the source array.
 	 * @param srcPos  the index to start reading from the source array.
@@ -925,7 +919,7 @@ public class Arrays {
 	 * @see System#arraycopy(Object, int, Object, int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void copy(Serializable src, int srcPos, Serializable dest, int destPos, int length) {
+	public static void copy(Object src, int srcPos, Object dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
 		Class srcClass = src.getClass();

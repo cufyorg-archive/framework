@@ -34,7 +34,7 @@ import java.util.stream.StreamSupport;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.03
  */
-public abstract class Array<A extends Serializable, E> implements Serializable, Cloneable, Iterable<E> {
+public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E> {
 	@SuppressWarnings("JavaDoc")
 	private static final long serialVersionUID = 3238786977844647983L;
 
@@ -43,6 +43,7 @@ public abstract class Array<A extends Serializable, E> implements Serializable, 
 	 *
 	 * @since 0.1.5 ~2020.08.04
 	 */
+	@SuppressWarnings("NonSerializableFieldInSerializableClass")
 	protected final A array;
 	/**
 	 * The first index of the area at the actual array backing this array.
@@ -317,7 +318,7 @@ public abstract class Array<A extends Serializable, E> implements Serializable, 
 	 * @see java.lang.reflect.Array#newInstance(Class, int)
 	 * @since 0.1.5 ~2020.08.13
 	 */
-	public static <A extends Serializable, E> Array<A, E> of(Class<E> componentType, int length) {
+	public static <A, E> Array<A, E> of(Class<E> componentType, int length) {
 		if (componentType == boolean.class)
 			return (Array<A, E>) new BooleanArray(length);
 		if (componentType == byte.class)
@@ -374,7 +375,7 @@ public abstract class Array<A extends Serializable, E> implements Serializable, 
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static <A extends Serializable, E> Array<A, E> of(A array) {
+	public static <A, E> Array<A, E> of(A array) {
 		Objects.requireNonNull(array, "array");
 
 		if (array instanceof Object[])
@@ -417,7 +418,7 @@ public abstract class Array<A extends Serializable, E> implements Serializable, 
 	 *                                   array} is not an array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static <A extends Serializable, E> Array<A, E> of(A array, int beginIndex, int endIndex) {
+	public static <A, E> Array<A, E> of(A array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
 
 		if (array instanceof Object[])
@@ -480,7 +481,7 @@ public abstract class Array<A extends Serializable, E> implements Serializable, 
 	 * @throws NullPointerException if the given {@code map} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public static <A extends Serializable, E> Array<A, E> of(java.util.Map<? extends E, ? extends E> map, Class<A> klass) {
+	public static <A, E> Array<A, E> of(java.util.Map<? extends E, ? extends E> map, Class<A> klass) {
 		if (klass == boolean[].class)
 			return (Array<A, E>) new BooleanArray((java.util.Map) map);
 		if (klass == byte[].class)
@@ -513,7 +514,7 @@ public abstract class Array<A extends Serializable, E> implements Serializable, 
 	 * @throws NullPointerException if the given {@code collection} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public static <A extends Serializable, E> Array<A, E> of(java.util.Collection<? extends E> collection, Class<A> klass) {
+	public static <A, E> Array<A, E> of(java.util.Collection<? extends E> collection, Class<A> klass) {
 		if (klass == boolean[].class)
 			return (Array<A, E>) new BooleanArray((java.util.Collection) collection);
 		if (klass == byte[].class)
