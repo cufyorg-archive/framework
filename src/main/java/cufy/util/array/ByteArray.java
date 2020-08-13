@@ -35,13 +35,25 @@ public class ByteArray extends Array<byte[], Byte> {
 	private static final long serialVersionUID = 3201994039505608491L;
 
 	/**
+	 * Construct a new array backed by a new actual array that have the given {@code length}.
+	 *
+	 * @param length the length of the new actual array backing the construct array.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @see java.lang.reflect.Array#newInstance(Class, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public ByteArray(int length) {
+		super(new byte[length]);
+	}
+
+	/**
 	 * Construct a new array backed by the given {@code array}.
 	 *
 	 * @param array the array to be backing the constructed array.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.05
 	 */
-	public ByteArray(byte... array) {
+	public ByteArray(byte[] array) {
 		super(array);
 	}
 
@@ -65,18 +77,6 @@ public class ByteArray extends Array<byte[], Byte> {
 	}
 
 	/**
-	 * Construct a new array backed by a new array from the given {@code map} using {@link
-	 * #from(java.util.Map)}.
-	 *
-	 * @param map the map to construct a new array from to be backing the constructed array.
-	 * @throws NullPointerException if the given {@code map} is null.
-	 * @since 0.1.5 ~2020.08.12
-	 */
-	public ByteArray(java.util.Map map) {
-		super(ByteArray.from(map));
-	}
-
-	/**
 	 * Construct a new array backed by a new array from the given {@code collection} using {@link
 	 * #from(Collection)}.
 	 *
@@ -85,8 +85,20 @@ public class ByteArray extends Array<byte[], Byte> {
 	 * @throws NullPointerException if the given {@code collection} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public ByteArray(java.util.Collection collection) {
+	public ByteArray(java.util.Collection<Byte> collection) {
 		super(ByteArray.from(collection));
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code map} using {@link
+	 * #from(java.util.Map)}.
+	 *
+	 * @param map the map to construct a new array from to be backing the constructed array.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public ByteArray(java.util.Map<Byte, Byte> map) {
+		super(ByteArray.from(map));
 	}
 
 	/**
@@ -127,7 +139,7 @@ public class ByteArray extends Array<byte[], Byte> {
 	 *                              the product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static byte[] from(java.util.Collection collection) {
+	public static byte[] from(java.util.Collection<Byte> collection) {
 		Objects.requireNonNull(collection, "collection");
 		byte[] array = new byte[collection.size()];
 
@@ -154,11 +166,11 @@ public class ByteArray extends Array<byte[], Byte> {
 	 *                              product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static byte[] from(java.util.Map map) {
+	public static byte[] from(java.util.Map<Byte, Byte> map) {
 		Objects.requireNonNull(map, "map");
 		byte[] array = new byte[map.size() << 1];
 
-		java.util.Iterator<java.util.Map.Entry> iterator = map.entrySet().iterator();
+		java.util.Iterator<? extends java.util.Map.Entry> iterator = map.entrySet().iterator();
 		for (int i = 0; i < array.length; i += 2) {
 			java.util.Map.Entry entry = iterator.next();
 			Object key = entry.getKey();
@@ -227,84 +239,6 @@ public class ByteArray extends Array<byte[], Byte> {
 	}
 
 	@Override
-	public int all(byte[] elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			byte element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				byte e = this.array[j];
-
-				if (element == e)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int all(Byte... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			Byte element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				byte e = this.array[j];
-
-				if (element != null && element.equals(e))
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(byte[] elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			byte element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				byte e = this.array[j];
-
-				if (element == e)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(Byte... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			Byte element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				byte e = this.array[j];
-
-				if (element != null && element.equals(e))
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
 	public byte[] array(int length) {
 		if (length < 0)
 			throw new NegativeArraySizeException("length(" + length + ") < 0");
@@ -319,39 +253,6 @@ public class ByteArray extends Array<byte[], Byte> {
 		);
 
 		return array;
-	}
-
-	@Override
-	public <T extends Byte> T[] array(int length, Class<? super T[]> klass) {
-		Objects.requireNonNull(klass, "klass");
-		if (length < 0)
-			throw new NegativeArraySizeException("length(" + length + ") < 0");
-		if (Object[].class.isAssignableFrom(klass))
-			throw new IllegalArgumentException("klass");
-
-		T[] array = (T[]) java.lang.reflect.Array.newInstance(klass.getComponentType(), length);
-
-		this.sub(0, Math.min(this.length(), length))
-				.hardcopy(array, 0);
-
-		return array;
-	}
-
-	@Override
-	public <T> T[] array(T[] array) {
-		Objects.requireNonNull(array, "array");
-		int length = this.length();
-		T[] product = array;
-
-		if (array.length < length)
-			product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-		else
-			product[length] = null;
-
-		this.sub(0, Math.min(this.length(), length))
-				.hardcopy(array, 0);
-
-		return product;
 	}
 
 	@Override
@@ -388,15 +289,29 @@ public class ByteArray extends Array<byte[], Byte> {
 			else if (midVal > element)
 				high = mid - 1;
 			else
-				return this.lowerIndex(mid); // key found
+				return this.thumb(mid); // key found
 		}
-		return this.lowerIndex(-(low + 1));  // key not found.
+		return this.thumb(-(low + 1));  // key not found.
 	}
 
 	@Override
 	public ByteArray clone() {
 		// noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
 		return new ByteArray(this.array());
+	}
+
+	@Override
+	public void copy(Object array, int pos) {
+		Objects.requireNonNull(array, "array");
+
+		if (array instanceof byte[])
+			this.arraycopy((byte[]) array, pos);
+		else if (array instanceof Object[])
+			this.hardcopy((Object[]) array, pos);
+		else
+			throw new ArrayStoreException(
+					"copy: type mismatch: can not copy byte[] into " +
+					array.getClass().getSimpleName());
 	}
 
 	@Override
@@ -416,7 +331,7 @@ public class ByteArray extends Array<byte[], Byte> {
 					Object element = array.array[i];
 					byte e = this.array[j];
 
-					if (element != null && element.equals(e))
+					if (element.equals(e))
 						continue;
 
 					return false;
@@ -448,10 +363,8 @@ public class ByteArray extends Array<byte[], Byte> {
 	}
 
 	@Override
-	public Byte get(int index) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		return this.array[i];
+	public Byte get(int thumb) {
+		return this.array[this.index(thumb)];
 	}
 
 	@Override
@@ -499,6 +412,11 @@ public class ByteArray extends Array<byte[], Byte> {
 	}
 
 	@Override
+	public ListIterator listIterator() {
+		return new ListIterator();
+	}
+
+	@Override
 	public Map map() {
 		return new Map();
 	}
@@ -522,7 +440,7 @@ public class ByteArray extends Array<byte[], Byte> {
 		Objects.requireNonNull(function, "function");
 		IntStream.range(this.beginIndex, this.endIndex)
 				.parallel()
-				.forEach(i -> this.array[i] = function.apply(this.lowerIndex(i)));
+				.forEach(i -> this.array[i] = function.apply(this.thumb(i)));
 	}
 
 	@Override
@@ -536,10 +454,8 @@ public class ByteArray extends Array<byte[], Byte> {
 	}
 
 	@Override
-	public void set(int index, Byte element) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		this.array[i] = element;
+	public void set(int thumb, Byte element) {
+		this.array[this.index(thumb)] = element;
 	}
 
 	@Override
@@ -565,12 +481,12 @@ public class ByteArray extends Array<byte[], Byte> {
 	}
 
 	@Override
-	public ByteArray sub(int beginIndex, int endIndex) {
-		this.requireRange(beginIndex, endIndex);
+	public ByteArray sub(int beginThumb, int endThumb) {
+		this.range(beginThumb, endThumb);
 		return new ByteArray(
 				this.array,
-				this.upperIndex(beginIndex),
-				this.upperIndex(endIndex)
+				this.beginIndex + beginThumb,
+				this.beginIndex + endThumb
 		);
 	}
 
@@ -597,6 +513,34 @@ public class ByteArray extends Array<byte[], Byte> {
 	}
 
 	/**
+	 * Get the element at the given {@code thumb} in this array.
+	 *
+	 * @param thumb the thumb to get the element from.
+	 * @return the element at the given {@code thumb} in this array.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @see java.lang.reflect.Array#getByte(Object, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public byte getByte(int thumb) {
+		return this.array[this.index(thumb)];
+	}
+
+	/**
+	 * Set the element at the given {@code thumb} in this array to the given {@code element}.
+	 *
+	 * @param thumb   the thumb to set the given {@code element} to.
+	 * @param element the element to be set.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @throws ArrayStoreException            if the given {@code element} can not be stored to the
+	 *                                        array.
+	 * @see java.lang.reflect.Array#setByte(Object, int, byte)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public void setByte(int thumb, byte element) {
+		this.array[this.index(thumb)] = element;
+	}
+
+	/**
 	 * An iterator iterating the elements in the enclosing array.
 	 *
 	 * @author LSafer
@@ -615,12 +559,12 @@ public class ByteArray extends Array<byte[], Byte> {
 		/**
 		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Iterator(int index) {
-			super(index);
+		public Iterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -660,15 +604,6 @@ public class ByteArray extends Array<byte[], Byte> {
 	public class List extends Array<byte[], Byte>.List {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 848985287158674978L;
-
-		/**
-		 * Construct a new list backed by the enclosing array.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public List() {
-		}
 
 		@Override
 		public boolean contains(Object object) {
@@ -719,10 +654,8 @@ public class ByteArray extends Array<byte[], Byte> {
 		}
 
 		@Override
-		public Byte get(int index) {
-			ByteArray.this.requireIndex(index);
-			int i = ByteArray.this.upperIndex(index);
-			return ByteArray.this.array[i];
+		public Byte get(int thumb) {
+			return ByteArray.this.array[ByteArray.this.index(thumb)];
 		}
 
 		@Override
@@ -764,7 +697,7 @@ public class ByteArray extends Array<byte[], Byte> {
 		}
 
 		@Override
-		public ListIterator listIterator(int index) {
+		public ListIterator listIterator(int beginThumb) {
 			return new ListIterator();
 		}
 
@@ -789,36 +722,16 @@ public class ByteArray extends Array<byte[], Byte> {
 			Objects.requireNonNull(operator, "operator");
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i++) {
 				byte e = ByteArray.this.array[i];
+				byte n = operator.apply(e);
 
-				ByteArray.this.array[i] = operator.apply(e);
+				ByteArray.this.array[i] = n;
 			}
 		}
 
 		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i++) {
-				byte e = ByteArray.this.array[i];
-
-				for (Object element : collection)
-					if (element != null && element.equals(e))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-		@Override
-		public Byte set(int index, Byte element) {
-			ByteArray.this.requireIndex(index);
-			int i = ByteArray.this.upperIndex(index);
+		public Byte set(int thumb, Byte element) {
+			Objects.requireNonNull(element, "element");
+			int i = ByteArray.this.index(thumb);
 			byte old = ByteArray.this.array[i];
 			ByteArray.this.array[i] = element;
 			return old;
@@ -859,12 +772,12 @@ public class ByteArray extends Array<byte[], Byte> {
 		 * Construct a new list iterator iterating the elements in the enclosing array, starting
 		 * from the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public ListIterator(int index) {
-			super(index);
+		public ListIterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -911,6 +824,7 @@ public class ByteArray extends Array<byte[], Byte> {
 
 		@Override
 		public void set(Byte element) {
+			Objects.requireNonNull(element, "element");
 			int index = this.last;
 
 			if (index == -1)
@@ -931,24 +845,15 @@ public class ByteArray extends Array<byte[], Byte> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -2840280796050057228L;
 
-		/**
-		 * Construct a new map backed by the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public Map() {
-		}
-
 		@Override
 		public Byte compute(Byte key, BiFunction<? super Byte, ? super Byte, ? extends Byte> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					byte v = ByteArray.this.array[i + 1];
 					Byte value = function.apply(k, v);
 
@@ -968,12 +873,13 @@ public class ByteArray extends Array<byte[], Byte> {
 
 		@Override
 		public Byte computeIfAbsent(Byte key, Function<? super Byte, ? extends Byte> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (key.equals(k))
 					//old:notnull
 					return ByteArray.this.array[i + 1];
 			}
@@ -984,12 +890,13 @@ public class ByteArray extends Array<byte[], Byte> {
 
 		@Override
 		public Byte computeIfPresent(Byte key, BiFunction<? super Byte, ? super Byte, ? extends Byte> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					byte v = ByteArray.this.array[i + 1];
 					Byte value = function.apply(k, v);
 
@@ -1129,12 +1036,14 @@ public class ByteArray extends Array<byte[], Byte> {
 
 		@Override
 		public Byte merge(Byte key, Byte value, BiFunction<? super Byte, ? super Byte, ? extends Byte> function) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					byte v = ByteArray.this.array[i + 1];
 					Byte newValue = function.apply(v, value);
 
@@ -1148,20 +1057,18 @@ public class ByteArray extends Array<byte[], Byte> {
 				}
 			}
 
-			if (value == null)
-				//old:notfound new:null
-				return null;
-
 			//old:notfound new:notnull
 			throw new UnsupportedOperationException("put");
 		}
 
 		@Override
 		public Byte put(Byte key, Byte value) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					//old:found
 					byte v = ByteArray.this.array[i + 1];
 					ByteArray.this.array[i + 1] = value;
@@ -1179,14 +1086,14 @@ public class ByteArray extends Array<byte[], Byte> {
 
 			for0:
 			for (java.util.Map.Entry<? extends Byte, ? extends Byte> entry : map.entrySet()) {
-				Byte key = entry.getKey();
+				byte key = entry.getKey();
 
 				for (int i = ByteArray.this.beginIndex;
 					 i < ByteArray.this.endIndex; i += 2) {
 					byte k = ByteArray.this.array[i];
 
-					if (key != null && key.equals(k)) {
-						Byte value = entry.getValue();
+					if (key == k) {
+						byte value = entry.getValue();
 						ByteArray.this.array[i + 1] = value;
 						continue for0;
 					}
@@ -1233,10 +1140,12 @@ public class ByteArray extends Array<byte[], Byte> {
 
 		@Override
 		public boolean replace(Byte key, Byte oldValue, Byte newValue) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(newValue, "newValue");
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					byte v = ByteArray.this.array[i + 1];
 
 					if (oldValue != null && oldValue.equals(v)) {
@@ -1255,10 +1164,12 @@ public class ByteArray extends Array<byte[], Byte> {
 
 		@Override
 		public Byte replace(Byte key, Byte value) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					//old:match
 					byte v = ByteArray.this.array[i + 1];
 					ByteArray.this.array[i + 1] = value;
@@ -1277,8 +1188,9 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 				byte v = ByteArray.this.array[i + 1];
+				byte n = function.apply(k, v);
 
-				ByteArray.this.array[i + 1] = function.apply(k, v);
+				ByteArray.this.array[i + 1] = n;
 			}
 		}
 
@@ -1328,14 +1240,14 @@ public class ByteArray extends Array<byte[], Byte> {
 			 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in
 			 * the enclosing array.
 			 *
-			 * @param index the index to where the key (followed by the value) will be in the
+			 * @param thumb the index to where the key (followed by the value) will be in the
 			 *              constructed entry.
 			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >=
 			 *                                   length}.
 			 * @since 0.1.5 ~2020.08.06
 			 */
-			public Entry(int index) {
-				super(index);
+			public Entry(int thumb) {
+				super(thumb);
 			}
 
 			@Override
@@ -1378,6 +1290,7 @@ public class ByteArray extends Array<byte[], Byte> {
 
 			@Override
 			public Byte setValue(Byte value) {
+				Objects.requireNonNull(value, "value");
 				byte v = ByteArray.this.array[this.index + 1];
 				ByteArray.this.array[this.index + 1] = value;
 				return v;
@@ -1401,15 +1314,6 @@ public class ByteArray extends Array<byte[], Byte> {
 		public class EntrySet extends Array<byte[], Byte>.Map<Byte, Byte>.EntrySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -4823635378224028987L;
-
-			/**
-			 * Construct a new set backed by the entries in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public EntrySet() {
-			}
 
 			@Override
 			public boolean contains(Object object) {
@@ -1527,37 +1431,6 @@ public class ByteArray extends Array<byte[], Byte> {
 			}
 
 			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
-					byte k = ByteArray.this.array[i];
-					byte v = ByteArray.this.array[i + 1];
-
-					for (Object object : collection)
-						if (object instanceof java.util.Map.Entry) {
-							java.util.Map.Entry entry = (java.util.Map.Entry) object;
-							Object key = entry.getKey();
-
-							if (key != null && key.equals(k)) {
-								Object value = entry.getValue();
-
-								if (value != null && value.equals(v))
-									//retained
-									continue for0;
-							}
-						}
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
-				return false;
-			}
-
-			@Override
 			public Spliterator spliterator() {
 				return new Spliterator();
 			}
@@ -1646,13 +1519,13 @@ public class ByteArray extends Array<byte[], Byte> {
 				 * Construct a new iterator iterating the entries in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -1661,7 +1534,7 @@ public class ByteArray extends Array<byte[], Byte> {
 					int index = this.index;
 					this.index = ByteArray.this.endIndex;
 
-					int i = ByteArray.this.lowerIndex(index);
+					int i = ByteArray.this.thumb(index);
 					int l = ByteArray.this.length();
 					for (; i < l; i += 2) {
 						Entry entry = new Entry(i);//trimmed index
@@ -1677,7 +1550,7 @@ public class ByteArray extends Array<byte[], Byte> {
 					if (index < ByteArray.this.endIndex) {
 						this.index += 2;
 
-						int i = ByteArray.this.lowerIndex(index);
+						int i = ByteArray.this.thumb(index);
 						return new Entry(i);//trimmed index
 					}
 
@@ -1705,13 +1578,13 @@ public class ByteArray extends Array<byte[], Byte> {
 				 * Construct a new spliterator iterating the entries in the enclosing array,
 				 * starting from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -1737,7 +1610,7 @@ public class ByteArray extends Array<byte[], Byte> {
 					if (index < ByteArray.this.endIndex) {
 						this.index += 2;
 
-						int i = ByteArray.this.lowerIndex(index);
+						int i = ByteArray.this.thumb(index);
 						Entry entry = new Entry(i);//trimmed index
 						consumer.accept(entry);
 						return true;
@@ -1758,15 +1631,6 @@ public class ByteArray extends Array<byte[], Byte> {
 		public class KeySet extends Array<byte[], Byte>.Map<Byte, Byte>.KeySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 7793360078444812816L;
-
-			/**
-			 * Construct a new set backed by the keys in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public KeySet() {
-			}
 
 			@Override
 			public boolean equals(Object object) {
@@ -1837,27 +1701,6 @@ public class ByteArray extends Array<byte[], Byte> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
-					byte k = ByteArray.this.array[i];
-
-					for (Object key : collection)
-						if (key != null && key.equals(k))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -1944,13 +1787,13 @@ public class ByteArray extends Array<byte[], Byte> {
 				 * Construct a new iterator iterating the keys in the enclosing array, starting from
 				 * the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2000,13 +1843,13 @@ public class ByteArray extends Array<byte[], Byte> {
 				 * Construct a new spliterator iterating the keys in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2050,15 +1893,6 @@ public class ByteArray extends Array<byte[], Byte> {
 		public class Values extends Array<byte[], Byte>.Map<Byte, Byte>.Values {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -7937502933699082438L;
-
-			/**
-			 * Construct a new collection backed by the values in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public Values() {
-			}
 
 			@Override
 			public boolean equals(Object object) {
@@ -2109,28 +1943,6 @@ public class ByteArray extends Array<byte[], Byte> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = ByteArray.this.beginIndex + 1;
-					 i < ByteArray.this.endIndex; i += 2) {
-					byte v = ByteArray.this.array[i];
-
-					for (Object value : collection)
-						if (value != null && value.equals(v))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -2217,13 +2029,13 @@ public class ByteArray extends Array<byte[], Byte> {
 				 * Construct a new iterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2273,13 +2085,13 @@ public class ByteArray extends Array<byte[], Byte> {
 				 * Construct a new spliterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2335,12 +2147,12 @@ public class ByteArray extends Array<byte[], Byte> {
 		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
 		 * the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed spliterator.
+		 * @param beginThumb the initial position of the constructed spliterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Spliterator(int index) {
-			super(index);
+		public Spliterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override

@@ -34,7 +34,7 @@ import java.util.stream.StreamSupport;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.03
  */
-public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E> {
+public abstract class Array<A extends Serializable, E> implements Serializable, Cloneable, Iterable<E> {
 	@SuppressWarnings("JavaDoc")
 	private static final long serialVersionUID = 3238786977844647983L;
 
@@ -43,7 +43,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	 *
 	 * @since 0.1.5 ~2020.08.04
 	 */
-	@SuppressWarnings("NonSerializableFieldInSerializableClass")
 	protected final A array;
 	/**
 	 * The first index of the area at the actual array backing this array.
@@ -290,16 +289,92 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	}
 
 	/**
+	 * Construct a new array backed by a new actual array that have the given {@code length}.
+	 *
+	 * @param length the length of the new actual array backing the construct array.
+	 * @param <E>    the type of the elements.
+	 * @return a new array backed by a new actual array that have the given {@code length}.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @see java.lang.reflect.Array#newInstance(Class, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public static <E> ObjectArray<E> of(int length) {
+		return new ObjectArray(length);
+	}
+
+	/**
+	 * Construct a new array backed by a new actual array of the given {@code componentType} that
+	 * have the given {@code length}.
+	 *
+	 * @param componentType the component type of the constructed actual array.
+	 * @param length        the length of the new actual array backing the construct array.
+	 * @param <A>           the type of the array.
+	 * @param <E>           the type of the elements
+	 * @return a new array backed by a new actual array of the given {@code componentType} that have
+	 * 		the given {@code length}.
+	 * @throws NullPointerException       if the given {@code componentType} is null.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @see java.lang.reflect.Array#newInstance(Class, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public static <A extends Serializable, E> Array<A, E> of(Class<E> componentType, int length) {
+		if (componentType == boolean.class)
+			return (Array<A, E>) new BooleanArray(length);
+		if (componentType == byte.class)
+			return (Array<A, E>) new ByteArray(length);
+		if (componentType == char.class)
+			return (Array<A, E>) new CharacterArray(length);
+		if (componentType == double.class)
+			return (Array<A, E>) new DoubleArray(length);
+		if (componentType == float.class)
+			return (Array<A, E>) new FloatArray(length);
+		if (componentType == int.class)
+			return (Array<A, E>) new IntegerArray(length);
+		if (componentType == long.class)
+			return (Array<A, E>) new LongArray(length);
+		if (componentType == short.class)
+			return (Array<A, E>) new ShortArray(length);
+
+		return new ObjectArray(componentType, length);
+	}
+
+	/**
+	 * Construct a new array backed by a new actual array of the given {@code componentType} that
+	 * have the given {@code dimensions}.
+	 *
+	 * @param componentType the component type of the constructed actual array.
+	 * @param dimensions    the dimensions of the new actual array backing the construct array.
+	 * @param <E>           the type of the elements.
+	 * @return a new array backed by a new actual array of the given {@code componentType} that have
+	 * 		the given {@code dimensions}.
+	 * @throws NullPointerException       if the given {@code componentType} or {@code dimensions}
+	 *                                    is null.
+	 * @throws NegativeArraySizeException if an element in the given {@code dimensions} is
+	 *                                    negative.
+	 * @throws ClassCastException         if the given {@code componentType} is not assignable from
+	 *                                    {@link Object} (if only one dimensions has been
+	 *                                    provided).
+	 * @throws IllegalArgumentException   if {@code dimensions.length < 1} or {@code
+	 *                                    dimensions.length > 255}.
+	 * @see java.lang.reflect.Array#newInstance(Class, int[])
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public static <E> ObjectArray<E> of(Class<E> componentType, int... dimensions) {
+		return new ObjectArray(componentType, dimensions);
+	}
+
+	/**
 	 * Construct a new array wrapper for the given {@code array}.
 	 *
 	 * @param array the array to be wrapped.
 	 * @param <A>   the type of the array.
+	 * @param <E>   the type of the elements.
 	 * @return an array wrapper for the given {@code array}.
 	 * @throws NullPointerException     if the given {@code array} is null.
 	 * @throws IllegalArgumentException if the given {@code array} is not an array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static <A> Array<A, ?> of(A array) {
+	public static <A extends Serializable, E> Array<A, E> of(A array) {
 		Objects.requireNonNull(array, "array");
 
 		if (array instanceof Object[])
@@ -333,15 +408,16 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	 * @param endIndex   one past the last index of the area at the given {@code array} to be
 	 *                   backing the constructed array.
 	 * @param <A>        the type of the array.
+	 * @param <E>        the type of the elements.
 	 * @return an array wrapper for the given {@code array}.
 	 * @throws NullPointerException      if the given {@code array} is null.
 	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
 	 *                                   array.length}.
-	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}. Or  if the given {@code
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}. Or if the given {@code
 	 *                                   array} is not an array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static <A> Array<A, ?> of(A array, int beginIndex, int endIndex) {
+	public static <A extends Serializable, E> Array<A, E> of(A array, int beginIndex, int endIndex) {
 		Objects.requireNonNull(array, "array");
 
 		if (array instanceof Object[])
@@ -364,6 +440,98 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 			return (Array) new ShortArray((short[]) array, beginIndex, endIndex);
 
 		throw new IllegalArgumentException("Not an array");
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code map}.
+	 *
+	 * @param map the map to construct a new array from to be backing the constructed array.
+	 * @param <E> the type of the elements.
+	 * @return a new array backed by a new array from the given {@code map}.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public static <E> ObjectArray<E> of(java.util.Map<? extends E, ? extends E> map) {
+		return new ObjectArray(map);
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code collection}.
+	 *
+	 * @param collection the collection to construct a new array from to be backing the constructed
+	 *                   array.
+	 * @param <E>        the type of the elements.
+	 * @return a new array backed by a new array from the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public static <E> ObjectArray<E> of(java.util.Collection<? extends E> collection) {
+		return new ObjectArray(collection);
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code map}.
+	 *
+	 * @param map   the map to construct a new array from to be backing the constructed array.
+	 * @param klass the class of the new constructed backing array of the constructed array.
+	 * @param <A>   the type of the array.
+	 * @param <E>   the type of the elements.
+	 * @return a new array backed by a new array from the given {@code map}.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public static <A extends Serializable, E> Array<A, E> of(java.util.Map<? extends E, ? extends E> map, Class<A> klass) {
+		if (klass == boolean[].class)
+			return (Array<A, E>) new BooleanArray((java.util.Map) map);
+		if (klass == byte[].class)
+			return (Array<A, E>) new ByteArray((java.util.Map) map);
+		if (klass == char[].class)
+			return (Array<A, E>) new CharacterArray((java.util.Map) map);
+		if (klass == double[].class)
+			return (Array<A, E>) new DoubleArray((java.util.Map) map);
+		if (klass == float[].class)
+			return (Array<A, E>) new FloatArray((java.util.Map) map);
+		if (klass == int[].class)
+			return (Array<A, E>) new IntegerArray((java.util.Map) map);
+		if (klass == long[].class)
+			return (Array<A, E>) new LongArray((java.util.Map) map);
+		if (klass == short[].class)
+			return (Array<A, E>) new ShortArray((java.util.Map) map);
+
+		return new ObjectArray(map, klass);
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code collection}.
+	 *
+	 * @param collection the collection to construct a new array from to be backing the constructed
+	 *                   array.
+	 * @param klass      the class of the new constructed backing array of the constructed array.
+	 * @param <A>        the type of the array.
+	 * @param <E>        the type of the elements.
+	 * @return a new array backed by a new array from the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public static <A extends Serializable, E> Array<A, E> of(java.util.Collection<? extends E> collection, Class<A> klass) {
+		if (klass == boolean[].class)
+			return (Array<A, E>) new BooleanArray((java.util.Collection) collection);
+		if (klass == byte[].class)
+			return (Array<A, E>) new ByteArray((java.util.Collection) collection);
+		if (klass == char[].class)
+			return (Array<A, E>) new CharacterArray((java.util.Collection) collection);
+		if (klass == double[].class)
+			return (Array<A, E>) new DoubleArray((java.util.Collection) collection);
+		if (klass == float[].class)
+			return (Array<A, E>) new FloatArray((java.util.Collection) collection);
+		if (klass == int[].class)
+			return (Array<A, E>) new IntegerArray((java.util.Collection) collection);
+		if (klass == long[].class)
+			return (Array<A, E>) new LongArray((java.util.Collection) collection);
+		if (klass == short[].class)
+			return (Array<A, E>) new ShortArray((java.util.Collection) collection);
+
+		return new ObjectArray(collection, klass);
 	}
 
 	/**
@@ -401,18 +569,90 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	}
 
 	/**
-	 * Get an actual array copy of this array that has the given {@code klass}.
+	 * Get the length of this array.
 	 *
-	 * @param klass the type of the constructed array.
-	 * @param <T>   the type of the returned array.
-	 * @return an actual array copy of this array.
-	 * @throws NullPointerException     if the given {@code klass} is null.
-	 * @throws ArrayStoreException      if an element can not be stored at the constructed array.
-	 * @throws IllegalArgumentException if the given {@code klass} is not an object array class.
+	 * @return the length of this array.
+	 * @see java.lang.reflect.Array#getLength(Object)
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	public final int length() {
+		return this.endIndex - this.beginIndex;
+	}
+
+	/**
+	 * Get the thumb at the backing array where the given {@code thumb} is pointing at in this
+	 * array.
+	 *
+	 * @param thumb the thumb at this array.
+	 * @return the thumb the given {@code thumb} at this array is backed by at the backing array.
+	 * @throws IndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	protected final int index(int thumb) {
+		int length = this.length();
+
+		if (thumb < 0)
+			throw new IndexOutOfBoundsException("thumb(" + thumb + ") < 0");
+		if (thumb >= length)
+			throw new IndexOutOfBoundsException("thumb(" + thumb + ") >= length(" + length + ")");
+
+		return this.beginIndex + thumb;
+	}
+
+	/**
+	 * Insure that the specified range is a valid range in this array.
+	 *
+	 * @param beginThumb the first index in the range to be checked.
+	 * @return the length of the range.
+	 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb > length}.
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	protected final int range(int beginThumb) {
+		int length = this.length();
+
+		if (beginThumb < 0)
+			throw new IndexOutOfBoundsException("beginThumb(" + beginThumb + ") < 0");
+		if (beginThumb > length)
+			throw new IndexOutOfBoundsException(
+					"beginThumb(" + beginThumb + ") > length(" + length + ")");
+
+		return length - beginThumb;
+	}
+
+	/**
+	 * Insure that the specified range is a valid range in this array.
+	 *
+	 * @param beginThumb the first index in the range to be checked.
+	 * @param endThumb   one past the last index in the range to be checked.
+	 * @return the length of the range between the given {@code beginThumb} and {@code endThumb}.
+	 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code endThumb > length}.
+	 * @throws IllegalArgumentException  if {@code beginThumb > endThumb}
+	 * @since 0.1.5 ~2020.08.06
+	 */
+	protected final int range(int beginThumb, int endThumb) {
+		int length = this.length();
+
+		if (beginThumb < 0)
+			throw new ArrayIndexOutOfBoundsException("beginThumb(" + beginThumb + ") < 0");
+		if (endThumb > length)
+			throw new ArrayIndexOutOfBoundsException(
+					"endThumb(" + endThumb + ") > length(" + length + ")");
+		if (beginThumb > endThumb)
+			throw new IllegalArgumentException(
+					"beginThumb(" + beginThumb + ") > endThumb(" + endThumb + ")");
+
+		return length;
+	}
+
+	/**
+	 * Get the boxed index for the given real {@code index}.
+	 *
+	 * @param index the real index to get a boxed index for.
+	 * @return the boxed index for the given real {@code index}.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public <T extends E> T[] array(Class<? super T[]> klass) {
-		return this.array(this.length(), klass);
+	protected final int thumb(int index) {
+		return index - this.beginIndex;
 	}
 
 	/**
@@ -426,16 +666,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	}
 
 	/**
-	 * Get the length of this array.
-	 *
-	 * @return the length of this array.
-	 * @since 0.1.5 ~2020.08.06
-	 */
-	public int length() {
-		return this.endIndex - this.beginIndex;
-	}
-
-	/**
 	 * Get a stream streaming the elements in this array.
 	 *
 	 * @return a stream streaming the elements in this array.
@@ -444,82 +674,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	 */
 	public Stream<E> stream() {
 		return StreamSupport.stream(this.spliterator(), false);
-	}
-
-	/**
-	 * Get the boxed index for the given real {@code index}.
-	 *
-	 * @param index the real index to get a boxed index for.
-	 * @return the boxed index for the given real {@code index}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	protected int lowerIndex(int index) {
-		return index - this.beginIndex;
-	}
-
-	/**
-	 * Insure that the given {@code index} is a valid index in this array.
-	 *
-	 * @param index the index to be checked.
-	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >= length}.
-	 * @since 0.1.5 ~2020.08.06
-	 */
-	protected void requireIndex(int index) {
-		int length = this.length();
-
-		if (index < 0)
-			throw new IndexOutOfBoundsException("index(" + index + ") < 0");
-		if (index >= length)
-			throw new IndexOutOfBoundsException("index(" + index + ") >= length(" + length + ")");
-	}
-
-	/**
-	 * Insure that the specified range is a valid range in this array.
-	 *
-	 * @param beginIndex the first index in the range to be checked.
-	 * @param endIndex   one past the last index in the range to be checked.
-	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex > length}.
-	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}
-	 * @since 0.1.5 ~2020.08.06
-	 */
-	protected void requireRange(int beginIndex, int endIndex) {
-		int length = this.length();
-
-		if (beginIndex < 0)
-			throw new ArrayIndexOutOfBoundsException("beginIndex(" + beginIndex + ") < 0");
-		if (endIndex > length)
-			throw new ArrayIndexOutOfBoundsException(
-					"endIndex(" + endIndex + ") > length(" + length + ")");
-		if (beginIndex > endIndex)
-			throw new IllegalArgumentException(
-					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
-	}
-
-	/**
-	 * Insure that the specified index is valid as a start/end point of this array.
-	 *
-	 * @param index the index to be checked.
-	 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
-	 * @since 0.1.5 ~2020.08.06
-	 */
-	protected void requireRange(int index) {
-		int length = this.length();
-
-		if (index < 0)
-			throw new IndexOutOfBoundsException("index(" + index + ") < 0");
-		if (index > length)
-			throw new IndexOutOfBoundsException("index(" + index + ") > length(" + length + ")");
-	}
-
-	/**
-	 * Get the real index for the given boxed {@code index}.
-	 *
-	 * @param index the boxed index to get a real index for.
-	 * @return the real index for the given boxed index.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	protected int upperIndex(int index) {
-		return this.beginIndex + index;
 	}
 
 	@Override
@@ -544,58 +698,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	public abstract String toString();
 
 	/**
-	 * Determine the index of the first element in the given {@code elements} that does not equal
-	 * any element in this array.
-	 *
-	 * @param elements the elements to be checked.
-	 * @return the index of the first element in the given {@code elements} that does not equal any
-	 * 		element in this array. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	@Deprecated
-	public abstract int all(E... elements);
-
-	/**
-	 * Determine the index of the first element in the given {@code elements} that does not equal
-	 * any element in this array.
-	 *
-	 * @param elements the elements to be checked.
-	 * @return the index of the first element in the given {@code elements} that does not equal any
-	 * 		element in this array. Or -1 if no such element found.
-	 * @throws NullPointerException if the given {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	@Deprecated
-	public abstract int all(A elements);
-
-	/**
-	 * Determine the index of the first element in the given {@code elements} that does equal any
-	 * element in this array.
-	 *
-	 * @param elements to elements to be checked.
-	 * @return the index of the first element in the given {@code elements} that does equal any
-	 * 		element in this array. Or -1 if no such element found.
-	 * @throws NullPointerException if the {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	@Deprecated
-	public abstract int any(E... elements);
-
-	/**
-	 * Determine the index of the first element in the given {@code elements} that does equal any
-	 * element in this array.
-	 *
-	 * @param elements to elements to be checked.
-	 * @return the index of the first element in the given {@code elements} that does equal any
-	 * 		element in this array. Or -1 if no such element found.
-	 * @throws NullPointerException if the {@code elements} is null.
-	 * @since 0.1.5 ~2020.07.24
-	 */
-	@Deprecated
-	public abstract int any(A elements);
-
-	/**
 	 * Get an actual array copy of this array.
 	 *
 	 * @param length the length of the constructed array.
@@ -604,37 +706,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	 * @since 0.1.5 ~2020.08.11
 	 */
 	public abstract A array(int length);
-
-	/**
-	 * Get an actual array copy of this array that has the given {@code klass}.
-	 *
-	 * @param length the length of the constructed array.
-	 * @param klass  the type of the constructed array.
-	 * @param <T>    the type of the returned array.
-	 * @return an actual array copy of this array.
-	 * @throws NullPointerException       if the given {@code klass} is null.
-	 * @throws IllegalArgumentException   if the given {@code klass} is not an object array class.
-	 * @throws ArrayStoreException        if an element can not be stored at the constructed array.
-	 * @throws NegativeArraySizeException if the given {@code length} is negative.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public abstract <T extends E> T[] array(int length, Class<? super T[]> klass);
-
-	/**
-	 * Fill the given {@code array} with the elements of this array. If the given {@code array} is
-	 * smaller than this array, then construct a new array with the same type as the given {@code
-	 * array} and the same length as the length of this array. If the given {@code array} is larger
-	 * than this array, then set the index at {@code length} to null.
-	 *
-	 * @param array the array to be filled.
-	 * @param <T>   the type of the elements in the given {@code array}.
-	 * @return the given {@code array}, if it is not smaller than this array. Otherwise, a new array
-	 * 		with the same length as this array.
-	 * @throws NullPointerException if the given {@code array} is null.
-	 * @throws ArrayStoreException  if an element can not be stored at the given {@code array}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public abstract <T> T[] array(T[] array);
 
 	/**
 	 * Using {@link System#arraycopy(Object, int, Object, int, int)}, copy all elements of this
@@ -666,6 +737,22 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	public abstract int binarySearch(E element);
 
 	/**
+	 * Use the best available copying method to copy elements from this array to the given {@code
+	 * array}.
+	 *
+	 * @param array the destination array.
+	 * @param pos   the position where to start writing in the destination array.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code pos < 0} or {@code pos + length > array.length}.
+	 * @throws ArrayStoreException       if an element can not be stored in the given {@code array}.
+	 *                                   Or if no available method to copy elements from this array
+	 *                                   to the given {@code array}.
+	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public abstract void copy(Object array, int pos);
+
+	/**
 	 * Assign the given {@code element} to each element of this array.
 	 *
 	 * @param element the element to fill this array with.
@@ -677,15 +764,15 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	public abstract void fill(E element);
 
 	/**
-	 * Get the element at the given {@code index} in this array.
+	 * Get the element at the given {@code thumb} in this array.
 	 *
-	 * @param index the index to get the element from.
-	 * @return the element at the given {@code index} in this array.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= length}.
+	 * @param thumb the thumb to get the element from.
+	 * @return the element at the given {@code thumb} in this array.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
 	 * @see java.lang.reflect.Array#get(Object, int)
 	 * @since 0.1.5 ~2020.08.06
 	 */
-	public abstract E get(int index);
+	public abstract E get(int thumb);
 
 	/**
 	 * Manually copy all elements of this array to the given {@code array}.
@@ -709,6 +796,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	 * @since 0.1.5 ~2020.08.06
 	 */
 	public abstract List list();
+
+	/**
+	 * Get a list iterator iterating over the elements of this array.
+	 *
+	 * @return a new list iterator for this array.
+	 */
+	public abstract ListIterator listIterator();
 
 	/**
 	 * Construct a new map backed by this array.
@@ -759,17 +853,17 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	public abstract void parallelSort();
 
 	/**
-	 * Set the element at the given {@code index} in this array to the given {@code element}.
+	 * Set the element at the given {@code thumb} in this array to the given {@code element}.
 	 *
-	 * @param index   the index to set the given {@code element} to.
+	 * @param thumb   the thumb to set the given {@code element} to.
 	 * @param element the element to be set.
-	 * @throws ArrayIndexOutOfBoundsException if {@code index < 0} or {@code index >= length}.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
 	 * @throws ArrayStoreException            if the given {@code element} can not be stored to the
 	 *                                        array.
 	 * @see java.lang.reflect.Array#set(Object, int, Object)
 	 * @since 0.1.5 ~2020.08.06
 	 */
-	public abstract void set(int index, E element);
+	public abstract void set(int thumb, E element);
 
 	/**
 	 * Assign each element of this array to the value returned from invoking the given {@code
@@ -793,18 +887,18 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 	/**
 	 * Construct a new array backed by the specified range of this array. The range starts at the
-	 * given {@code beginIndex} and ends before the given {@code endIndex}.
+	 * given {@code beginThumb} and ends before the given {@code endThumb}.
 	 *
-	 * @param beginIndex the first index of the area at this array to be backing the constructed
+	 * @param beginThumb the first index of the area at this array to be backing the constructed
 	 *                   array.
-	 * @param endIndex   one past the last index of the area at this array to be backing the
+	 * @param endThumb   one past the last index of the area at this array to be backing the
 	 *                   constructed array.
 	 * @return a new array backed by the specified range of this array.
-	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex > length}.
-	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code endThumb > length}.
+	 * @throws IllegalArgumentException  if {@code beginThumb > endThumb}.
 	 * @since 0.1.5 ~2020.08.06
 	 */
-	public abstract Array<A, E> sub(int beginIndex, int endIndex);
+	public abstract Array<A, E> sub(int beginThumb, int endThumb);
 
 	/**
 	 * An iterator iterating the elements in the enclosing array.
@@ -833,15 +927,14 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		/**
 		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
-		 * @param index the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @param beginThumb the initial position of the constructed iterator.
+		 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb >
+		 *                                   length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected Iterator(int index) {
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireRange(index);
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			this.index = Array.this.upperIndex(index);
+		protected Iterator(int beginThumb) {
+			Array.this.range(beginThumb);
+			this.index = Array.this.beginIndex + beginThumb;
 		}
 
 		@Override
@@ -873,48 +966,29 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -5890878610114060287L;
 
-		/**
-		 * Construct a new list backed by the enclosing array.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected List() {
-		}
-
 		@Override
 		public boolean add(E element) {
 			throw new UnsupportedOperationException("add");
 		}
 
 		@Override
-		public void add(int index, E element) {
-			Array.this.requireIndex(index);
+		public void add(int thumb, E element) {
 			throw new UnsupportedOperationException("add");
 		}
 
 		@Override
 		public boolean addAll(Collection<? extends E> collection) {
-			Objects.requireNonNull(collection, "collection");
-			if (!collection.isEmpty())
-				throw new UnsupportedOperationException("add");
-
-			return false;
+			throw new UnsupportedOperationException("addAll");
 		}
 
 		@Override
-		public boolean addAll(int index, Collection<? extends E> collection) {
-			Objects.requireNonNull(collection, "collection");
-			Array.this.requireIndex(index);
-			if (!collection.isEmpty())
-				throw new UnsupportedOperationException("addAll");
-
-			return false;
+		public boolean addAll(int thumb, Collection<? extends E> collection) {
+			throw new UnsupportedOperationException("addAll");
 		}
 
 		@Override
 		public void clear() {
-			if (!this.isEmpty())
-				throw new UnsupportedOperationException("clear");
+			throw new UnsupportedOperationException("clear");
 		}
 
 		@Override
@@ -948,7 +1022,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 		@Override
 		public ListIterator listIterator() {
-			return this.listIterator(0);
+			return Array.this.listIterator();
 		}
 
 		@Override
@@ -957,28 +1031,23 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		}
 
 		@Override
-		public E remove(int index) {
-			Array.this.requireIndex(index);
+		public E remove(int thumb) {
 			throw new UnsupportedOperationException("remove");
 		}
 
 		@Override
 		public boolean remove(Object object) {
-			if (this.contains(object))
-				throw new UnsupportedOperationException("remove");
-
-			return false;
+			throw new UnsupportedOperationException("remove");
 		}
 
 		@Override
 		public boolean removeAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
+			throw new UnsupportedOperationException("removeAll");
+		}
 
-			for (Object object : collection)
-				if (this.contains(object))
-					throw new UnsupportedOperationException("remove");
-
-			return false;
+		@Override
+		public boolean retainAll(Collection<?> collection) {
+			throw new UnsupportedOperationException("retainAll");
 		}
 
 		@Override
@@ -997,19 +1066,34 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		}
 
 		@Override
-		public List subList(int beginIndex, int endIndex) {
-			return Array.this.sub(beginIndex, endIndex)
+		public List subList(int beginThumb, int endThumb) {
+			return Array.this.sub(beginThumb, endThumb)
 					.list();
 		}
 
 		@Override
 		public Object[] toArray() {
-			return Array.this.array(Object[].class);
+			int length = this.size();
+			Object[] product = new Object[length];
+			Array.this.copy(product, 0);
+			return product;
 		}
 
 		@Override
 		public <T> T[] toArray(T[] array) {
-			return Array.this.array(array);
+			Objects.requireNonNull(array, "array");
+			int length = this.size();
+			T[] product = array;
+
+			if (array.length < length)
+				product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
+			else
+				product[length] = null;
+
+			Array.this.sub(0, Math.min(array.length, length))
+					.copy(array, 0);
+
+			return product;
 		}
 
 		@Override
@@ -1026,7 +1110,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		public abstract boolean equals(Object object);
 
 		@Override
-		public abstract E get(int index);
+		public abstract E get(int thumb);
 
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
@@ -1041,7 +1125,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		public abstract int lastIndexOf(Object object);
 
 		@Override
-		public abstract ListIterator listIterator(int index);
+		public abstract ListIterator listIterator(int beginThumb);
 
 		@Override
 		public abstract boolean removeIf(Predicate<? super E> predicate);
@@ -1049,12 +1133,8 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		@Override
 		public abstract void replaceAll(UnaryOperator<E> operator);
 
-		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
-		public abstract boolean retainAll(Collection<?> collection);
-
-		@Override
-		public abstract E set(int index, E element);
+		public abstract E set(int thumb, E element);
 
 		@Override
 		public abstract void sort(Comparator<? super E> comparator);
@@ -1092,17 +1172,16 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 		/**
 		 * Construct a new list iterator iterating the elements in the enclosing array, starting
-		 * from the given {@code index}.
+		 * from the given {@code beginThumb}.
 		 *
-		 * @param index the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @param beginThumb the initial position of the constructed iterator.
+		 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb >
+		 *                                   length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected ListIterator(int index) {
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireRange(index);
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			this.index = Array.this.upperIndex(index);
+		protected ListIterator(int beginThumb) {
+			Array.this.range(beginThumb);
+			this.index = Array.this.beginIndex + beginThumb;
 		}
 
 		@Override
@@ -1122,12 +1201,12 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 		@Override
 		public int nextIndex() {
-			return Array.this.lowerIndex(this.index);
+			return Array.this.thumb(this.index);
 		}
 
 		@Override
 		public int previousIndex() {
-			return Array.this.lowerIndex(this.index - 1);
+			return Array.this.thumb(this.index - 1);
 		}
 
 		@Override
@@ -1164,25 +1243,14 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		private static final long serialVersionUID = 7692195336903798598L;
 
 		{
-			//noinspection OverridableMethodCallDuringObjectConstruction
 			int length = Array.this.length();
 			if (length % 2 != 0)
 				throw new IllegalArgumentException("length(" + length + ") % 2 != 0");
 		}
 
-		/**
-		 * Construct a new map backed by the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		protected Map() {
-		}
-
 		@Override
 		public void clear() {
-			if (!this.isEmpty())
-				throw new UnsupportedOperationException("clear");
+			throw new UnsupportedOperationException("clear");
 		}
 
 		@Override
@@ -1192,10 +1260,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 		@Override
 		public V remove(Object key) {
-			if (this.containsKey(key))
-				throw new UnsupportedOperationException("remove");
-
-			return null;
+			throw new UnsupportedOperationException("remove");
 		}
 
 		@Override
@@ -1294,20 +1359,18 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 			protected final int index;
 
 			/**
-			 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in
+			 * Construct a new entry backed by a range from {@code thumb} to {@code thumb + 1} in
 			 * the enclosing array.
 			 *
-			 * @param index the index to where the key (followed by the value) will be in the
+			 * @param thumb the thumb to where the key (followed by the value) will be in the
 			 *              constructed entry.
-			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >=
+			 * @throws IndexOutOfBoundsException if {@code thumb < 0} or {@code thumb + 1 >=
 			 *                                   length}.
 			 * @since 0.1.5 ~2020.08.06
 			 */
-			protected Entry(int index) {
-				//noinspection OverridableMethodCallDuringObjectConstruction
-				Array.this.requireRange(index, index + 1);
-				//noinspection OverridableMethodCallDuringObjectConstruction
-				this.index = Array.this.upperIndex(index);
+			protected Entry(int thumb) {
+				Array.this.range(thumb, thumb + 1);
+				this.index = Array.this.beginIndex + thumb;
 			}
 
 			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
@@ -1342,39 +1405,19 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -7515045887948351373L;
 
-			/**
-			 * Construct a new set backed by the entries in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			protected EntrySet() {
-			}
-
 			@Override
 			public boolean add(java.util.Map.Entry<K, V> entry) {
-				if (this.contains(entry))
-					return false;
-
 				throw new UnsupportedOperationException("add");
 			}
 
 			@Override
 			public boolean addAll(Collection<? extends java.util.Map.Entry<K, V>> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for (Object object : collection) {
-					if (this.contains(object))
-						continue;
-
-					throw new UnsupportedOperationException("add");
-				}
-
-				return false;
+				throw new UnsupportedOperationException("addAll");
 			}
 
 			@Override
 			public void clear() {
-				Map.this.clear();
+				throw new UnsupportedOperationException("clear");
 			}
 
 			@Override
@@ -1403,21 +1446,17 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 			@Override
 			public boolean remove(Object object) {
-				if (this.contains(object))
-					throw new UnsupportedOperationException("remove");
-
-				return false;
+				throw new UnsupportedOperationException("remove");
 			}
 
 			@Override
 			public boolean removeAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
+				throw new UnsupportedOperationException("removeAll");
+			}
 
-				for (Object object : collection)
-					if (this.contains(object))
-						throw new UnsupportedOperationException("remove");
-
-				return false;
+			@Override
+			public boolean retainAll(Collection<?> collection) {
+				throw new UnsupportedOperationException("retainAll");
 			}
 
 			@Override
@@ -1450,10 +1489,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 			@Override
 			public abstract boolean removeIf(Predicate<? super java.util.Map.Entry<K, V>> predicate);
-
-			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-			@Override
-			public abstract boolean retainAll(Collection<?> collection);
 
 			@Override
 			public abstract Spliterator spliterator();
@@ -1494,18 +1529,16 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				/**
 				 * Construct a new iterator iterating the entries in the enclosing array, starting
-				 * from the given {@code index}.
+				 * from the given {@code beginThumb}.
 				 *
-				 * @param index the initial position of the constructed iterator.
-				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
-				 *                                   length}.
+				 * @param beginThumb the initial position of the constructed iterator.
+				 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb
+				 *                                   > length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				protected Iterator(int index) {
-					//noinspection OverridableMethodCallDuringObjectConstruction
-					Array.this.requireRange(index);
-					//noinspection OverridableMethodCallDuringObjectConstruction
-					this.index = Array.this.upperIndex(index);
+				protected Iterator(int beginThumb) {
+					Array.this.range(beginThumb);
+					this.index = Array.this.beginIndex + beginThumb;
 				}
 
 				@Override
@@ -1539,10 +1572,11 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 				 *
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				protected final int characteristics = java.util.Spliterator.SIZED |
-													  java.util.Spliterator.SUBSIZED |
-													  java.util.Spliterator.ORDERED |
-													  java.util.Spliterator.IMMUTABLE;
+				protected static final int CHARACTERISTICS = java.util.Spliterator.SIZED |
+															 java.util.Spliterator.SUBSIZED |
+															 java.util.Spliterator.ORDERED |
+															 java.util.Spliterator.IMMUTABLE;
+
 				/**
 				 * The next index.
 				 *
@@ -1561,23 +1595,21 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				/**
 				 * Construct a new spliterator iterating the entries in the enclosing array,
-				 * starting from the given {@code index}.
+				 * starting from the given {@code beginThumb}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
-				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
-				 *                                   length}.
+				 * @param beginThumb the initial position of the constructed spliterator.
+				 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb
+				 *                                   > length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				protected Spliterator(int index) {
-					//noinspection OverridableMethodCallDuringObjectConstruction
-					Array.this.requireRange(index);
-					//noinspection OverridableMethodCallDuringObjectConstruction
-					this.index = Array.this.upperIndex(index);
+				protected Spliterator(int beginThumb) {
+					Array.this.range(beginThumb);
+					this.index = Array.this.beginIndex + beginThumb;
 				}
 
 				@Override
 				public int characteristics() {
-					return this.characteristics;
+					return Spliterator.CHARACTERISTICS;
 				}
 
 				@Override
@@ -1587,7 +1619,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				@Override
 				public Comparator<? super java.util.Map.Entry<K, V>> getComparator() {
-					if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
+					if ((Spliterator.CHARACTERISTICS & java.util.Spliterator.SORTED) != 0)
 						return null;
 
 					throw new IllegalStateException();
@@ -1600,7 +1632,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				@Override
 				public boolean hasCharacteristics(int characteristics) {
-					return (this.characteristics & characteristics) == characteristics;
+					return (Spliterator.CHARACTERISTICS & characteristics) == characteristics;
 				}
 
 				@Override
@@ -1639,39 +1671,19 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 4627018232494058734L;
 
-			/**
-			 * Construct a new set backed by the keys in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			protected KeySet() {
-			}
-
 			@Override
 			public boolean add(K key) {
-				if (Map.this.containsKey(key))
-					return false;
-
 				throw new UnsupportedOperationException("add");
 			}
 
 			@Override
 			public boolean addAll(Collection<? extends K> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for (Object object : collection) {
-					if (Map.this.containsKey(object))
-						continue;
-
-					throw new UnsupportedOperationException("add");
-				}
-
-				return false;
+				throw new UnsupportedOperationException("addAll");
 			}
 
 			@Override
 			public void clear() {
-				Map.this.clear();
+				throw new UnsupportedOperationException("clear");
 			}
 
 			@Override
@@ -1705,21 +1717,17 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 			@Override
 			public boolean remove(Object object) {
-				if (Map.this.containsKey(object))
-					throw new UnsupportedOperationException("remove");
-
-				return false;
+				throw new UnsupportedOperationException("remove");
 			}
 
 			@Override
 			public boolean removeAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
+				throw new UnsupportedOperationException("removeAll");
+			}
 
-				for (Object object : collection)
-					if (Map.this.containsKey(object))
-						throw new UnsupportedOperationException("remove");
-
-				return false;
+			@Override
+			public boolean retainAll(Collection<?> collection) {
+				throw new UnsupportedOperationException("retainAll");
 			}
 
 			@Override
@@ -1748,10 +1756,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 			@Override
 			public abstract boolean removeIf(Predicate<? super K> predicate);
-
-			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-			@Override
-			public abstract boolean retainAll(Collection<?> collection);
 
 			@Override
 			public abstract Spliterator spliterator();
@@ -1792,18 +1796,16 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				/**
 				 * Construct a new iterator iterating the keys in the enclosing array, starting from
-				 * the given {@code index}.
+				 * the given {@code beginThumb}.
 				 *
-				 * @param index the initial position of the constructed iterator.
-				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
-				 *                                   length}.
+				 * @param beginThumb the initial position of the constructed iterator.
+				 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb
+				 *                                   > length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				protected Iterator(int index) {
-					//noinspection OverridableMethodCallDuringObjectConstruction
-					Array.this.requireRange(index);
-					//noinspection OverridableMethodCallDuringObjectConstruction
-					this.index = Array.this.upperIndex(index);
+				protected Iterator(int beginThumb) {
+					Array.this.range(beginThumb);
+					this.index = Array.this.beginIndex + beginThumb;
 				}
 
 				@Override
@@ -1837,10 +1839,11 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 				 *
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				protected final int characteristics = java.util.Spliterator.SIZED |
-													  java.util.Spliterator.SUBSIZED |
-													  java.util.Spliterator.ORDERED |
-													  java.util.Spliterator.IMMUTABLE;
+				protected static final int CHARACTERISTICS = java.util.Spliterator.SIZED |
+															 java.util.Spliterator.SUBSIZED |
+															 java.util.Spliterator.ORDERED |
+															 java.util.Spliterator.IMMUTABLE;
+
 				/**
 				 * The next index.
 				 *
@@ -1859,23 +1862,21 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				/**
 				 * Construct a new spliterator iterating the keys in the enclosing array, starting
-				 * from the given {@code index}.
+				 * from the given {@code beginThumb}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
-				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
-				 *                                   length}.
+				 * @param beginThumb the initial position of the constructed spliterator.
+				 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb
+				 *                                   > length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				protected Spliterator(int index) {
-					//noinspection OverridableMethodCallDuringObjectConstruction
-					Array.this.requireRange(index);
-					//noinspection OverridableMethodCallDuringObjectConstruction
-					this.index = Array.this.upperIndex(index);
+				protected Spliterator(int beginThumb) {
+					Array.this.range(beginThumb);
+					this.index = Array.this.beginIndex + beginThumb;
 				}
 
 				@Override
 				public int characteristics() {
-					return this.characteristics;
+					return Spliterator.CHARACTERISTICS;
 				}
 
 				@Override
@@ -1885,7 +1886,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				@Override
 				public Comparator<? super E> getComparator() {
-					if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
+					if ((Spliterator.CHARACTERISTICS & java.util.Spliterator.SORTED) != 0)
 						return null;
 
 					throw new IllegalStateException();
@@ -1898,7 +1899,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				@Override
 				public boolean hasCharacteristics(int characteristics) {
-					return (this.characteristics & characteristics) == characteristics;
+					return (Spliterator.CHARACTERISTICS & characteristics) == characteristics;
 				}
 
 				@Override
@@ -1937,14 +1938,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 7634421013079755116L;
 
-			/**
-			 * Construct a new collection backed by the values in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			protected Values() {
-			}
-
 			@Override
 			public boolean add(V value) {
 				throw new UnsupportedOperationException("add");
@@ -1957,7 +1950,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 			@Override
 			public void clear() {
-				Map.this.clear();
+				throw new UnsupportedOperationException("clear");
 			}
 
 			@Override
@@ -1991,21 +1984,17 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 			@Override
 			public boolean remove(Object object) {
-				if (Map.this.containsValue(object))
-					throw new UnsupportedOperationException("remove");
-
-				return false;
+				throw new UnsupportedOperationException("remove");
 			}
 
 			@Override
 			public boolean removeAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
+				throw new UnsupportedOperationException("removeAll");
+			}
 
-				for (Object object : collection)
-					if (Map.this.containsValue(object))
-						throw new UnsupportedOperationException("remove");
-
-				return false;
+			@Override
+			public boolean retainAll(Collection<?> collection) {
+				throw new UnsupportedOperationException("retainAll");
 			}
 
 			@Override
@@ -2034,10 +2023,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 			@Override
 			public abstract boolean removeIf(Predicate<? super V> predicate);
-
-			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-			@Override
-			public abstract boolean retainAll(Collection<?> collection);
 
 			@Override
 			public abstract Spliterator spliterator();
@@ -2078,18 +2063,16 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				/**
 				 * Construct a new iterator iterating the values in the enclosing array, starting
-				 * from the given {@code index}.
+				 * from the given {@code beginThumb}.
 				 *
-				 * @param index the initial position of the constructed iterator.
-				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
-				 *                                   length}.
+				 * @param beginThumb the initial position of the constructed iterator.
+				 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb
+				 *                                   > length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				protected Iterator(int index) {
-					//noinspection OverridableMethodCallDuringObjectConstruction
-					Array.this.requireRange(index);
-					//noinspection OverridableMethodCallDuringObjectConstruction
-					this.index = Array.this.upperIndex(index);
+				protected Iterator(int beginThumb) {
+					Array.this.range(beginThumb);
+					this.index = Array.this.beginIndex + beginThumb;
 				}
 
 				@Override
@@ -2123,10 +2106,11 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 				 *
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				protected final int characteristics = java.util.Spliterator.SIZED |
-													  java.util.Spliterator.SUBSIZED |
-													  java.util.Spliterator.ORDERED |
-													  java.util.Spliterator.IMMUTABLE;
+				protected static final int CHARACTERISTICS = java.util.Spliterator.SIZED |
+															 java.util.Spliterator.SUBSIZED |
+															 java.util.Spliterator.ORDERED |
+															 java.util.Spliterator.IMMUTABLE;
+
 				/**
 				 * The next index.
 				 *
@@ -2145,23 +2129,21 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				/**
 				 * Construct a new spliterator iterating the values in the enclosing array, starting
-				 * from the given {@code index}.
+				 * from the given {@code beginThumb}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
-				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
-				 *                                   length}.
+				 * @param beginThumb the initial position of the constructed spliterator.
+				 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb
+				 *                                   > length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				protected Spliterator(int index) {
-					//noinspection OverridableMethodCallDuringObjectConstruction
-					Array.this.requireRange(index);
-					//noinspection OverridableMethodCallDuringObjectConstruction
-					this.index = Array.this.upperIndex(index);
+				protected Spliterator(int beginThumb) {
+					Array.this.range(beginThumb);
+					this.index = Array.this.beginIndex + beginThumb;
 				}
 
 				@Override
 				public int characteristics() {
-					return this.characteristics;
+					return Spliterator.CHARACTERISTICS;
 				}
 
 				@Override
@@ -2171,7 +2153,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				@Override
 				public Comparator<? super V> getComparator() {
-					if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
+					if ((Spliterator.CHARACTERISTICS & java.util.Spliterator.SORTED) != 0)
 						return null;
 
 					throw new IllegalStateException();
@@ -2184,7 +2166,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				@Override
 				public boolean hasCharacteristics(int characteristics) {
-					return (this.characteristics & characteristics) == characteristics;
+					return (Spliterator.CHARACTERISTICS & characteristics) == characteristics;
 				}
 
 				@Override
@@ -2226,10 +2208,11 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		 *
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected final int characteristics = java.util.Spliterator.SIZED |
-											  java.util.Spliterator.SUBSIZED |
-											  java.util.Spliterator.ORDERED |
-											  java.util.Spliterator.IMMUTABLE;
+		protected static final int CHARACTERISTICS = java.util.Spliterator.SIZED |
+													 java.util.Spliterator.SUBSIZED |
+													 java.util.Spliterator.ORDERED |
+													 java.util.Spliterator.IMMUTABLE;
+
 		/**
 		 * The next index.
 		 *
@@ -2249,22 +2232,21 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 		/**
 		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
-		 * the given {@code index}.
+		 * the given {@code beginThumb}.
 		 *
-		 * @param index the initial position of the constructed spliterator.
-		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @param beginThumb the initial position of the constructed spliterator.
+		 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb >
+		 *                                   length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		protected Spliterator(int index) {
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			Array.this.requireRange(index);
-			//noinspection OverridableMethodCallDuringObjectConstruction
-			this.index = Array.this.upperIndex(index);
+		protected Spliterator(int beginThumb) {
+			Array.this.range(beginThumb);
+			this.index = Array.this.beginIndex + beginThumb;
 		}
 
 		@Override
 		public int characteristics() {
-			return this.characteristics;
+			return Spliterator.CHARACTERISTICS;
 		}
 
 		@Override
@@ -2274,7 +2256,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 		@Override
 		public Comparator<? super E> getComparator() {
-			if ((this.characteristics & java.util.Spliterator.SORTED) != 0)
+			if ((Spliterator.CHARACTERISTICS & java.util.Spliterator.SORTED) != 0)
 				return null;
 
 			throw new IllegalStateException();
@@ -2287,7 +2269,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 		@Override
 		public boolean hasCharacteristics(int characteristics) {
-			return (this.characteristics & characteristics) == characteristics;
+			return (Spliterator.CHARACTERISTICS & characteristics) == characteristics;
 		}
 
 		@Override

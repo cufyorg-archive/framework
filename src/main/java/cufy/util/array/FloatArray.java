@@ -35,13 +35,25 @@ public class FloatArray extends Array<float[], Float> {
 	private static final long serialVersionUID = 3201994039505608491L;
 
 	/**
+	 * Construct a new array backed by a new actual array that have the given {@code length}.
+	 *
+	 * @param length the length of the new actual array backing the construct array.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @see java.lang.reflect.Array#newInstance(Class, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public FloatArray(int length) {
+		super(new float[length]);
+	}
+
+	/**
 	 * Construct a new array backed by the given {@code array}.
 	 *
 	 * @param array the array to be backing the constructed array.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.05
 	 */
-	public FloatArray(float... array) {
+	public FloatArray(float[] array) {
 		super(array);
 	}
 
@@ -65,18 +77,6 @@ public class FloatArray extends Array<float[], Float> {
 	}
 
 	/**
-	 * Construct a new array backed by a new array from the given {@code map} using {@link
-	 * #from(java.util.Map)}.
-	 *
-	 * @param map the map to construct a new array from to be backing the constructed array.
-	 * @throws NullPointerException if the given {@code map} is null.
-	 * @since 0.1.5 ~2020.08.12
-	 */
-	public FloatArray(java.util.Map map) {
-		super(FloatArray.from(map));
-	}
-
-	/**
 	 * Construct a new array backed by a new array from the given {@code collection} using {@link
 	 * #from(Collection)}.
 	 *
@@ -85,8 +85,20 @@ public class FloatArray extends Array<float[], Float> {
 	 * @throws NullPointerException if the given {@code collection} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public FloatArray(java.util.Collection collection) {
+	public FloatArray(java.util.Collection<Float> collection) {
 		super(FloatArray.from(collection));
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code map} using {@link
+	 * #from(java.util.Map)}.
+	 *
+	 * @param map the map to construct a new array from to be backing the constructed array.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public FloatArray(java.util.Map<Float, Float> map) {
+		super(FloatArray.from(map));
 	}
 
 	/**
@@ -105,10 +117,12 @@ public class FloatArray extends Array<float[], Float> {
 			return true;
 		if (array.length == other.length)
 			for (int i = 0; i < array.length; i++) {
-				int element = Float.floatToIntBits(other[i]);
-				int e = Float.floatToIntBits(array[i]);
+				float element = other[i];
+				int elementb = Float.floatToIntBits(element);
+				float e = array[i];
+				int eb = Float.floatToIntBits(e);
 
-				if (element == e)
+				if (elementb == eb)
 					continue;
 
 				return false;
@@ -127,7 +141,7 @@ public class FloatArray extends Array<float[], Float> {
 	 *                              the product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static float[] from(java.util.Collection collection) {
+	public static float[] from(java.util.Collection<Float> collection) {
 		Objects.requireNonNull(collection, "collection");
 		float[] array = new float[collection.size()];
 
@@ -154,11 +168,11 @@ public class FloatArray extends Array<float[], Float> {
 	 *                              product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static float[] from(java.util.Map map) {
+	public static float[] from(java.util.Map<Float, Float> map) {
 		Objects.requireNonNull(map, "map");
 		float[] array = new float[map.size() << 1];
 
-		java.util.Iterator<java.util.Map.Entry> iterator = map.entrySet().iterator();
+		java.util.Iterator<? extends java.util.Map.Entry> iterator = map.entrySet().iterator();
 		for (int i = 0; i < array.length; i += 2) {
 			java.util.Map.Entry entry = iterator.next();
 			Object key = entry.getKey();
@@ -227,84 +241,6 @@ public class FloatArray extends Array<float[], Float> {
 	}
 
 	@Override
-	public int all(float[] elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			int element = Float.floatToIntBits(elements[i]);
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				int e = Float.floatToIntBits(this.array[j]);
-
-				if (element == e)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int all(Float... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			Float element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				float e = this.array[j];
-
-				if (element != null && element.equals(e))
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(float[] elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			int element = Float.floatToIntBits(elements[i]);
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				int e = Float.floatToIntBits(this.array[j]);
-
-				if (element == e)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(Float... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			Float element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				float e = this.array[j];
-
-				if (element != null && element.equals(e))
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
 	public float[] array(int length) {
 		if (length < 0)
 			throw new NegativeArraySizeException("length(" + length + ") < 0");
@@ -319,39 +255,6 @@ public class FloatArray extends Array<float[], Float> {
 		);
 
 		return array;
-	}
-
-	@Override
-	public <T extends Float> T[] array(int length, Class<? super T[]> klass) {
-		Objects.requireNonNull(klass, "klass");
-		if (length < 0)
-			throw new NegativeArraySizeException("length(" + length + ") < 0");
-		if (Object[].class.isAssignableFrom(klass))
-			throw new IllegalArgumentException("klass");
-
-		T[] array = (T[]) java.lang.reflect.Array.newInstance(klass.getComponentType(), length);
-
-		this.sub(0, Math.min(this.length(), length))
-				.hardcopy(array, 0);
-
-		return array;
-	}
-
-	@Override
-	public <T> T[] array(T[] array) {
-		Objects.requireNonNull(array, "array");
-		int length = this.length();
-		T[] product = array;
-
-		if (array.length < length)
-			product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-		else
-			product[length] = null;
-
-		this.sub(0, Math.min(this.length(), length))
-				.hardcopy(array, 0);
-
-		return product;
 	}
 
 	@Override
@@ -388,15 +291,29 @@ public class FloatArray extends Array<float[], Float> {
 			else if (midVal > element)
 				high = mid - 1;
 			else
-				return this.lowerIndex(mid); // key found
+				return this.thumb(mid); // key found
 		}
-		return this.lowerIndex(-(low + 1));  // key not found.
+		return this.thumb(-(low + 1));  // key not found.
 	}
 
 	@Override
 	public FloatArray clone() {
 		// noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
 		return new FloatArray(this.array());
+	}
+
+	@Override
+	public void copy(Object array, int pos) {
+		Objects.requireNonNull(array, "array");
+
+		if (array instanceof float[])
+			this.arraycopy((float[]) array, pos);
+		else if (array instanceof Object[])
+			this.hardcopy((Object[]) array, pos);
+		else
+			throw new ArrayStoreException(
+					"copy: type mismatch: can not copy float[] into " +
+					array.getClass().getSimpleName());
 	}
 
 	@Override
@@ -416,7 +333,7 @@ public class FloatArray extends Array<float[], Float> {
 					Object element = array.array[i];
 					float e = this.array[j];
 
-					if (element != null && element.equals(e))
+					if (element.equals(e))
 						continue;
 
 					return false;
@@ -448,10 +365,8 @@ public class FloatArray extends Array<float[], Float> {
 	}
 
 	@Override
-	public Float get(int index) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		return this.array[i];
+	public Float get(int thumb) {
+		return this.array[this.index(thumb)];
 	}
 
 	@Override
@@ -499,6 +414,11 @@ public class FloatArray extends Array<float[], Float> {
 	}
 
 	@Override
+	public ListIterator listIterator() {
+		return new ListIterator();
+	}
+
+	@Override
 	public Map map() {
 		return new Map();
 	}
@@ -522,7 +442,7 @@ public class FloatArray extends Array<float[], Float> {
 		Objects.requireNonNull(function, "function");
 		IntStream.range(this.beginIndex, this.endIndex)
 				.parallel()
-				.forEach(i -> this.array[i] = function.apply(this.lowerIndex(i)));
+				.forEach(i -> this.array[i] = function.apply(this.thumb(i)));
 	}
 
 	@Override
@@ -536,10 +456,8 @@ public class FloatArray extends Array<float[], Float> {
 	}
 
 	@Override
-	public void set(int index, Float element) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		this.array[i] = element;
+	public void set(int thumb, Float element) {
+		this.array[this.index(thumb)] = element;
 	}
 
 	@Override
@@ -565,12 +483,12 @@ public class FloatArray extends Array<float[], Float> {
 	}
 
 	@Override
-	public FloatArray sub(int beginIndex, int endIndex) {
-		this.requireRange(beginIndex, endIndex);
+	public FloatArray sub(int beginThumb, int endThumb) {
+		this.range(beginThumb, endThumb);
 		return new FloatArray(
 				this.array,
-				this.upperIndex(beginIndex),
-				this.upperIndex(endIndex)
+				this.beginIndex + beginThumb,
+				this.beginIndex + endThumb
 		);
 	}
 
@@ -597,6 +515,34 @@ public class FloatArray extends Array<float[], Float> {
 	}
 
 	/**
+	 * Get the element at the given {@code thumb} in this array.
+	 *
+	 * @param thumb the thumb to get the element from.
+	 * @return the element at the given {@code thumb} in this array.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @see java.lang.reflect.Array#getFloat(Object, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public float getFloat(int thumb) {
+		return this.array[this.index(thumb)];
+	}
+
+	/**
+	 * Set the element at the given {@code thumb} in this array to the given {@code element}.
+	 *
+	 * @param thumb   the thumb to set the given {@code element} to.
+	 * @param element the element to be set.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @throws ArrayStoreException            if the given {@code element} can not be stored to the
+	 *                                        array.
+	 * @see java.lang.reflect.Array#setFloat(Object, int, float)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public void setFloat(int thumb, float element) {
+		this.array[this.index(thumb)] = element;
+	}
+
+	/**
 	 * An iterator iterating the elements in the enclosing array.
 	 *
 	 * @author LSafer
@@ -615,12 +561,12 @@ public class FloatArray extends Array<float[], Float> {
 		/**
 		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Iterator(int index) {
-			super(index);
+		public Iterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -660,15 +606,6 @@ public class FloatArray extends Array<float[], Float> {
 	public class List extends Array<float[], Float>.List {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 848985287158674978L;
-
-		/**
-		 * Construct a new list backed by the enclosing array.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public List() {
-		}
 
 		@Override
 		public boolean contains(Object object) {
@@ -719,10 +656,8 @@ public class FloatArray extends Array<float[], Float> {
 		}
 
 		@Override
-		public Float get(int index) {
-			FloatArray.this.requireIndex(index);
-			int i = FloatArray.this.upperIndex(index);
-			return FloatArray.this.array[i];
+		public Float get(int thumb) {
+			return FloatArray.this.array[FloatArray.this.index(thumb)];
 		}
 
 		@Override
@@ -764,7 +699,7 @@ public class FloatArray extends Array<float[], Float> {
 		}
 
 		@Override
-		public ListIterator listIterator(int index) {
+		public ListIterator listIterator(int beginThumb) {
 			return new ListIterator();
 		}
 
@@ -789,36 +724,16 @@ public class FloatArray extends Array<float[], Float> {
 			Objects.requireNonNull(operator, "operator");
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i++) {
 				float e = FloatArray.this.array[i];
+				float n = operator.apply(e);
 
-				FloatArray.this.array[i] = operator.apply(e);
+				FloatArray.this.array[i] = n;
 			}
 		}
 
 		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i++) {
-				float e = FloatArray.this.array[i];
-
-				for (Object element : collection)
-					if (element != null && element.equals(e))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-		@Override
-		public Float set(int index, Float element) {
-			FloatArray.this.requireIndex(index);
-			int i = FloatArray.this.upperIndex(index);
+		public Float set(int thumb, Float element) {
+			Objects.requireNonNull(element, "element");
+			int i = FloatArray.this.index(thumb);
 			float old = FloatArray.this.array[i];
 			FloatArray.this.array[i] = element;
 			return old;
@@ -859,12 +774,12 @@ public class FloatArray extends Array<float[], Float> {
 		 * Construct a new list iterator iterating the elements in the enclosing array, starting
 		 * from the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public ListIterator(int index) {
-			super(index);
+		public ListIterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -911,6 +826,7 @@ public class FloatArray extends Array<float[], Float> {
 
 		@Override
 		public void set(Float element) {
+			Objects.requireNonNull(element, "element");
 			int index = this.last;
 
 			if (index == -1)
@@ -931,24 +847,15 @@ public class FloatArray extends Array<float[], Float> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -2840280796050057228L;
 
-		/**
-		 * Construct a new map backed by the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public Map() {
-		}
-
 		@Override
 		public Float compute(Float key, BiFunction<? super Float, ? super Float, ? extends Float> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					float v = FloatArray.this.array[i + 1];
 					Float value = function.apply(k, v);
 
@@ -968,12 +875,13 @@ public class FloatArray extends Array<float[], Float> {
 
 		@Override
 		public Float computeIfAbsent(Float key, Function<? super Float, ? extends Float> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (key.equals(k))
 					//old:notnull
 					return FloatArray.this.array[i + 1];
 			}
@@ -984,12 +892,13 @@ public class FloatArray extends Array<float[], Float> {
 
 		@Override
 		public Float computeIfPresent(Float key, BiFunction<? super Float, ? super Float, ? extends Float> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					float v = FloatArray.this.array[i + 1];
 					Float value = function.apply(k, v);
 
@@ -1129,12 +1038,14 @@ public class FloatArray extends Array<float[], Float> {
 
 		@Override
 		public Float merge(Float key, Float value, BiFunction<? super Float, ? super Float, ? extends Float> function) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					float v = FloatArray.this.array[i + 1];
 					Float newValue = function.apply(v, value);
 
@@ -1148,20 +1059,18 @@ public class FloatArray extends Array<float[], Float> {
 				}
 			}
 
-			if (value == null)
-				//old:notfound new:null
-				return null;
-
 			//old:notfound new:notnull
 			throw new UnsupportedOperationException("put");
 		}
 
 		@Override
 		public Float put(Float key, Float value) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					//old:found
 					float v = FloatArray.this.array[i + 1];
 					FloatArray.this.array[i + 1] = value;
@@ -1179,14 +1088,16 @@ public class FloatArray extends Array<float[], Float> {
 
 			for0:
 			for (java.util.Map.Entry<? extends Float, ? extends Float> entry : map.entrySet()) {
-				Float key = entry.getKey();
+				float key = entry.getKey();
+				int keyb = Float.floatToIntBits(key);
 
 				for (int i = FloatArray.this.beginIndex;
 					 i < FloatArray.this.endIndex; i += 2) {
 					float k = FloatArray.this.array[i];
+					int kb = Float.floatToIntBits(k);
 
-					if (key != null && key.equals(k)) {
-						Float value = entry.getValue();
+					if (keyb == kb) {
+						float value = entry.getValue();
 						FloatArray.this.array[i + 1] = value;
 						continue for0;
 					}
@@ -1233,10 +1144,12 @@ public class FloatArray extends Array<float[], Float> {
 
 		@Override
 		public boolean replace(Float key, Float oldValue, Float newValue) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(newValue, "newValue");
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					float v = FloatArray.this.array[i + 1];
 
 					if (oldValue != null && oldValue.equals(v)) {
@@ -1255,10 +1168,12 @@ public class FloatArray extends Array<float[], Float> {
 
 		@Override
 		public Float replace(Float key, Float value) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					//old:match
 					float v = FloatArray.this.array[i + 1];
 					FloatArray.this.array[i + 1] = value;
@@ -1277,8 +1192,9 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 				float v = FloatArray.this.array[i + 1];
+				float n = function.apply(k, v);
 
-				FloatArray.this.array[i + 1] = function.apply(k, v);
+				FloatArray.this.array[i + 1] = n;
 			}
 		}
 
@@ -1328,14 +1244,14 @@ public class FloatArray extends Array<float[], Float> {
 			 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in
 			 * the enclosing array.
 			 *
-			 * @param index the index to where the key (followed by the value) will be in the
+			 * @param thumb the index to where the key (followed by the value) will be in the
 			 *              constructed entry.
 			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >=
 			 *                                   length}.
 			 * @since 0.1.5 ~2020.08.06
 			 */
-			public Entry(int index) {
-				super(index);
+			public Entry(int thumb) {
+				super(thumb);
 			}
 
 			@Override
@@ -1378,6 +1294,7 @@ public class FloatArray extends Array<float[], Float> {
 
 			@Override
 			public Float setValue(Float value) {
+				Objects.requireNonNull(value, "value");
 				float v = FloatArray.this.array[this.index + 1];
 				FloatArray.this.array[this.index + 1] = value;
 				return v;
@@ -1401,15 +1318,6 @@ public class FloatArray extends Array<float[], Float> {
 		public class EntrySet extends Array<float[], Float>.Map<Float, Float>.EntrySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -4823635378224028987L;
-
-			/**
-			 * Construct a new set backed by the entries in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public EntrySet() {
-			}
 
 			@Override
 			public boolean contains(Object object) {
@@ -1527,37 +1435,6 @@ public class FloatArray extends Array<float[], Float> {
 			}
 
 			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
-					float k = FloatArray.this.array[i];
-					float v = FloatArray.this.array[i + 1];
-
-					for (Object object : collection)
-						if (object instanceof java.util.Map.Entry) {
-							java.util.Map.Entry entry = (java.util.Map.Entry) object;
-							Object key = entry.getKey();
-
-							if (key != null && key.equals(k)) {
-								Object value = entry.getValue();
-
-								if (value != null && value.equals(v))
-									//retained
-									continue for0;
-							}
-						}
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
-				return false;
-			}
-
-			@Override
 			public Spliterator spliterator() {
 				return new Spliterator();
 			}
@@ -1646,13 +1523,13 @@ public class FloatArray extends Array<float[], Float> {
 				 * Construct a new iterator iterating the entries in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -1661,7 +1538,7 @@ public class FloatArray extends Array<float[], Float> {
 					int index = this.index;
 					this.index = FloatArray.this.endIndex;
 
-					int i = FloatArray.this.lowerIndex(index);
+					int i = FloatArray.this.thumb(index);
 					int l = FloatArray.this.length();
 					for (; i < l; i += 2) {
 						Entry entry = new Entry(i);//trimmed index
@@ -1677,7 +1554,7 @@ public class FloatArray extends Array<float[], Float> {
 					if (index < FloatArray.this.endIndex) {
 						this.index += 2;
 
-						int i = FloatArray.this.lowerIndex(index);
+						int i = FloatArray.this.thumb(index);
 						return new Entry(i);//trimmed index
 					}
 
@@ -1705,13 +1582,13 @@ public class FloatArray extends Array<float[], Float> {
 				 * Construct a new spliterator iterating the entries in the enclosing array,
 				 * starting from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -1737,7 +1614,7 @@ public class FloatArray extends Array<float[], Float> {
 					if (index < FloatArray.this.endIndex) {
 						this.index += 2;
 
-						int i = FloatArray.this.lowerIndex(index);
+						int i = FloatArray.this.thumb(index);
 						Entry entry = new Entry(i);//trimmed index
 						consumer.accept(entry);
 						return true;
@@ -1758,15 +1635,6 @@ public class FloatArray extends Array<float[], Float> {
 		public class KeySet extends Array<float[], Float>.Map<Float, Float>.KeySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 7793360078444812816L;
-
-			/**
-			 * Construct a new set backed by the keys in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public KeySet() {
-			}
 
 			@Override
 			public boolean equals(Object object) {
@@ -1837,27 +1705,6 @@ public class FloatArray extends Array<float[], Float> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
-					float k = FloatArray.this.array[i];
-
-					for (Object key : collection)
-						if (key != null && key.equals(k))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -1944,13 +1791,13 @@ public class FloatArray extends Array<float[], Float> {
 				 * Construct a new iterator iterating the keys in the enclosing array, starting from
 				 * the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2000,13 +1847,13 @@ public class FloatArray extends Array<float[], Float> {
 				 * Construct a new spliterator iterating the keys in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2050,15 +1897,6 @@ public class FloatArray extends Array<float[], Float> {
 		public class Values extends Array<float[], Float>.Map<Float, Float>.Values {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -7937502933699082438L;
-
-			/**
-			 * Construct a new collection backed by the values in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public Values() {
-			}
 
 			@Override
 			public boolean equals(Object object) {
@@ -2109,28 +1947,6 @@ public class FloatArray extends Array<float[], Float> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = FloatArray.this.beginIndex + 1;
-					 i < FloatArray.this.endIndex; i += 2) {
-					float v = FloatArray.this.array[i];
-
-					for (Object value : collection)
-						if (value != null && value.equals(v))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -2217,13 +2033,13 @@ public class FloatArray extends Array<float[], Float> {
 				 * Construct a new iterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2273,13 +2089,13 @@ public class FloatArray extends Array<float[], Float> {
 				 * Construct a new spliterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2335,12 +2151,12 @@ public class FloatArray extends Array<float[], Float> {
 		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
 		 * the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed spliterator.
+		 * @param beginThumb the initial position of the constructed spliterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Spliterator(int index) {
-			super(index);
+		public Spliterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override

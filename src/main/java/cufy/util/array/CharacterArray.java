@@ -35,13 +35,25 @@ public class CharacterArray extends Array<char[], Character> {
 	private static final long serialVersionUID = 3201994039505608491L;
 
 	/**
+	 * Construct a new array backed by a new actual array that have the given {@code length}.
+	 *
+	 * @param length the length of the new actual array backing the construct array.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @see java.lang.reflect.Array#newInstance(Class, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public CharacterArray(int length) {
+		super(new char[length]);
+	}
+
+	/**
 	 * Construct a new array backed by the given {@code array}.
 	 *
 	 * @param array the array to be backing the constructed array.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.05
 	 */
-	public CharacterArray(char... array) {
+	public CharacterArray(char[] array) {
 		super(array);
 	}
 
@@ -65,18 +77,6 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	/**
-	 * Construct a new array backed by a new array from the given {@code map} using {@link
-	 * #from(java.util.Map)}.
-	 *
-	 * @param map the map to construct a new array from to be backing the constructed array.
-	 * @throws NullPointerException if the given {@code map} is null.
-	 * @since 0.1.5 ~2020.08.12
-	 */
-	public CharacterArray(java.util.Map map) {
-		super(CharacterArray.from(map));
-	}
-
-	/**
 	 * Construct a new array backed by a new array from the given {@code collection} using {@link
 	 * #from(Collection)}.
 	 *
@@ -85,8 +85,20 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @throws NullPointerException if the given {@code collection} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public CharacterArray(java.util.Collection collection) {
+	public CharacterArray(java.util.Collection<Character> collection) {
 		super(CharacterArray.from(collection));
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code map} using {@link
+	 * #from(java.util.Map)}.
+	 *
+	 * @param map the map to construct a new array from to be backing the constructed array.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public CharacterArray(java.util.Map<Character, Character> map) {
+		super(CharacterArray.from(map));
 	}
 
 	/**
@@ -127,7 +139,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 *                              the product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static char[] from(java.util.Collection collection) {
+	public static char[] from(java.util.Collection<Character> collection) {
 		Objects.requireNonNull(collection, "collection");
 		char[] array = new char[collection.size()];
 
@@ -154,11 +166,11 @@ public class CharacterArray extends Array<char[], Character> {
 	 *                              product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static char[] from(java.util.Map map) {
+	public static char[] from(java.util.Map<Character, Character> map) {
 		Objects.requireNonNull(map, "map");
 		char[] array = new char[map.size() << 1];
 
-		java.util.Iterator<java.util.Map.Entry> iterator = map.entrySet().iterator();
+		java.util.Iterator<? extends java.util.Map.Entry> iterator = map.entrySet().iterator();
 		for (int i = 0; i < array.length; i += 2) {
 			java.util.Map.Entry entry = iterator.next();
 			Object key = entry.getKey();
@@ -227,84 +239,6 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public int all(char[] elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			char element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				char e = this.array[j];
-
-				if (element == e)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int all(Character... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			Character element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				char e = this.array[j];
-
-				if (element != null && element.equals(e))
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(char[] elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			char element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				char e = this.array[j];
-
-				if (element == e)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(Character... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			Character element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				char e = this.array[j];
-
-				if (element != null && element.equals(e))
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
 	public char[] array(int length) {
 		if (length < 0)
 			throw new NegativeArraySizeException("length(" + length + ") < 0");
@@ -317,22 +251,6 @@ public class CharacterArray extends Array<char[], Character> {
 				0,
 				Math.min(this.length(), length)
 		);
-
-		return array;
-	}
-
-	@Override
-	public <T extends Character> T[] array(int length, Class<? super T[]> klass) {
-		Objects.requireNonNull(klass, "klass");
-		if (length < 0)
-			throw new NegativeArraySizeException("length(" + length + ") < 0");
-		if (Object[].class.isAssignableFrom(klass))
-			throw new IllegalArgumentException("klass");
-
-		T[] array = (T[]) java.lang.reflect.Array.newInstance(klass.getComponentType(), length);
-
-		this.sub(0, Math.min(this.length(), length))
-				.hardcopy(array, 0);
 
 		return array;
 	}
@@ -371,28 +289,31 @@ public class CharacterArray extends Array<char[], Character> {
 			else if (midVal > element)
 				high = mid - 1;
 			else
-				return this.lowerIndex(mid); // key found
+				return this.thumb(mid); // key found
 		}
-		return this.lowerIndex(-(low + 1));  // key not found.
+		return this.thumb(-(low + 1));  // key not found.
 	}
 
 	@Override
-	public <T> T[] array(T[] array) {
-		Objects.requireNonNull(array, "array");
-		int length = this.length();
-		T[] product = array;
-
-		if (array.length < length)
-			product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-		else
-			product[length] = null;
-
-		this.sub(0, Math.min(this.length(), length))
-				.hardcopy(array, 0);
-
-		return product;
+	public CharacterArray clone() {
+		// noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
+		return new CharacterArray(this.array());
 	}
-	
+
+	@Override
+	public void copy(Object array, int pos) {
+		Objects.requireNonNull(array, "array");
+
+		if (array instanceof char[])
+			this.arraycopy((char[]) array, pos);
+		else if (array instanceof Object[])
+			this.hardcopy((Object[]) array, pos);
+		else
+			throw new ArrayStoreException(
+					"copy: type mismatch: can not copy char[] into " +
+					array.getClass().getSimpleName());
+	}
+
 	@Override
 	public boolean equals(Object object) {
 		if (object == this)
@@ -410,7 +331,7 @@ public class CharacterArray extends Array<char[], Character> {
 					Object element = array.array[i];
 					char e = this.array[j];
 
-					if (element != null && element.equals(e))
+					if (element.equals(e))
 						continue;
 
 					return false;
@@ -442,10 +363,8 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public Character get(int index) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		return this.array[i];
+	public Character get(int thumb) {
+		return this.array[this.index(thumb)];
 	}
 
 	@Override
@@ -493,6 +412,11 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
+	public ListIterator listIterator() {
+		return new ListIterator();
+	}
+
+	@Override
 	public Map map() {
 		return new Map();
 	}
@@ -516,7 +440,7 @@ public class CharacterArray extends Array<char[], Character> {
 		Objects.requireNonNull(function, "function");
 		IntStream.range(this.beginIndex, this.endIndex)
 				.parallel()
-				.forEach(i -> this.array[i] = function.apply(this.lowerIndex(i)));
+				.forEach(i -> this.array[i] = function.apply(this.thumb(i)));
 	}
 
 	@Override
@@ -530,10 +454,8 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public void set(int index, Character element) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		this.array[i] = element;
+	public void set(int thumb, Character element) {
+		this.array[this.index(thumb)] = element;
 	}
 
 	@Override
@@ -559,19 +481,13 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public CharacterArray sub(int beginIndex, int endIndex) {
-		this.requireRange(beginIndex, endIndex);
+	public CharacterArray sub(int beginThumb, int endThumb) {
+		this.range(beginThumb, endThumb);
 		return new CharacterArray(
 				this.array,
-				this.upperIndex(beginIndex),
-				this.upperIndex(endIndex)
+				this.beginIndex + beginThumb,
+				this.beginIndex + endThumb
 		);
-	}
-
-	@Override
-	public CharacterArray clone() {
-		// noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
-		return new CharacterArray(this.array());
 	}
 
 	@Override
@@ -597,6 +513,34 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	/**
+	 * Get the element at the given {@code thumb} in this array.
+	 *
+	 * @param thumb the thumb to get the element from.
+	 * @return the element at the given {@code thumb} in this array.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @see java.lang.reflect.Array#getChar(Object, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public char getChar(int thumb) {
+		return this.array[this.index(thumb)];
+	}
+
+	/**
+	 * Set the element at the given {@code thumb} in this array to the given {@code element}.
+	 *
+	 * @param thumb   the thumb to set the given {@code element} to.
+	 * @param element the element to be set.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @throws ArrayStoreException            if the given {@code element} can not be stored to the
+	 *                                        array.
+	 * @see java.lang.reflect.Array#setChar(Object, int, char)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public void setChar(int thumb, char element) {
+		this.array[this.index(thumb)] = element;
+	}
+
+	/**
 	 * An iterator iterating the elements in the enclosing array.
 	 *
 	 * @author LSafer
@@ -615,12 +559,12 @@ public class CharacterArray extends Array<char[], Character> {
 		/**
 		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Iterator(int index) {
-			super(index);
+		public Iterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -674,60 +618,6 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public Character get(int index) {
-			CharacterArray.this.requireIndex(index);
-			int i = CharacterArray.this.upperIndex(index);
-			return CharacterArray.this.array[i];
-		}
-
-		@Override
-		public boolean removeIf(Predicate<? super Character> predicate) {
-			Objects.requireNonNull(predicate, "predicate");
-
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
-
-				if (predicate.test(e))
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-			}
-
-			//nothing to remove
-			return false;
-		}
-
-		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
-
-				for (Object element : collection)
-					if (element != null && element.equals(e))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-
-		/**
-		 * Construct a new list backed by the enclosing array.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public List() {
-		}
-
-		@Override
 		public boolean equals(Object object) {
 			if (object == this)
 				//same identity
@@ -761,6 +651,11 @@ public class CharacterArray extends Array<char[], Character> {
 
 			//not equal
 			return false;
+		}
+
+		@Override
+		public Character get(int thumb) {
+			return CharacterArray.this.array[CharacterArray.this.index(thumb)];
 		}
 
 		@Override
@@ -802,8 +697,24 @@ public class CharacterArray extends Array<char[], Character> {
 		}
 
 		@Override
-		public ListIterator listIterator(int index) {
+		public ListIterator listIterator(int beginThumb) {
 			return new ListIterator();
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super Character> predicate) {
+			Objects.requireNonNull(predicate, "predicate");
+
+			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
+				char e = CharacterArray.this.array[i];
+
+				if (predicate.test(e))
+					//can not remove
+					throw new UnsupportedOperationException("remove");
+			}
+
+			//nothing to remove
+			return false;
 		}
 
 		@Override
@@ -811,15 +722,16 @@ public class CharacterArray extends Array<char[], Character> {
 			Objects.requireNonNull(operator, "operator");
 			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
 				char e = CharacterArray.this.array[i];
+				char n = operator.apply(e);
 
-				CharacterArray.this.array[i] = operator.apply(e);
+				CharacterArray.this.array[i] = n;
 			}
 		}
 
 		@Override
-		public Character set(int index, Character element) {
-			CharacterArray.this.requireIndex(index);
-			int i = CharacterArray.this.upperIndex(index);
+		public Character set(int thumb, Character element) {
+			Objects.requireNonNull(element, "element");
+			int i = CharacterArray.this.index(thumb);
 			char old = CharacterArray.this.array[i];
 			CharacterArray.this.array[i] = element;
 			return old;
@@ -860,12 +772,12 @@ public class CharacterArray extends Array<char[], Character> {
 		 * Construct a new list iterator iterating the elements in the enclosing array, starting
 		 * from the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public ListIterator(int index) {
-			super(index);
+		public ListIterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -912,6 +824,7 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public void set(Character element) {
+			Objects.requireNonNull(element, "element");
 			int index = this.last;
 
 			if (index == -1)
@@ -932,24 +845,15 @@ public class CharacterArray extends Array<char[], Character> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -2840280796050057228L;
 
-		/**
-		 * Construct a new map backed by the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public Map() {
-		}
-
 		@Override
 		public Character compute(Character key, BiFunction<? super Character, ? super Character, ? extends Character> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
 				char k = CharacterArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					char v = CharacterArray.this.array[i + 1];
 					Character value = function.apply(k, v);
 
@@ -969,12 +873,13 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public Character computeIfAbsent(Character key, Function<? super Character, ? extends Character> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
 				char k = CharacterArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (key.equals(k))
 					//old:notnull
 					return CharacterArray.this.array[i + 1];
 			}
@@ -985,12 +890,13 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public Character computeIfPresent(Character key, BiFunction<? super Character, ? super Character, ? extends Character> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
 				char k = CharacterArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					char v = CharacterArray.this.array[i + 1];
 					Character value = function.apply(k, v);
 
@@ -1130,12 +1036,14 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public Character merge(Character key, Character value, BiFunction<? super Character, ? super Character, ? extends Character> function) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
 				char k = CharacterArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					char v = CharacterArray.this.array[i + 1];
 					Character newValue = function.apply(v, value);
 
@@ -1149,20 +1057,18 @@ public class CharacterArray extends Array<char[], Character> {
 				}
 			}
 
-			if (value == null)
-				//old:notfound new:null
-				return null;
-
 			//old:notfound new:notnull
 			throw new UnsupportedOperationException("put");
 		}
 
 		@Override
 		public Character put(Character key, Character value) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
 				char k = CharacterArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					//old:found
 					char v = CharacterArray.this.array[i + 1];
 					CharacterArray.this.array[i + 1] = value;
@@ -1180,14 +1086,14 @@ public class CharacterArray extends Array<char[], Character> {
 
 			for0:
 			for (java.util.Map.Entry<? extends Character, ? extends Character> entry : map.entrySet()) {
-				Character key = entry.getKey();
+				char key = entry.getKey();
 
 				for (int i = CharacterArray.this.beginIndex;
 					 i < CharacterArray.this.endIndex; i += 2) {
 					char k = CharacterArray.this.array[i];
 
-					if (key != null && key.equals(k)) {
-						Character value = entry.getValue();
+					if (key == k) {
+						char value = entry.getValue();
 						CharacterArray.this.array[i + 1] = value;
 						continue for0;
 					}
@@ -1234,10 +1140,12 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public boolean replace(Character key, Character oldValue, Character newValue) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(newValue, "newValue");
 			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
 				char k = CharacterArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					char v = CharacterArray.this.array[i + 1];
 
 					if (oldValue != null && oldValue.equals(v)) {
@@ -1256,10 +1164,12 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public Character replace(Character key, Character value) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
 				char k = CharacterArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					//old:match
 					char v = CharacterArray.this.array[i + 1];
 					CharacterArray.this.array[i + 1] = value;
@@ -1278,8 +1188,9 @@ public class CharacterArray extends Array<char[], Character> {
 			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
 				char k = CharacterArray.this.array[i];
 				char v = CharacterArray.this.array[i + 1];
+				char n = function.apply(k, v);
 
-				CharacterArray.this.array[i + 1] = function.apply(k, v);
+				CharacterArray.this.array[i + 1] = n;
 			}
 		}
 
@@ -1329,14 +1240,14 @@ public class CharacterArray extends Array<char[], Character> {
 			 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in
 			 * the enclosing array.
 			 *
-			 * @param index the index to where the key (followed by the value) will be in the
+			 * @param thumb the index to where the key (followed by the value) will be in the
 			 *              constructed entry.
 			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >=
 			 *                                   length}.
 			 * @since 0.1.5 ~2020.08.06
 			 */
-			public Entry(int index) {
-				super(index);
+			public Entry(int thumb) {
+				super(thumb);
 			}
 
 			@Override
@@ -1379,6 +1290,7 @@ public class CharacterArray extends Array<char[], Character> {
 
 			@Override
 			public Character setValue(Character value) {
+				Objects.requireNonNull(value, "value");
 				char v = CharacterArray.this.array[this.index + 1];
 				CharacterArray.this.array[this.index + 1] = value;
 				return v;
@@ -1402,15 +1314,6 @@ public class CharacterArray extends Array<char[], Character> {
 		public class EntrySet extends Array<char[], Character>.Map<Character, Character>.EntrySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -4823635378224028987L;
-
-			/**
-			 * Construct a new set backed by the entries in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public EntrySet() {
-			}
 
 			@Override
 			public boolean contains(Object object) {
@@ -1528,37 +1431,6 @@ public class CharacterArray extends Array<char[], Character> {
 			}
 
 			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = CharacterArray.this.beginIndex;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char k = CharacterArray.this.array[i];
-					char v = CharacterArray.this.array[i + 1];
-					for (Object object : collection)
-						if (object instanceof java.util.Map.Entry) {
-							java.util.Map.Entry entry = (java.util.Map.Entry) object;
-							Object key = entry.getKey();
-
-							if (key != null && key.equals(k)) {
-								Object value = entry.getValue();
-
-								if (value != null && value.equals(v))
-									//retained
-									continue for0;
-							}
-						}
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
-				return false;
-			}
-
-			@Override
 			public Spliterator spliterator() {
 				return new Spliterator();
 			}
@@ -1647,13 +1519,13 @@ public class CharacterArray extends Array<char[], Character> {
 				 * Construct a new iterator iterating the entries in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -1662,7 +1534,7 @@ public class CharacterArray extends Array<char[], Character> {
 					int index = this.index;
 					this.index = CharacterArray.this.endIndex;
 
-					int i = CharacterArray.this.lowerIndex(index);
+					int i = CharacterArray.this.thumb(index);
 					int l = CharacterArray.this.length();
 					for (; i < l; i += 2) {
 						Entry entry = new Entry(i);//trimmed index
@@ -1678,7 +1550,7 @@ public class CharacterArray extends Array<char[], Character> {
 					if (index < CharacterArray.this.endIndex) {
 						this.index += 2;
 
-						int i = CharacterArray.this.lowerIndex(index);
+						int i = CharacterArray.this.thumb(index);
 						return new Entry(i);//trimmed index
 					}
 
@@ -1706,13 +1578,13 @@ public class CharacterArray extends Array<char[], Character> {
 				 * Construct a new spliterator iterating the entries in the enclosing array,
 				 * starting from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -1738,7 +1610,7 @@ public class CharacterArray extends Array<char[], Character> {
 					if (index < CharacterArray.this.endIndex) {
 						this.index += 2;
 
-						int i = CharacterArray.this.lowerIndex(index);
+						int i = CharacterArray.this.thumb(index);
 						Entry entry = new Entry(i);//trimmed index
 						consumer.accept(entry);
 						return true;
@@ -1759,15 +1631,6 @@ public class CharacterArray extends Array<char[], Character> {
 		public class KeySet extends Array<char[], Character>.Map<Character, Character>.KeySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 7793360078444812816L;
-
-			/**
-			 * Construct a new set backed by the keys in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public KeySet() {
-			}
 
 			@Override
 			public boolean equals(Object object) {
@@ -1838,27 +1701,6 @@ public class CharacterArray extends Array<char[], Character> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = CharacterArray.this.beginIndex;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char k = CharacterArray.this.array[i];
-					for (Object key : collection)
-						if (key != null && key.equals(k))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -1945,13 +1787,13 @@ public class CharacterArray extends Array<char[], Character> {
 				 * Construct a new iterator iterating the keys in the enclosing array, starting from
 				 * the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2001,13 +1843,13 @@ public class CharacterArray extends Array<char[], Character> {
 				 * Construct a new spliterator iterating the keys in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2051,15 +1893,6 @@ public class CharacterArray extends Array<char[], Character> {
 		public class Values extends Array<char[], Character>.Map<Character, Character>.Values {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -7937502933699082438L;
-
-			/**
-			 * Construct a new collection backed by the values in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public Values() {
-			}
 
 			@Override
 			public boolean equals(Object object) {
@@ -2110,28 +1943,6 @@ public class CharacterArray extends Array<char[], Character> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = CharacterArray.this.beginIndex + 1;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char v = CharacterArray.this.array[i];
-
-					for (Object value : collection)
-						if (value != null && value.equals(v))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -2218,13 +2029,13 @@ public class CharacterArray extends Array<char[], Character> {
 				 * Construct a new iterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2274,13 +2085,13 @@ public class CharacterArray extends Array<char[], Character> {
 				 * Construct a new spliterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2336,12 +2147,12 @@ public class CharacterArray extends Array<char[], Character> {
 		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
 		 * the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed spliterator.
+		 * @param beginThumb the initial position of the constructed spliterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Spliterator(int index) {
-			super(index);
+		public Spliterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override

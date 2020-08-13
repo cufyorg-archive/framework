@@ -38,13 +38,25 @@ public class DoubleArray extends Array<double[], Double> {
 	private static final long serialVersionUID = 3201994039505608491L;
 
 	/**
+	 * Construct a new array backed by a new actual array that have the given {@code length}.
+	 *
+	 * @param length the length of the new actual array backing the construct array.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @see java.lang.reflect.Array#newInstance(Class, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public DoubleArray(int length) {
+		super(new double[length]);
+	}
+
+	/**
 	 * Construct a new array backed by the given {@code array}.
 	 *
 	 * @param array the array to be backing the constructed array.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.05
 	 */
-	public DoubleArray(double... array) {
+	public DoubleArray(double[] array) {
 		super(array);
 	}
 
@@ -68,18 +80,6 @@ public class DoubleArray extends Array<double[], Double> {
 	}
 
 	/**
-	 * Construct a new array backed by a new array from the given {@code map} using {@link
-	 * #from(java.util.Map)}.
-	 *
-	 * @param map the map to construct a new array from to be backing the constructed array.
-	 * @throws NullPointerException if the given {@code map} is null.
-	 * @since 0.1.5 ~2020.08.12
-	 */
-	public DoubleArray(java.util.Map map) {
-		super(DoubleArray.from(map));
-	}
-
-	/**
 	 * Construct a new array backed by a new array from the given {@code collection} using {@link
 	 * #from(Collection)}.
 	 *
@@ -88,8 +88,20 @@ public class DoubleArray extends Array<double[], Double> {
 	 * @throws NullPointerException if the given {@code collection} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public DoubleArray(java.util.Collection collection) {
+	public DoubleArray(java.util.Collection<Double> collection) {
 		super(DoubleArray.from(collection));
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code map} using {@link
+	 * #from(java.util.Map)}.
+	 *
+	 * @param map the map to construct a new array from to be backing the constructed array.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public DoubleArray(java.util.Map<Double, Double> map) {
+		super(DoubleArray.from(map));
 	}
 
 	/**
@@ -130,7 +142,7 @@ public class DoubleArray extends Array<double[], Double> {
 	 *                              the product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static double[] from(java.util.Collection collection) {
+	public static double[] from(java.util.Collection<Double> collection) {
 		Objects.requireNonNull(collection, "collection");
 		double[] array = new double[collection.size()];
 
@@ -157,11 +169,11 @@ public class DoubleArray extends Array<double[], Double> {
 	 *                              product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static double[] from(java.util.Map map) {
+	public static double[] from(java.util.Map<Double, Double> map) {
 		Objects.requireNonNull(map, "map");
 		double[] array = new double[map.size() << 1];
 
-		java.util.Iterator<java.util.Map.Entry> iterator = map.entrySet().iterator();
+		java.util.Iterator<? extends java.util.Map.Entry> iterator = map.entrySet().iterator();
 		for (int i = 0; i < array.length; i += 2) {
 			java.util.Map.Entry entry = iterator.next();
 			Object key = entry.getKey();
@@ -230,84 +242,6 @@ public class DoubleArray extends Array<double[], Double> {
 	}
 
 	@Override
-	public int all(double[] elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			long element = Double.doubleToLongBits(elements[i]);
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				long e = Double.doubleToLongBits(this.array[j]);
-
-				if (element == e)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int all(Double... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			Double element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				double e = this.array[j];
-
-				if (element != null && element.equals(e))
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(double[] elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			long element = Double.doubleToLongBits(elements[i]);
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				long e = Double.doubleToLongBits(this.array[j]);
-
-				if (element == e)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(Double... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			Double element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				double e = this.array[j];
-
-				if (element != null && element.equals(e))
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
 	public double[] array(int length) {
 		if (length < 0)
 			throw new NegativeArraySizeException("length(" + length + ") < 0");
@@ -322,39 +256,6 @@ public class DoubleArray extends Array<double[], Double> {
 		);
 
 		return array;
-	}
-
-	@Override
-	public <T extends Double> T[] array(int length, Class<? super T[]> klass) {
-		Objects.requireNonNull(klass, "klass");
-		if (length < 0)
-			throw new NegativeArraySizeException("length(" + length + ") < 0");
-		if (Object[].class.isAssignableFrom(klass))
-			throw new IllegalArgumentException("klass");
-
-		T[] array = (T[]) java.lang.reflect.Array.newInstance(klass.getComponentType(), length);
-
-		this.sub(0, Math.min(this.length(), length))
-				.hardcopy(array, 0);
-
-		return array;
-	}
-
-	@Override
-	public <T> T[] array(T[] array) {
-		Objects.requireNonNull(array, "array");
-		int length = this.length();
-		T[] product = array;
-
-		if (array.length < length)
-			product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-		else
-			product[length] = null;
-
-		this.sub(0, Math.min(this.length(), length))
-				.hardcopy(array, 0);
-
-		return product;
 	}
 
 	@Override
@@ -393,15 +294,29 @@ public class DoubleArray extends Array<double[], Double> {
 			else if (midVal > element)
 				high = mid - 1;
 			else
-				return this.lowerIndex(mid); // key found
+				return this.thumb(mid); // key found
 		}
-		return this.lowerIndex(-(low + 1));  // key not found.
+		return this.thumb(-(low + 1));  // key not found.
 	}
 
 	@Override
 	public DoubleArray clone() {
 		// noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
 		return new DoubleArray(this.array());
+	}
+
+	@Override
+	public void copy(Object array, int pos) {
+		Objects.requireNonNull(array, "array");
+
+		if (array instanceof double[])
+			this.arraycopy((double[]) array, pos);
+		else if (array instanceof Object[])
+			this.hardcopy((Object[]) array, pos);
+		else
+			throw new ArrayStoreException(
+					"copy: type mismatch: can not copy double[] into " +
+					array.getClass().getSimpleName());
 	}
 
 	@Override
@@ -421,7 +336,7 @@ public class DoubleArray extends Array<double[], Double> {
 					Object element = array.array[i];
 					double e = this.array[j];
 
-					if (element != null && element.equals(e))
+					if (element.equals(e))
 						continue;
 
 					return false;
@@ -453,10 +368,8 @@ public class DoubleArray extends Array<double[], Double> {
 	}
 
 	@Override
-	public Double get(int index) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		return this.array[i];
+	public Double get(int thumb) {
+		return this.array[this.index(thumb)];
 	}
 
 	@Override
@@ -504,6 +417,11 @@ public class DoubleArray extends Array<double[], Double> {
 	}
 
 	@Override
+	public ListIterator listIterator() {
+		return new ListIterator();
+	}
+
+	@Override
 	public Map map() {
 		return new Map();
 	}
@@ -524,7 +442,7 @@ public class DoubleArray extends Array<double[], Double> {
 		Objects.requireNonNull(function, "function");
 		IntStream.range(this.beginIndex, this.endIndex)
 				.parallel()
-				.forEach(i -> this.array[i] = function.apply(this.lowerIndex(i)));
+				.forEach(i -> this.array[i] = function.apply(this.thumb(i)));
 	}
 
 	@Override
@@ -538,10 +456,8 @@ public class DoubleArray extends Array<double[], Double> {
 	}
 
 	@Override
-	public void set(int index, Double element) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		this.array[i] = element;
+	public void set(int thumb, Double element) {
+		this.array[this.index(thumb)] = element;
 	}
 
 	@Override
@@ -567,12 +483,12 @@ public class DoubleArray extends Array<double[], Double> {
 	}
 
 	@Override
-	public DoubleArray sub(int beginIndex, int endIndex) {
-		this.requireRange(beginIndex, endIndex);
+	public DoubleArray sub(int beginThumb, int endThumb) {
+		this.range(beginThumb, endThumb);
 		return new DoubleArray(
 				this.array,
-				this.upperIndex(beginIndex),
-				this.upperIndex(endIndex)
+				this.beginIndex + beginThumb,
+				this.beginIndex + endThumb
 		);
 	}
 
@@ -610,6 +526,19 @@ public class DoubleArray extends Array<double[], Double> {
 	}
 
 	/**
+	 * Get the element at the given {@code thumb} in this array.
+	 *
+	 * @param thumb the thumb to get the element from.
+	 * @return the element at the given {@code thumb} in this array.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @see java.lang.reflect.Array#getDouble(Object, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public double getDouble(int thumb) {
+		return this.array[this.index(thumb)];
+	}
+
+	/**
 	 * Get a parallel {@link DoubleStream} streaming the elements in this array.
 	 *
 	 * @return a stream streaming the elements in this array.
@@ -618,6 +547,21 @@ public class DoubleArray extends Array<double[], Double> {
 	 */
 	public DoubleStream parallelDoubleStream() {
 		return StreamSupport.doubleStream(this.spliterator(), true);
+	}
+
+	/**
+	 * Set the element at the given {@code thumb} in this array to the given {@code element}.
+	 *
+	 * @param thumb   the thumb to set the given {@code element} to.
+	 * @param element the element to be set.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @throws ArrayStoreException            if the given {@code element} can not be stored to the
+	 *                                        array.
+	 * @see java.lang.reflect.Array#setDouble(Object, int, double)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public void setDouble(int thumb, double element) {
+		this.array[this.index(thumb)] = element;
 	}
 
 	/**
@@ -639,12 +583,12 @@ public class DoubleArray extends Array<double[], Double> {
 		/**
 		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Iterator(int index) {
-			super(index);
+		public Iterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -711,15 +655,6 @@ public class DoubleArray extends Array<double[], Double> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 848985287158674978L;
 
-		/**
-		 * Construct a new list backed by the enclosing array.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public List() {
-		}
-
 		@Override
 		public boolean contains(Object object) {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i++) {
@@ -769,10 +704,8 @@ public class DoubleArray extends Array<double[], Double> {
 		}
 
 		@Override
-		public Double get(int index) {
-			DoubleArray.this.requireIndex(index);
-			int i = DoubleArray.this.upperIndex(index);
-			return DoubleArray.this.array[i];
+		public Double get(int thumb) {
+			return DoubleArray.this.array[DoubleArray.this.index(thumb)];
 		}
 
 		@Override
@@ -814,7 +747,7 @@ public class DoubleArray extends Array<double[], Double> {
 		}
 
 		@Override
-		public ListIterator listIterator(int index) {
+		public ListIterator listIterator(int beginThumb) {
 			return new ListIterator();
 		}
 
@@ -839,36 +772,16 @@ public class DoubleArray extends Array<double[], Double> {
 			Objects.requireNonNull(operator, "operator");
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i++) {
 				double e = DoubleArray.this.array[i];
+				double n = operator.apply(e);
 
-				DoubleArray.this.array[i] = operator.apply(e);
+				DoubleArray.this.array[i] = n;
 			}
 		}
 
 		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i++) {
-				double e = DoubleArray.this.array[i];
-
-				for (Object element : collection)
-					if (element != null && element.equals(e))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-		@Override
-		public Double set(int index, Double element) {
-			DoubleArray.this.requireIndex(index);
-			int i = DoubleArray.this.upperIndex(index);
+		public Double set(int thumb, Double element) {
+			Objects.requireNonNull(element, "element");
+			int i = DoubleArray.this.index(thumb);
 			double old = DoubleArray.this.array[i];
 			DoubleArray.this.array[i] = element;
 			return old;
@@ -912,12 +825,12 @@ public class DoubleArray extends Array<double[], Double> {
 		 * Construct a new list iterator iterating the elements in the enclosing array, starting
 		 * from the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public ListIterator(int index) {
-			super(index);
+		public ListIterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -964,6 +877,7 @@ public class DoubleArray extends Array<double[], Double> {
 
 		@Override
 		public void set(Double element) {
+			Objects.requireNonNull(element, "element");
 			int index = this.last;
 
 			if (index == -1)
@@ -984,24 +898,15 @@ public class DoubleArray extends Array<double[], Double> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -2840280796050057228L;
 
-		/**
-		 * Construct a new map backed by the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public Map() {
-		}
-
 		@Override
 		public Double compute(Double key, BiFunction<? super Double, ? super Double, ? extends Double> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					double v = DoubleArray.this.array[i + 1];
 					Double value = function.apply(k, v);
 
@@ -1021,12 +926,13 @@ public class DoubleArray extends Array<double[], Double> {
 
 		@Override
 		public Double computeIfAbsent(Double key, Function<? super Double, ? extends Double> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (key.equals(k))
 					//old:notnull
 					return DoubleArray.this.array[i + 1];
 			}
@@ -1037,12 +943,13 @@ public class DoubleArray extends Array<double[], Double> {
 
 		@Override
 		public Double computeIfPresent(Double key, BiFunction<? super Double, ? super Double, ? extends Double> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					double v = DoubleArray.this.array[i + 1];
 					Double value = function.apply(k, v);
 
@@ -1182,12 +1089,14 @@ public class DoubleArray extends Array<double[], Double> {
 
 		@Override
 		public Double merge(Double key, Double value, BiFunction<? super Double, ? super Double, ? extends Double> function) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					double v = DoubleArray.this.array[i + 1];
 					Double newValue = function.apply(v, value);
 
@@ -1201,20 +1110,18 @@ public class DoubleArray extends Array<double[], Double> {
 				}
 			}
 
-			if (value == null)
-				//old:notfound new:null
-				return null;
-
 			//old:notfound new:notnull
 			throw new UnsupportedOperationException("put");
 		}
 
 		@Override
 		public Double put(Double key, Double value) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					//old:found
 					double v = DoubleArray.this.array[i + 1];
 					DoubleArray.this.array[i + 1] = value;
@@ -1232,14 +1139,16 @@ public class DoubleArray extends Array<double[], Double> {
 
 			for0:
 			for (java.util.Map.Entry<? extends Double, ? extends Double> entry : map.entrySet()) {
-				Double key = entry.getKey();
+				double key = entry.getKey();
+				long keyb = Double.doubleToLongBits(key);
 
 				for (int i = DoubleArray.this.beginIndex;
 					 i < DoubleArray.this.endIndex; i += 2) {
 					double k = DoubleArray.this.array[i];
+					long kb = Double.doubleToLongBits(k);
 
-					if (key != null && key.equals(k)) {
-						Double value = entry.getValue();
+					if (keyb == kb) {
+						double value = entry.getValue();
 						DoubleArray.this.array[i + 1] = value;
 						continue for0;
 					}
@@ -1286,10 +1195,12 @@ public class DoubleArray extends Array<double[], Double> {
 
 		@Override
 		public boolean replace(Double key, Double oldValue, Double newValue) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(newValue, "newValue");
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					double v = DoubleArray.this.array[i + 1];
 
 					if (oldValue != null && oldValue.equals(v)) {
@@ -1308,10 +1219,12 @@ public class DoubleArray extends Array<double[], Double> {
 
 		@Override
 		public Double replace(Double key, Double value) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					//old:match
 					double v = DoubleArray.this.array[i + 1];
 					DoubleArray.this.array[i + 1] = value;
@@ -1330,8 +1243,9 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 				double v = DoubleArray.this.array[i + 1];
+				double n = function.apply(k, v);
 
-				DoubleArray.this.array[i + 1] = function.apply(k, v);
+				DoubleArray.this.array[i + 1] = n;
 			}
 		}
 
@@ -1381,14 +1295,14 @@ public class DoubleArray extends Array<double[], Double> {
 			 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in
 			 * the enclosing array.
 			 *
-			 * @param index the index to where the key (followed by the value) will be in the
+			 * @param thumb the index to where the key (followed by the value) will be in the
 			 *              constructed entry.
 			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >=
 			 *                                   length}.
 			 * @since 0.1.5 ~2020.08.06
 			 */
-			public Entry(int index) {
-				super(index);
+			public Entry(int thumb) {
+				super(thumb);
 			}
 
 			@Override
@@ -1431,6 +1345,7 @@ public class DoubleArray extends Array<double[], Double> {
 
 			@Override
 			public Double setValue(Double value) {
+				Objects.requireNonNull(value, "value");
 				double v = DoubleArray.this.array[this.index + 1];
 				DoubleArray.this.array[this.index + 1] = value;
 				return v;
@@ -1454,15 +1369,6 @@ public class DoubleArray extends Array<double[], Double> {
 		public class EntrySet extends Array<double[], Double>.Map<Double, Double>.EntrySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -4823635378224028987L;
-
-			/**
-			 * Construct a new set backed by the entries in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public EntrySet() {
-			}
 
 			@Override
 			public boolean contains(Object object) {
@@ -1580,37 +1486,6 @@ public class DoubleArray extends Array<double[], Double> {
 			}
 
 			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
-					double k = DoubleArray.this.array[i];
-					double v = DoubleArray.this.array[i + 1];
-
-					for (Object object : collection)
-						if (object instanceof java.util.Map.Entry) {
-							java.util.Map.Entry entry = (java.util.Map.Entry) object;
-							Object key = entry.getKey();
-
-							if (key != null && key.equals(k)) {
-								Object value = entry.getValue();
-
-								if (value != null && value.equals(v))
-									//retained
-									continue for0;
-							}
-						}
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
-				return false;
-			}
-
-			@Override
 			public Spliterator spliterator() {
 				return new Spliterator();
 			}
@@ -1699,13 +1574,13 @@ public class DoubleArray extends Array<double[], Double> {
 				 * Construct a new iterator iterating the entries in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -1714,7 +1589,7 @@ public class DoubleArray extends Array<double[], Double> {
 					int index = this.index;
 					this.index = DoubleArray.this.endIndex;
 
-					int i = DoubleArray.this.lowerIndex(index);
+					int i = DoubleArray.this.thumb(index);
 					int l = DoubleArray.this.length();
 					for (; i < l; i += 2) {
 						Entry entry = new Entry(i);//trimmed index
@@ -1730,7 +1605,7 @@ public class DoubleArray extends Array<double[], Double> {
 					if (index < DoubleArray.this.endIndex) {
 						this.index += 2;
 
-						int i = DoubleArray.this.lowerIndex(index);
+						int i = DoubleArray.this.thumb(index);
 						return new Entry(i);//trimmed index
 					}
 
@@ -1758,13 +1633,13 @@ public class DoubleArray extends Array<double[], Double> {
 				 * Construct a new spliterator iterating the entries in the enclosing array,
 				 * starting from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -1790,7 +1665,7 @@ public class DoubleArray extends Array<double[], Double> {
 					if (index < DoubleArray.this.endIndex) {
 						this.index += 2;
 
-						int i = DoubleArray.this.lowerIndex(index);
+						int i = DoubleArray.this.thumb(index);
 						Entry entry = new Entry(i);//trimmed index
 						consumer.accept(entry);
 						return true;
@@ -1811,15 +1686,6 @@ public class DoubleArray extends Array<double[], Double> {
 		public class KeySet extends Array<double[], Double>.Map<Double, Double>.KeySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 7793360078444812816L;
-
-			/**
-			 * Construct a new set backed by the keys in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public KeySet() {
-			}
 
 			@Override
 			public boolean equals(Object object) {
@@ -1890,27 +1756,6 @@ public class DoubleArray extends Array<double[], Double> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
-					double k = DoubleArray.this.array[i];
-
-					for (Object key : collection)
-						if (key != null && key.equals(k))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -1997,13 +1842,13 @@ public class DoubleArray extends Array<double[], Double> {
 				 * Construct a new iterator iterating the keys in the enclosing array, starting from
 				 * the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2079,13 +1924,13 @@ public class DoubleArray extends Array<double[], Double> {
 				 * Construct a new spliterator iterating the keys in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2164,15 +2009,6 @@ public class DoubleArray extends Array<double[], Double> {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -7937502933699082438L;
 
-			/**
-			 * Construct a new collection backed by the values in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public Values() {
-			}
-
 			@Override
 			public boolean equals(Object object) {
 				return object == this;
@@ -2222,28 +2058,6 @@ public class DoubleArray extends Array<double[], Double> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = DoubleArray.this.beginIndex + 1;
-					 i < DoubleArray.this.endIndex; i += 2) {
-					double v = DoubleArray.this.array[i];
-
-					for (Object value : collection)
-						if (value != null && value.equals(v))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -2330,13 +2144,13 @@ public class DoubleArray extends Array<double[], Double> {
 				 * Construct a new iterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2412,13 +2226,13 @@ public class DoubleArray extends Array<double[], Double> {
 				 * Construct a new spliterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2508,12 +2322,12 @@ public class DoubleArray extends Array<double[], Double> {
 		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
 		 * the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed spliterator.
+		 * @param beginThumb the initial position of the constructed spliterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Spliterator(int index) {
-			super(index);
+		public Spliterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override

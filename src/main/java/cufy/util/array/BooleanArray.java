@@ -35,13 +35,25 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	private static final long serialVersionUID = 3201994039505608491L;
 
 	/**
+	 * Construct a new array backed by a new actual array that have the given {@code length}.
+	 *
+	 * @param length the length of the new actual array backing the construct array.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @see java.lang.reflect.Array#newInstance(Class, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public BooleanArray(int length) {
+		super(new boolean[length]);
+	}
+
+	/**
 	 * Construct a new array backed by the given {@code array}.
 	 *
 	 * @param array the array to be backing the constructed array.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.05
 	 */
-	public BooleanArray(boolean... array) {
+	public BooleanArray(boolean[] array) {
 		super(array);
 	}
 
@@ -65,18 +77,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	/**
-	 * Construct a new array backed by a new array from the given {@code map} using {@link
-	 * #from(java.util.Map)}.
-	 *
-	 * @param map the map to construct a new array from to be backing the constructed array.
-	 * @throws NullPointerException if the given {@code map} is null.
-	 * @since 0.1.5 ~2020.08.12
-	 */
-	public BooleanArray(java.util.Map map) {
-		super(BooleanArray.from(map));
-	}
-
-	/**
 	 * Construct a new array backed by a new array from the given {@code collection} using {@link
 	 * #from(Collection)}.
 	 *
@@ -85,8 +85,20 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	 * @throws NullPointerException if the given {@code collection} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public BooleanArray(java.util.Collection collection) {
+	public BooleanArray(java.util.Collection<Boolean> collection) {
 		super(BooleanArray.from(collection));
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code map} using {@link
+	 * #from(java.util.Map)}.
+	 *
+	 * @param map the map to construct a new array from to be backing the constructed array.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public BooleanArray(java.util.Map<Boolean, Boolean> map) {
+		super(BooleanArray.from(map));
 	}
 
 	/**
@@ -127,7 +139,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	 *                              the product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static boolean[] from(java.util.Collection collection) {
+	public static boolean[] from(java.util.Collection<Boolean> collection) {
 		Objects.requireNonNull(collection, "collection");
 		boolean[] array = new boolean[collection.size()];
 
@@ -154,11 +166,11 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	 *                              product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static boolean[] from(java.util.Map map) {
+	public static boolean[] from(java.util.Map<Boolean, Boolean> map) {
 		Objects.requireNonNull(map, "map");
 		boolean[] array = new boolean[map.size() << 1];
 
-		java.util.Iterator<java.util.Map.Entry> iterator = map.entrySet().iterator();
+		java.util.Iterator<? extends java.util.Map.Entry> iterator = map.entrySet().iterator();
 		for (int i = 0; i < array.length; i += 2) {
 			java.util.Map.Entry entry = iterator.next();
 			Object key = entry.getKey();
@@ -227,84 +239,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	@Override
-	public int all(boolean[] elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			boolean element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				boolean e = this.array[j];
-
-				if (element == e)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int all(Boolean... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			Boolean element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				boolean e = this.array[j];
-
-				if (element != null && element.equals(e))
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(boolean[] elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			boolean element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				boolean e = this.array[j];
-
-				if (element == e)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(Boolean... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			Boolean element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				boolean e = this.array[j];
-
-				if (element != null && element.equals(e))
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
 	public boolean[] array(int length) {
 		if (length < 0)
 			throw new NegativeArraySizeException("length(" + length + ") < 0");
@@ -319,39 +253,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		);
 
 		return array;
-	}
-
-	@Override
-	public <T extends Boolean> T[] array(int length, Class<? super T[]> klass) {
-		Objects.requireNonNull(klass, "klass");
-		if (length < 0)
-			throw new NegativeArraySizeException("length(" + length + ") < 0");
-		if (Object[].class.isAssignableFrom(klass))
-			throw new IllegalArgumentException("klass");
-
-		T[] array = (T[]) java.lang.reflect.Array.newInstance(klass.getComponentType(), length);
-
-		this.sub(0, Math.min(this.length(), length))
-				.hardcopy(array, 0);
-
-		return array;
-	}
-
-	@Override
-	public <T> T[] array(T[] array) {
-		Objects.requireNonNull(array, "array");
-		int length = this.length();
-		T[] product = array;
-
-		if (array.length < length)
-			product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-		else
-			product[length] = null;
-
-		this.sub(0, Math.min(this.length(), length))
-				.hardcopy(array, 0);
-
-		return product;
 	}
 
 	@Override
@@ -384,19 +285,33 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 			int mid = low + high >>> 1;
 			boolean midVal = this.array[mid];
 			if (midVal == element)
-				return this.lowerIndex(mid);  // key found
+				return this.thumb(mid);  // key found
 			if (element)
 				low = mid + 1;
 			else
 				high = mid - 1;
 		}
-		return this.lowerIndex(-(low + 1));  // key not found.
+		return this.thumb(-(low + 1));  // key not found.
 	}
 
 	@Override
 	public BooleanArray clone() {
 		// noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
 		return new BooleanArray(this.array());
+	}
+
+	@Override
+	public void copy(Object array, int pos) {
+		Objects.requireNonNull(array, "array");
+
+		if (array instanceof boolean[])
+			this.arraycopy((boolean[]) array, pos);
+		else if (array instanceof Object[])
+			this.hardcopy((Object[]) array, pos);
+		else
+			throw new ArrayStoreException(
+					"copy: type mismatch: can not copy boolean[] into " +
+					array.getClass().getSimpleName());
 	}
 
 	@Override
@@ -416,7 +331,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 					Object element = array.array[i];
 					boolean e = this.array[j];
 
-					if (element != null && element.equals(e))
+					if (element.equals(e))
 						continue;
 
 					return false;
@@ -448,10 +363,8 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	@Override
-	public Boolean get(int index) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		return this.array[i];
+	public Boolean get(int thumb) {
+		return this.array[this.index(thumb)];
 	}
 
 	@Override
@@ -499,6 +412,11 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	@Override
+	public ListIterator listIterator() {
+		return new ListIterator();
+	}
+
+	@Override
 	public Map map() {
 		return new Map();
 	}
@@ -522,7 +440,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		Objects.requireNonNull(function, "function");
 		IntStream.range(this.beginIndex, this.endIndex)
 				.parallel()
-				.forEach(i -> this.array[i] = function.apply(this.lowerIndex(i)));
+				.forEach(i -> this.array[i] = function.apply(this.thumb(i)));
 	}
 
 	@Override
@@ -536,10 +454,8 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	@Override
-	public void set(int index, Boolean element) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		this.array[i] = element;
+	public void set(int thumb, Boolean element) {
+		this.array[this.index(thumb)] = element;
 	}
 
 	@Override
@@ -565,12 +481,12 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	@Override
-	public BooleanArray sub(int beginIndex, int endIndex) {
-		this.requireRange(beginIndex, endIndex);
+	public BooleanArray sub(int beginThumb, int endThumb) {
+		this.range(beginThumb, endThumb);
 		return new BooleanArray(
 				this.array,
-				this.upperIndex(beginIndex),
-				this.upperIndex(endIndex)
+				this.beginIndex + beginThumb,
+				this.beginIndex + endThumb
 		);
 	}
 
@@ -597,6 +513,34 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	}
 
 	/**
+	 * Get the element at the given {@code thumb} in this array.
+	 *
+	 * @param thumb the thumb to get the element from.
+	 * @return the element at the given {@code thumb} in this array.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @see java.lang.reflect.Array#getBoolean(Object, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public boolean getBoolean(int thumb) {
+		return this.array[this.index(thumb)];
+	}
+
+	/**
+	 * Set the element at the given {@code thumb} in this array to the given {@code element}.
+	 *
+	 * @param thumb   the thumb to set the given {@code element} to.
+	 * @param element the element to be set.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @throws ArrayStoreException            if the given {@code element} can not be stored to the
+	 *                                        array.
+	 * @see java.lang.reflect.Array#setBoolean(Object, int, boolean)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public void setBoolean(int thumb, boolean element) {
+		this.array[this.index(thumb)] = element;
+	}
+
+	/**
 	 * An iterator iterating the elements in the enclosing array.
 	 *
 	 * @author LSafer
@@ -615,12 +559,12 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		/**
 		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Iterator(int index) {
-			super(index);
+		public Iterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -660,15 +604,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 	public class List extends Array<boolean[], Boolean>.List {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 848985287158674978L;
-
-		/**
-		 * Construct a new list backed by the enclosing array.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public List() {
-		}
 
 		@Override
 		public boolean contains(Object object) {
@@ -719,10 +654,8 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		}
 
 		@Override
-		public Boolean get(int index) {
-			BooleanArray.this.requireIndex(index);
-			int i = BooleanArray.this.upperIndex(index);
-			return BooleanArray.this.array[i];
+		public Boolean get(int thumb) {
+			return BooleanArray.this.array[BooleanArray.this.index(thumb)];
 		}
 
 		@Override
@@ -764,7 +697,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		}
 
 		@Override
-		public ListIterator listIterator(int index) {
+		public ListIterator listIterator(int beginThumb) {
 			return new ListIterator();
 		}
 
@@ -789,36 +722,16 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 			Objects.requireNonNull(operator, "operator");
 			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
 				boolean e = BooleanArray.this.array[i];
+				boolean n = operator.apply(e);
 
-				BooleanArray.this.array[i] = operator.apply(e);
+				BooleanArray.this.array[i] = n;
 			}
 		}
 
 		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i++) {
-				boolean e = BooleanArray.this.array[i];
-
-				for (Object element : collection)
-					if (element != null && element.equals(e))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-		@Override
-		public Boolean set(int index, Boolean element) {
-			BooleanArray.this.requireIndex(index);
-			int i = BooleanArray.this.upperIndex(index);
+		public Boolean set(int thumb, Boolean element) {
+			Objects.requireNonNull(element, "element");
+			int i = BooleanArray.this.index(thumb);
 			boolean old = BooleanArray.this.array[i];
 			BooleanArray.this.array[i] = element;
 			return old;
@@ -859,12 +772,12 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		 * Construct a new list iterator iterating the elements in the enclosing array, starting
 		 * from the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public ListIterator(int index) {
-			super(index);
+		public ListIterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -911,6 +824,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 		@Override
 		public void set(Boolean element) {
+			Objects.requireNonNull(element, "element");
 			int index = this.last;
 
 			if (index == -1)
@@ -931,24 +845,15 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -2840280796050057228L;
 
-		/**
-		 * Construct a new map backed by the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public Map() {
-		}
-
 		@Override
 		public Boolean compute(Boolean key, BiFunction<? super Boolean, ? super Boolean, ? extends Boolean> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
 				boolean k = BooleanArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					boolean v = BooleanArray.this.array[i + 1];
 					Boolean value = function.apply(k, v);
 
@@ -968,12 +873,13 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 		@Override
 		public Boolean computeIfAbsent(Boolean key, Function<? super Boolean, ? extends Boolean> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
 				boolean k = BooleanArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (key.equals(k))
 					//old:notnull
 					return BooleanArray.this.array[i + 1];
 			}
@@ -984,12 +890,13 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 		@Override
 		public Boolean computeIfPresent(Boolean key, BiFunction<? super Boolean, ? super Boolean, ? extends Boolean> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
 				boolean k = BooleanArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					boolean v = BooleanArray.this.array[i + 1];
 					Boolean value = function.apply(k, v);
 
@@ -1129,12 +1036,14 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 		@Override
 		public Boolean merge(Boolean key, Boolean value, BiFunction<? super Boolean, ? super Boolean, ? extends Boolean> function) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
 				boolean k = BooleanArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					boolean v = BooleanArray.this.array[i + 1];
 					Boolean newValue = function.apply(v, value);
 
@@ -1148,20 +1057,18 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 				}
 			}
 
-			if (value == null)
-				//old:notfound new:null
-				return null;
-
 			//old:notfound new:notnull
 			throw new UnsupportedOperationException("put");
 		}
 
 		@Override
 		public Boolean put(Boolean key, Boolean value) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
 				boolean k = BooleanArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					//old:found
 					boolean v = BooleanArray.this.array[i + 1];
 					BooleanArray.this.array[i + 1] = value;
@@ -1179,14 +1086,14 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 			for0:
 			for (java.util.Map.Entry<? extends Boolean, ? extends Boolean> entry : map.entrySet()) {
-				Boolean key = entry.getKey();
+				boolean key = entry.getKey();
 
 				for (int i = BooleanArray.this.beginIndex;
 					 i < BooleanArray.this.endIndex; i += 2) {
 					boolean k = BooleanArray.this.array[i];
 
-					if (key != null && key.equals(k)) {
-						Boolean value = entry.getValue();
+					if (key == k) {
+						boolean value = entry.getValue();
 						BooleanArray.this.array[i + 1] = value;
 						continue for0;
 					}
@@ -1233,10 +1140,12 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 		@Override
 		public boolean replace(Boolean key, Boolean oldValue, Boolean newValue) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(newValue, "newValue");
 			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
 				boolean k = BooleanArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					boolean v = BooleanArray.this.array[i + 1];
 
 					if (oldValue != null && oldValue.equals(v)) {
@@ -1255,10 +1164,12 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 		@Override
 		public Boolean replace(Boolean key, Boolean value) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
 				boolean k = BooleanArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					//old:match
 					boolean v = BooleanArray.this.array[i + 1];
 					BooleanArray.this.array[i + 1] = value;
@@ -1277,8 +1188,9 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 			for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
 				boolean k = BooleanArray.this.array[i];
 				boolean v = BooleanArray.this.array[i + 1];
+				boolean n = function.apply(k, v);
 
-				BooleanArray.this.array[i + 1] = function.apply(k, v);
+				BooleanArray.this.array[i + 1] = n;
 			}
 		}
 
@@ -1328,14 +1240,14 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 			 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in
 			 * the enclosing array.
 			 *
-			 * @param index the index to where the key (followed by the value) will be in the
+			 * @param thumb the index to where the key (followed by the value) will be in the
 			 *              constructed entry.
 			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >=
 			 *                                   length}.
 			 * @since 0.1.5 ~2020.08.06
 			 */
-			public Entry(int index) {
-				super(index);
+			public Entry(int thumb) {
+				super(thumb);
 			}
 
 			@Override
@@ -1378,6 +1290,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 
 			@Override
 			public Boolean setValue(Boolean value) {
+				Objects.requireNonNull(value, "value");
 				boolean v = BooleanArray.this.array[this.index + 1];
 				BooleanArray.this.array[this.index + 1] = value;
 				return v;
@@ -1401,15 +1314,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		public class EntrySet extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.EntrySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -4823635378224028987L;
-
-			/**
-			 * Construct a new set backed by the entries in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public EntrySet() {
-			}
 
 			@Override
 			public boolean contains(Object object) {
@@ -1527,37 +1431,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 			}
 
 			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
-					boolean k = BooleanArray.this.array[i];
-					boolean v = BooleanArray.this.array[i + 1];
-
-					for (Object object : collection)
-						if (object instanceof java.util.Map.Entry) {
-							java.util.Map.Entry entry = (java.util.Map.Entry) object;
-							Object key = entry.getKey();
-
-							if (key != null && key.equals(k)) {
-								Object value = entry.getValue();
-
-								if (value != null && value.equals(v))
-									//retained
-									continue for0;
-							}
-						}
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
-				return false;
-			}
-
-			@Override
 			public Spliterator spliterator() {
 				return new Spliterator();
 			}
@@ -1646,13 +1519,13 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 				 * Construct a new iterator iterating the entries in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -1661,7 +1534,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 					int index = this.index;
 					this.index = BooleanArray.this.endIndex;
 
-					int i = BooleanArray.this.lowerIndex(index);
+					int i = BooleanArray.this.thumb(index);
 					int l = BooleanArray.this.length();
 					for (; i < l; i += 2) {
 						Entry entry = new Entry(i);//trimmed index
@@ -1677,7 +1550,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 					if (index < BooleanArray.this.endIndex) {
 						this.index += 2;
 
-						int i = BooleanArray.this.lowerIndex(index);
+						int i = BooleanArray.this.thumb(index);
 						return new Entry(i);//trimmed index
 					}
 
@@ -1705,13 +1578,13 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 				 * Construct a new spliterator iterating the entries in the enclosing array,
 				 * starting from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -1737,7 +1610,7 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 					if (index < BooleanArray.this.endIndex) {
 						this.index += 2;
 
-						int i = BooleanArray.this.lowerIndex(index);
+						int i = BooleanArray.this.thumb(index);
 						Entry entry = new Entry(i);//trimmed index
 						consumer.accept(entry);
 						return true;
@@ -1758,15 +1631,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		public class KeySet extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.KeySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 7793360078444812816L;
-
-			/**
-			 * Construct a new set backed by the keys in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public KeySet() {
-			}
 
 			@Override
 			public boolean equals(Object object) {
@@ -1837,27 +1701,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = BooleanArray.this.beginIndex; i < BooleanArray.this.endIndex; i += 2) {
-					boolean k = BooleanArray.this.array[i];
-
-					for (Object key : collection)
-						if (key != null && key.equals(k))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -1944,13 +1787,13 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 				 * Construct a new iterator iterating the keys in the enclosing array, starting from
 				 * the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2000,13 +1843,13 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 				 * Construct a new spliterator iterating the keys in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2050,15 +1893,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		public class Values extends Array<boolean[], Boolean>.Map<Boolean, Boolean>.Values {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -7937502933699082438L;
-
-			/**
-			 * Construct a new collection backed by the values in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public Values() {
-			}
 
 			@Override
 			public boolean equals(Object object) {
@@ -2109,28 +1943,6 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = BooleanArray.this.beginIndex + 1;
-					 i < BooleanArray.this.endIndex; i += 2) {
-					boolean v = BooleanArray.this.array[i];
-
-					for (Object value : collection)
-						if (value != null && value.equals(v))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -2217,13 +2029,13 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 				 * Construct a new iterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2273,13 +2085,13 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 				 * Construct a new spliterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2335,12 +2147,12 @@ public class BooleanArray extends Array<boolean[], Boolean> {
 		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
 		 * the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed spliterator.
+		 * @param beginThumb the initial position of the constructed spliterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Spliterator(int index) {
-			super(index);
+		public Spliterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override

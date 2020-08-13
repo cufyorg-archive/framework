@@ -17,7 +17,10 @@ package cufy.util;
 
 import cufy.util.array.*;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Spliterator;
 import java.util.function.*;
 import java.util.stream.DoubleStream;
@@ -64,7 +67,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.08.11
 	 */
 	public static <E> ObjectArray<E> array(E... array) {
-		return new ObjectArray<>(array);
+		return new ObjectArray(array);
 	}
 
 	/**
@@ -290,7 +293,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.08.10
 	 */
 	public static <E, K extends E, V extends E> ObjectArray<E>.Map<K, V> asMap(E... array) {
-		return new ObjectArray<>(array).map();
+		return new ObjectArray(array).map();
 	}
 
 	/**
@@ -893,6 +896,68 @@ public class Arrays {
 		return new ShortArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
+	//..copy(Object, int, Object, int, int)
+
+	/**
+	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from
+	 * the given {@code src} at the given {@code srcPos}. Start writing to the given {@code dest} at
+	 * the given {@code destPos}. Copy the specified number of elements {@code length}.
+	 * <p>
+	 * Implementation Note:
+	 * <p>
+	 * Chosen the interface {@link Serializable} to reduce the chances of passing non-array object.
+	 * The thing is {@code why not}.
+	 *
+	 * @param src     the source array.
+	 * @param srcPos  the index to start reading from the source array.
+	 * @param dest    the destination array.
+	 * @param destPos the index to start writing to the destination array.
+	 * @param length  the number of elements to be copied.
+	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
+	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code
+	 *                                   length < 0} or {@code srcPos + length > src.length} or
+	 *                                   {@code destPos + length > dest.length}.
+	 * @throws ArrayStoreException       if the given {@code src} or {@code dest} is not an array.
+	 *                                   Or if the given {@code src} and {@code dest} both are
+	 *                                   primitive arrays but not the same class (only if the given
+	 *                                   {@code length} is not 0). Or if an element can not be
+	 *                                   stored in the given {@code dest}.
+	 * @see System#arraycopy(Object, int, Object, int, int)
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public static void copy(Serializable src, int srcPos, Serializable dest, int destPos, int length) {
+		Objects.requireNonNull(src, "src");
+		Objects.requireNonNull(dest, "dest");
+		Class srcClass = src.getClass();
+		Class destClass = dest.getClass();
+
+		if (!srcClass.isArray())
+			throw new ArrayStoreException(
+					"hardcopy: source type " + srcClass.getName() + " is not an array");
+		if (!destClass.isArray())
+			throw new ArrayStoreException(
+					"hardcopy: destination type " + destClass.getName() + " is not an array");
+
+		if (srcClass == destClass ||
+			!srcClass.getComponentType().isPrimitive() &&
+			!destClass.getComponentType().isPrimitive())
+			//if the arrays are compatible for System.arraycopy
+			System.arraycopy(src, srcPos, dest, destPos, length);
+		else if (src instanceof Object[])
+			//if the source array is an object array
+			new ObjectArray((Object[]) src, srcPos, srcPos + length)
+					.hardcopy(dest, destPos);
+		else if (dest instanceof Object[])
+			//if the destination array is an object array
+			Array.of(src, srcPos, srcPos + length)
+					.hardcopy((Object[]) dest, destPos);
+		else if (length != 0)
+			//if both arrays are primitive arrays and they are not an instance of the same class
+			throw new ArrayStoreException(
+					"hardcopy: type mismatch: can not copy " + srcClass.getTypeName() + " into " +
+					destClass.getTypeName());
+	}
+
 	//.copyOf(A, int)
 
 	/**
@@ -928,7 +993,18 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <E extends T, T> T[] copyOf(E[] array, int length, Class<? extends T[]> klass) {
-		return (T[]) new ObjectArray(array).array(length, klass);
+		E[] product = (E[]) java.lang.reflect.Array.newInstance(
+				klass.getComponentType(),
+				length
+		);
+		System.arraycopy(
+				array,
+				0,
+				product,
+				0,
+				Math.min(array.length, length)
+		);
+		return product;
 	}
 
 	/**
@@ -1099,8 +1175,19 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <E extends T, T> T[] copyOfRange(E[] array, int beginIndex, int endIndex, Class<T[]> klass) {
-		return new ObjectArray<>(array, beginIndex, array.length)
-				.array(endIndex - beginIndex, klass);
+		int length = endIndex - beginIndex;
+		T[] product = (T[]) java.lang.reflect.Array.newInstance(
+				klass.getComponentType(),
+				length
+		);
+		System.arraycopy(
+				array,
+				beginIndex,
+				product,
+				0,
+				Math.min(array.length, length)
+		);
+		return product;
 	}
 
 	/**
@@ -1308,7 +1395,7 @@ public class Arrays {
 	 * @see java.util.Arrays#deepHashCode(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> int deepHashCode(E[] array) {
+	public static <E> int deepHashCode(E... array) {
 		return ObjectArray.deepHashCode(array);
 	}
 
@@ -1323,7 +1410,7 @@ public class Arrays {
 	 * @see java.util.Arrays#deepToString(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> String deepToString(E[] array) {
+	public static <E> String deepToString(E... array) {
 		return ObjectArray.deepToString(array);
 	}
 
@@ -1480,7 +1567,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <E> void fill(E[] array, E element) {
-		new ObjectArray<>(array).fill(element);
+		new ObjectArray(array).fill(element);
 	}
 
 	/**
@@ -1750,61 +1837,100 @@ public class Arrays {
 		new ShortArray(array, beginIndex, endIndex).fill(element);
 	}
 
-	//..hardcopy(Object, int, Object, int, int)
+	//..from(Collection)
 
 	/**
-	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from
-	 * the given {@code src} at the given {@code srcPos}. Start writing to the given {@code dest} at
-	 * the given {@code destPos}. Copy the specified number of elements {@code length}.
+	 * Get an array from the given {@code collection}.
 	 *
-	 * @param src     the source array.
-	 * @param srcPos  the index to start reading from the source array.
-	 * @param dest    the destination array.
-	 * @param destPos the index to start writing to the destination array.
-	 * @param length  the number of elements to be copied.
-	 * @throws NullPointerException      if the given {@code src} or {@code dest} is null.
-	 * @throws IndexOutOfBoundsException if {@code srcPos < 0} or {@code destPos < 0} or {@code
-	 *                                   length < 0} or {@code srcPos + length > src.length} or
-	 *                                   {@code destPos + length > dest.length}.
-	 * @throws ArrayStoreException       if the given {@code src} or {@code dest} is not an array.
-	 *                                   Or if the given {@code src} and {@code dest} both are
-	 *                                   primitive arrays but not the same class (only if the given
-	 *                                   {@code length} is not 0). Or if an element can not be
-	 *                                   stored in the given {@code dest}.
-	 * @see System#arraycopy(Object, int, Object, int, int)
-	 * @since 0.1.5 ~2020.07.24
+	 * @param collection the collection to get an array from it.
+	 * @return an array from the given {@code collection}.
+	 * @throws NullPointerException if the given {@code collection} is null.
+	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static void hardcopy(Object src, int srcPos, Object dest, int destPos, int length) {
-		Objects.requireNonNull(src, "src");
-		Objects.requireNonNull(dest, "dest");
-		Class srcClass = src.getClass();
-		Class destClass = dest.getClass();
+	public static Object[] from(Collection<?> collection) {
+		return ObjectArray.from(collection);
+	}
 
-		if (!srcClass.isArray())
-			throw new ArrayStoreException(
-					"hardcopy: source type " + srcClass.getName() + " is not an array");
-		if (!destClass.isArray())
-			throw new ArrayStoreException(
-					"hardcopy: destination type " + destClass.getName() + " is not an array");
+	/**
+	 * Get an array from the given {@code collection}.
+	 *
+	 * @param collection the collection to get an array from it.
+	 * @param klass      the class desired for the product array.
+	 * @param <A>        the type of the array.
+	 * @return an array from the given {@code collection}.
+	 * @throws NullPointerException     if the given {@code collection} or {@code klass} is null.
+	 * @throws ArrayStoreException      if an item in the given {@code map} can not be stored in the
+	 *                                  product array.
+	 * @throws IllegalArgumentException if the given {@code klass} is not an array.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static <A> A from(Collection<?> collection, Class<A> klass) {
+		if (klass == boolean[].class)
+			return (A) BooleanArray.from((Collection) collection);
+		if (klass == byte[].class)
+			return (A) ByteArray.from((Collection) collection);
+		if (klass == char[].class)
+			return (A) CharacterArray.from((Collection) collection);
+		if (klass == double[].class)
+			return (A) DoubleArray.from((Collection) collection);
+		if (klass == float[].class)
+			return (A) FloatArray.from((Collection) collection);
+		if (klass == int[].class)
+			return (A) IntegerArray.from((Collection) collection);
+		if (klass == long[].class)
+			return (A) LongArray.from((Collection) collection);
+		if (klass == short[].class)
+			return (A) ShortArray.from((Collection) collection);
 
-		if (srcClass == destClass ||
-			!srcClass.getComponentType().isPrimitive() &&
-			!destClass.getComponentType().isPrimitive())
-			//if the arrays are compatible for System.arraycopy
-			System.arraycopy(src, srcPos, dest, destPos, length);
-		else if (src instanceof Object[])
-			//if the source array is an object array
-			new ObjectArray((Object[]) src, srcPos, srcPos + length)
-					.hardcopy(dest, destPos);
-		else if (dest instanceof Object[])
-			//if the destination array is an object array
-			Array.of(src, srcPos, srcPos + length)
-					.hardcopy((Object[]) dest, destPos);
-		else if (length != 0)
-			//if both arrays are primitive arrays and they are not an instance of the same class
-			throw new ArrayStoreException(
-					"hardcopy: type mismatch: can not copy " + srcClass.getTypeName() + " into " +
-					destClass.getTypeName());
+		return (A) ObjectArray.from(collection, (Class) klass);
+	}
+
+	//..from(Map)
+
+	/**
+	 * Get an array from the given {@code map}.
+	 *
+	 * @param map the map to get an array from it.
+	 * @return an array from the given {@code map}.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static Object[] from(Map<?, ?> map) {
+		return ObjectArray.from(map);
+	}
+
+	/**
+	 * Get an array from the given {@code map}.
+	 *
+	 * @param map   the map to get an array from it.
+	 * @param klass the class desired for the product array.
+	 * @param <A>   the type of the array.
+	 * @return an array from the given {@code map}.
+	 * @throws NullPointerException     if the given {@code map} is null.
+	 * @throws ArrayStoreException      if an item in the given {@code map} can not be stored in the
+	 *                                  product array.
+	 * @throws IllegalArgumentException if the given {@code klass} is not an array class.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public static <A> A from(Map<?, ?> map, Class<A> klass) {
+		if (klass == boolean[].class)
+			return (A) BooleanArray.from((Map) map);
+		if (klass == byte[].class)
+			return (A) ByteArray.from((Map) map);
+		if (klass == char[].class)
+			return (A) CharacterArray.from((Map) map);
+		if (klass == double[].class)
+			return (A) DoubleArray.from((Map) map);
+		if (klass == float[].class)
+			return (A) FloatArray.from((Map) map);
+		if (klass == int[].class)
+			return (A) IntegerArray.from((Map) map);
+		if (klass == long[].class)
+			return (A) LongArray.from((Map) map);
+		if (klass == short[].class)
+			return (A) ShortArray.from((Map) map);
+
+		return (A) ObjectArray.from(map, (Class) klass);
 	}
 
 	//.hashCode(A)
@@ -1818,7 +1944,7 @@ public class Arrays {
 	 * @see java.util.Arrays#hashCode(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> int hashCode(E[] array) {
+	public static <E> int hashCode(E... array) {
 		return ObjectArray.hashCode(array);
 	}
 
@@ -2373,7 +2499,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <E> void parallelSetAll(E[] array, IntFunction<? extends E> function) {
-		new ObjectArray<>(array).parallelSetAll(function);
+		new ObjectArray(array).parallelSetAll(function);
 	}
 
 	/**
@@ -2500,8 +2626,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.08.10
 	 */
 	public static <E extends Comparable<? super E>> void parallelSort(E[] array) {
-		new ObjectArray<>(array)
-				.parallelSort();
+		new ObjectArray(array).parallelSort();
 	}
 
 	/**
@@ -2517,8 +2642,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.08.10
 	 */
 	public static <E> void parallelSort(E[] array, Comparator<? super E> comparator) {
-		new ObjectArray<>(array)
-				.parallelSort(comparator);
+		new ObjectArray(array).parallelSort(comparator);
 	}
 
 	/**
@@ -2635,8 +2759,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.08.10
 	 */
 	public static <E extends Comparable<? super E>> void parallelSort(E[] array, int beginIndex, int endIndex) {
-		new ObjectArray<>(array, beginIndex, endIndex)
-				.parallelSort();
+		new ObjectArray(array, beginIndex, endIndex).parallelSort();
 	}
 
 	/**
@@ -2659,8 +2782,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.08.10
 	 */
 	public static <E> void parallelSort(E[] array, int beginIndex, int endIndex, Comparator<? super E> comparator) {
-		new ObjectArray(array, beginIndex, endIndex)
-				.parallelSort(comparator);
+		new ObjectArray(array, beginIndex, endIndex).parallelSort(comparator);
 	}
 
 	/**
@@ -2829,7 +2951,7 @@ public class Arrays {
 	 * @since 0.1.5 ~2020.07.24
 	 */
 	public static <E> void setAll(E[] array, IntFunction<? extends E> function) {
-		new ObjectArray<>(array).setAll(function);
+		new ObjectArray(array).setAll(function);
 	}
 
 	/**
@@ -3281,7 +3403,7 @@ public class Arrays {
 	 * @see java.util.Arrays#spliterator(Object[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> ObjectArray.Spliterator spliterator(E[] array) {
+	public static <E> ObjectArray.Spliterator spliterator(E... array) {
 		return new ObjectArray(array).spliterator();
 	}
 
@@ -3634,7 +3756,7 @@ public class Arrays {
 	 * @see java.util.Arrays#stream(Object[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> Stream<E> stream(E[] array) {
+	public static <E> Stream<E> stream(E... array) {
 		return new ObjectArray(array).stream();
 	}
 

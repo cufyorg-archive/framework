@@ -37,13 +37,25 @@ public class IntegerArray extends Array<int[], Integer> {
 	private static final long serialVersionUID = 3201994039505608491L;
 
 	/**
+	 * Construct a new array backed by a new actual array that have the given {@code length}.
+	 *
+	 * @param length the length of the new actual array backing the construct array.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @see java.lang.reflect.Array#newInstance(Class, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public IntegerArray(int length) {
+		super(new int[length]);
+	}
+
+	/**
 	 * Construct a new array backed by the given {@code array}.
 	 *
 	 * @param array the array to be backing the constructed array.
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.05
 	 */
-	public IntegerArray(int... array) {
+	public IntegerArray(int[] array) {
 		super(array);
 	}
 
@@ -67,18 +79,6 @@ public class IntegerArray extends Array<int[], Integer> {
 	}
 
 	/**
-	 * Construct a new array backed by a new array from the given {@code map} using {@link
-	 * #from(java.util.Map)}.
-	 *
-	 * @param map the map to construct a new array from to be backing the constructed array.
-	 * @throws NullPointerException if the given {@code map} is null.
-	 * @since 0.1.5 ~2020.08.12
-	 */
-	public IntegerArray(java.util.Map map) {
-		super(IntegerArray.from(map));
-	}
-
-	/**
 	 * Construct a new array backed by a new array from the given {@code collection} using {@link
 	 * #from(Collection)}.
 	 *
@@ -87,8 +87,20 @@ public class IntegerArray extends Array<int[], Integer> {
 	 * @throws NullPointerException if the given {@code collection} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public IntegerArray(java.util.Collection collection) {
+	public IntegerArray(java.util.Collection<Integer> collection) {
 		super(IntegerArray.from(collection));
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code map} using {@link
+	 * #from(java.util.Map)}.
+	 *
+	 * @param map the map to construct a new array from to be backing the constructed array.
+	 * @throws NullPointerException if the given {@code map} is null.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public IntegerArray(java.util.Map<Integer, Integer> map) {
+		super(IntegerArray.from(map));
 	}
 
 	/**
@@ -129,7 +141,7 @@ public class IntegerArray extends Array<int[], Integer> {
 	 *                              the product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static int[] from(java.util.Collection collection) {
+	public static int[] from(java.util.Collection<Integer> collection) {
 		Objects.requireNonNull(collection, "collection");
 		int[] array = new int[collection.size()];
 
@@ -156,11 +168,11 @@ public class IntegerArray extends Array<int[], Integer> {
 	 *                              product array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static int[] from(java.util.Map map) {
+	public static int[] from(java.util.Map<Integer, Integer> map) {
 		Objects.requireNonNull(map, "map");
 		int[] array = new int[map.size() << 1];
 
-		java.util.Iterator<java.util.Map.Entry> iterator = map.entrySet().iterator();
+		java.util.Iterator<? extends java.util.Map.Entry> iterator = map.entrySet().iterator();
 		for (int i = 0; i < array.length; i += 2) {
 			java.util.Map.Entry entry = iterator.next();
 			Object key = entry.getKey();
@@ -229,84 +241,6 @@ public class IntegerArray extends Array<int[], Integer> {
 	}
 
 	@Override
-	public int all(int[] elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			int element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				int e = this.array[j];
-
-				if (element == e)
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int all(Integer... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			Integer element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				int e = this.array[j];
-
-				if (element != null && element.equals(e))
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(int[] elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			int element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				int e = this.array[j];
-
-				if (element == e)
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(Integer... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			Integer element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				int e = this.array[j];
-
-				if (element != null && element.equals(e))
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
 	public int[] array(int length) {
 		if (length < 0)
 			throw new NegativeArraySizeException("length(" + length + ") < 0");
@@ -321,39 +255,6 @@ public class IntegerArray extends Array<int[], Integer> {
 		);
 
 		return array;
-	}
-
-	@Override
-	public <T extends Integer> T[] array(int length, Class<? super T[]> klass) {
-		Objects.requireNonNull(klass, "klass");
-		if (length < 0)
-			throw new NegativeArraySizeException("length(" + length + ") < 0");
-		if (Object[].class.isAssignableFrom(klass))
-			throw new IllegalArgumentException("klass");
-
-		T[] array = (T[]) java.lang.reflect.Array.newInstance(klass.getComponentType(), length);
-
-		this.sub(0, Math.min(this.length(), length))
-				.hardcopy(array, 0);
-
-		return array;
-	}
-
-	@Override
-	public <T> T[] array(T[] array) {
-		Objects.requireNonNull(array, "array");
-		int length = this.length();
-		T[] product = array;
-
-		if (array.length < length)
-			product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-		else
-			product[length] = null;
-
-		this.sub(0, Math.min(this.length(), length))
-				.hardcopy(array, 0);
-
-		return product;
 	}
 
 	@Override
@@ -392,15 +293,29 @@ public class IntegerArray extends Array<int[], Integer> {
 			else if (midVal > element)
 				high = mid - 1;
 			else
-				return this.lowerIndex(mid); // key found
+				return this.thumb(mid); // key found
 		}
-		return this.lowerIndex(-(low + 1));  // key not found.
+		return this.thumb(-(low + 1));  // key not found.
 	}
 
 	@Override
 	public IntegerArray clone() {
 		// noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
 		return new IntegerArray(this.array());
+	}
+
+	@Override
+	public void copy(Object array, int pos) {
+		Objects.requireNonNull(array, "array");
+
+		if (array instanceof int[])
+			this.arraycopy((int[]) array, pos);
+		else if (array instanceof Object[])
+			this.hardcopy((Object[]) array, pos);
+		else
+			throw new ArrayStoreException(
+					"copy: type mismatch: can not copy boolean[] into " +
+					array.getClass().getSimpleName());
 	}
 
 	@Override
@@ -420,7 +335,7 @@ public class IntegerArray extends Array<int[], Integer> {
 					Object element = array.array[i];
 					int e = this.array[j];
 
-					if (element != null && element.equals(e))
+					if (element.equals(e))
 						continue;
 
 					return false;
@@ -452,10 +367,8 @@ public class IntegerArray extends Array<int[], Integer> {
 	}
 
 	@Override
-	public Integer get(int index) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		return this.array[i];
+	public Integer get(int thumb) {
+		return this.array[this.index(thumb)];
 	}
 
 	@Override
@@ -503,6 +416,11 @@ public class IntegerArray extends Array<int[], Integer> {
 	}
 
 	@Override
+	public ListIterator listIterator() {
+		return new ListIterator();
+	}
+
+	@Override
 	public Map map() {
 		return new Map();
 	}
@@ -523,7 +441,7 @@ public class IntegerArray extends Array<int[], Integer> {
 		Objects.requireNonNull(function, "function");
 		IntStream.range(this.beginIndex, this.endIndex)
 				.parallel()
-				.forEach(i -> this.array[i] = function.apply(this.lowerIndex(i)));
+				.forEach(i -> this.array[i] = function.apply(this.thumb(i)));
 	}
 
 	@Override
@@ -537,10 +455,8 @@ public class IntegerArray extends Array<int[], Integer> {
 	}
 
 	@Override
-	public void set(int index, Integer element) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		this.array[i] = element;
+	public void set(int thumb, Integer element) {
+		this.array[this.index(thumb)] = element;
 	}
 
 	@Override
@@ -566,12 +482,12 @@ public class IntegerArray extends Array<int[], Integer> {
 	}
 
 	@Override
-	public IntegerArray sub(int beginIndex, int endIndex) {
-		this.requireRange(beginIndex, endIndex);
+	public IntegerArray sub(int beginThumb, int endThumb) {
+		this.range(beginThumb, endThumb);
 		return new IntegerArray(
 				this.array,
-				this.upperIndex(beginIndex),
-				this.upperIndex(endIndex)
+				this.beginIndex + beginThumb,
+				this.beginIndex + endThumb
 		);
 	}
 
@@ -598,6 +514,19 @@ public class IntegerArray extends Array<int[], Integer> {
 	}
 
 	/**
+	 * Get the element at the given {@code thumb} in this array.
+	 *
+	 * @param thumb the thumb to get the element from.
+	 * @return the element at the given {@code thumb} in this array.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @see java.lang.reflect.Array#getInt(Object, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public int getInt(int thumb) {
+		return this.array[this.index(thumb)];
+	}
+
+	/**
 	 * Get a {@link IntStream} streaming the elements in this array.
 	 *
 	 * @return a stream streaming the elements in this array.
@@ -620,6 +549,21 @@ public class IntegerArray extends Array<int[], Integer> {
 	}
 
 	/**
+	 * Set the element at the given {@code thumb} in this array to the given {@code element}.
+	 *
+	 * @param thumb   the thumb to set the given {@code element} to.
+	 * @param element the element to be set.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @throws ArrayStoreException            if the given {@code element} can not be stored to the
+	 *                                        array.
+	 * @see java.lang.reflect.Array#setInt(Object, int, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public void setInt(int thumb, int element) {
+		this.array[this.index(thumb)] = element;
+	}
+
+	/**
 	 * An iterator iterating the elements in the enclosing array.
 	 *
 	 * @author LSafer
@@ -638,12 +582,12 @@ public class IntegerArray extends Array<int[], Integer> {
 		/**
 		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Iterator(int index) {
-			super(index);
+		public Iterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -710,15 +654,6 @@ public class IntegerArray extends Array<int[], Integer> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 848985287158674978L;
 
-		/**
-		 * Construct a new list backed by the enclosing array.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public List() {
-		}
-
 		@Override
 		public boolean contains(Object object) {
 			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i++) {
@@ -768,10 +703,8 @@ public class IntegerArray extends Array<int[], Integer> {
 		}
 
 		@Override
-		public Integer get(int index) {
-			IntegerArray.this.requireIndex(index);
-			int i = IntegerArray.this.upperIndex(index);
-			return IntegerArray.this.array[i];
+		public Integer get(int thumb) {
+			return IntegerArray.this.array[IntegerArray.this.index(thumb)];
 		}
 
 		@Override
@@ -813,7 +746,7 @@ public class IntegerArray extends Array<int[], Integer> {
 		}
 
 		@Override
-		public ListIterator listIterator(int index) {
+		public ListIterator listIterator(int beginThumb) {
 			return new ListIterator();
 		}
 
@@ -838,36 +771,16 @@ public class IntegerArray extends Array<int[], Integer> {
 			Objects.requireNonNull(operator, "operator");
 			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i++) {
 				int e = IntegerArray.this.array[i];
+				int n = operator.apply(e);
 
-				IntegerArray.this.array[i] = operator.apply(e);
+				IntegerArray.this.array[i] = n;
 			}
 		}
 
 		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i++) {
-				int e = IntegerArray.this.array[i];
-
-				for (Object element : collection)
-					if (element != null && element.equals(e))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-		@Override
-		public Integer set(int index, Integer element) {
-			IntegerArray.this.requireIndex(index);
-			int i = IntegerArray.this.upperIndex(index);
+		public Integer set(int thumb, Integer element) {
+			Objects.requireNonNull(element, "element");
+			int i = IntegerArray.this.index(thumb);
 			int old = IntegerArray.this.array[i];
 			IntegerArray.this.array[i] = element;
 			return old;
@@ -911,12 +824,12 @@ public class IntegerArray extends Array<int[], Integer> {
 		 * Construct a new list iterator iterating the elements in the enclosing array, starting
 		 * from the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public ListIterator(int index) {
-			super(index);
+		public ListIterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -963,6 +876,7 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public void set(Integer element) {
+			Objects.requireNonNull(element, "element");
 			int index = this.last;
 
 			if (index == -1)
@@ -983,24 +897,15 @@ public class IntegerArray extends Array<int[], Integer> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -2840280796050057228L;
 
-		/**
-		 * Construct a new map backed by the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public Map() {
-		}
-
 		@Override
 		public Integer compute(Integer key, BiFunction<? super Integer, ? super Integer, ? extends Integer> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
 				int k = IntegerArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					int v = IntegerArray.this.array[i + 1];
 					Integer value = function.apply(k, v);
 
@@ -1020,12 +925,13 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public Integer computeIfAbsent(Integer key, Function<? super Integer, ? extends Integer> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
 				int k = IntegerArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (key.equals(k))
 					//old:notnull
 					return IntegerArray.this.array[i + 1];
 			}
@@ -1036,12 +942,13 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public Integer computeIfPresent(Integer key, BiFunction<? super Integer, ? super Integer, ? extends Integer> function) {
+			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
 				int k = IntegerArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					int v = IntegerArray.this.array[i + 1];
 					Integer value = function.apply(k, v);
 
@@ -1181,12 +1088,14 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public Integer merge(Integer key, Integer value, BiFunction<? super Integer, ? super Integer, ? extends Integer> function) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
 				int k = IntegerArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					int v = IntegerArray.this.array[i + 1];
 					Integer newValue = function.apply(v, value);
 
@@ -1200,20 +1109,18 @@ public class IntegerArray extends Array<int[], Integer> {
 				}
 			}
 
-			if (value == null)
-				//old:notfound new:null
-				return null;
-
 			//old:notfound new:notnull
 			throw new UnsupportedOperationException("put");
 		}
 
 		@Override
 		public Integer put(Integer key, Integer value) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
 				int k = IntegerArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					//old:found
 					int v = IntegerArray.this.array[i + 1];
 					IntegerArray.this.array[i + 1] = value;
@@ -1231,14 +1138,14 @@ public class IntegerArray extends Array<int[], Integer> {
 
 			for0:
 			for (java.util.Map.Entry<? extends Integer, ? extends Integer> entry : map.entrySet()) {
-				Integer key = entry.getKey();
+				int key = entry.getKey();
 
 				for (int i = IntegerArray.this.beginIndex;
 					 i < IntegerArray.this.endIndex; i += 2) {
 					int k = IntegerArray.this.array[i];
 
-					if (key != null && key.equals(k)) {
-						Integer value = entry.getValue();
+					if (key == k) {
+						int value = entry.getValue();
 						IntegerArray.this.array[i + 1] = value;
 						continue for0;
 					}
@@ -1285,10 +1192,12 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public boolean replace(Integer key, Integer oldValue, Integer newValue) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(newValue, "newValue");
 			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
 				int k = IntegerArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					int v = IntegerArray.this.array[i + 1];
 
 					if (oldValue != null && oldValue.equals(v)) {
@@ -1307,10 +1216,12 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public Integer replace(Integer key, Integer value) {
+			Objects.requireNonNull(key, "key");
+			Objects.requireNonNull(value, "value");
 			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
 				int k = IntegerArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (key.equals(k)) {
 					//old:match
 					int v = IntegerArray.this.array[i + 1];
 					IntegerArray.this.array[i + 1] = value;
@@ -1329,8 +1240,9 @@ public class IntegerArray extends Array<int[], Integer> {
 			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
 				int k = IntegerArray.this.array[i];
 				int v = IntegerArray.this.array[i + 1];
+				int n = function.apply(k, v);
 
-				IntegerArray.this.array[i + 1] = function.apply(k, v);
+				IntegerArray.this.array[i + 1] = n;
 			}
 		}
 
@@ -1380,14 +1292,14 @@ public class IntegerArray extends Array<int[], Integer> {
 			 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in
 			 * the enclosing array.
 			 *
-			 * @param index the index to where the key (followed by the value) will be in the
+			 * @param thumb the index to where the key (followed by the value) will be in the
 			 *              constructed entry.
 			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >=
 			 *                                   length}.
 			 * @since 0.1.5 ~2020.08.06
 			 */
-			public Entry(int index) {
-				super(index);
+			public Entry(int thumb) {
+				super(thumb);
 			}
 
 			@Override
@@ -1430,6 +1342,7 @@ public class IntegerArray extends Array<int[], Integer> {
 
 			@Override
 			public Integer setValue(Integer value) {
+				Objects.requireNonNull(value, "value");
 				int v = IntegerArray.this.array[this.index + 1];
 				IntegerArray.this.array[this.index + 1] = value;
 				return v;
@@ -1453,15 +1366,6 @@ public class IntegerArray extends Array<int[], Integer> {
 		public class EntrySet extends Array<int[], Integer>.Map<Integer, Integer>.EntrySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -4823635378224028987L;
-
-			/**
-			 * Construct a new set backed by the entries in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public EntrySet() {
-			}
 
 			@Override
 			public boolean contains(Object object) {
@@ -1579,37 +1483,6 @@ public class IntegerArray extends Array<int[], Integer> {
 			}
 
 			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-					int k = IntegerArray.this.array[i];
-					int v = IntegerArray.this.array[i + 1];
-
-					for (Object object : collection)
-						if (object instanceof java.util.Map.Entry) {
-							java.util.Map.Entry entry = (java.util.Map.Entry) object;
-							Object key = entry.getKey();
-
-							if (key != null && key.equals(k)) {
-								Object value = entry.getValue();
-
-								if (value != null && value.equals(v))
-									//retained
-									continue for0;
-							}
-						}
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
-				return false;
-			}
-
-			@Override
 			public Spliterator spliterator() {
 				return new Spliterator();
 			}
@@ -1698,13 +1571,13 @@ public class IntegerArray extends Array<int[], Integer> {
 				 * Construct a new iterator iterating the entries in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -1713,7 +1586,7 @@ public class IntegerArray extends Array<int[], Integer> {
 					int index = this.index;
 					this.index = IntegerArray.this.endIndex;
 
-					int i = IntegerArray.this.lowerIndex(index);
+					int i = IntegerArray.this.thumb(index);
 					int l = IntegerArray.this.length();
 					for (; i < l; i += 2) {
 						Entry entry = new Entry(i);//trimmed index
@@ -1729,7 +1602,7 @@ public class IntegerArray extends Array<int[], Integer> {
 					if (index < IntegerArray.this.endIndex) {
 						this.index += 2;
 
-						int i = IntegerArray.this.lowerIndex(index);
+						int i = IntegerArray.this.thumb(index);
 						return new Entry(i);//trimmed index
 					}
 
@@ -1757,13 +1630,13 @@ public class IntegerArray extends Array<int[], Integer> {
 				 * Construct a new spliterator iterating the entries in the enclosing array,
 				 * starting from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -1789,7 +1662,7 @@ public class IntegerArray extends Array<int[], Integer> {
 					if (index < IntegerArray.this.endIndex) {
 						this.index += 2;
 
-						int i = IntegerArray.this.lowerIndex(index);
+						int i = IntegerArray.this.thumb(index);
 						Entry entry = new Entry(i);//trimmed index
 						consumer.accept(entry);
 						return true;
@@ -1810,15 +1683,6 @@ public class IntegerArray extends Array<int[], Integer> {
 		public class KeySet extends Array<int[], Integer>.Map<Integer, Integer>.KeySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 7793360078444812816L;
-
-			/**
-			 * Construct a new set backed by the keys in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public KeySet() {
-			}
 
 			@Override
 			public boolean equals(Object object) {
@@ -1889,27 +1753,6 @@ public class IntegerArray extends Array<int[], Integer> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-					int k = IntegerArray.this.array[i];
-
-					for (Object key : collection)
-						if (key != null && key.equals(k))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -1996,13 +1839,13 @@ public class IntegerArray extends Array<int[], Integer> {
 				 * Construct a new iterator iterating the keys in the enclosing array, starting from
 				 * the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2078,13 +1921,13 @@ public class IntegerArray extends Array<int[], Integer> {
 				 * Construct a new spliterator iterating the keys in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2163,15 +2006,6 @@ public class IntegerArray extends Array<int[], Integer> {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -7937502933699082438L;
 
-			/**
-			 * Construct a new collection backed by the values in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public Values() {
-			}
-
 			@Override
 			public boolean equals(Object object) {
 				return object == this;
@@ -2221,28 +2055,6 @@ public class IntegerArray extends Array<int[], Integer> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = IntegerArray.this.beginIndex + 1;
-					 i < IntegerArray.this.endIndex; i += 2) {
-					int v = IntegerArray.this.array[i];
-
-					for (Object value : collection)
-						if (value != null && value.equals(v))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -2329,13 +2141,13 @@ public class IntegerArray extends Array<int[], Integer> {
 				 * Construct a new iterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2411,13 +2223,13 @@ public class IntegerArray extends Array<int[], Integer> {
 				 * Construct a new spliterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2507,12 +2319,12 @@ public class IntegerArray extends Array<int[], Integer> {
 		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
 		 * the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed spliterator.
+		 * @param beginThumb the initial position of the constructed spliterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Spliterator(int index) {
-			super(index);
+		public Spliterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override

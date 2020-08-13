@@ -36,6 +36,57 @@ public class ObjectArray<E> extends Array<E[], E> {
 	private static final long serialVersionUID = -407181299777988791L;
 
 	/**
+	 * Construct a new array backed by a new actual array that have the given {@code length}.
+	 *
+	 * @param length the length of the new actual array backing the construct array.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @see java.lang.reflect.Array#newInstance(Class, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public ObjectArray(int length) {
+		super((E[]) new Object[length]);
+	}
+
+	/**
+	 * Construct a new array backed by a new actual array of the given {@code componentType} that
+	 * have the given {@code length}.
+	 *
+	 * @param componentType the component type of the constructed actual array.
+	 * @param length        the length of the new actual array backing the construct array.
+	 * @throws NullPointerException       if the given {@code componentType} is null.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @throws ClassCastException         if the given {@code componentType} is not assignable from
+	 *                                    {@link Object}.
+	 * @see java.lang.reflect.Array#newInstance(Class, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public ObjectArray(Class<E> componentType, int length) {
+		super((E[]) java.lang.reflect.Array.newInstance(componentType, length));
+	}
+
+	/**
+	 * Construct a new array backed by a new actual array of the given {@code componentType} that
+	 * have the given {@code dimensions}.
+	 *
+	 * @param componentType the component type of the constructed actual array.
+	 * @param dimensions    the dimensions of the new actual array backing the construct array.
+	 * @throws NullPointerException       if the given {@code componentType} or {@code dimensions}
+	 *                                    is null.
+	 * @throws NegativeArraySizeException if an element in the given {@code dimensions} is
+	 *                                    negative.
+	 * @throws ClassCastException         if the given {@code componentType} is not assignable from
+	 *                                    {@link Object} (if only one dimensions has been
+	 *                                    provided).
+	 * @throws IllegalArgumentException   if {@code dimensions.length < 1} or {@code
+	 *                                    dimensions.length > 255}.
+	 * @see java.lang.reflect.Array#newInstance(Class, int[])
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public ObjectArray(Class<E> componentType, int... dimensions) {
+		super((E[]) java.lang.reflect.Array.newInstance(componentType, dimensions));
+	}
+
+	/**
 	 * Construct a new array backed by the given {@code array}.
 	 *
 	 * @param array the array to be backing the constructed array.
@@ -73,7 +124,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @throws NullPointerException if the given {@code map} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public ObjectArray(java.util.Map map) {
+	public ObjectArray(java.util.Map<? extends E, ? extends E> map) {
 		super((E[]) ObjectArray.from(map));
 	}
 
@@ -86,8 +137,37 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @throws NullPointerException if the given {@code collection} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public ObjectArray(java.util.Collection collection) {
+	public ObjectArray(java.util.Collection<? extends E> collection) {
 		super((E[]) ObjectArray.from(collection));
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code map} using {@link
+	 * #from(java.util.Map)}.
+	 *
+	 * @param map   the map to construct a new array from to be backing the constructed array.
+	 * @param klass the class of the new constructed backing array of the constructed array.
+	 * @throws NullPointerException     if the given {@code map} is null.
+	 * @throws IllegalArgumentException if the given {@code klass} is not an object array class.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public ObjectArray(java.util.Map<? extends E, ? extends E> map, Class<E[]> klass) {
+		super(ObjectArray.from(map, klass));
+	}
+
+	/**
+	 * Construct a new array backed by a new array from the given {@code collection} using {@link
+	 * #from(Collection)}.
+	 *
+	 * @param collection the collection to construct a new array from to be backing the constructed
+	 *                   array.
+	 * @param klass      the class of the new constructed backing array of the constructed array.
+	 * @throws NullPointerException     if the given {@code collection} is null.
+	 * @throws IllegalArgumentException if the given {@code klass} is not an object array class.
+	 * @since 0.1.5 ~2020.08.12
+	 */
+	public ObjectArray(java.util.Collection<? extends E> collection, Class<E[]> klass) {
+		super(ObjectArray.from(collection, klass));
 	}
 
 	/**
@@ -249,7 +329,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @throws NullPointerException if the given {@code collection} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static Object[] from(java.util.Collection collection) {
+	public static Object[] from(java.util.Collection<?> collection) {
 		Objects.requireNonNull(collection, "collection");
 		Object[] array = new Object[collection.size()];
 
@@ -271,11 +351,11 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @throws NullPointerException if the given {@code map} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static Object[] from(java.util.Map map) {
+	public static Object[] from(java.util.Map<?, ?> map) {
 		Objects.requireNonNull(map, "map");
 		Object[] array = new Object[map.size() << 1];
 
-		java.util.Iterator<java.util.Map.Entry> iterator = map.entrySet().iterator();
+		java.util.Iterator<? extends java.util.Map.Entry> iterator = map.entrySet().iterator();
 		for (int i = 0; i < array.length; i += 2) {
 			java.util.Map.Entry entry = iterator.next();
 			Object key = entry.getKey();
@@ -295,14 +375,18 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @param klass      the class desired for the product array.
 	 * @param <E>        the type of the elements.
 	 * @return an array from the given {@code collection}.
-	 * @throws NullPointerException if the given {@code collection} or {@code klass} is null.
-	 * @throws ArrayStoreException  if an item in the given {@code map} can not be stored in the
-	 *                              product array.
+	 * @throws NullPointerException     if the given {@code collection} or {@code klass} is null.
+	 * @throws ArrayStoreException      if an item in the given {@code map} can not be stored in the
+	 *                                  product array.
+	 * @throws IllegalArgumentException if the given {@code klass} is not an object array class.
 	 * @since 0.1.5 ~2020.08.11
 	 */
 	public static <E> E[] from(java.util.Collection<? extends E> collection, Class<E[]> klass) {
 		Objects.requireNonNull(collection, "collection");
 		Objects.requireNonNull(klass, "klass");
+		if (!Object[].class.isAssignableFrom(klass))
+			throw new IllegalArgumentException("Not object array class");
+
 		E[] array = (E[]) java.lang.reflect.Array.newInstance(klass.getComponentType(), collection.size());
 
 		java.util.Iterator<? extends E> iterator = collection.iterator();
@@ -322,14 +406,18 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @param klass the class desired for the product array.
 	 * @param <E>   the type of the elements.
 	 * @return an array from the given {@code map}.
-	 * @throws NullPointerException if the given {@code map} is null.
-	 * @throws ArrayStoreException  if an item in the given {@code map} can not be stored in the
-	 *                              product array.
+	 * @throws NullPointerException     if the given {@code map} is null.
+	 * @throws ArrayStoreException      if an item in the given {@code map} can not be stored in the
+	 *                                  product array.
+	 * @throws IllegalArgumentException if the given {@code klass} is not an object array class.
 	 * @since 0.1.5 ~2020.08.11
 	 */
 	public static <E> E[] from(java.util.Map<? extends E, ? extends E> map, Class<E[]> klass) {
 		Objects.requireNonNull(map, "map");
 		Objects.requireNonNull(klass, "klass");
+		if (!Object[].class.isAssignableFrom(klass))
+			throw new IllegalArgumentException("Not object array class");
+
 		E[] array = (E[]) java.lang.reflect.Array.newInstance(klass.getComponentType(),
 				map.size() << 1);
 
@@ -459,45 +547,6 @@ public class ObjectArray<E> extends Array<E[], E> {
 	}
 
 	@Override
-	public int all(E... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for0:
-		for (int i = 0; i < elements.length; i++) {
-			E element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				E e = this.array[j];
-
-				if (element == e || element != null && element.equals(e))
-					continue for0;
-			}
-
-			return i;
-		}
-
-		return -1;
-	}
-
-	@Override
-	public int any(E... elements) {
-		Objects.requireNonNull(elements, "elements");
-
-		for (int i = 0; i < elements.length; i++) {
-			E element = elements[i];
-
-			for (int j = this.beginIndex; j < this.endIndex; j++) {
-				E e = this.array[j];
-
-				if (element == e || element != null && element.equals(e))
-					return i;
-			}
-		}
-
-		return -1;
-	}
-
-	@Override
 	public E[] array(int length) {
 		if (length < 0)
 			throw new NegativeArraySizeException("length(" + length + ") < 0");
@@ -512,49 +561,6 @@ public class ObjectArray<E> extends Array<E[], E> {
 		);
 
 		return array;
-	}
-
-	@Override
-	public <T extends E> T[] array(int length, Class<? super T[]> klass) {
-		Objects.requireNonNull(klass, "klass");
-		if (length < 0)
-			throw new NegativeArraySizeException("length(" + length + ") < 0");
-		if (!Object[].class.isAssignableFrom(klass))
-			throw new IllegalArgumentException("klass");
-
-		T[] array = (T[]) java.lang.reflect.Array.newInstance(klass.getComponentType(), length);
-
-		System.arraycopy(
-				this.array,
-				this.beginIndex,
-				array,
-				0,
-				Math.min(this.length(), length)
-		);
-
-		return array;
-	}
-
-	@Override
-	public <T> T[] array(T[] array) {
-		Objects.requireNonNull(array, "array");
-		int length = this.length();
-		T[] product = array;
-
-		if (array.length < length)
-			product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-		else
-			product[length] = null;
-
-		System.arraycopy(
-				this.array,
-				this.beginIndex,
-				product,
-				0,
-				length
-		);
-
-		return product;
 	}
 
 	@Override
@@ -594,16 +600,26 @@ public class ObjectArray<E> extends Array<E[], E> {
 			else if (cmp > 0)
 				high = mid - 1;
 			else
-				return this.lowerIndex(mid); // key found
+				return this.thumb(mid); // key found
 		}
 
-		return this.lowerIndex(-(low + 1));  // key not found.
+		return this.thumb(-(low + 1));  // key not found.
 	}
 
 	@Override
 	public ObjectArray clone() {
 		// noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
 		return new ObjectArray(this.array());
+	}
+
+	@Override
+	public void copy(Object array, int pos) {
+		Objects.requireNonNull(array, "array");
+
+		if (array instanceof Object[])
+			this.arraycopy((E[]) array, pos);
+		else
+			this.hardcopy(array, pos);
 	}
 
 	@Override
@@ -655,10 +671,8 @@ public class ObjectArray<E> extends Array<E[], E> {
 	}
 
 	@Override
-	public E get(int index) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		return this.array[i];
+	public E get(int thumb) {
+		return this.array[this.index(thumb)];
 	}
 
 	@Override
@@ -733,6 +747,11 @@ public class ObjectArray<E> extends Array<E[], E> {
 	}
 
 	@Override
+	public ListIterator listIterator() {
+		return new ListIterator();
+	}
+
+	@Override
 	public <K extends E, V extends E> Map<K, V> map() {
 		return new Map();
 	}
@@ -753,7 +772,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 		Objects.requireNonNull(function, "function");
 		IntStream.range(this.beginIndex, this.endIndex)
 				.parallel()
-				.forEach(i -> this.array[i] = function.apply(this.lowerIndex(i)));
+				.forEach(i -> this.array[i] = function.apply(this.thumb(i)));
 	}
 
 	@Override
@@ -767,10 +786,8 @@ public class ObjectArray<E> extends Array<E[], E> {
 	}
 
 	@Override
-	public void set(int index, E element) {
-		this.requireIndex(index);
-		int i = this.upperIndex(index);
-		this.array[i] = element;
+	public void set(int thumb, E element) {
+		this.array[this.index(thumb)] = element;
 	}
 
 	@Override
@@ -796,12 +813,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 	}
 
 	@Override
-	public ObjectArray<E> sub(int beginIndex, int endIndex) {
-		this.requireRange(beginIndex, endIndex);
+	public ObjectArray<E> sub(int beginThumb, int endThumb) {
+		this.range(beginThumb, endThumb);
 		return new ObjectArray(
 				this.array,
-				this.upperIndex(beginIndex),
-				this.upperIndex(endIndex)
+				this.beginIndex + beginThumb,
+				this.beginIndex + endThumb
 		);
 	}
 
@@ -857,10 +874,10 @@ public class ObjectArray<E> extends Array<E[], E> {
 			else if (cmp > 0)
 				high = mid - 1;
 			else
-				return this.lowerIndex(mid); // key found
+				return this.thumb(mid); // key found
 		}
 
-		return this.lowerIndex(-(low + 1));  // key not found.
+		return this.thumb(-(low + 1));  // key not found.
 	}
 
 	/**
@@ -984,12 +1001,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 		/**
 		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Iterator(int index) {
-			super(index);
+		public Iterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -1029,15 +1046,6 @@ public class ObjectArray<E> extends Array<E[], E> {
 	public class List extends Array<E[], E>.List {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -6821775231116953767L;
-
-		/**
-		 * Construct a new list backed by the enclosing array.
-		 *
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public List() {
-		}
 
 		@Override
 		public boolean contains(Object object) {
@@ -1088,10 +1096,8 @@ public class ObjectArray<E> extends Array<E[], E> {
 		}
 
 		@Override
-		public E get(int index) {
-			ObjectArray.this.requireIndex(index);
-			int i = ObjectArray.this.upperIndex(index);
-			return ObjectArray.this.array[i];
+		public E get(int thumb) {
+			return ObjectArray.this.array[ObjectArray.this.index(thumb)];
 		}
 
 		@Override
@@ -1113,7 +1119,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 				E e = ObjectArray.this.array[i];
 
 				if (object == e || object != null && object.equals(e))
-					return ObjectArray.this.lowerIndex(i);
+					return ObjectArray.this.thumb(i);
 			}
 
 			return -1;
@@ -1125,15 +1131,15 @@ public class ObjectArray<E> extends Array<E[], E> {
 				E e = ObjectArray.this.array[i];
 
 				if (object == e || object != null && object.equals(e))
-					return ObjectArray.this.lowerIndex(i);
+					return ObjectArray.this.thumb(i);
 			}
 
 			return -1;
 		}
 
 		@Override
-		public ListIterator listIterator(int index) {
-			return new ListIterator(index);
+		public ListIterator listIterator(int beginThumb) {
+			return new ListIterator(beginThumb);
 		}
 
 		@Override
@@ -1157,38 +1163,27 @@ public class ObjectArray<E> extends Array<E[], E> {
 			Objects.requireNonNull(operator, "operator");
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i++) {
 				E e = ObjectArray.this.array[i];
+				E n = operator.apply(e);
 
-				ObjectArray.this.array[i] = operator.apply(e);
+				try {
+					ObjectArray.this.array[i] = n;
+				} catch (ArrayStoreException exception) {
+					//as in the specifications!
+					throw new ClassCastException(exception.getMessage());
+				}
 			}
 		}
 
 		@Override
-		public boolean retainAll(Collection<?> collection) {
-			Objects.requireNonNull(collection, "collection");
-
-			for0:
-			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i++) {
-				E e = ObjectArray.this.array[i];
-
-				for (Object element : collection)
-					if (element == e || element != null && element.equals(e))
-						//retained
-						continue for0;
-
-				//can not remove
-				throw new UnsupportedOperationException("remove");
-			}
-
-			//all retained
-			return false;
-		}
-
-		@Override
-		public E set(int index, E element) {
-			ObjectArray.this.requireIndex(index);
-			int i = ObjectArray.this.upperIndex(index);
+		public E set(int thumb, E element) {
+			int i = ObjectArray.this.index(thumb);
 			E old = ObjectArray.this.array[i];
-			ObjectArray.this.array[i] = element;
+			try {
+				ObjectArray.this.array[i] = element;
+			} catch (ArrayStoreException e) {
+				//as in the specifications!
+				throw new ClassCastException(e.getMessage());
+			}
 			return old;
 		}
 
@@ -1224,12 +1219,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 		 * Construct a new list iterator iterating the elements in the enclosing array, starting
 		 * from the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed iterator.
+		 * @param beginThumb the initial position of the constructed iterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public ListIterator(int index) {
-			super(index);
+		public ListIterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
@@ -1281,7 +1276,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 			if (index == -1)
 				throw new IllegalStateException();
 
-			ObjectArray.this.array[index] = element;
+			try {
+				ObjectArray.this.array[index] = element;
+			} catch (ArrayStoreException e) {
+				//as in the specifications!
+				throw new ClassCastException(e.getMessage());
+			}
 		}
 	}
 
@@ -1297,16 +1297,6 @@ public class ObjectArray<E> extends Array<E[], E> {
 	public class Map<K extends E, V extends E> extends Array<E[], E>.Map<K, V> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 1924164470541987638L;
-
-		/**
-		 * Construct a new map backed by the enclosing array.
-		 *
-		 * @throws IllegalArgumentException if {@code length % 2 != 0}.
-		 * @since 0.1.5 ~2020.08.06
-		 */
-		@SuppressWarnings("RedundantNoArgConstructor")
-		public Map() {
-		}
 
 		@Override
 		public V compute(K key, BiFunction<? super K, ? super V, ? extends V> function) {
@@ -1324,7 +1314,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 						throw new UnsupportedOperationException("remove");
 
 					//old:found
-					ObjectArray.this.array[i + 1] = value;
+					try {
+						ObjectArray.this.array[i + 1] = value;
+					} catch (ArrayStoreException e) {
+						//as in the specifications!
+						throw new ClassCastException(e.getMessage());
+					}
 					return value;
 				}
 			}
@@ -1346,7 +1341,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 					if (v == null) {
 						//old:null
 						V value = function.apply(k);
-						ObjectArray.this.array[i + 1] = value;
+						try {
+							ObjectArray.this.array[i + 1] = value;
+						} catch (ArrayStoreException e) {
+							//as in the specifications!
+							throw new ClassCastException(e.getMessage());
+						}
 						return value;
 					}
 
@@ -1377,7 +1377,13 @@ public class ObjectArray<E> extends Array<E[], E> {
 							throw new UnsupportedOperationException("remove");
 
 						//old:notnull new:notnull
-						ObjectArray.this.array[i + 1] = value;
+						try {
+							ObjectArray.this.array[i + 1] = value;
+						} catch (ArrayStoreException e) {
+							//as in the specifications!
+							throw new ClassCastException(e.getMessage());
+						}
+
 						return value;
 					}
 
@@ -1513,6 +1519,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 
 		@Override
 		public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> function) {
+			Objects.requireNonNull(value, "value");
 			Objects.requireNonNull(function, "function");
 
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
@@ -1527,14 +1534,15 @@ public class ObjectArray<E> extends Array<E[], E> {
 						throw new UnsupportedOperationException("remove");
 
 					//old:found new:notnull
-					ObjectArray.this.array[i + 1] = newValue;
+					try {
+						ObjectArray.this.array[i + 1] = newValue;
+					} catch (ArrayStoreException e) {
+						//as in the specifications!
+						throw new ClassCastException(e.getMessage());
+					}
 					return newValue;
 				}
 			}
-
-			if (value == null)
-				//old:notfound new:null
-				return null;
 
 			//old:notfound new:notnull
 			throw new UnsupportedOperationException("put");
@@ -1548,7 +1556,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 				if (key == k || key != null && key.equals(k)) {
 					//old:found
 					V v = (V) ObjectArray.this.array[i + 1];
-					ObjectArray.this.array[i + 1] = value;
+					try {
+						ObjectArray.this.array[i + 1] = value;
+					} catch (ArrayStoreException e) {
+						//as in the specifications!
+						throw new ClassCastException(e.getMessage());
+					}
 					return v;
 				}
 			}
@@ -1570,7 +1583,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 
 					if (key == k || key != null && key.equals(k)) {
 						V value = entry.getValue();
-						ObjectArray.this.array[i + 1] = value;
+						try {
+							ObjectArray.this.array[i + 1] = value;
+						} catch (ArrayStoreException e) {
+							//as in the specifications!
+							throw new ClassCastException(e.getMessage());
+						}
 						continue for0;
 					}
 				}
@@ -1590,7 +1608,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 					V v = (V) ObjectArray.this.array[i + 1];
 
 					if (v == null)
-						ObjectArray.this.array[i + 1] = value;
+						try {
+							ObjectArray.this.array[i + 1] = value;
+						} catch (ArrayStoreException e) {
+							//as in the specifications!
+							throw new ClassCastException(e.getMessage());
+						}
 
 					return v;
 				}
@@ -1630,7 +1653,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 
 					if (oldValue == v || oldValue != null && oldValue.equals(v)) {
 						//old:match
-						ObjectArray.this.array[i + 1] = newValue;
+						try {
+							ObjectArray.this.array[i + 1] = newValue;
+						} catch (ArrayStoreException e) {
+							//as in the specifications!
+							throw new ClassCastException(e.getMessage());
+						}
 						return true;
 					}
 
@@ -1650,7 +1678,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 				if (key == k || key != null && key.equals(k)) {
 					//old:match
 					V v = (V) ObjectArray.this.array[i + 1];
-					ObjectArray.this.array[i + 1] = value;
+					try {
+						ObjectArray.this.array[i + 1] = value;
+					} catch (ArrayStoreException e) {
+						//as in the specifications!
+						throw new ClassCastException(e.getMessage());
+					}
 					return v;
 				}
 			}
@@ -1666,8 +1699,14 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 				V v = (V) ObjectArray.this.array[i + 1];
+				V n = function.apply(k, v);
 
-				ObjectArray.this.array[i + 1] = function.apply(k, v);
+				try {
+					ObjectArray.this.array[i + 1] = n;
+				} catch (ArrayStoreException e) {
+					//as in the specifications!
+					throw new ClassCastException(e.getMessage());
+				}
 			}
 		}
 
@@ -1717,14 +1756,14 @@ public class ObjectArray<E> extends Array<E[], E> {
 			 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in
 			 * the enclosing array.
 			 *
-			 * @param index the index to where the key (followed by the value) will be in the
+			 * @param thumb the index to where the key (followed by the value) will be in the
 			 *              constructed entry.
 			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >=
 			 *                                   length}.
 			 * @since 0.1.5 ~2020.08.06
 			 */
-			public Entry(int index) {
-				super(index);
+			public Entry(int thumb) {
+				super(thumb);
 			}
 
 			@Override
@@ -1768,7 +1807,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 			@Override
 			public V setValue(V value) {
 				V v = (V) ObjectArray.this.array[this.index + 1];
-				ObjectArray.this.array[this.index + 1] = value;
+				try {
+					ObjectArray.this.array[this.index + 1] = value;
+				} catch (ArrayStoreException e) {
+					//as in the specifications
+					throw new ClassCastException(e.getMessage());
+				}
 				return v;
 			}
 
@@ -1790,15 +1834,6 @@ public class ObjectArray<E> extends Array<E[], E> {
 		public class EntrySet extends Array<E[], E>.Map<K, V>.EntrySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -1358655666106432532L;
-
-			/**
-			 * Construct a new set backed by the entries in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public EntrySet() {
-			}
 
 			@Override
 			public boolean contains(Object object) {
@@ -1916,37 +1951,6 @@ public class ObjectArray<E> extends Array<E[], E> {
 			}
 
 			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
-					K k = (K) ObjectArray.this.array[i];
-					V v = (V) ObjectArray.this.array[i + 1];
-
-					for (Object object : collection)
-						if (object instanceof java.util.Map.Entry) {
-							java.util.Map.Entry entry = (java.util.Map.Entry) object;
-							Object key = entry.getKey();
-
-							if (key == k || key != null && key.equals(k)) {
-								Object value = entry.getValue();
-
-								if (value == v || value != null && value.equals(v))
-									//retained
-									continue for0;
-							}
-						}
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
-				return false;
-			}
-
-			@Override
 			public Spliterator spliterator() {
 				return new Spliterator();
 			}
@@ -2035,13 +2039,13 @@ public class ObjectArray<E> extends Array<E[], E> {
 				 * Construct a new iterator iterating the entries in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2050,7 +2054,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 					int index = this.index;
 					this.index = ObjectArray.this.endIndex;
 
-					int i = ObjectArray.this.lowerIndex(index);
+					int i = ObjectArray.this.thumb(index);
 					int l = ObjectArray.this.length();
 					for (; i < l; i += 2) {
 						Entry entry = new Entry(i);//trimmed index
@@ -2066,7 +2070,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 					if (index < ObjectArray.this.endIndex) {
 						this.index += 2;
 
-						int i = ObjectArray.this.lowerIndex(index);
+						int i = ObjectArray.this.thumb(index);
 						return new Entry(i);//trimmed index
 					}
 
@@ -2094,13 +2098,13 @@ public class ObjectArray<E> extends Array<E[], E> {
 				 * Construct a new spliterator iterating the entries in the enclosing array,
 				 * starting from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2126,7 +2130,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 					if (index < ObjectArray.this.endIndex) {
 						this.index += 2;
 
-						int i = ObjectArray.this.lowerIndex(index);
+						int i = ObjectArray.this.thumb(index);
 						Entry entry = new Entry(i);//trimmed index
 						consumer.accept(entry);
 						return true;
@@ -2147,15 +2151,6 @@ public class ObjectArray<E> extends Array<E[], E> {
 		public class KeySet extends Array<E[], E>.Map<K, V>.KeySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 6047336320717832956L;
-
-			/**
-			 * Construct a new set backed by the keys in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public KeySet() {
-			}
 
 			@Override
 			public boolean equals(Object object) {
@@ -2226,27 +2221,6 @@ public class ObjectArray<E> extends Array<E[], E> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
-					K k = (K) ObjectArray.this.array[i];
-
-					for (Object key : collection)
-						if (key == k || key != null && key.equals(k))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -2332,13 +2306,13 @@ public class ObjectArray<E> extends Array<E[], E> {
 				 * Construct a new iterator iterating the keys in the enclosing array, starting from
 				 * the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2388,13 +2362,13 @@ public class ObjectArray<E> extends Array<E[], E> {
 				 * Construct a new spliterator iterating the keys in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2438,15 +2412,6 @@ public class ObjectArray<E> extends Array<E[], E> {
 		public class Values extends Array<E[], E>.Map<K, V>.Values {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -6890162958501631510L;
-
-			/**
-			 * Construct a new collection backed by the values in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.08.06
-			 */
-			@SuppressWarnings("RedundantNoArgConstructor")
-			public Values() {
-			}
 
 			@Override
 			public boolean equals(Object object) {
@@ -2497,28 +2462,6 @@ public class ObjectArray<E> extends Array<E[], E> {
 				}
 
 				//nothing to remove
-				return false;
-			}
-
-			@Override
-			public boolean retainAll(Collection<?> collection) {
-				Objects.requireNonNull(collection, "collection");
-
-				for0:
-				for (int i = ObjectArray.this.beginIndex + 1;
-					 i < ObjectArray.this.endIndex; i += 2) {
-					V v = (V) ObjectArray.this.array[i];
-
-					for (Object value : collection)
-						if (value == v || value != null && value.equals(v))
-							//retained
-							continue for0;
-
-					//can not remove
-					throw new UnsupportedOperationException("remove");
-				}
-
-				//all retained
 				return false;
 			}
 
@@ -2604,13 +2547,13 @@ public class ObjectArray<E> extends Array<E[], E> {
 				 * Construct a new iterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed iterator.
+				 * @param beginThumb the initial position of the constructed iterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Iterator(int index) {
-					super(index);
+				public Iterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2660,13 +2603,13 @@ public class ObjectArray<E> extends Array<E[], E> {
 				 * Construct a new spliterator iterating the values in the enclosing array, starting
 				 * from the given {@code index}.
 				 *
-				 * @param index the initial position of the constructed spliterator.
+				 * @param beginThumb the initial position of the constructed spliterator.
 				 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index >
 				 *                                   length}.
 				 * @since 0.1.5 ~2020.08.06
 				 */
-				public Spliterator(int index) {
-					super(index);
+				public Spliterator(int beginThumb) {
+					super(beginThumb);
 				}
 
 				@Override
@@ -2722,12 +2665,12 @@ public class ObjectArray<E> extends Array<E[], E> {
 		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
 		 * the given {@code index}.
 		 *
-		 * @param index the initial position of the constructed spliterator.
+		 * @param beginThumb the initial position of the constructed spliterator.
 		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
 		 * @since 0.1.5 ~2020.08.06
 		 */
-		public Spliterator(int index) {
-			super(index);
+		public Spliterator(int beginThumb) {
+			super(beginThumb);
 		}
 
 		@Override
