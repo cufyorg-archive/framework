@@ -120,10 +120,12 @@ public class DoubleArray extends Array<double[], Double> {
 			return true;
 		if (array.length == other.length)
 			for (int i = 0; i < array.length; i++) {
-				long element = Double.doubleToLongBits(other[i]);
-				long e = Double.doubleToLongBits(array[i]);
+				double element = other[i];
+				long elementb = Double.doubleToLongBits(element);
+				double e = array[i];
+				long eb = Double.doubleToLongBits(e);
 
-				if (element == e)
+				if (elementb == eb)
 					continue;
 
 				return false;
