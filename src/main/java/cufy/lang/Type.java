@@ -104,36 +104,6 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	}
 
 	/**
-	 * Construct a new type that represents the given {@code typeclass}, and have the given {@code
-	 * components} and {@code objecttypes}, and should be treated as if it was the given {@code
-	 * wildclass}.
-	 *
-	 * @param typeclass   the class to be represented by the constructed type.
-	 * @param wildclass   the class that an instance of the constructed type should be treated as if
-	 *                    was an instance of it.
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @param components  the components of the constructed type.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code
-	 *                              objecttypes} or {@code components} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Type}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	private Type(Class<T> typeclass, Class wildclass, Map<Object, Type> objecttypes, Type[] components) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(wildclass, "wildclass");
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		Objects.requireNonNull(components, "components");
-		this.typeclass = typeclass;
-		this.wildclass = wildclass;
-		this.objecttypes = new IdentityHashMap(objecttypes);
-		this.components = components.clone();
-
-		//no cheating ;P
-		this.objecttypes.values().forEach(Type.class::cast);
-	}
-
-	/**
 	 * Create a new array of types from the given {@code array}.
 	 *
 	 * @param array the source array.
