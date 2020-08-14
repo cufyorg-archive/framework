@@ -436,57 +436,6 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	}
 
 	/**
-	 * Get a type that represents the given {@code typeclass}.
-	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>)
-	 *     <font color="a5edff">TYPE</font>
-	 * </pre>
-	 *
-	 * @param typeclass the class to be represented by the returned type.
-	 * @param <T>       the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}.
-	 * @throws NullPointerException if the given {@code typeclass} is null.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static <T> Type<T> of(Class<T> typeclass) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Type<T> type = new Type();
-		type.typeclass = typeclass;
-		type.wildclass = typeclass;
-		type.objecttypes = new IdentityHashMap(0);
-		type.components = new Type[0];
-		return type;
-	}
-
-	/**
-	 * Get a type that represents the given {@code typeclass}, and should be treated as if it was
-	 * the given {@code wildclass}.
-	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font>
-	 * </pre>
-	 *
-	 * @param typeclass the class to be represented by the returned type.
-	 * @param wildclass the class that an instance of the returned type should be treated as if it
-	 *                  was an instance of it.
-	 * @param <T>       the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}, and should be treated as if it
-	 * 		was the given {@code wildclass}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} is null.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static <T> Type<T> of(Class<T> typeclass, Class wildclass) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(wildclass, "wildclass");
-		Type<T> type = new Type();
-		type.typeclass = typeclass;
-		type.wildclass = wildclass;
-		type.objecttypes = new IdentityHashMap(0);
-		type.components = new Type[0];
-		return type;
-	}
-
-	/**
 	 * Get a type that represents the given {@code typeclass}, and have the given {@code
 	 * components}.
 	 * <pre>
@@ -502,7 +451,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @throws NullPointerException if the given {@code typeclass} or {@code components} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static <T> Type<T> of(Class<T> typeclass, Class[] components) {
+	public static <T> Type<T> of(Class<T> typeclass, Class... components) {
 		Objects.requireNonNull(typeclass, "typeclass");
 		Objects.requireNonNull(components, "components");
 		Type<T> type = new Type();
@@ -517,7 +466,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * Get a type that represents the given {@code typeclass}, and have the given {@code
 	 * components}, and should be treated as if it was the given {@code wildclass}.
 	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="d3c4ff">COMPONENTS…</font>)
+	 *     Type.ofw(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="d3c4ff">COMPONENTS…</font>)
 	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
 	 * </pre>
 	 *
@@ -532,7 +481,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 *                              components} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static <T> Type<T> of(Class<T> typeclass, Class wildclass, Class... components) {
+	public static <T> Type<T> ofw(Class<T> typeclass, Class wildclass, Class... components) {
 		Objects.requireNonNull(typeclass, "typeclass");
 		Objects.requireNonNull(wildclass, "wildclass");
 		Objects.requireNonNull(components, "component");
@@ -688,148 +637,6 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 */
 	public Class getWildclass() {
 		return this.wildclass;
-	}
-
-	/**
-	 * Get a clone of this type that represents the given {@code typeclass}.
-	 * <pre>
-	 *     type.with(<font color="a5edff">TYPE</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass the class to be represented by the returned type (null replaced by the
-	 *                  typeclass of this type).
-	 * @param <U>       the type of the class represented by the returned type.
-	 * @return a clone of this type that represents the given {@code typeclass}.
-	 * @throws NullPointerException if the given {@code typeclass} is null.
-	 * @see Type#of(Class)
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public <U> Type<U> with(Class<U> typeclass) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Type<U> type = new Type();
-		type.typeclass = typeclass;
-		type.wildclass = this.wildclass;
-		type.objecttypes = this.objecttypes;
-		type.components = this.components;
-		return type;
-	}
-
-	/**
-	 * Get a clone of this type that represents the given {@code typeclass}, and should be treated
-	 * as if it was the given {@code wildclass}.
-	 * <pre>
-	 *     type.with(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass the class to be represented by the returned type (null replaced by the
-	 *                  typeclass of this type).
-	 * @param wildclass the class that an instance of the returned type should be treated as if it
-	 *                  was an instance of it (null replaced by the wildclass of this type).
-	 * @param <U>       the type of the class represented by the returned type.
-	 * @return a clone of this type that represents the given {@code typeclass}, and should be
-	 * 		treated as if it was the given {@code wildclass}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass}	is null.
-	 * @see Type#of(Class, Class)
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public <U> Type<U> with(Class<U> typeclass, Class wildclass) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(wildclass, "wildclass");
-		Type<U> type = new Type();
-		type.typeclass = typeclass;
-		type.wildclass = wildclass;
-		type.objecttypes = this.objecttypes;
-		type.components = this.components;
-		return type;
-	}
-
-	/**
-	 * Get a clone of this type that has the given {@code components}.
-	 * <pre>
-	 *     type.with(<font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param components the components of the returned type (null replaced by the components of
-	 *                   this type).
-	 * @return a clone of this type that have the given {@code components}.
-	 * @throws NullPointerException if the given {@code components} is null.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public Type<T> with(Class[] components) {
-		Objects.requireNonNull(components, "components");
-		Type<T> type = new Type();
-		type.typeclass = this.typeclass;
-		type.wildclass = this.wildclass;
-		type.objecttypes = this.objecttypes;
-		type.components = Type.array(components);
-		return type;
-	}
-
-	/**
-	 * Get a clone of this type that represents the given {@code typeclass}, and have the given
-	 * {@code components}.
-	 * <pre>
-	 *     type.with(<font color="a5edff">TYPE</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass  the class to be represented by the returned type (null replaced by the
-	 *                   typeclass of this type).
-	 * @param components the components of the returned type (null replaced by the components of
-	 *                   this type).
-	 * @param <U>        the type of the class represented by the returned type.
-	 * @return a clone of this type that represents the given {@code typeclass}, and have the given
-	 *        {@code components}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code components} is null.
-	 * @see Type#of(Class, Class[])
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public <U> Type<U> with(Class<U> typeclass, Class[] components) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(components, "components");
-		Type<U> type = new Type();
-		type.typeclass = typeclass;
-		type.wildclass = this.wildclass;
-		type.objecttypes = this.objecttypes;
-		type.components = Type.array(components);
-		return type;
-	}
-
-	/**
-	 * Get a clone of this type that represents the given {@code typeclass}, and have the given
-	 * {@code components}, and should be treated as if it was the given {@code wildclass}.
-	 * <pre>
-	 *     type.with(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass  the class to be represented by the returned type (null replaced by the
-	 *                   typeclass of this type).
-	 * @param wildclass  the class that an instance of the returned type should be treated as if it
-	 *                   was an instance of it (null replaced by the wildclass of this type).
-	 * @param components the components of the returned type (null replaced by the components of
-	 *                   this type).
-	 * @param <U>        the type of the class represented by the returned type.
-	 * @return a clone of this type that represents the given {@code typeclass}, and have the given
-	 *        {@code components}, and should be treated as if it was the given {@code wildclass}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code
-	 *                              components} is null.
-	 * @see Type#of(Class, Class, Class[])
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public <U> Type<U> with(Class<U> typeclass, Class wildclass, Class... components) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(wildclass, "wildclass");
-		Objects.requireNonNull(components, "components");
-		Type<U> type = new Type();
-		type.typeclass = typeclass;
-		type.wildclass = wildclass;
-		type.objecttypes = this.objecttypes;
-		type.components = Type.array(components);
-		return type;
 	}
 
 	/**
