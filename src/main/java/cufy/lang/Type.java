@@ -76,7 +76,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 *
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	private Map<Object, Type> objecttypes;
+	private IdentityHashMap<Object, Type> objecttypes;
 	/**
 	 * The class represented by this type. This field should be treated as final field.
 	 *
@@ -280,7 +280,12 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		Objects.requireNonNull(wildclassSrc, "wildclassSrc");
 		Objects.requireNonNull(objecttypesSrc, "objecttypesSrc");
 		Objects.requireNonNull(componentsSrc, "componentsSrc");
-		return Type.of(typeclassSrc.typeclass, wildclassSrc.wildclass, objecttypesSrc.objecttypes, componentsSrc.components);
+		Type type = new Type();
+		type.typeclass = typeclassSrc.typeclass;
+		type.wildclass = wildclassSrc.wildclass;
+		type.objecttypes = objecttypesSrc.objecttypes;
+		type.components = componentsSrc.components;
+		return type;
 	}
 
 	/**
@@ -314,11 +319,12 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 							new Type[0] :
 							Type.forNames(componentsString);
 
-		return Type.of(
-				typeclass,
-				wildclass,
-				components
-		);
+		Type type = new Type();
+		type.typeclass = typeclass;
+		type.wildclass = wildclass;
+		type.objecttypes = new IdentityHashMap(0);
+		type.components = components;
+		return type;
 	}
 
 	/**
@@ -356,7 +362,12 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 							new Type[0] :
 							Type.forNames(componentsString, initialize, loader);
 
-		return Type.of(typeclass, wildclass, components);
+		Type type = new Type();
+		type.typeclass = typeclass;
+		type.wildclass = wildclass;
+		type.objecttypes = new IdentityHashMap(0);
+		type.components = components;
+		return type;
 	}
 
 	/**
@@ -455,25 +466,6 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	}
 
 	/**
-	 * Get a type that represents the class {@link Object}.
-	 * <pre>
-	 *     Type.of()
-	 *     <font color="a5edff">Object</font>
-	 * </pre>
-	 *
-	 * @return a type that represents the class {@link Object}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static Type<Object> of() {
-		return /*0000*/ new Type(
-				Object.class,
-				Object.class,
-				Collections.emptyMap(),
-				new Type[0]
-		);
-	}
-
-	/**
 	 * Get a type that represents the given {@code typeclass}.
 	 * <pre>
 	 *     Type.of(<font color="a5edff">TYPE</font>)
@@ -488,60 +480,12 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 */
 	public static <T> Type<T> of(Class<T> typeclass) {
 		Objects.requireNonNull(typeclass, "typeclass");
-		return /*1000*/ new Type(
-				typeclass,
-				typeclass,
-				Collections.emptyMap(),
-				new Type[0]
-		);
-	}
-
-	/**
-	 * Get a type that represents the class {@link Object}, and have the given {@code objecttypes}.
-	 * <pre>
-	 *     Type.of(<font color="#bea341">OBJECT</font>)
-	 *     <font color="a5edff">Object</font><font color="#bea341">*</font>
-	 * </pre>
-	 *
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @return a type that represents the class {@link Object}, and have the given {@code
-	 * 		objecttypes}.
-	 * @throws NullPointerException if the given {@code objecttypes} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Type}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static Type<Object> of(Map<Object, Type> objecttypes) {
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		return /*0010*/ new Type(
-				Object.class,
-				Object.class,
-				objecttypes,
-				new Type[0]
-		);
-	}
-
-	/**
-	 * Get a type that represents the class {@link Object}, and have the given {@code components}.
-	 * <pre>
-	 *     Type.of(<font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">Object</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param components the components of the returned type.
-	 * @return a type that represents the class {@link Object}, and have the given {@code
-	 * 		components}.
-	 * @throws NullPointerException if the given {@code components} is null.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static Type<Object> of(Type... components) {
-		Objects.requireNonNull(components, "components");
-		return /*0001*/ new Type(
-				Object.class,
-				Object.class,
-				Collections.emptyMap(),
-				components
-		);
+		Type<T> type = new Type();
+		type.typeclass = typeclass;
+		type.wildclass = typeclass;
+		type.objecttypes = new IdentityHashMap(0);
+		type.components = new Type[0];
+		return type;
 	}
 
 	/**
@@ -564,305 +508,12 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	public static <T> Type<T> of(Class<T> typeclass, Class wildclass) {
 		Objects.requireNonNull(typeclass, "typeclass");
 		Objects.requireNonNull(wildclass, "wildclass");
-		return /*1100*/ new Type(
-				typeclass,
-				wildclass,
-				Collections.emptyMap(),
-				new Type[0]
-		);
-	}
-
-	/**
-	 * Get a type that represents the given {@code typeclass}, and have the given {@code
-	 * objecttypes}.
-	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="#bea341">OBJECT</font>)
-	 *     <font color="a5edff">TYPE</font><font color="#bea341">*</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type.
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @param <T>         the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}, and have the given {@code
-	 * 		objecttypes}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code objecttypes} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Type}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static <T> Type<T> of(Class<T> typeclass, Map<Object, Type> objecttypes) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		return /*1010*/ new Type(
-				typeclass,
-				typeclass,
-				objecttypes,
-				new Type[0]
-		);
-	}
-
-	/**
-	 * Get a type that represents the given {@code typeclass}, and have the given {@code
-	 * components}.
-	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass  the class to be represented by the returned type.
-	 * @param components the components of the returned type.
-	 * @param <T>        the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}, and have the given {@code
-	 * 		components}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code components} is null.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static <T> Type<T> of(Class<T> typeclass, Type... components) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(components, "components");
-		return /*1001*/ new Type(
-				typeclass,
-				typeclass,
-				Collections.emptyMap(),
-				components
-		);
-	}
-
-	/**
-	 * Get a type that represents the class {@link Object}, and have the given {@code components}
-	 * and {@code objecttypes}.
-	 * <pre>
-	 *     Type.of(<font color="#bea341">OBJECT</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">Object</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @param components  the components of the returned type.
-	 * @return a type that represents the class {@link Object}, and have the given {@code
-	 * 		components} and {@code objecttypes}.
-	 * @throws NullPointerException if the given {@code objecttypes} or {@code components} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Type}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static Type<Object> of(Map<Object, Type> objecttypes, Type... components) {
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		Objects.requireNonNull(components, "components");
-		return /*0011*/ new Type(
-				Object.class,
-				Object.class,
-				objecttypes,
-				components
-		);
-	}
-
-	/**
-	 * Get a type that represents the given {@code typeclass}, and have the given {@code
-	 * objecttypes}, and should be treated as if it was the given {@code wildclass}.
-	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="#bea341">OBJECT</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type.
-	 * @param wildclass   the class that an instance of the returned type should be treated as if it
-	 *                    was an instance of it.
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @param <T>         the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}, and have the given {@code
-	 * 		objecttypes}, and should be treated as if it was the given {@code wildclass}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code
-	 *                              objecttypes} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Type}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static <T> Type<T> of(Class<T> typeclass, Class wildclass, Map<Object, Type> objecttypes) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(wildclass, "wildclass");
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		return /*1110*/ new Type(
-				typeclass,
-				wildclass,
-				objecttypes,
-				new Type[0]
-		);
-	}
-
-	/**
-	 * Get a type that represents the given {@code typeclass}, and have the given {@code
-	 * components}, and should be treated as if it was the given {@code wildclass}.
-	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass  the class to be represented by the returned type.
-	 * @param wildclass  the class that an instance of the returned type should be treated as if it
-	 *                   was an instance of it.
-	 * @param components the components of the returned type.
-	 * @param <T>        the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}, and have the given {@code
-	 * 		components}, and should be treated as if it was the given {@code wildclass}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code
-	 *                              components} is null.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static <T> Type<T> of(Class<T> typeclass, Class wildclass, Type... components) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(wildclass, "wildclass");
-		Objects.requireNonNull(components, "component");
-		return /*1101*/ new Type(
-				typeclass,
-				wildclass,
-				Collections.emptyMap(),
-				components
-		);
-	}
-
-	/**
-	 * Get a type that represents the given {@code typeclass}, and have the given {@code components}
-	 * and {@code objecttypes}.
-	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="#bea341">OBJECT</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type.
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @param components  the components of the returned type.
-	 * @param <T>         the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}, and have the given {@code
-	 * 		components} and {@code objecttypes}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code objecttypes} or {@code
-	 *                              components} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Type}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static <T> Type<T> of(Class<T> typeclass, Map<Object, Type> objecttypes, Type... components) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		Objects.requireNonNull(components, "components");
-		return /*1011*/ new Type(
-				typeclass,
-				typeclass,
-				objecttypes,
-				components
-		);
-	}
-
-	/**
-	 * Get a type that represents the given {@code typeclass}, and have the given {@code components}
-	 * and {@code objecttypes}, and should be treated as if it was the given {@code wildclass}.
-	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="#bea341">OBJECT</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type.
-	 * @param wildclass   the class that an instance of the returned type should be treated as if
-	 *                    was an instance of it.
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @param components  the components of the returned type.
-	 * @param <T>         the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}, and have the given {@code
-	 * 		components} and {@code objecttypes}, and should be treated as if it was the given {@code
-	 * 		wildclass}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code
-	 *                              objecttypes} or {@code components} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Type}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static <T> Type<T> of(Class<T> typeclass, Class wildclass, Map<Object, Type> objecttypes, Type... components) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(wildclass, "wildclass");
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		Objects.requireNonNull(components, "components");
-		return /*1111*/ new Type(
-				typeclass,
-				wildclass,
-				objecttypes,
-				components
-		);
-	}
-
-	/**
-	 * Get a type that represents the class {@link Object}, and have the given {@code objecttypes}.
-	 * <pre>
-	 *     Type.of(<font color="#bea341">OBJECT</font>)
-	 *     <font color="a5edff">Object</font><font color="#bea341">*</font>
-	 * </pre>
-	 *
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @return a type that represents the class {@link Object}, and have the given {@code
-	 * 		objecttypes}.
-	 * @throws NullPointerException if the given {@code objecttypes} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Class}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static Type<Object> ofc(Map<Object, Class> objecttypes) {
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		return /*0020*/ new Type(
-				Object.class,
-				Object.class,
-				Type.map(objecttypes),
-				new Type[0]
-		);
-	}
-
-	/**
-	 * Get a type that represents the class {@link Object}, and have the given {@code components}.
-	 * <pre>
-	 *     Type.ofc(<font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">Object</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param components the components of the returned type.
-	 * @return a type that represents the class {@link Object}, and have the given {@code
-	 * 		components}.
-	 * @throws NullPointerException if the given {@code components} is null.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static Type<Object> ofc(Class[] components) {
-		Objects.requireNonNull(components, "components");
-		return /*0002*/ new Type(
-				Object.class,
-				Object.class,
-				Collections.emptyMap(),
-				Type.array(components)
-		);
-	}
-
-	/**
-	 * Get a type that represents the given {@code typeclass}, and have the given {@code
-	 * objecttypes}.
-	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="#bea341">OBJECT</font>)
-	 *     <font color="a5edff">TYPE</font><font color="#bea341">*</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type.
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @param <T>         the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}, and have the given {@code
-	 * 		objecttypes}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code objecttypes} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Class}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static <T> Type<T> ofc(Class<T> typeclass, Map<Object, Class> objecttypes) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		return /*1020*/ new Type(
-				typeclass,
-				typeclass,
-				Type.map(objecttypes),
-				new Type[0]
-		);
+		Type<T> type = new Type();
+		type.typeclass = typeclass;
+		type.wildclass = wildclass;
+		type.objecttypes = new IdentityHashMap(0);
+		type.components = new Type[0];
+		return type;
 	}
 
 	/**
@@ -881,76 +532,15 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @throws NullPointerException if the given {@code typeclass} or {@code components} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static <T> Type<T> ofc(Class<T> typeclass, Class[] components) {
+	public static <T> Type<T> of(Class<T> typeclass, Class[] components) {
 		Objects.requireNonNull(typeclass, "typeclass");
 		Objects.requireNonNull(components, "components");
-		return /*1002*/ new Type(
-				typeclass,
-				typeclass,
-				Collections.emptyMap(),
-				Type.array(components)
-		);
-	}
-
-	/**
-	 * Get a type that represents the class {@link Object}, and have the given {@code components}
-	 * and {@code objecttypes}.
-	 * <pre>
-	 *     Type.of(<font color="#bea341">OBJECT</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">Object</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @param components  the components of the returned type.
-	 * @return a type that represents the class {@link Object}, and have the given {@code
-	 * 		components} and {@code objecttypes}.
-	 * @throws NullPointerException if the given {@code objecttypes} or {@code components} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Class}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static Type<Object> ofc(Map<Object, Class> objecttypes, Class... components) {
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		Objects.requireNonNull(components, "components");
-		return /*0022*/ new Type(
-				Object.class,
-				Object.class,
-				Type.map(objecttypes),
-				Type.array(components)
-		);
-	}
-
-	/**
-	 * Get a type that represents the given {@code typeclass}, and have the given {@code
-	 * objecttypes}, and should be treated as if it was the given {@code wildclass}.
-	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="#bea341">OBJECT</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type.
-	 * @param wildclass   the class that an instance of the returned type should be treated as if it
-	 *                    was an instance of it.
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @param <T>         the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}, and have the given {@code
-	 * 		objecttypes}, and should be treated as if it was the given {@code wildclass}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code
-	 *                              objecttypes} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Class}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static <T> Type<T> ofc(Class<T> typeclass, Class wildclass, Map<Object, Class> objecttypes) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(wildclass, "wildclass");
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		return /*1120*/ new Type(
-				typeclass,
-				wildclass,
-				Type.map(objecttypes),
-				new Type[0]
-		);
+		Type<T> type = new Type();
+		type.typeclass = typeclass;
+		type.wildclass = typeclass;
+		type.objecttypes = new IdentityHashMap(0);
+		type.components = Type.array(components);
+		return type;
 	}
 
 	/**
@@ -972,84 +562,16 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 *                              components} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static <T> Type<T> ofc(Class<T> typeclass, Class wildclass, Class... components) {
+	public static <T> Type<T> of(Class<T> typeclass, Class wildclass, Class... components) {
 		Objects.requireNonNull(typeclass, "typeclass");
 		Objects.requireNonNull(wildclass, "wildclass");
 		Objects.requireNonNull(components, "component");
-		return /*1102*/ new Type(
-				typeclass,
-				wildclass,
-				Collections.emptyMap(),
-				Type.array(components)
-		);
-	}
-
-	/**
-	 * Get a type that represents the given {@code typeclass}, and have the given {@code components}
-	 * and {@code objecttypes}.
-	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="#bea341">OBJECT</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type.
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @param components  the components of the returned type.
-	 * @param <T>         the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}, and have the given {@code
-	 * 		components} and {@code objecttypes}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code objecttypes} or {@code
-	 *                              components} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Class}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static <T> Type<T> ofc(Class<T> typeclass, Map<Object, Class> objecttypes, Class... components) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		Objects.requireNonNull(components, "components");
-		return /*1022*/ new Type(
-				typeclass,
-				typeclass,
-				Type.map(objecttypes),
-				Type.array(components)
-		);
-	}
-
-	/**
-	 * Get a type that represents the given {@code typeclass}, and have the given {@code components}
-	 * and {@code objecttypes}, and should be treated as if it was the given {@code wildclass}.
-	 * <pre>
-	 *     Type.of(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="#bea341">OBJECT</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type.
-	 * @param wildclass   the class that an instance of the returned type should be treated as if
-	 *                    was an instance of it.
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @param components  the components of the returned type.
-	 * @param <T>         the type of the class represented by the returned type.
-	 * @return a type that represents the given {@code typeclass}, and have the given {@code
-	 * 		components} and {@code objecttypes}, and should be treated as if it was the given {@code
-	 * 		wildclass}.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code
-	 *                              objecttypes} or {@code components} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Class}.
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public static <T> Type<T> ofc(Class<T> typeclass, Class wildclass, Map<Object, Class> objecttypes, Class... components) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(wildclass, "wildclass");
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		Objects.requireNonNull(components, "components");
-		return /*1122*/ new Type(
-				typeclass,
-				wildclass,
-				Type.map(objecttypes),
-				Type.array(components)
-		);
+		Type<T> type = new Type();
+		type.typeclass = typeclass;
+		type.wildclass = wildclass;
+		type.objecttypes = new IdentityHashMap(0);
+		type.components = Type.array(components);
+		return type;
 	}
 
 	@Override
@@ -1199,26 +721,6 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	}
 
 	/**
-	 * Get a clone of this type.
-	 * <pre>
-	 *     type.with()
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @return a clone of this type.
-	 * @see Type#of()
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public Type<T> with() {
-		return /*0000*/ new Type(
-				this.typeclass,
-				this.wildclass,
-				this.objecttypes,
-				this.components
-		);
-	}
-
-	/**
 	 * Get a clone of this type that represents the given {@code typeclass}.
 	 * <pre>
 	 *     type.with(<font color="a5edff">TYPE</font>)
@@ -1229,62 +731,18 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 *                  typeclass of this type).
 	 * @param <U>       the type of the class represented by the returned type.
 	 * @return a clone of this type that represents the given {@code typeclass}.
+	 * @throws NullPointerException if the given {@code typeclass} is null.
 	 * @see Type#of(Class)
 	 * @since 0.1.5 ~2020.08.11
 	 */
 	public <U> Type<U> with(Class<U> typeclass) {
-		return /*1000*/ new Type(
-				typeclass == null ? this.typeclass : typeclass,
-				this.wildclass,
-				this.objecttypes,
-				this.components
-		);
-	}
-
-	/**
-	 * Get a clone of this type that has the given {@code objecttypes}.
-	 * <pre>
-	 *     type.with(<font color="#bea341">OBJECT</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param objecttypes mappings for other types for each specific instance (null replaced by the
-	 *                    objecttypes of this type).
-	 * @return a clone of this type that have the given {@code objecttypes}.
-	 * @throws ClassCastException if the given {@code objecttypes} has a value that is not an
-	 *                            instance of {@link Type}.
-	 * @see Type#of(Map)
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public Type<T> with(Map<Object, Type> objecttypes) {
-		return /*0010*/ new Type(
-				this.typeclass,
-				this.wildclass,
-				objecttypes == null ? this.objecttypes : objecttypes,
-				this.components
-		);
-	}
-
-	/**
-	 * Get a clone of this type that has the given {@code components}.
-	 * <pre>
-	 *     type.with(<font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param components the components of the returned type (null replaced by the components of
-	 *                   this type).
-	 * @return a clone of this type that have the given {@code components}.
-	 * @see Type#of(Type[])
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public Type<T> with(Type... components) {
-		return /*0001*/ new Type(
-				this.typeclass,
-				this.wildclass,
-				this.objecttypes,
-				components == null ? this.components : components
-		);
+		Objects.requireNonNull(typeclass, "typeclass");
+		Type<U> type = new Type();
+		type.typeclass = typeclass;
+		type.wildclass = this.wildclass;
+		type.objecttypes = this.objecttypes;
+		type.components = this.components;
+		return type;
 	}
 
 	/**
@@ -1302,213 +760,19 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @param <U>       the type of the class represented by the returned type.
 	 * @return a clone of this type that represents the given {@code typeclass}, and should be
 	 * 		treated as if it was the given {@code wildclass}.
+	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass}	is null.
 	 * @see Type#of(Class, Class)
 	 * @since 0.1.5 ~2020.08.11
 	 */
 	public <U> Type<U> with(Class<U> typeclass, Class wildclass) {
-		return /*1100*/ new Type(
-				typeclass == null ? this.typeclass : typeclass,
-				wildclass == null ? this.wildclass : wildclass,
-				this.objecttypes,
-				this.components
-		);
-	}
-
-	/**
-	 * Get a clone of this type that represents the given {@code typeclass}, and have the given
-	 * {@code objecttypes}.
-	 * <pre>
-	 *     type.with(<font color="a5edff">TYPE</font>, <font color="#bea341">OBJECT</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type (null replaced by the
-	 *                    typeclass of this type).
-	 * @param objecttypes mappings for other types for each specific instance (null replaced by the
-	 *                    objecttypes of this type).
-	 * @param <U>         the type of the class represented by the returned type.
-	 * @return a clone of this type that represents the given {@code typeclass}, and have the given
-	 *        {@code objecttypes}.
-	 * @throws ClassCastException if the given {@code objecttypes} has a value that is not an
-	 *                            instance of {@link Type}.
-	 * @see Type#of(Class, Map)
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public <U> Type<U> with(Class<U> typeclass, Map<Object, Type> objecttypes) {
-		return /*1010*/ new Type(
-				typeclass == null ? this.typeclass : typeclass,
-				this.wildclass,
-				objecttypes == null ? this.objecttypes : objecttypes,
-				this.components
-		);
-	}
-
-	/**
-	 * Get a clone of this type that represents the given {@code typeclass}, and have the given
-	 * {@code components}.
-	 * <pre>
-	 *     type.with(<font color="a5edff">TYPE</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass  the class to be represented by the returned type (null replaced by the
-	 *                   typeclass of this type).
-	 * @param components the components of the returned type (null replaced by the components of
-	 *                   this type).
-	 * @param <U>        the type of the class represented by the returned type.
-	 * @return a clone of this type that represents the given {@code typeclass}, and have the given
-	 *        {@code components}.
-	 * @see Type#of(Class, Type[])
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public <U> Type<U> with(Class<U> typeclass, Type... components) {
-		return /*1001*/ new Type(
-				typeclass == null ? this.typeclass : typeclass,
-				this.wildclass,
-				this.objecttypes,
-				components == null ? this.components : components
-		);
-	}
-
-	/**
-	 * Get a clone of this type that has the given {@code components} and {@code objecttypes}.
-	 * <pre>
-	 *     type.with(<font color="#bea341">OBJECT</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param objecttypes mappings for other types for each specific instance (null replaced by the
-	 *                    objecttypes of this type).
-	 * @param components  the components of the returned type (null replaced by the components of
-	 *                    this type).
-	 * @return a clone of this type that has the given {@code components} and {@code objecttypes}.
-	 * @throws ClassCastException if the given {@code objecttypes} has a value that is not an
-	 *                            instance of {@link Type}.
-	 * @see Type#of(Map, Type[])
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public Type<T> with(Map<Object, Type> objecttypes, Type... components) {
-		return /*0011*/ new Type(
-				this.typeclass,
-				this.wildclass,
-				objecttypes == null ? this.objecttypes : objecttypes,
-				components == null ? this.components : components
-		);
-	}
-
-	/**
-	 * Get a clone of this type that represents the given {@code typeclass}, and have the given
-	 * {@code objecttypes}, and should be treated as if it was the given {@code wildclass}.
-	 * <pre>
-	 *     type.with(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="#bea341">OBJECT</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type (null replaced by the
-	 *                    typeclass of this type).
-	 * @param wildclass   the class that an instance of the returned type should be treated as if it
-	 *                    was an instance of it (null replaced by the wildclass of this type).
-	 * @param objecttypes mappings for other types for each specific instance (null replaced by the
-	 *                    objecttypes of this type).
-	 * @param <U>         the type of the class represented by the returned type.
-	 * @return a clone of this type that represents the given {@code typeclass}, and have the given
-	 *        {@code objecttypes}, and should be treated as if it was the given {@code wildclass}.
-	 * @throws ClassCastException if the given {@code objecttypes} has a value that is not an
-	 *                            instance of {@link Type}.
-	 * @see Type#of(Class, Class, Map)
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public <U> Type<U> with(Class<U> typeclass, Class wildclass, Map<Object, Type> objecttypes) {
-		return /*1110*/ new Type(
-				typeclass == null ? this.typeclass : typeclass,
-				wildclass == null ? this.wildclass : wildclass,
-				objecttypes == null ? this.objecttypes : objecttypes,
-				this.components
-		);
-	}
-
-	/**
-	 * Get a clone of this type that represents the given {@code typeclass}, and have the given
-	 * {@code components}, and should be treated as if it was the given {@code wildclass}.
-	 * <pre>
-	 *     type.with(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass  the class to be represented by the returned type (null replaced by the
-	 *                   typeclass of this type).
-	 * @param wildclass  the class that an instance of the returned type should be treated as if it
-	 *                   was an instance of it (null replaced by the wildclass of this type).
-	 * @param components the components of the returned type (null replaced by the components of
-	 *                   this type).
-	 * @param <U>        the type of the class represented by the returned type.
-	 * @return a clone of this type that represents the given {@code typeclass}, and have the given
-	 *        {@code components}, and should be treated as if it was the given {@code wildclass}.
-	 * @see Type#of(Class, Class, Type[])
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public <U> Type<U> with(Class<U> typeclass, Class wildclass, Type... components) {
-		return /*1101*/ new Type(
-				typeclass == null ? this.typeclass : typeclass,
-				wildclass == null ? this.wildclass : wildclass,
-				this.objecttypes,
-				components == null ? this.components : components
-		);
-	}
-
-	/**
-	 * Get a clone of this type that represents the given {@code typeclass}, and have the given
-	 * {@code components} and {@code objecttypes}.
-	 * <pre>
-	 *     type.with(<font color="a5edff">TYPE</font>, <font color="#bea341">OBJECT</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type (null replaced by the
-	 *                    typeclass of this type).
-	 * @param objecttypes mappings for other types for each specific instance (null replaced by the
-	 *                    objecttypes of this type).
-	 * @param components  the components of the returned type (null replaced by the components of
-	 *                    this type).
-	 * @param <U>         the type of the class represented by the returned type.
-	 * @return a clone of this type that represents the given {@code typeclass}, and have the given
-	 *        {@code components} and {@code objecttypes}.
-	 * @throws ClassCastException if the given {@code objecttypes} has a value that is not an
-	 *                            instance of {@link Type}.
-	 * @see Type#of(Class, Map, Type[])
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public <U> Type<U> with(Class<U> typeclass, Map<Object, Type> objecttypes, Type... components) {
-		return /*1011*/ new Type(
-				typeclass == null ? this.typeclass : typeclass,
-				this.wildclass,
-				objecttypes == null ? this.objecttypes : objecttypes,
-				components == null ? this.components : components
-		);
-	}
-
-	/**
-	 * Get a clone of this type that has the given {@code objecttypes}.
-	 * <pre>
-	 *     type.with(<font color="#bea341">OBJECT</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param objecttypes mappings for other types for each specific instance (null replaced by the
-	 *                    objecttypes of this type).
-	 * @return a clone of this type that have the given {@code objecttypes}.
-	 * @throws ClassCastException if the given {@code objecttypes} has a value that is not an
-	 *                            instance of {@link Class}.
-	 * @see Type#ofc(Map)
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public Type<T> withc(Map<Object, Class> objecttypes) {
-		return /*0020*/ new Type(
-				this.typeclass,
-				this.wildclass,
-				objecttypes == null ? this.objecttypes : Type.map(objecttypes),
-				this.components
-		);
+		Objects.requireNonNull(typeclass, "typeclass");
+		Objects.requireNonNull(wildclass, "wildclass");
+		Type<U> type = new Type();
+		type.typeclass = typeclass;
+		type.wildclass = wildclass;
+		type.objecttypes = this.objecttypes;
+		type.components = this.components;
+		return type;
 	}
 
 	/**
@@ -1521,45 +785,17 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @param components the components of the returned type (null replaced by the components of
 	 *                   this type).
 	 * @return a clone of this type that have the given {@code components}.
-	 * @see Type#ofc(Class[])
+	 * @throws NullPointerException if the given {@code components} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public Type<T> withc(Class[] components) {
-		return /*0002*/ new Type(
-				this.typeclass,
-				this.wildclass,
-				this.objecttypes,
-				components == null ? this.components : Type.array(components)
-		);
-	}
-
-	/**
-	 * Get a clone of this type that represents the given {@code typeclass}, and have the given
-	 * {@code objecttypes}.
-	 * <pre>
-	 *     type.with(<font color="a5edff">TYPE</font>, <font color="#bea341">OBJECT</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type (null replaced by the
-	 *                    typeclass of this type).
-	 * @param objecttypes mappings for other types for each specific instance (null replaced by the
-	 *                    objecttypes of this type).
-	 * @param <U>         the type of the class represented by the returned type.
-	 * @return a clone of this type that represents the given {@code typeclass}, and have the given
-	 *        {@code objecttypes}.
-	 * @throws ClassCastException if the given {@code objecttypes} has a value that is not an
-	 *                            instance of {@link Class}.
-	 * @see Type#ofc(Class, Map)
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public <U> Type<U> withc(Class<U> typeclass, Map<Object, Class> objecttypes) {
-		return /*1020*/ new Type(
-				typeclass == null ? this.typeclass : typeclass,
-				this.wildclass,
-				objecttypes == null ? this.objecttypes : Type.map(objecttypes),
-				this.components
-		);
+	public Type<T> with(Class[] components) {
+		Objects.requireNonNull(components, "components");
+		Type<T> type = new Type();
+		type.typeclass = this.typeclass;
+		type.wildclass = this.wildclass;
+		type.objecttypes = this.objecttypes;
+		type.components = Type.array(components);
+		return type;
 	}
 
 	/**
@@ -1577,73 +813,19 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @param <U>        the type of the class represented by the returned type.
 	 * @return a clone of this type that represents the given {@code typeclass}, and have the given
 	 *        {@code components}.
-	 * @see Type#ofc(Class, Class[])
+	 * @throws NullPointerException if the given {@code typeclass} or {@code components} is null.
+	 * @see Type#of(Class, Class[])
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public <U> Type<U> withc(Class<U> typeclass, Class[] components) {
-		return /*1002*/ new Type(
-				typeclass == null ? this.typeclass : typeclass,
-				this.wildclass,
-				this.objecttypes,
-				components == null ? this.components : Type.array(components)
-		);
-	}
-
-	/**
-	 * Get a clone of this type that has the given {@code components} and {@code objecttypes}.
-	 * <pre>
-	 *     type.with(<font color="#bea341">OBJECT</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param objecttypes mappings for other types for each specific instance (null replaced by the
-	 *                    objecttypes of this type).
-	 * @param components  the components of the returned type (null replaced by the components of
-	 *                    this type).
-	 * @return a clone of this type that has the given {@code components} and {@code objecttypes}.
-	 * @throws ClassCastException if the given {@code objecttypes} has a value that is not an
-	 *                            instance of {@link Class}.
-	 * @see Type#ofc(Map, Class[])
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public Type<T> withc(Map<Object, Class> objecttypes, Class... components) {
-		return /*0022*/ new Type(
-				this.typeclass,
-				this.wildclass,
-				objecttypes == null ? this.objecttypes : Type.map(objecttypes),
-				components == null ? this.components : Type.array(components)
-		);
-	}
-
-	/**
-	 * Get a clone of this type that represents the given {@code typeclass}, and have the given
-	 * {@code objecttypes}, and should be treated as if it was the given {@code wildclass}.
-	 * <pre>
-	 *     type.with(<font color="a5edff">TYPE</font>, <font color="fc8fbb">WILD</font>, <font color="#bea341">OBJECT</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type (null replaced by the
-	 *                    typeclass of this type).
-	 * @param wildclass   the class that an instance of the returned type should be treated as if it
-	 *                    was an instance of it (null replaced by the wildclass of this type).
-	 * @param objecttypes mappings for other types for each specific instance (null replaced by the
-	 *                    objecttypes of this type).
-	 * @param <U>         the type of the class represented by the returned type.
-	 * @return a clone of this type that represents the given {@code typeclass}, and have the given
-	 *        {@code objecttypes}, and should be treated as if it was the given {@code wildclass}.
-	 * @throws ClassCastException if the given {@code objecttypes} has a value that is not an
-	 *                            instance of {@link Class}.
-	 * @see Type#of(Class, Class, Map)
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public <U> Type<U> withc(Class<U> typeclass, Class wildclass, Map<Object, Class> objecttypes) {
-		return /*1120*/ new Type(
-				typeclass == null ? this.typeclass : typeclass,
-				wildclass == null ? this.wildclass : wildclass,
-				objecttypes == null ? this.objecttypes : Type.map(objecttypes),
-				this.components
-		);
+	public <U> Type<U> with(Class<U> typeclass, Class[] components) {
+		Objects.requireNonNull(typeclass, "typeclass");
+		Objects.requireNonNull(components, "components");
+		Type<U> type = new Type();
+		type.typeclass = typeclass;
+		type.wildclass = this.wildclass;
+		type.objecttypes = this.objecttypes;
+		type.components = Type.array(components);
+		return type;
 	}
 
 	/**
@@ -1663,47 +845,21 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @param <U>        the type of the class represented by the returned type.
 	 * @return a clone of this type that represents the given {@code typeclass}, and have the given
 	 *        {@code components}, and should be treated as if it was the given {@code wildclass}.
-	 * @see Type#ofc(Class, Class, Class[])
+	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code
+	 *                              components} is null.
+	 * @see Type#of(Class, Class, Class[])
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public <U> Type<U> withc(Class<U> typeclass, Class wildclass, Class... components) {
-		return /*1102*/ new Type(
-				typeclass == null ? this.typeclass : typeclass,
-				wildclass == null ? this.wildclass : wildclass,
-				this.objecttypes,
-				components == null ? this.components : Type.array(components)
-		);
-	}
-
-	/**
-	 * Get a clone of this type that represents the given {@code typeclass}, and have the given
-	 * {@code components} and {@code objecttypes}.
-	 * <pre>
-	 *     type.with(<font color="a5edff">TYPE</font>, <font color="#bea341">OBJECT</font>, <font color="d3c4ff">COMPONENTS…</font>)
-	 *     <font color="a5edff">TYPE</font><font color="fc8fbb">:WILD</font><font color="#bea341">*</font><font color="d3c4ff">&lt;COMPONENTS…&gt;</font>
-	 * </pre>
-	 *
-	 * @param typeclass   the class to be represented by the returned type (null replaced by the
-	 *                    typeclass of this type).
-	 * @param objecttypes mappings for other types for each specific instance (null replaced by the
-	 *                    objecttypes of this type).
-	 * @param components  the components of the returned type (null replaced by the components of
-	 *                    this type).
-	 * @param <U>         the type of the class represented by the returned type.
-	 * @return a clone of this type that represents the given {@code typeclass}, and have the given
-	 *        {@code components} and {@code objecttypes}.
-	 * @throws ClassCastException if the given {@code objecttypes} has a value that is not an
-	 *                            instance of {@link Class}.
-	 * @see Type#ofc(Class, Map, Class[])
-	 * @since 0.1.5 ~2020.08.11
-	 */
-	public <U> Type<U> withc(Class<U> typeclass, Map<Object, Class> objecttypes, Class... components) {
-		return /*1022*/ new Type(
-				typeclass == null ? this.typeclass : typeclass,
-				this.wildclass,
-				objecttypes == null ? this.objecttypes : Type.map(objecttypes),
-				components == null ? this.components : Type.array(components)
-		);
+	public <U> Type<U> with(Class<U> typeclass, Class wildclass, Class... components) {
+		Objects.requireNonNull(typeclass, "typeclass");
+		Objects.requireNonNull(wildclass, "wildclass");
+		Objects.requireNonNull(components, "components");
+		Type<U> type = new Type();
+		type.typeclass = typeclass;
+		type.wildclass = wildclass;
+		type.objecttypes = this.objecttypes;
+		type.components = Type.array(components);
+		return type;
 	}
 
 	/**
@@ -2230,7 +1386,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 				wildclass = builderWildclass;
 
 			//compute objecttypes
-			Map<Object, Type> objecttypes;
+			IdentityHashMap<Object, Type> objecttypes;
 			if (builderObjecttypes == null)
 				objecttypes = new IdentityHashMap(0);
 			else {
