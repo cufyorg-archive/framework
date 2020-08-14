@@ -15,9 +15,7 @@
  */
 package cufy.lang;
 
-import cufy.util.Arrays;
 import cufy.util.Objects;
-import cufy.util.array.ObjectArray;
 
 import java.io.Serializable;
 import java.util.*;
@@ -31,6 +29,8 @@ import java.util.regex.Pattern;
  * instance this type is representing.
  * <br>
  * Note: the class {@link Void} is the class of null.
+ * <br>
+ * Also Note: any recursions has been handled in this class (inner classes not included).
  *
  * @param <T> the type of the class represented by this type.
  * @author LSafer
@@ -120,7 +120,17 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @since 0.1.5 ~2020.08.11
 	 */
 	private Type(Class<T> typeclass, Class wildclass, Map<Object, Type> objecttypes, Type[] components) {
-		this.init(typeclass, wildclass, objecttypes, components);
+		Objects.requireNonNull(typeclass, "typeclass");
+		Objects.requireNonNull(wildclass, "wildclass");
+		Objects.requireNonNull(objecttypes, "objecttypes");
+		Objects.requireNonNull(components, "components");
+		this.typeclass = typeclass;
+		this.wildclass = wildclass;
+		this.objecttypes = new IdentityHashMap(objecttypes);
+		this.components = components.clone();
+
+		//no cheating ;P
+		this.objecttypes.values().forEach(Type.class::cast);
 	}
 
 	/**
@@ -431,7 +441,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		if (map == null)
 			return null;
 
-		Map product = new HashMap(map.size());
+		Map product = new IdentityHashMap(map.size());
 
 		for (Map.Entry<Object, Class> entry : map.entrySet()) {
 			Object key = entry.getKey();
@@ -1044,12 +1054,9 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		return this == object ||
+		return object == this ||
 			   object instanceof Type &&
-			   Objects.equals(((Type) object).typeclass, this.typeclass) &&
-			   Objects.equals(((Type) object).wildclass, this.wildclass) &&
-			   Objects.equals(((Type) object).objecttypes, this.objecttypes) &&
-			   Arrays.equals(((Type) object).components, this.components);
+			   this.equals0((Type) object, new IdentityHashMap());
 	}
 
 	@Override
@@ -1061,15 +1068,21 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 
 	@Override
 	public int hashCode() {
-		return this.wildclass.hashCode() ^
-			   this.typeclass.hashCode() ^
-			   this.objecttypes.hashCode() ^
-			   Arrays.hashCode(this.components);
+		return this.hashCode0(Collections.newSetFromMap(new IdentityHashMap()));
 	}
 
 	@Override
 	public String toString() {
 		return "type " + this.getName();
+	}
+
+	/**
+	 * Construct a new builder with initial values from this type.
+	 *
+	 * @return a new builder with initial values from this type.
+	 */
+	public Builder<T> builder() {
+		return this.builder0(new IdentityHashMap());
 	}
 
 	/**
@@ -1080,7 +1093,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * 		such component in this type with the given {@code component} index.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public Type component(int component) {
+	public Type getComponentType(int component) {
 		return component >= 0 &&
 			   component < this.components.length ?
 			   this.components[component] :
@@ -1093,8 +1106,17 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	 * @return a clone of the array holding all the components of this type.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public Type[] components() {
+	public Type[] getComponentTypes() {
 		return this.components.clone();
+	}
+
+	/**
+	 * Get how many components this type has.
+	 *
+	 * @return the number of components this type has.
+	 */
+	public int getComponentsCount() {
+		return this.components.length;
 	}
 
 	/**
@@ -1685,16 +1707,109 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	}
 
 	/**
-	 * Get the name of this type skipping the components of this type that has been seen before and
-	 * stored at the given {@code dejaVu}.
+	 * Construct a new builder using the given {@code dejaVu} as a mapping for the results of
+	 * previously constructed builders.
+	 *
+	 * @param dejaVu a map mapping the previously constructed builders.
+	 * @return a builder from this type.
+	 * @throws NullPointerException if the given {@code dejaVu} is null.
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	private Builder<T> builder0(Map<Type, Builder> dejaVu) {
+		Objects.requireNonNull(dejaVu, "dejaVu");
+		if (dejaVu.containsKey(this))
+			return dejaVu.get(this);
+
+		Builder builder = new Builder(this.typeclass, this.wildclass, new IdentityHashMap(), new ArrayList());
+		dejaVu.put(this, builder);
+
+		for (Map.Entry<Object, Type> entry : this.objecttypes.entrySet()) {
+			Object key = entry.getKey();
+			Type value = entry.getValue();
+
+			if (value != null)
+				builder.objecttypes.put(key, value.builder0(dejaVu));
+		}
+
+		for (Type component : this.components)
+			builder.components.add(component == null ? null : component.builder0(dejaVu));
+
+		return builder;
+	}
+
+	/**
+	 * Match this type with the given {@code type}. Or return {@code true}, if the given {@code
+	 * type} has been associated to this type in the given {@code dejaVu}.
+	 *
+	 * @param type   the type to be matched with this type.
+	 * @param dejaVu a map associating the couples previously matched.
+	 * @return true, if this type equals the given {@code type}.
+	 * @throws NullPointerException if the given {@code dejaVu} is null.
+	 * @since 0.1.5 ~2020.08.14
+	 */
+	private boolean equals0(Type<?> type, Map<Type, Set<Type>> dejaVu) {
+		Objects.requireNonNull(dejaVu, "dejaVu");
+		if (type == this ||
+			dejaVu.containsKey(this) && dejaVu.get(this).contains(type) ||
+			dejaVu.containsKey(type) && dejaVu.get(type).contains(this))
+			return true;
+		if (type.typeclass != this.typeclass ||
+			type.wildclass != this.wildclass ||
+			type.components.length != this.components.length ||
+			type.objecttypes.size() != this.objecttypes.size())
+			return false;
+
+		Set<Type> dejaVus = dejaVu.computeIfAbsent(this, k -> Collections.newSetFromMap(new IdentityHashMap()));
+		dejaVus.add(type);
+
+		for (Map.Entry<Object, Type> entry : type.objecttypes.entrySet()) {
+			Object object = entry.getKey();
+
+			for (Map.Entry<Object, Type> e : this.objecttypes.entrySet()) {
+				Object o = e.getKey();
+
+				if (object == o) {
+					Type objecttype = entry.getValue();
+					Type ot = e.getValue();
+
+					if (objecttype.equals0(ot, dejaVu))
+						continue;
+
+					break;
+				}
+			}
+
+			return false;
+		}
+
+		for (int i = 0; i < type.components.length; i++) {
+			Type component = type.components[i];
+			Type c = this.components[i];
+
+			if (component.equals0(c, dejaVu))
+				continue;
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Append the name of this type to the given {@code builder}. Or append {@code "?"}, if this
+	 * type contained in the given {@code dejaVu}.
 	 *
 	 * @param builder the builder to append the name of this type to.
-	 * @param dejaVu  the components that has been seen before.
-	 * @throws NullPointerException if the given {@code builder} is null.
+	 * @param dejaVu  the types that has been seen before.
+	 * @throws NullPointerException if the given {@code builder} or {@code dejaVu} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
 	private void getName0(StringBuilder builder, Set<Type> dejaVu) {
 		Objects.requireNonNull(dejaVu, "dejaVu");
+		if (dejaVu.contains(this)) {
+			builder.append("?");
+			return;
+		}
 
 		dejaVu.add(this);
 
@@ -1716,7 +1831,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		while (true) {
 			Type component = this.components[i];
 
-			if (component == null || dejaVu.contains(component))
+			if (component == null)
 				builder.append("?");
 			else
 				component.getName0(builder, dejaVu);
@@ -1734,16 +1849,21 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	}
 
 	/**
-	 * Get the simple name of this type skipping the components of this type that has been seen
-	 * before and stored at the given {@code dejaVu}.
+	 * Append the simple name of this type to the given {@code builder}. Or append {@code "?"}, if
+	 * this type contained in the given {@code dejaVu}.
 	 *
 	 * @param builder the builder to append the simple name of this type to.
-	 * @param dejaVu  the components that has been seen before.
-	 * @throws NullPointerException if the given {@code builder} is null.
+	 * @param dejaVu  the types that has been seen before.
+	 * @throws NullPointerException if the given {@code builder} or {@code dejaVu} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
 	private void getSimpleName0(StringBuilder builder, Set<Type> dejaVu) {
+		Objects.requireNonNull(builder, "builder");
 		Objects.requireNonNull(dejaVu, "dejaVu");
+		if (dejaVu.contains(this)) {
+			builder.append("?");
+			return;
+		}
 
 		dejaVu.add(this);
 
@@ -1765,7 +1885,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		while (true) {
 			Type component = this.components[i];
 
-			if (component == null || dejaVu.contains(component))
+			if (component == null)
 				builder.append("?");
 			else
 				component.getSimpleName0(builder, dejaVu);
@@ -1783,16 +1903,21 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	}
 
 	/**
-	 * Get the type name of this type skipping the components of this type that has been seen before
-	 * and stored at the given {@code dejaVu}.
+	 * Append the type name of this type to the given {@code builder}. Or append {@code "?"}, if
+	 * this type contained in the given {@code dejaVu}.
 	 *
 	 * @param builder the builder to append the type name of this type to.
-	 * @param dejaVu  the components that has been seen before.
-	 * @throws NullPointerException if the given {@code builder} is null.
+	 * @param dejaVu  the types that has been seen before.
+	 * @throws NullPointerException if the given {@code builder} or {@code dejaVu} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
 	private void getTypeName0(StringBuilder builder, Set<Type> dejaVu) {
+		Objects.requireNonNull(builder, "builder");
 		Objects.requireNonNull(dejaVu, "dejaVu");
+		if (dejaVu.contains(this)) {
+			builder.append("?");
+			return;
+		}
 
 		dejaVu.add(this);
 
@@ -1814,7 +1939,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		while (true) {
 			Type component = this.components[i];
 
-			if (component == null || dejaVu.contains(component))
+			if (component == null)
 				builder.append("?");
 			else
 				component.getTypeName0(builder, dejaVu);
@@ -1832,32 +1957,39 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 	}
 
 	/**
-	 * Initialize this type with the given parameters. It is illegal to initialize a type twice, yet
-	 * this method will never know such thing.
+	 * Calculate the hash code of this type. Or return {@code 1}, If this type contained in the
+	 * given {@code dejaVu}.
 	 *
-	 * @param typeclass   the class to be represented by this type.
-	 * @param wildclass   the class that an instance of this type should be treated as if was an
-	 *                    instance of it.
-	 * @param objecttypes mappings for other types for each specific instance.
-	 * @param components  the components of this type.
-	 * @throws NullPointerException if the given {@code typeclass} or {@code wildclass} or {@code
-	 *                              objecttypes} or {@code components} is null.
-	 * @throws ClassCastException   if the given {@code objecttypes} has a value that is not an
-	 *                              instance of {@link Type}.
-	 * @since 2020.08.12
+	 * @param dejaVu the types that has been seen before.
+	 * @return the hash code of this type.
+	 * @throws NullPointerException if the given {@code dejaVu} is null.
+	 * @since 0.1.5 ~2020.08.14
 	 */
-	private void init(Class<T> typeclass, Class wildclass, Map<Object, Type> objecttypes, Type[] components) {
-		Objects.requireNonNull(typeclass, "typeclass");
-		Objects.requireNonNull(wildclass, "wildclass");
-		Objects.requireNonNull(objecttypes, "objecttypes");
-		Objects.requireNonNull(components, "components");
-		this.typeclass = typeclass;
-		this.wildclass = wildclass;
-		this.objecttypes = new ObjectArray(objecttypes).map();
-		this.components = new ObjectArray<>(components).array();
+	private int hashCode0(Set<Type> dejaVu) {
+		Objects.requireNonNull(dejaVu, "dejaVu");
+		if (dejaVu.contains(this))
+			return 1;
 
-		//no cheating ;P
-		this.objecttypes.values().forEach(Type.class::cast);
+		dejaVu.add(this);
+
+		int hashCode = this.typeclass.hashCode();
+
+		if (this.typeclass != this.wildclass)
+			hashCode ^= this.wildclass.hashCode();
+
+		for (Map.Entry<Object, Type> entry : this.objecttypes.entrySet()) {
+			Object object = entry.getKey();
+			Type objecttype = entry.getValue();
+			hashCode += objecttype == null ? 0 :
+						System.identityHashCode(object) ^
+						objecttype.hashCode0(dejaVu);
+		}
+
+		for (Type component : this.components)
+			hashCode = 31 * hashCode + (component == null ? 0 : component.hashCode0(dejaVu));
+
+		dejaVu.remove(this);
+		return hashCode;
 	}
 
 	/**
@@ -1899,77 +2031,31 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		public Class wildclass;
 
 		/**
-		 * Construct a new builder with all null variables.
+		 * Construct a new builder with the default variables.
 		 *
 		 * @since 0.1.5 ~2020.08.11
 		 */
 		public Builder() {
+			this.typeclass = (Class) Object.class;
+			this.wildclass = Object.class;
+			this.objecttypes = new IdentityHashMap();
+			this.components = new ArrayList();
 		}
 
 		/**
-		 * Construct a new builder with the variables taken from the given {@code type}.
+		 * Construct a new builder with the given parameters as the initial values of its fields.
 		 *
-		 * @param type the type to take its variables as the variables of this builder.
-		 * @throws NullPointerException if the given {@code type} is null.
-		 * @since 0.1.5 ~2020.08.11
+		 * @param typeclass   the initial typeclass that the constructed builder will have.
+		 * @param wildclass   the initial wildclass that the constructed builder will have.
+		 * @param objecttypes the initial objecttypes map that the constructed builder will have.
+		 * @param components  the initial components list that the constructed builder will have.
+		 * @since 0.1.5 ~2020.08.14
 		 */
-		public Builder(Type<T> type) {
-			Objects.requireNonNull(type, "type");
-			this.typeclass = type.typeclass;
-			this.wildclass = type.wildclass;
-			this.objecttypes = Builder.map(type.objecttypes);
-			this.components = new ArrayList(Arrays.asList(Builder.array(type.components)));
-		}
-
-		/**
-		 * Create a new array of builders from the given {@code array}.
-		 *
-		 * @param array the source array.
-		 * @return a new array of builders from the given {@code array}. Or null if the given {@code
-		 * 		array} is null.
-		 * @since 0.1.5 ~2020.08.11
-		 */
-		public static Builder[] array(Type... array) {
-			if (array == null)
-				return null;
-
-			Builder[] product = new Builder[array.length];
-
-			for (int i = 0; i < array.length; i++) {
-				Type element = array[i];
-
-				if (element != null)
-					product[i] = new Builder(element);
-			}
-
-			return product;
-		}
-
-		/**
-		 * Create a new map of objects and builders from the given {@code map}.
-		 *
-		 * @param map the source map.
-		 * @return a new map of objects and builders from the given {@code map}. Or null if the
-		 * 		given {@code map} is null.
-		 * @throws ClassCastException if the given {@code map} has a value that is not an instance
-		 *                            of {@link Type}.
-		 * @since 0.1.5 ~2020.08.11
-		 */
-		public static Map<Object, Builder> map(Map<Object, Type> map) {
-			if (map == null)
-				return null;
-
-			Map product = new HashMap(map.size());
-
-			for (Map.Entry<Object, Type> entry : map.entrySet()) {
-				Object key = entry.getKey();
-				Type value = entry.getValue();
-
-				if (value != null)
-					product.put(key, new Builder(value));
-			}
-
-			return product;
+		public Builder(Class<T> typeclass, Class wildclass, Map<Object, Builder> objecttypes, List<Builder> components) {
+			this.typeclass = typeclass;
+			this.wildclass = wildclass;
+			this.objecttypes = objecttypes;
+			this.components = components;
 		}
 
 		@Override
@@ -1993,10 +2079,10 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		@Override
 		public String toString() {
 			return "Builder{" +
-				   "components=" + Arrays.toString(this.components) +
-				   ", objecttypes=" + this.objecttypes +
-				   ", typeclass=" + this.typeclass +
+				   "typeclass=" + this.typeclass +
 				   ", wildclass=" + this.wildclass +
+				   ", objecttypes=" + this.objecttypes +
+				   ", components=" + this.components +
 				   "}";
 		}
 
@@ -2009,7 +2095,7 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		 * @since 0.1.5 ~2020.08.11
 		 */
 		public Type<T> build() {
-			return this.build(new IdentityHashMap());
+			return this.build0(new IdentityHashMap());
 		}
 
 		/**
@@ -2115,20 +2201,19 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 		 *                              instance of {@link Builder}.
 		 * @since 0.1.5 ~2020.08.11
 		 */
-		private Type<T> build(Map<Builder, Type> dejaVu) {
+		private Type<T> build0(Map<Builder, Type> dejaVu) {
 			Objects.requireNonNull(dejaVu, "dejaVu");
+			if (dejaVu.containsKey(this))
+				return dejaVu.get(this);
+
+			Type type = new Type();
+			dejaVu.put(this, type);
 
 			//capture
 			Class builderTypeclass = this.typeclass;
 			Class builderWildclass = this.wildclass;
 			Map<Object, Builder> builderObjecttypes = this.objecttypes;
 			List<Builder> builderComponents = this.components;
-
-			//construct
-			Type type = new Type();
-
-			//dejaVu effect
-			dejaVu.put(this, type);
 
 			//compute typeclass
 			Class typeclass;
@@ -2147,22 +2232,16 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 			//compute objecttypes
 			Map<Object, Type> objecttypes;
 			if (builderObjecttypes == null)
-				objecttypes = Collections.emptyMap();
+				objecttypes = new IdentityHashMap(0);
 			else {
-				objecttypes = new HashMap(builderObjecttypes.size());
+				objecttypes = new IdentityHashMap(builderObjecttypes.size());
 
 				for (Map.Entry<Object, Builder> entry : builderObjecttypes.entrySet()) {
 					Object key = entry.getKey();
 					Builder value = entry.getValue();
 
-					if (value != null) {
-						Type built = dejaVu.get(value);
-
-						if (built == null)
-							built = value.build(dejaVu);
-
-						objecttypes.put(key, built);
-					}
+					if (value != null)
+						objecttypes.put(key, value.build0(dejaVu));
 				}
 			}
 
@@ -2171,25 +2250,20 @@ public final class Type<T> implements java.lang.reflect.Type, Serializable {
 			if (builderComponents == null)
 				components = new Type[0];
 			else {
-				int length = builderComponents.size();
-				components = new Type[length];
+				components = new Type[builderComponents.size()];
 
-				for (int i = 0; i < length; i++) {
+				for (int i = 0; i < components.length; i++) {
 					Builder element = builderComponents.get(i);
 
-					if (element != null) {
-						Type built = dejaVu.get(element);
-
-						if (built == null)
-							built = element.build(dejaVu);
-
-						components[i] = built;
-					}
+					if (element != null)
+						components[i] = element.build0(dejaVu);
 				}
 			}
 
-			//initialize
-			type.init(typeclass, wildclass, objecttypes, components);
+			type.typeclass = typeclass;
+			type.wildclass = wildclass;
+			type.objecttypes = objecttypes;
+			type.components = components;
 			return type;
 		}
 	}
