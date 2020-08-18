@@ -331,7 +331,7 @@ public class ByteArray extends Array<byte[], Byte> {
 					Object element = array.array[i];
 					byte e = this.array[j];
 
-					if (element.equals(e))
+					if (this.eq(element, e))
 						continue;
 
 					return false;
@@ -541,6 +541,34 @@ public class ByteArray extends Array<byte[], Byte> {
 	}
 
 	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check (for
+	 * object-primitive) in this class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(Object element, byte e) {
+		return element != null && element.equals(e);
+	}
+
+	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check (for
+	 * primitive-primitive) in this class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(byte element, byte e) {
+		return element == e;
+	}
+
+	/**
 	 * An iterator iterating the elements in the enclosing array.
 	 *
 	 * @author LSafer
@@ -610,7 +638,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i++) {
 				byte e = ByteArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (ByteArray.this.eq(object, e))
 					return true;
 			}
 
@@ -637,7 +665,7 @@ public class ByteArray extends Array<byte[], Byte> {
 							//still same length
 							byte e = ByteArray.this.array[i++];
 
-							if (element != null && element.equals(e))
+							if (ByteArray.this.eq(element, e))
 								continue;
 						}
 
@@ -676,7 +704,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i++) {
 				byte e = ByteArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (ByteArray.this.eq(object, e))
 					return i - ByteArray.this.beginIndex;
 			}
 
@@ -689,7 +717,7 @@ public class ByteArray extends Array<byte[], Byte> {
 				 i >= ByteArray.this.beginIndex; i--) {
 				byte e = ByteArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (ByteArray.this.eq(object, e))
 					return i - ByteArray.this.beginIndex;
 			}
 
@@ -853,7 +881,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (ByteArray.this.eq(key, k)) {
 					byte v = ByteArray.this.array[i + 1];
 					Byte value = function.apply(k, v);
 
@@ -879,7 +907,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key.equals(k))
+				if (ByteArray.this.eq(key, k))
 					//old:notnull
 					return ByteArray.this.array[i + 1];
 			}
@@ -896,7 +924,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (ByteArray.this.eq(key, k)) {
 					byte v = ByteArray.this.array[i + 1];
 					Byte value = function.apply(k, v);
 
@@ -919,7 +947,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (ByteArray.this.eq(key, k))
 					return true;
 			}
 
@@ -931,7 +959,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte v = ByteArray.this.array[i];
 
-				if (value != null && value.equals(v))
+				if (ByteArray.this.eq(value, v))
 					return true;
 			}
 
@@ -959,11 +987,11 @@ public class ByteArray extends Array<byte[], Byte> {
 							 i < ByteArray.this.endIndex; i += 2) {
 							byte k = ByteArray.this.array[i];
 
-							if (key != null && key.equals(k)) {
+							if (ByteArray.this.eq(key, k)) {
 								Object value = entry.getValue();
 								byte v = ByteArray.this.array[i + 1];
 
-								if (value != null && value.equals(v))
+								if (ByteArray.this.eq(value, v))
 									continue for0;
 
 								break;
@@ -996,7 +1024,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (ByteArray.this.eq(key, k))
 					return ByteArray.this.array[i + 1];
 			}
 
@@ -1008,7 +1036,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (ByteArray.this.eq(key, k))
 					return ByteArray.this.array[i + 1];
 			}
 
@@ -1043,7 +1071,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (ByteArray.this.eq(key, k)) {
 					byte v = ByteArray.this.array[i + 1];
 					Byte newValue = function.apply(v, value);
 
@@ -1068,7 +1096,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (ByteArray.this.eq(key, k)) {
 					//old:found
 					byte v = ByteArray.this.array[i + 1];
 					ByteArray.this.array[i + 1] = value;
@@ -1092,7 +1120,7 @@ public class ByteArray extends Array<byte[], Byte> {
 					 i < ByteArray.this.endIndex; i += 2) {
 					byte k = ByteArray.this.array[i];
 
-					if (key == k) {
+					if (ByteArray.this.eq(key, k)) {
 						byte value = entry.getValue();
 						ByteArray.this.array[i + 1] = value;
 						continue for0;
@@ -1109,7 +1137,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (ByteArray.this.eq(key, k))
 					//old:found
 					return ByteArray.this.array[i + 1];
 			}
@@ -1123,10 +1151,10 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (ByteArray.this.eq(key, k)) {
 					byte v = ByteArray.this.array[i + 1];
 
-					if (value != null && value.equals(v))
+					if (ByteArray.this.eq(value, v))
 						//old:match
 						throw new UnsupportedOperationException("remove");
 
@@ -1145,10 +1173,10 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (ByteArray.this.eq(key, k)) {
 					byte v = ByteArray.this.array[i + 1];
 
-					if (oldValue != null && oldValue.equals(v)) {
+					if (ByteArray.this.eq(oldValue, v)) {
 						//old:match
 						ByteArray.this.array[i + 1] = newValue;
 						return true;
@@ -1169,7 +1197,7 @@ public class ByteArray extends Array<byte[], Byte> {
 			for (int i = ByteArray.this.beginIndex; i < ByteArray.this.endIndex; i += 2) {
 				byte k = ByteArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (ByteArray.this.eq(key, k)) {
 					//old:match
 					byte v = ByteArray.this.array[i + 1];
 					ByteArray.this.array[i + 1] = value;
@@ -1259,11 +1287,11 @@ public class ByteArray extends Array<byte[], Byte> {
 					Object key = entry.getKey();
 					byte k = ByteArray.this.array[this.index];
 
-					if (key != null && key.equals(k)) {
+					if (ByteArray.this.eq(key, k)) {
 						Object value = entry.getValue();
 						byte v = ByteArray.this.array[this.index + 1];
 
-						return value != null && value.equals(v);
+						return ByteArray.this.eq(value, v);
 					}
 				}
 
@@ -1325,11 +1353,11 @@ public class ByteArray extends Array<byte[], Byte> {
 						 i < ByteArray.this.endIndex; i += 2) {
 						byte k = ByteArray.this.array[i];
 
-						if (key != null && key.equals(k)) {
+						if (ByteArray.this.eq(key, k)) {
 							Object value = entry.getValue();
 							byte v = ByteArray.this.array[i + 1];
 
-							if (value != null && value.equals(v))
+							if (ByteArray.this.eq(value, v))
 								return true;
 
 							break;
@@ -1358,11 +1386,11 @@ public class ByteArray extends Array<byte[], Byte> {
 									 i < ByteArray.this.endIndex; i += 2) {
 									byte k = ByteArray.this.array[i];
 
-									if (key != null && key.equals(k)) {
+									if (ByteArray.this.eq(key, k)) {
 										Object value = entry.getValue();
 										byte v = ByteArray.this.array[i + 1];
 
-										if (value != null && value.equals(v))
+										if (ByteArray.this.eq(value, v))
 											continue for0;
 
 										break;
@@ -1646,7 +1674,7 @@ public class ByteArray extends Array<byte[], Byte> {
 								 i < ByteArray.this.endIndex; i += 2) {
 								byte k = ByteArray.this.array[i];
 
-								if (key != null && key.equals(k))
+								if (ByteArray.this.eq(key, k))
 									continue for0;
 							}
 

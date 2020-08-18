@@ -331,7 +331,7 @@ public class ShortArray extends Array<short[], Short> {
 					Object element = array.array[i];
 					short e = this.array[j];
 
-					if (element.equals(e))
+					if (this.eq(element, e))
 						continue;
 
 					return false;
@@ -541,6 +541,34 @@ public class ShortArray extends Array<short[], Short> {
 	}
 
 	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check (for
+	 * object-primitive) in this class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(Object element, short e) {
+		return element != null && element.equals(e);
+	}
+
+	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check (for
+	 * primitive-primitive) in this class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(short element, short e) {
+		return element == e;
+	}
+
+	/**
 	 * An iterator iterating the elements in the enclosing array.
 	 *
 	 * @author LSafer
@@ -610,7 +638,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i++) {
 				short e = ShortArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (ShortArray.this.eq(object, e))
 					return true;
 			}
 
@@ -637,7 +665,7 @@ public class ShortArray extends Array<short[], Short> {
 							//still same length
 							short e = ShortArray.this.array[i++];
 
-							if (element != null && element.equals(e))
+							if (ShortArray.this.eq(element, e))
 								continue;
 						}
 
@@ -676,7 +704,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i++) {
 				short e = ShortArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (ShortArray.this.eq(object, e))
 					return i - ShortArray.this.beginIndex;
 			}
 
@@ -689,7 +717,7 @@ public class ShortArray extends Array<short[], Short> {
 				 i >= ShortArray.this.beginIndex; i--) {
 				short e = ShortArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (ShortArray.this.eq(object, e))
 					return i - ShortArray.this.beginIndex;
 			}
 
@@ -853,7 +881,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short k = ShortArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (ShortArray.this.eq(key, k)) {
 					short v = ShortArray.this.array[i + 1];
 					Short value = function.apply(k, v);
 
@@ -879,7 +907,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short k = ShortArray.this.array[i];
 
-				if (key.equals(k))
+				if (ShortArray.this.eq(key, k))
 					//old:notnull
 					return ShortArray.this.array[i + 1];
 			}
@@ -896,7 +924,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short k = ShortArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (ShortArray.this.eq(key, k)) {
 					short v = ShortArray.this.array[i + 1];
 					Short value = function.apply(k, v);
 
@@ -919,7 +947,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short k = ShortArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (ShortArray.this.eq(key, k))
 					return true;
 			}
 
@@ -931,7 +959,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short v = ShortArray.this.array[i];
 
-				if (value != null && value.equals(v))
+				if (ShortArray.this.eq(value, v))
 					return true;
 			}
 
@@ -959,11 +987,11 @@ public class ShortArray extends Array<short[], Short> {
 							 i < ShortArray.this.endIndex; i += 2) {
 							short k = ShortArray.this.array[i];
 
-							if (key != null && key.equals(k)) {
+							if (ShortArray.this.eq(key, k)) {
 								Object value = entry.getValue();
 								short v = ShortArray.this.array[i + 1];
 
-								if (value != null && value.equals(v))
+								if (ShortArray.this.eq(value, v))
 									continue for0;
 
 								break;
@@ -996,7 +1024,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short k = ShortArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (ShortArray.this.eq(key, k))
 					return ShortArray.this.array[i + 1];
 			}
 
@@ -1008,7 +1036,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short k = ShortArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (ShortArray.this.eq(key, k))
 					return ShortArray.this.array[i + 1];
 			}
 
@@ -1043,7 +1071,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short k = ShortArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (ShortArray.this.eq(key, k)) {
 					short v = ShortArray.this.array[i + 1];
 					Short newValue = function.apply(v, value);
 
@@ -1068,7 +1096,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short k = ShortArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (ShortArray.this.eq(key, k)) {
 					//old:found
 					short v = ShortArray.this.array[i + 1];
 					ShortArray.this.array[i + 1] = value;
@@ -1092,7 +1120,7 @@ public class ShortArray extends Array<short[], Short> {
 					 i < ShortArray.this.endIndex; i += 2) {
 					short k = ShortArray.this.array[i];
 
-					if (key == k) {
+					if (ShortArray.this.eq(key, k)) {
 						short value = entry.getValue();
 						ShortArray.this.array[i + 1] = value;
 						continue for0;
@@ -1109,7 +1137,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short k = ShortArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (ShortArray.this.eq(key, k))
 					//old:found
 					return ShortArray.this.array[i + 1];
 			}
@@ -1123,10 +1151,10 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short k = ShortArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (ShortArray.this.eq(key, k)) {
 					short v = ShortArray.this.array[i + 1];
 
-					if (value != null && value.equals(v))
+					if (ShortArray.this.eq(value, v))
 						//old:match
 						throw new UnsupportedOperationException("remove");
 
@@ -1145,10 +1173,10 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short k = ShortArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (ShortArray.this.eq(key, k)) {
 					short v = ShortArray.this.array[i + 1];
 
-					if (oldValue != null && oldValue.equals(v)) {
+					if (ShortArray.this.eq(oldValue, v)) {
 						//old:match
 						ShortArray.this.array[i + 1] = newValue;
 						return true;
@@ -1169,7 +1197,7 @@ public class ShortArray extends Array<short[], Short> {
 			for (int i = ShortArray.this.beginIndex; i < ShortArray.this.endIndex; i += 2) {
 				short k = ShortArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (ShortArray.this.eq(key, k)) {
 					//old:match
 					short v = ShortArray.this.array[i + 1];
 					ShortArray.this.array[i + 1] = value;
@@ -1259,11 +1287,11 @@ public class ShortArray extends Array<short[], Short> {
 					Object key = entry.getKey();
 					short k = ShortArray.this.array[this.index];
 
-					if (key != null && key.equals(k)) {
+					if (ShortArray.this.eq(key, k)) {
 						Object value = entry.getValue();
 						short v = ShortArray.this.array[this.index + 1];
 
-						return value != null && value.equals(v);
+						return ShortArray.this.eq(value, v);
 					}
 				}
 
@@ -1325,11 +1353,11 @@ public class ShortArray extends Array<short[], Short> {
 						 i < ShortArray.this.endIndex; i += 2) {
 						short k = ShortArray.this.array[i];
 
-						if (key != null && key.equals(k)) {
+						if (ShortArray.this.eq(key, k)) {
 							Object value = entry.getValue();
 							short v = ShortArray.this.array[i + 1];
 
-							if (value != null && value.equals(v))
+							if (ShortArray.this.eq(value, v))
 								return true;
 
 							break;
@@ -1358,11 +1386,11 @@ public class ShortArray extends Array<short[], Short> {
 									 i < ShortArray.this.endIndex; i += 2) {
 									short k = ShortArray.this.array[i];
 
-									if (key != null && key.equals(k)) {
+									if (ShortArray.this.eq(key, k)) {
 										Object value = entry.getValue();
 										short v = ShortArray.this.array[i + 1];
 
-										if (value != null && value.equals(v))
+										if (ShortArray.this.eq(value, v))
 											continue for0;
 
 										break;
@@ -1646,7 +1674,7 @@ public class ShortArray extends Array<short[], Short> {
 								 i < ShortArray.this.endIndex; i += 2) {
 								short k = ShortArray.this.array[i];
 
-								if (key != null && key.equals(k))
+								if (ShortArray.this.eq(key, k))
 									continue for0;
 							}
 

@@ -677,6 +677,20 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		return StreamSupport.stream(this.spliterator(), false);
 	}
 
+	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check in this
+	 * class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(Object element, E e) {
+		return element == e || element != null && element.equals(e);
+	}
+
 	@Override
 	public abstract Array<A, E> clone();
 

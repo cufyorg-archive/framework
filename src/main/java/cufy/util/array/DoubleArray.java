@@ -338,7 +338,7 @@ public class DoubleArray extends Array<double[], Double> {
 					Object element = array.array[i];
 					double e = this.array[j];
 
-					if (element.equals(e))
+					if (this.eq(element, e))
 						continue;
 
 					return false;
@@ -567,6 +567,35 @@ public class DoubleArray extends Array<double[], Double> {
 	}
 
 	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check (for
+	 * object-primitive) in this class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(Object element, double e) {
+		return element != null && element.equals(e);
+	}
+
+	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check (for
+	 * primitive-primitive) in this class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(double element, double e) {
+		return Double.doubleToLongBits(element) ==
+			   Double.doubleToLongBits(e);
+	}
+
+	/**
 	 * An iterator iterating the elements in the enclosing array.
 	 *
 	 * @author LSafer
@@ -662,7 +691,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i++) {
 				double e = DoubleArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (DoubleArray.this.eq(object, e))
 					return true;
 			}
 
@@ -689,7 +718,7 @@ public class DoubleArray extends Array<double[], Double> {
 							//still same length
 							double e = DoubleArray.this.array[i++];
 
-							if (element != null && element.equals(e))
+							if (DoubleArray.this.eq(element, e))
 								continue;
 						}
 
@@ -728,7 +757,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i++) {
 				double e = DoubleArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (DoubleArray.this.eq(object, e))
 					return i - DoubleArray.this.beginIndex;
 			}
 
@@ -741,7 +770,7 @@ public class DoubleArray extends Array<double[], Double> {
 				 i >= DoubleArray.this.beginIndex; i--) {
 				double e = DoubleArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (DoubleArray.this.eq(object, e))
 					return i - DoubleArray.this.beginIndex;
 			}
 
@@ -908,7 +937,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (DoubleArray.this.eq(key, k)) {
 					double v = DoubleArray.this.array[i + 1];
 					Double value = function.apply(k, v);
 
@@ -934,7 +963,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key.equals(k))
+				if (DoubleArray.this.eq(key, k))
 					//old:notnull
 					return DoubleArray.this.array[i + 1];
 			}
@@ -951,7 +980,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (DoubleArray.this.eq(key, k)) {
 					double v = DoubleArray.this.array[i + 1];
 					Double value = function.apply(k, v);
 
@@ -974,7 +1003,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (DoubleArray.this.eq(key, k))
 					return true;
 			}
 
@@ -986,7 +1015,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double v = DoubleArray.this.array[i];
 
-				if (value != null && value.equals(v))
+				if (DoubleArray.this.eq(value, v))
 					return true;
 			}
 
@@ -1014,11 +1043,11 @@ public class DoubleArray extends Array<double[], Double> {
 							 i < DoubleArray.this.endIndex; i += 2) {
 							double k = DoubleArray.this.array[i];
 
-							if (key != null && key.equals(k)) {
+							if (DoubleArray.this.eq(key, k)) {
 								Object value = entry.getValue();
 								double v = DoubleArray.this.array[i + 1];
 
-								if (value != null && value.equals(v))
+								if (DoubleArray.this.eq(value, v))
 									continue for0;
 
 								break;
@@ -1051,7 +1080,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (DoubleArray.this.eq(key, k))
 					return DoubleArray.this.array[i + 1];
 			}
 
@@ -1063,7 +1092,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (DoubleArray.this.eq(key, k))
 					return DoubleArray.this.array[i + 1];
 			}
 
@@ -1098,7 +1127,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (DoubleArray.this.eq(key, k)) {
 					double v = DoubleArray.this.array[i + 1];
 					Double newValue = function.apply(v, value);
 
@@ -1123,7 +1152,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (DoubleArray.this.eq(key, k)) {
 					//old:found
 					double v = DoubleArray.this.array[i + 1];
 					DoubleArray.this.array[i + 1] = value;
@@ -1142,14 +1171,12 @@ public class DoubleArray extends Array<double[], Double> {
 			for0:
 			for (java.util.Map.Entry<? extends Double, ? extends Double> entry : map.entrySet()) {
 				double key = entry.getKey();
-				long keyb = Double.doubleToLongBits(key);
 
 				for (int i = DoubleArray.this.beginIndex;
 					 i < DoubleArray.this.endIndex; i += 2) {
 					double k = DoubleArray.this.array[i];
-					long kb = Double.doubleToLongBits(k);
 
-					if (keyb == kb) {
+					if (DoubleArray.this.eq(key, k)) {
 						double value = entry.getValue();
 						DoubleArray.this.array[i + 1] = value;
 						continue for0;
@@ -1166,7 +1193,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (DoubleArray.this.eq(key, k))
 					//old:found
 					return DoubleArray.this.array[i + 1];
 			}
@@ -1180,10 +1207,10 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (DoubleArray.this.eq(key, k)) {
 					double v = DoubleArray.this.array[i + 1];
 
-					if (value != null && value.equals(v))
+					if (DoubleArray.this.eq(value, v))
 						//old:match
 						throw new UnsupportedOperationException("remove");
 
@@ -1202,10 +1229,10 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (DoubleArray.this.eq(key, k)) {
 					double v = DoubleArray.this.array[i + 1];
 
-					if (oldValue != null && oldValue.equals(v)) {
+					if (DoubleArray.this.eq(oldValue, v)) {
 						//old:match
 						DoubleArray.this.array[i + 1] = newValue;
 						return true;
@@ -1226,7 +1253,7 @@ public class DoubleArray extends Array<double[], Double> {
 			for (int i = DoubleArray.this.beginIndex; i < DoubleArray.this.endIndex; i += 2) {
 				double k = DoubleArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (DoubleArray.this.eq(key, k)) {
 					//old:match
 					double v = DoubleArray.this.array[i + 1];
 					DoubleArray.this.array[i + 1] = value;
@@ -1316,11 +1343,11 @@ public class DoubleArray extends Array<double[], Double> {
 					Object key = entry.getKey();
 					double k = DoubleArray.this.array[this.index];
 
-					if (key != null && key.equals(k)) {
+					if (DoubleArray.this.eq(key, k)) {
 						Object value = entry.getValue();
 						double v = DoubleArray.this.array[this.index + 1];
 
-						return value != null && value.equals(v);
+						return DoubleArray.this.eq(value, v);
 					}
 				}
 
@@ -1382,11 +1409,11 @@ public class DoubleArray extends Array<double[], Double> {
 						 i < DoubleArray.this.endIndex; i += 2) {
 						double k = DoubleArray.this.array[i];
 
-						if (key != null && key.equals(k)) {
+						if (DoubleArray.this.eq(key, k)) {
 							Object value = entry.getValue();
 							double v = DoubleArray.this.array[i + 1];
 
-							if (value != null && value.equals(v))
+							if (DoubleArray.this.eq(value, v))
 								return true;
 
 							break;
@@ -1415,11 +1442,11 @@ public class DoubleArray extends Array<double[], Double> {
 									 i < DoubleArray.this.endIndex; i += 2) {
 									double k = DoubleArray.this.array[i];
 
-									if (key != null && key.equals(k)) {
+									if (DoubleArray.this.eq(key, k)) {
 										Object value = entry.getValue();
 										double v = DoubleArray.this.array[i + 1];
 
-										if (value != null && value.equals(v))
+										if (DoubleArray.this.eq(value, v))
 											continue for0;
 
 										break;
@@ -1703,7 +1730,7 @@ public class DoubleArray extends Array<double[], Double> {
 								 i < DoubleArray.this.endIndex; i += 2) {
 								double k = DoubleArray.this.array[i];
 
-								if (key != null && key.equals(k))
+								if (DoubleArray.this.eq(key, k))
 									continue for0;
 							}
 

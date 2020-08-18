@@ -639,7 +639,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 					Object element = array.array[i];
 					E e = this.array[j];
 
-					if (element == e || element != null && element.equals(e))
+					if (this.eq(element, e))
 						continue;
 
 					return false;
@@ -1052,7 +1052,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i++) {
 				E e = ObjectArray.this.array[i];
 
-				if (object == e || object != null && object.equals(e))
+				if (ObjectArray.this.eq(object, e))
 					return true;
 			}
 
@@ -1079,7 +1079,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 							//still same length
 							E e = ObjectArray.this.array[i++];
 
-							if (element == e || element != null && element.equals(e))
+							if (ObjectArray.this.eq(element, e))
 								continue;
 						}
 
@@ -1118,7 +1118,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i++) {
 				E e = ObjectArray.this.array[i];
 
-				if (object == e || object != null && object.equals(e))
+				if (ObjectArray.this.eq(object, e))
 					return ObjectArray.this.thumb(i);
 			}
 
@@ -1130,7 +1130,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.endIndex - 1; i >= ObjectArray.this.beginIndex; i--) {
 				E e = ObjectArray.this.array[i];
 
-				if (object == e || object != null && object.equals(e))
+				if (ObjectArray.this.eq(object, e))
 					return ObjectArray.this.thumb(i);
 			}
 
@@ -1305,7 +1305,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 
-				if (key == k || key != null && key.equals(k)) {
+				if (ObjectArray.this.eq(key, k)) {
 					V v = (V) ObjectArray.this.array[i + 1];
 					V value = function.apply(k, v);
 
@@ -1335,7 +1335,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 
-				if (key == k || key != null && key.equals(k)) {
+				if (ObjectArray.this.eq(key, k)) {
 					V v = (V) ObjectArray.this.array[i + 1];
 
 					if (v == null) {
@@ -1366,7 +1366,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 
-				if (key == k || key != null && key.equals(k)) {
+				if (ObjectArray.this.eq(key, k)) {
 					V v = (V) ObjectArray.this.array[i + 1];
 
 					if (v != null) {
@@ -1401,7 +1401,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 
-				if (key == k || key != null && key.equals(k))
+				if (ObjectArray.this.eq(key, k))
 					return true;
 			}
 
@@ -1413,7 +1413,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				V v = (V) ObjectArray.this.array[i];
 
-				if (value == v || value != null && value.equals(v))
+				if (ObjectArray.this.eq(value, v))
 					return true;
 			}
 
@@ -1441,11 +1441,11 @@ public class ObjectArray<E> extends Array<E[], E> {
 							 i < ObjectArray.this.endIndex; i += 2) {
 							K k = (K) ObjectArray.this.array[i];
 
-							if (key == k || key != null && key.equals(k)) {
+							if (ObjectArray.this.eq(key, k)) {
 								Object value = entry.getValue();
 								V v = (V) ObjectArray.this.array[i + 1];
 
-								if (value == v || value != null && value.equals(v))
+								if (ObjectArray.this.eq(value, v))
 									continue for0;
 
 								break;
@@ -1479,7 +1479,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 
-				if (key == k || key != null && key.equals(k))
+				if (ObjectArray.this.eq(key, k))
 					return (V) ObjectArray.this.array[i + 1];
 			}
 
@@ -1491,7 +1491,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 
-				if (key == k || key != null && key.equals(k))
+				if (ObjectArray.this.eq(key, k))
 					return (V) ObjectArray.this.array[i + 1];
 			}
 
@@ -1525,7 +1525,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 
-				if (key == k || key != null && key.equals(k)) {
+				if (ObjectArray.this.eq(key, k)) {
 					V v = (V) ObjectArray.this.array[i + 1];
 					V newValue = v == null ? value : function.apply(v, value);
 
@@ -1553,7 +1553,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 
-				if (key == k || key != null && key.equals(k)) {
+				if (ObjectArray.this.eq(key, k)) {
 					//old:found
 					V v = (V) ObjectArray.this.array[i + 1];
 					try {
@@ -1581,7 +1581,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 				for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 					K k = (K) ObjectArray.this.array[i];
 
-					if (key == k || key != null && key.equals(k)) {
+					if (ObjectArray.this.eq(key, k)) {
 						V value = entry.getValue();
 						try {
 							ObjectArray.this.array[i + 1] = value;
@@ -1603,7 +1603,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 
-				if (key == k || key != null && key.equals(k)) {
+				if (ObjectArray.this.eq(key, k)) {
 					//old:found
 					V v = (V) ObjectArray.this.array[i + 1];
 
@@ -1628,10 +1628,10 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 
-				if (key == k || key != null && key.equals(k)) {
+				if (ObjectArray.this.eq(key, k)) {
 					V v = (V) ObjectArray.this.array[i + 1];
 
-					if (value == v || value != null && value.equals(v))
+					if (ObjectArray.this.eq(value, v))
 						//old:match
 						throw new UnsupportedOperationException("remove");
 
@@ -1648,10 +1648,10 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 
-				if (key == k || key != null && key.equals(k)) {
+				if (ObjectArray.this.eq(key, k)) {
 					V v = (V) ObjectArray.this.array[i + 1];
 
-					if (oldValue == v || oldValue != null && oldValue.equals(v)) {
+					if (ObjectArray.this.eq(oldValue, v)) {
 						//old:match
 						try {
 							ObjectArray.this.array[i + 1] = newValue;
@@ -1675,7 +1675,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 			for (int i = ObjectArray.this.beginIndex; i < ObjectArray.this.endIndex; i += 2) {
 				K k = (K) ObjectArray.this.array[i];
 
-				if (key == k || key != null && key.equals(k)) {
+				if (ObjectArray.this.eq(key, k)) {
 					//old:match
 					V v = (V) ObjectArray.this.array[i + 1];
 					try {
@@ -1775,11 +1775,11 @@ public class ObjectArray<E> extends Array<E[], E> {
 					Object key = entry.getKey();
 					K k = (K) ObjectArray.this.array[this.index];
 
-					if (key == k || key != null && key.equals(k)) {
+					if (ObjectArray.this.eq(key, k)) {
 						Object value = entry.getValue();
 						V v = (V) ObjectArray.this.array[this.index + 1];
 
-						return value == v || value != null && value.equals(v);
+						return ObjectArray.this.eq(value, v);
 					}
 				}
 
@@ -1845,11 +1845,11 @@ public class ObjectArray<E> extends Array<E[], E> {
 						 i < ObjectArray.this.endIndex; i += 2) {
 						K k = (K) ObjectArray.this.array[i];
 
-						if (key == k || key != null && key.equals(k)) {
+						if (ObjectArray.this.eq(key, k)) {
 							Object value = entry.getValue();
 							V v = (V) ObjectArray.this.array[i + 1];
 
-							if (value == v || value != null && value.equals(v))
+							if (ObjectArray.this.eq(value, v))
 								return true;
 
 							break;
@@ -1878,11 +1878,11 @@ public class ObjectArray<E> extends Array<E[], E> {
 									 i < ObjectArray.this.endIndex; i += 2) {
 									K k = (K) ObjectArray.this.array[i];
 
-									if (key == k || key != null && key.equals(k)) {
+									if (ObjectArray.this.eq(key, k)) {
 										Object value = entry.getValue();
 										V v = (V) ObjectArray.this.array[i + 1];
 
-										if (value == v || value != null && value.equals(v))
+										if (ObjectArray.this.eq(value, v))
 											continue for0;
 
 										break;
@@ -2166,7 +2166,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 								 i < ObjectArray.this.endIndex; i += 2) {
 								K k = (K) ObjectArray.this.array[i];
 
-								if (key == k || key != null && key.equals(k))
+								if (ObjectArray.this.eq(key, k))
 									continue for0;
 							}
 

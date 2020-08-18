@@ -336,7 +336,7 @@ public class LongArray extends Array<long[], Long> {
 					Object element = array.array[i];
 					long e = this.array[j];
 
-					if (element.equals(e))
+					if (this.eq(element, e))
 						continue;
 
 					return false;
@@ -565,6 +565,34 @@ public class LongArray extends Array<long[], Long> {
 	}
 
 	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check (for
+	 * object-primitive) in this class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(Object element, long e) {
+		return element != null && element.equals(e);
+	}
+
+	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check (for
+	 * primitive-primitive) in this class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(long element, long e) {
+		return element == e;
+	}
+
+	/**
 	 * An iterator iterating the elements in the enclosing array.
 	 *
 	 * @author LSafer
@@ -660,7 +688,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i++) {
 				long e = LongArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (LongArray.this.eq(object, e))
 					return true;
 			}
 
@@ -687,7 +715,7 @@ public class LongArray extends Array<long[], Long> {
 							//still same length
 							long e = LongArray.this.array[i++];
 
-							if (element != null && element.equals(e))
+							if (LongArray.this.eq(element, e))
 								continue;
 						}
 
@@ -726,7 +754,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i++) {
 				long e = LongArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (LongArray.this.eq(object, e))
 					return i - LongArray.this.beginIndex;
 			}
 
@@ -739,7 +767,7 @@ public class LongArray extends Array<long[], Long> {
 				 i >= LongArray.this.beginIndex; i--) {
 				long e = LongArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (LongArray.this.eq(object, e))
 					return i - LongArray.this.beginIndex;
 			}
 
@@ -906,7 +934,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long k = LongArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (LongArray.this.eq(key, k)) {
 					long v = LongArray.this.array[i + 1];
 					Long value = function.apply(k, v);
 
@@ -932,7 +960,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long k = LongArray.this.array[i];
 
-				if (key.equals(k))
+				if (LongArray.this.eq(key, k))
 					//old:notnull
 					return LongArray.this.array[i + 1];
 			}
@@ -949,7 +977,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long k = LongArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (LongArray.this.eq(key, k)) {
 					long v = LongArray.this.array[i + 1];
 					Long value = function.apply(k, v);
 
@@ -972,7 +1000,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long k = LongArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (LongArray.this.eq(key, k))
 					return true;
 			}
 
@@ -984,7 +1012,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long v = LongArray.this.array[i];
 
-				if (value != null && value.equals(v))
+				if (LongArray.this.eq(value, v))
 					return true;
 			}
 
@@ -1012,11 +1040,11 @@ public class LongArray extends Array<long[], Long> {
 							 i < LongArray.this.endIndex; i += 2) {
 							long k = LongArray.this.array[i];
 
-							if (key != null && key.equals(k)) {
+							if (LongArray.this.eq(key, k)) {
 								Object value = entry.getValue();
 								long v = LongArray.this.array[i + 1];
 
-								if (value != null && value.equals(v))
+								if (LongArray.this.eq(value, v))
 									continue for0;
 
 								break;
@@ -1049,7 +1077,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long k = LongArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (LongArray.this.eq(key, k))
 					return LongArray.this.array[i + 1];
 			}
 
@@ -1061,7 +1089,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long k = LongArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (LongArray.this.eq(key, k))
 					return LongArray.this.array[i + 1];
 			}
 
@@ -1096,7 +1124,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long k = LongArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (LongArray.this.eq(key, k)) {
 					long v = LongArray.this.array[i + 1];
 					Long newValue = function.apply(v, value);
 
@@ -1121,7 +1149,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long k = LongArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (LongArray.this.eq(key, k)) {
 					//old:found
 					long v = LongArray.this.array[i + 1];
 					LongArray.this.array[i + 1] = value;
@@ -1145,7 +1173,7 @@ public class LongArray extends Array<long[], Long> {
 					 i < LongArray.this.endIndex; i += 2) {
 					long k = LongArray.this.array[i];
 
-					if (key == k) {
+					if (LongArray.this.eq(key, k)) {
 						long value = entry.getValue();
 						LongArray.this.array[i + 1] = value;
 						continue for0;
@@ -1162,7 +1190,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long k = LongArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (LongArray.this.eq(key, k))
 					//old:found
 					return LongArray.this.array[i + 1];
 			}
@@ -1176,10 +1204,10 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long k = LongArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (LongArray.this.eq(key, k)) {
 					long v = LongArray.this.array[i + 1];
 
-					if (value != null && value.equals(v))
+					if (LongArray.this.eq(value, v))
 						//old:match
 						throw new UnsupportedOperationException("remove");
 
@@ -1198,10 +1226,10 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long k = LongArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (LongArray.this.eq(key, k)) {
 					long v = LongArray.this.array[i + 1];
 
-					if (oldValue != null && oldValue.equals(v)) {
+					if (LongArray.this.eq(oldValue, v)) {
 						//old:match
 						LongArray.this.array[i + 1] = newValue;
 						return true;
@@ -1222,7 +1250,7 @@ public class LongArray extends Array<long[], Long> {
 			for (int i = LongArray.this.beginIndex; i < LongArray.this.endIndex; i += 2) {
 				long k = LongArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (LongArray.this.eq(key, k)) {
 					//old:match
 					long v = LongArray.this.array[i + 1];
 					LongArray.this.array[i + 1] = value;
@@ -1312,11 +1340,11 @@ public class LongArray extends Array<long[], Long> {
 					Object key = entry.getKey();
 					long k = LongArray.this.array[this.index];
 
-					if (key != null && key.equals(k)) {
+					if (LongArray.this.eq(key, k)) {
 						Object value = entry.getValue();
 						long v = LongArray.this.array[this.index + 1];
 
-						return value != null && value.equals(v);
+						return LongArray.this.eq(value, v);
 					}
 				}
 
@@ -1378,11 +1406,11 @@ public class LongArray extends Array<long[], Long> {
 						 i < LongArray.this.endIndex; i += 2) {
 						long k = LongArray.this.array[i];
 
-						if (key != null && key.equals(k)) {
+						if (LongArray.this.eq(key, k)) {
 							Object value = entry.getValue();
 							long v = LongArray.this.array[i + 1];
 
-							if (value != null && value.equals(v))
+							if (LongArray.this.eq(value, v))
 								return true;
 
 							break;
@@ -1411,11 +1439,11 @@ public class LongArray extends Array<long[], Long> {
 									 i < LongArray.this.endIndex; i += 2) {
 									long k = LongArray.this.array[i];
 
-									if (key != null && key.equals(k)) {
+									if (LongArray.this.eq(key, k)) {
 										Object value = entry.getValue();
 										long v = LongArray.this.array[i + 1];
 
-										if (value != null && value.equals(v))
+										if (LongArray.this.eq(value, v))
 											continue for0;
 
 										break;
@@ -1699,7 +1727,7 @@ public class LongArray extends Array<long[], Long> {
 								 i < LongArray.this.endIndex; i += 2) {
 								long k = LongArray.this.array[i];
 
-								if (key != null && key.equals(k))
+								if (LongArray.this.eq(key, k))
 									continue for0;
 							}
 

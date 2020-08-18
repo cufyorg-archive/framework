@@ -333,7 +333,7 @@ public class FloatArray extends Array<float[], Float> {
 					Object element = array.array[i];
 					float e = this.array[j];
 
-					if (element.equals(e))
+					if (this.eq(element, e))
 						continue;
 
 					return false;
@@ -543,6 +543,35 @@ public class FloatArray extends Array<float[], Float> {
 	}
 
 	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check (for
+	 * object-primitive) in this class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(Object element, float e) {
+		return element != null && element.equals(e);
+	}
+
+	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check (for
+	 * primitive-primitive) in this class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(float element, float e) {
+		return Float.floatToIntBits(element) ==
+			   Float.floatToIntBits(e);
+	}
+
+	/**
 	 * An iterator iterating the elements in the enclosing array.
 	 *
 	 * @author LSafer
@@ -612,7 +641,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i++) {
 				float e = FloatArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (FloatArray.this.eq(object, e))
 					return true;
 			}
 
@@ -639,7 +668,7 @@ public class FloatArray extends Array<float[], Float> {
 							//still same length
 							float e = FloatArray.this.array[i++];
 
-							if (element != null && element.equals(e))
+							if (FloatArray.this.eq(element, e))
 								continue;
 						}
 
@@ -678,7 +707,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i++) {
 				float e = FloatArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (FloatArray.this.eq(object, e))
 					return i - FloatArray.this.beginIndex;
 			}
 
@@ -691,7 +720,7 @@ public class FloatArray extends Array<float[], Float> {
 				 i >= FloatArray.this.beginIndex; i--) {
 				float e = FloatArray.this.array[i];
 
-				if (object != null && object.equals(e))
+				if (FloatArray.this.eq(object, e))
 					return i - FloatArray.this.beginIndex;
 			}
 
@@ -855,7 +884,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (FloatArray.this.eq(key, k)) {
 					float v = FloatArray.this.array[i + 1];
 					Float value = function.apply(k, v);
 
@@ -881,7 +910,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key.equals(k))
+				if (FloatArray.this.eq(key, k))
 					//old:notnull
 					return FloatArray.this.array[i + 1];
 			}
@@ -898,7 +927,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (FloatArray.this.eq(key, k)) {
 					float v = FloatArray.this.array[i + 1];
 					Float value = function.apply(k, v);
 
@@ -921,7 +950,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (FloatArray.this.eq(key, k))
 					return true;
 			}
 
@@ -933,7 +962,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float v = FloatArray.this.array[i];
 
-				if (value != null && value.equals(v))
+				if (FloatArray.this.eq(value, v))
 					return true;
 			}
 
@@ -961,11 +990,11 @@ public class FloatArray extends Array<float[], Float> {
 							 i < FloatArray.this.endIndex; i += 2) {
 							float k = FloatArray.this.array[i];
 
-							if (key != null && key.equals(k)) {
+							if (FloatArray.this.eq(key, k)) {
 								Object value = entry.getValue();
 								float v = FloatArray.this.array[i + 1];
 
-								if (value != null && value.equals(v))
+								if (FloatArray.this.eq(value, v))
 									continue for0;
 
 								break;
@@ -998,7 +1027,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (FloatArray.this.eq(key, k))
 					return FloatArray.this.array[i + 1];
 			}
 
@@ -1010,7 +1039,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (FloatArray.this.eq(key, k))
 					return FloatArray.this.array[i + 1];
 			}
 
@@ -1045,7 +1074,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (FloatArray.this.eq(key, k)) {
 					float v = FloatArray.this.array[i + 1];
 					Float newValue = function.apply(v, value);
 
@@ -1070,7 +1099,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (FloatArray.this.eq(key, k)) {
 					//old:found
 					float v = FloatArray.this.array[i + 1];
 					FloatArray.this.array[i + 1] = value;
@@ -1089,14 +1118,12 @@ public class FloatArray extends Array<float[], Float> {
 			for0:
 			for (java.util.Map.Entry<? extends Float, ? extends Float> entry : map.entrySet()) {
 				float key = entry.getKey();
-				int keyb = Float.floatToIntBits(key);
 
 				for (int i = FloatArray.this.beginIndex;
 					 i < FloatArray.this.endIndex; i += 2) {
 					float k = FloatArray.this.array[i];
-					int kb = Float.floatToIntBits(k);
 
-					if (keyb == kb) {
+					if (FloatArray.this.eq(key, k)) {
 						float value = entry.getValue();
 						FloatArray.this.array[i + 1] = value;
 						continue for0;
@@ -1113,7 +1140,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key != null && key.equals(k))
+				if (FloatArray.this.eq(key, k))
 					//old:found
 					return FloatArray.this.array[i + 1];
 			}
@@ -1127,10 +1154,10 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key != null && key.equals(k)) {
+				if (FloatArray.this.eq(key, k)) {
 					float v = FloatArray.this.array[i + 1];
 
-					if (value != null && value.equals(v))
+					if (FloatArray.this.eq(value, v))
 						//old:match
 						throw new UnsupportedOperationException("remove");
 
@@ -1149,10 +1176,10 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (FloatArray.this.eq(key, k)) {
 					float v = FloatArray.this.array[i + 1];
 
-					if (oldValue != null && oldValue.equals(v)) {
+					if (FloatArray.this.eq(oldValue, v)) {
 						//old:match
 						FloatArray.this.array[i + 1] = newValue;
 						return true;
@@ -1173,7 +1200,7 @@ public class FloatArray extends Array<float[], Float> {
 			for (int i = FloatArray.this.beginIndex; i < FloatArray.this.endIndex; i += 2) {
 				float k = FloatArray.this.array[i];
 
-				if (key.equals(k)) {
+				if (FloatArray.this.eq(key, k)) {
 					//old:match
 					float v = FloatArray.this.array[i + 1];
 					FloatArray.this.array[i + 1] = value;
@@ -1263,11 +1290,11 @@ public class FloatArray extends Array<float[], Float> {
 					Object key = entry.getKey();
 					float k = FloatArray.this.array[this.index];
 
-					if (key != null && key.equals(k)) {
+					if (FloatArray.this.eq(key, k)) {
 						Object value = entry.getValue();
 						float v = FloatArray.this.array[this.index + 1];
 
-						return value != null && value.equals(v);
+						return FloatArray.this.eq(value, v);
 					}
 				}
 
@@ -1329,11 +1356,11 @@ public class FloatArray extends Array<float[], Float> {
 						 i < FloatArray.this.endIndex; i += 2) {
 						float k = FloatArray.this.array[i];
 
-						if (key != null && key.equals(k)) {
+						if (FloatArray.this.eq(key, k)) {
 							Object value = entry.getValue();
 							float v = FloatArray.this.array[i + 1];
 
-							if (value != null && value.equals(v))
+							if (FloatArray.this.eq(value, v))
 								return true;
 
 							break;
@@ -1362,11 +1389,11 @@ public class FloatArray extends Array<float[], Float> {
 									 i < FloatArray.this.endIndex; i += 2) {
 									float k = FloatArray.this.array[i];
 
-									if (key != null && key.equals(k)) {
+									if (FloatArray.this.eq(key, k)) {
 										Object value = entry.getValue();
 										float v = FloatArray.this.array[i + 1];
 
-										if (value != null && value.equals(v))
+										if (FloatArray.this.eq(value, v))
 											continue for0;
 
 										break;
@@ -1650,7 +1677,7 @@ public class FloatArray extends Array<float[], Float> {
 								 i < FloatArray.this.endIndex; i += 2) {
 								float k = FloatArray.this.array[i];
 
-								if (key != null && key.equals(k))
+								if (FloatArray.this.eq(key, k))
 									continue for0;
 							}
 
