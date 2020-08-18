@@ -203,7 +203,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 				ByteArray.equals((byte[]) element, (byte[]) e))
 				continue;
 			if (element instanceof char[] && e instanceof char[] &&
-				CharacterArray.equals((char[]) element, (char[]) e))
+				CharArray.equals((char[]) element, (char[]) e))
 				continue;
 			if (element instanceof double[] && e instanceof double[] &&
 				DoubleArray.equals((double[]) element, (double[]) e))
@@ -212,7 +212,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 				FloatArray.equals((float[]) element, (float[]) e))
 				continue;
 			if (element instanceof int[] && e instanceof int[] &&
-				IntegerArray.equals((int[]) element, (int[]) e))
+				IntArray.equals((int[]) element, (int[]) e))
 				continue;
 			if (element instanceof long[] && e instanceof long[] &&
 				LongArray.equals((long[]) element, (long[]) e))
@@ -252,13 +252,13 @@ public class ObjectArray<E> extends Array<E[], E> {
 			else if (element instanceof byte[])
 				deepHashCode = 31 * deepHashCode + ByteArray.hashCode((byte[]) element);
 			else if (element instanceof char[])
-				deepHashCode = 31 * deepHashCode + CharacterArray.hashCode((char[]) element);
+				deepHashCode = 31 * deepHashCode + CharArray.hashCode((char[]) element);
 			else if (element instanceof double[])
 				deepHashCode = 31 * deepHashCode + DoubleArray.hashCode((double[]) element);
 			else if (element instanceof float[])
 				deepHashCode = 31 * deepHashCode + FloatArray.hashCode((float[]) element);
 			else if (element instanceof int[])
-				deepHashCode = 31 * deepHashCode + IntegerArray.hashCode((int[]) element);
+				deepHashCode = 31 * deepHashCode + IntArray.hashCode((int[]) element);
 			else if (element instanceof long[])
 				deepHashCode = 31 * deepHashCode + LongArray.hashCode((long[]) element);
 			else if (element instanceof short[])
@@ -515,13 +515,13 @@ public class ObjectArray<E> extends Array<E[], E> {
 				else if (element instanceof byte[])
 					builder.append(ByteArray.toString((byte[]) element));
 				else if (element instanceof char[])
-					builder.append(CharacterArray.toString((char[]) element));
+					builder.append(CharArray.toString((char[]) element));
 				else if (element instanceof double[])
 					builder.append(DoubleArray.toString((double[]) element));
 				else if (element instanceof float[])
 					builder.append(FloatArray.toString((float[]) element));
 				else if (element instanceof int[])
-					builder.append(IntegerArray.toString((int[]) element));
+					builder.append(IntArray.toString((int[]) element));
 				else if (element instanceof long[])
 					builder.append(LongArray.toString((long[]) element));
 				else if (element instanceof short[])

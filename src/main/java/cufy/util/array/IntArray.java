@@ -32,7 +32,7 @@ import java.util.stream.StreamSupport;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.03
  */
-public class IntegerArray extends Array<int[], Integer> {
+public class IntArray extends Array<int[], Integer> {
 	@SuppressWarnings("JavaDoc")
 	private static final long serialVersionUID = 3201994039505608491L;
 
@@ -44,7 +44,7 @@ public class IntegerArray extends Array<int[], Integer> {
 	 * @see java.lang.reflect.Array#newInstance(Class, int)
 	 * @since 0.1.5 ~2020.08.13
 	 */
-	public IntegerArray(int length) {
+	public IntArray(int length) {
 		super(new int[length]);
 	}
 
@@ -55,7 +55,7 @@ public class IntegerArray extends Array<int[], Integer> {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.05
 	 */
-	public IntegerArray(int[] array) {
+	public IntArray(int[] array) {
 		super(array);
 	}
 
@@ -74,7 +74,7 @@ public class IntegerArray extends Array<int[], Integer> {
 	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.05
 	 */
-	public IntegerArray(int[] array, int beginIndex, int endIndex) {
+	public IntArray(int[] array, int beginIndex, int endIndex) {
 		super(array, beginIndex, endIndex);
 	}
 
@@ -87,8 +87,8 @@ public class IntegerArray extends Array<int[], Integer> {
 	 * @throws NullPointerException if the given {@code collection} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public IntegerArray(java.util.Collection<Integer> collection) {
-		super(IntegerArray.from(collection));
+	public IntArray(java.util.Collection<Integer> collection) {
+		super(IntArray.from(collection));
 	}
 
 	/**
@@ -99,8 +99,8 @@ public class IntegerArray extends Array<int[], Integer> {
 	 * @throws NullPointerException if the given {@code map} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public IntegerArray(java.util.Map<Integer, Integer> map) {
-		super(IntegerArray.from(map));
+	public IntArray(java.util.Map<Integer, Integer> map) {
+		super(IntArray.from(map));
 	}
 
 	/**
@@ -299,9 +299,9 @@ public class IntegerArray extends Array<int[], Integer> {
 	}
 
 	@Override
-	public IntegerArray clone() {
+	public IntArray clone() {
 		// noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
-		return new IntegerArray(this.array());
+		return new IntArray(this.array());
 	}
 
 	@Override
@@ -323,9 +323,9 @@ public class IntegerArray extends Array<int[], Integer> {
 		if (object == this)
 			//same identity
 			return true;
-		if (object instanceof IntegerArray) {
+		if (object instanceof IntArray) {
 			//same class
-			IntegerArray array = (IntegerArray) object;
+			IntArray array = (IntArray) object;
 
 			if (array.length() == this.length()) {
 				//same length
@@ -482,9 +482,9 @@ public class IntegerArray extends Array<int[], Integer> {
 	}
 
 	@Override
-	public IntegerArray sub(int beginThumb, int endThumb) {
+	public IntArray sub(int beginThumb, int endThumb) {
 		this.range(beginThumb, endThumb);
-		return new IntegerArray(
+		return new IntArray(
 				this.array,
 				this.beginIndex + beginThumb,
 				this.beginIndex + endThumb
@@ -594,10 +594,10 @@ public class IntegerArray extends Array<int[], Integer> {
 		public void forEachRemaining(Consumer<? super Integer> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = IntegerArray.this.endIndex;
+			this.index = IntArray.this.endIndex;
 
-			for (int i = index; i < IntegerArray.this.endIndex; i++) {
-				int e = IntegerArray.this.array[i];
+			for (int i = index; i < IntArray.this.endIndex; i++) {
+				int e = IntArray.this.array[i];
 
 				consumer.accept(e);
 			}
@@ -607,10 +607,10 @@ public class IntegerArray extends Array<int[], Integer> {
 		public void forEachRemaining(IntConsumer consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = IntegerArray.this.endIndex;
+			this.index = IntArray.this.endIndex;
 
-			for (int i = index; i < IntegerArray.this.endIndex; i++) {
-				int e = IntegerArray.this.array[i];
+			for (int i = index; i < IntArray.this.endIndex; i++) {
+				int e = IntArray.this.array[i];
 
 				consumer.accept(e);
 			}
@@ -620,10 +620,10 @@ public class IntegerArray extends Array<int[], Integer> {
 		public Integer next() {
 			int index = this.index;
 
-			if (index < IntegerArray.this.endIndex) {
+			if (index < IntArray.this.endIndex) {
 				this.index++;
 
-				return IntegerArray.this.array[index];
+				return IntArray.this.array[index];
 			}
 
 			throw new NoSuchElementException();
@@ -633,10 +633,10 @@ public class IntegerArray extends Array<int[], Integer> {
 		public int nextInt() {
 			int index = this.index;
 
-			if (index < IntegerArray.this.endIndex) {
+			if (index < IntArray.this.endIndex) {
 				this.index++;
 
-				return IntegerArray.this.array[index];
+				return IntArray.this.array[index];
 			}
 
 			throw new NoSuchElementException();
@@ -656,8 +656,8 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public boolean contains(Object object) {
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i++) {
-				int e = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i++) {
+				int e = IntArray.this.array[i];
 
 				if (object != null && object.equals(e))
 					return true;
@@ -678,13 +678,13 @@ public class IntegerArray extends Array<int[], Integer> {
 				if (list.size() == this.size()) {
 					//same length
 
-					int i = IntegerArray.this.beginIndex;
+					int i = IntArray.this.beginIndex;
 					for (Object element : list) {
 						//for each element
 
-						if (i < IntegerArray.this.endIndex) {
+						if (i < IntArray.this.endIndex) {
 							//still same length
-							int e = IntegerArray.this.array[i++];
+							int e = IntArray.this.array[i++];
 
 							if (element != null && element.equals(e))
 								continue;
@@ -704,15 +704,15 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public Integer get(int thumb) {
-			return IntegerArray.this.array[IntegerArray.this.index(thumb)];
+			return IntArray.this.array[IntArray.this.index(thumb)];
 		}
 
 		@Override
 		public int hashCode() {
 			int hashCode = 1;
 
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i++) {
-				int e = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i++) {
+				int e = IntArray.this.array[i];
 
 				hashCode = 31 * hashCode + Integer.hashCode(e);
 			}
@@ -722,11 +722,11 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public int indexOf(Object object) {
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i++) {
-				int e = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i++) {
+				int e = IntArray.this.array[i];
 
 				if (object != null && object.equals(e))
-					return i - IntegerArray.this.beginIndex;
+					return i - IntArray.this.beginIndex;
 			}
 
 			return -1;
@@ -734,12 +734,12 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public int lastIndexOf(Object object) {
-			for (int i = IntegerArray.this.endIndex - 1;
-				 i >= IntegerArray.this.beginIndex; i--) {
-				int e = IntegerArray.this.array[i];
+			for (int i = IntArray.this.endIndex - 1;
+				 i >= IntArray.this.beginIndex; i--) {
+				int e = IntArray.this.array[i];
 
 				if (object != null && object.equals(e))
-					return i - IntegerArray.this.beginIndex;
+					return i - IntArray.this.beginIndex;
 			}
 
 			return -1;
@@ -754,8 +754,8 @@ public class IntegerArray extends Array<int[], Integer> {
 		public boolean removeIf(Predicate<? super Integer> predicate) {
 			Objects.requireNonNull(predicate, "predicate");
 
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i++) {
-				int e = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i++) {
+				int e = IntArray.this.array[i];
 
 				if (predicate.test(e))
 					//can not remove
@@ -769,20 +769,20 @@ public class IntegerArray extends Array<int[], Integer> {
 		@Override
 		public void replaceAll(UnaryOperator<Integer> operator) {
 			Objects.requireNonNull(operator, "operator");
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i++) {
-				int e = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i++) {
+				int e = IntArray.this.array[i];
 				int n = operator.apply(e);
 
-				IntegerArray.this.array[i] = n;
+				IntArray.this.array[i] = n;
 			}
 		}
 
 		@Override
 		public Integer set(int thumb, Integer element) {
 			Objects.requireNonNull(element, "element");
-			int i = IntegerArray.this.index(thumb);
-			int old = IntegerArray.this.array[i];
-			IntegerArray.this.array[i] = element;
+			int i = IntArray.this.index(thumb);
+			int old = IntArray.this.array[i];
+			IntArray.this.array[i] = element;
 			return old;
 		}
 
@@ -790,17 +790,17 @@ public class IntegerArray extends Array<int[], Integer> {
 		public void sort(Comparator<? super Integer> comparator) {
 			//manual
 			if (comparator == null)
-				IntegerArray.this.sort();
+				IntArray.this.sort();
 
 			Integer[] temp = new Integer[this.size()];
 
-			for (int i = IntegerArray.this.beginIndex, j = 0;
-				 i < IntegerArray.this.endIndex; i++, j++)
-				temp[j] = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex, j = 0;
+				 i < IntArray.this.endIndex; i++, j++)
+				temp[j] = IntArray.this.array[i];
 			java.util.Arrays.sort(temp, comparator);
-			for (int i = IntegerArray.this.beginIndex, j = 0;
-				 i < IntegerArray.this.endIndex; i++, j++)
-				IntegerArray.this.array[i] = temp[j];
+			for (int i = IntArray.this.beginIndex, j = 0;
+				 i < IntArray.this.endIndex; i++, j++)
+				IntArray.this.array[i] = temp[j];
 		}
 	}
 
@@ -836,11 +836,11 @@ public class IntegerArray extends Array<int[], Integer> {
 		public void forEachRemaining(Consumer<? super Integer> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = IntegerArray.this.endIndex;
-			this.last = IntegerArray.this.endIndex - 1;
+			this.index = IntArray.this.endIndex;
+			this.last = IntArray.this.endIndex - 1;
 
-			for (int i = index; i < IntegerArray.this.endIndex; i++) {
-				int e = IntegerArray.this.array[i];
+			for (int i = index; i < IntArray.this.endIndex; i++) {
+				int e = IntArray.this.array[i];
 
 				consumer.accept(e);
 			}
@@ -850,11 +850,11 @@ public class IntegerArray extends Array<int[], Integer> {
 		public Integer next() {
 			int index = this.index;
 
-			if (index < IntegerArray.this.endIndex) {
+			if (index < IntArray.this.endIndex) {
 				this.index++;
 				this.last = index;
 
-				return IntegerArray.this.array[index];
+				return IntArray.this.array[index];
 			}
 
 			throw new NoSuchElementException();
@@ -864,11 +864,11 @@ public class IntegerArray extends Array<int[], Integer> {
 		public Integer previous() {
 			int index = this.index - 1;
 
-			if (index >= IntegerArray.this.beginIndex) {
+			if (index >= IntArray.this.beginIndex) {
 				this.index--;
 				this.last = index;
 
-				return IntegerArray.this.array[index];
+				return IntArray.this.array[index];
 			}
 
 			throw new NoSuchElementException();
@@ -882,7 +882,7 @@ public class IntegerArray extends Array<int[], Integer> {
 			if (index == -1)
 				throw new IllegalStateException();
 
-			IntegerArray.this.array[index] = element;
+			IntArray.this.array[index] = element;
 		}
 	}
 
@@ -902,11 +902,11 @@ public class IntegerArray extends Array<int[], Integer> {
 			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
 
 				if (key.equals(k)) {
-					int v = IntegerArray.this.array[i + 1];
+					int v = IntArray.this.array[i + 1];
 					Integer value = function.apply(k, v);
 
 					if (value == null)
@@ -914,7 +914,7 @@ public class IntegerArray extends Array<int[], Integer> {
 						throw new UnsupportedOperationException("remove");
 
 					//old:found
-					IntegerArray.this.array[i + 1] = value;
+					IntArray.this.array[i + 1] = value;
 					return value;
 				}
 			}
@@ -928,12 +928,12 @@ public class IntegerArray extends Array<int[], Integer> {
 			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
 
 				if (key.equals(k))
 					//old:notnull
-					return IntegerArray.this.array[i + 1];
+					return IntArray.this.array[i + 1];
 			}
 
 			//old:notfound
@@ -945,11 +945,11 @@ public class IntegerArray extends Array<int[], Integer> {
 			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
 
 				if (key.equals(k)) {
-					int v = IntegerArray.this.array[i + 1];
+					int v = IntArray.this.array[i + 1];
 					Integer value = function.apply(k, v);
 
 					if (value == null)
@@ -957,7 +957,7 @@ public class IntegerArray extends Array<int[], Integer> {
 						throw new UnsupportedOperationException("remove");
 
 					//old:notnull new:notnull
-					IntegerArray.this.array[i + 1] = value;
+					IntArray.this.array[i + 1] = value;
 					return value;
 				}
 			}
@@ -968,8 +968,8 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public boolean containsKey(Object key) {
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
 
 				if (key != null && key.equals(k))
 					return true;
@@ -980,8 +980,8 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public boolean containsValue(Object value) {
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int v = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int v = IntArray.this.array[i];
 
 				if (value != null && value.equals(v))
 					return true;
@@ -1007,13 +1007,13 @@ public class IntegerArray extends Array<int[], Integer> {
 					for (java.util.Map.Entry entry : map.entrySet()) {
 						Object key = entry.getKey();
 
-						for (int i = IntegerArray.this.beginIndex;
-							 i < IntegerArray.this.endIndex; i += 2) {
-							int k = IntegerArray.this.array[i];
+						for (int i = IntArray.this.beginIndex;
+							 i < IntArray.this.endIndex; i += 2) {
+							int k = IntArray.this.array[i];
 
 							if (key != null && key.equals(k)) {
 								Object value = entry.getValue();
-								int v = IntegerArray.this.array[i + 1];
+								int v = IntArray.this.array[i + 1];
 
 								if (value != null && value.equals(v))
 									continue for0;
@@ -1036,20 +1036,20 @@ public class IntegerArray extends Array<int[], Integer> {
 		public void forEach(BiConsumer<? super Integer, ? super Integer> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
-				int v = IntegerArray.this.array[i + 1];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
+				int v = IntArray.this.array[i + 1];
 				consumer.accept(k, v);
 			}
 		}
 
 		@Override
 		public Integer get(Object key) {
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
 
 				if (key != null && key.equals(k))
-					return IntegerArray.this.array[i + 1];
+					return IntArray.this.array[i + 1];
 			}
 
 			return null;
@@ -1057,11 +1057,11 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public Integer getOrDefault(Object key, Integer defaultValue) {
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
 
 				if (key != null && key.equals(k))
-					return IntegerArray.this.array[i + 1];
+					return IntArray.this.array[i + 1];
 			}
 
 			return defaultValue;
@@ -1071,9 +1071,9 @@ public class IntegerArray extends Array<int[], Integer> {
 		public int hashCode() {
 			int hashCode = 0;
 
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
-				int v = IntegerArray.this.array[i + 1];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
+				int v = IntArray.this.array[i + 1];
 				hashCode += Integer.hashCode(k) ^
 							Integer.hashCode(v);
 			}
@@ -1092,11 +1092,11 @@ public class IntegerArray extends Array<int[], Integer> {
 			Objects.requireNonNull(value, "value");
 			Objects.requireNonNull(function, "function");
 
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
 
 				if (key.equals(k)) {
-					int v = IntegerArray.this.array[i + 1];
+					int v = IntArray.this.array[i + 1];
 					Integer newValue = function.apply(v, value);
 
 					if (newValue == null)
@@ -1104,7 +1104,7 @@ public class IntegerArray extends Array<int[], Integer> {
 						throw new UnsupportedOperationException("remove");
 
 					//old:found new:notnull
-					IntegerArray.this.array[i + 1] = newValue;
+					IntArray.this.array[i + 1] = newValue;
 					return newValue;
 				}
 			}
@@ -1117,13 +1117,13 @@ public class IntegerArray extends Array<int[], Integer> {
 		public Integer put(Integer key, Integer value) {
 			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(value, "value");
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
 
 				if (key.equals(k)) {
 					//old:found
-					int v = IntegerArray.this.array[i + 1];
-					IntegerArray.this.array[i + 1] = value;
+					int v = IntArray.this.array[i + 1];
+					IntArray.this.array[i + 1] = value;
 					return v;
 				}
 			}
@@ -1140,13 +1140,13 @@ public class IntegerArray extends Array<int[], Integer> {
 			for (java.util.Map.Entry<? extends Integer, ? extends Integer> entry : map.entrySet()) {
 				int key = entry.getKey();
 
-				for (int i = IntegerArray.this.beginIndex;
-					 i < IntegerArray.this.endIndex; i += 2) {
-					int k = IntegerArray.this.array[i];
+				for (int i = IntArray.this.beginIndex;
+					 i < IntArray.this.endIndex; i += 2) {
+					int k = IntArray.this.array[i];
 
 					if (key == k) {
 						int value = entry.getValue();
-						IntegerArray.this.array[i + 1] = value;
+						IntArray.this.array[i + 1] = value;
 						continue for0;
 					}
 				}
@@ -1158,12 +1158,12 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public Integer putIfAbsent(Integer key, Integer value) {
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
 
 				if (key != null && key.equals(k))
 					//old:found
-					return IntegerArray.this.array[i + 1];
+					return IntArray.this.array[i + 1];
 			}
 
 			//old:notfound
@@ -1172,11 +1172,11 @@ public class IntegerArray extends Array<int[], Integer> {
 
 		@Override
 		public boolean remove(Object key, Object value) {
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
 
 				if (key != null && key.equals(k)) {
-					int v = IntegerArray.this.array[i + 1];
+					int v = IntArray.this.array[i + 1];
 
 					if (value != null && value.equals(v))
 						//old:match
@@ -1194,15 +1194,15 @@ public class IntegerArray extends Array<int[], Integer> {
 		public boolean replace(Integer key, Integer oldValue, Integer newValue) {
 			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(newValue, "newValue");
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
 
 				if (key.equals(k)) {
-					int v = IntegerArray.this.array[i + 1];
+					int v = IntArray.this.array[i + 1];
 
 					if (oldValue != null && oldValue.equals(v)) {
 						//old:match
-						IntegerArray.this.array[i + 1] = newValue;
+						IntArray.this.array[i + 1] = newValue;
 						return true;
 					}
 
@@ -1218,13 +1218,13 @@ public class IntegerArray extends Array<int[], Integer> {
 		public Integer replace(Integer key, Integer value) {
 			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(value, "value");
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
 
 				if (key.equals(k)) {
 					//old:match
-					int v = IntegerArray.this.array[i + 1];
-					IntegerArray.this.array[i + 1] = value;
+					int v = IntArray.this.array[i + 1];
+					IntArray.this.array[i + 1] = value;
 					return v;
 				}
 			}
@@ -1237,12 +1237,12 @@ public class IntegerArray extends Array<int[], Integer> {
 		public void replaceAll(BiFunction<? super Integer, ? super Integer, ? extends Integer> function) {
 			Objects.requireNonNull(function, "function");
 
-			for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-				int k = IntegerArray.this.array[i];
-				int v = IntegerArray.this.array[i + 1];
+			for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+				int k = IntArray.this.array[i];
+				int v = IntArray.this.array[i + 1];
 				int n = function.apply(k, v);
 
-				IntegerArray.this.array[i + 1] = n;
+				IntArray.this.array[i + 1] = n;
 			}
 		}
 
@@ -1253,17 +1253,17 @@ public class IntegerArray extends Array<int[], Integer> {
 
 			StringBuilder builder = new StringBuilder("{");
 
-			int i = IntegerArray.this.beginIndex;
+			int i = IntArray.this.beginIndex;
 			while (true) {
-				int k = IntegerArray.this.array[i];
-				int v = IntegerArray.this.array[i + 1];
+				int k = IntArray.this.array[i];
+				int v = IntArray.this.array[i + 1];
 
 				builder.append(k)
 						.append("=")
 						.append(v);
 
 				i += 2;
-				if (i >= IntegerArray.this.endIndex)
+				if (i >= IntArray.this.endIndex)
 					return builder.append("}")
 							.toString();
 
@@ -1309,11 +1309,11 @@ public class IntegerArray extends Array<int[], Integer> {
 				if (object instanceof java.util.Map.Entry) {
 					java.util.Map.Entry entry = (java.util.Map.Entry) object;
 					Object key = entry.getKey();
-					int k = IntegerArray.this.array[this.index];
+					int k = IntArray.this.array[this.index];
 
 					if (key != null && key.equals(k)) {
 						Object value = entry.getValue();
-						int v = IntegerArray.this.array[this.index + 1];
+						int v = IntArray.this.array[this.index + 1];
 
 						return value != null && value.equals(v);
 					}
@@ -1324,18 +1324,18 @@ public class IntegerArray extends Array<int[], Integer> {
 
 			@Override
 			public Integer getKey() {
-				return IntegerArray.this.array[this.index];
+				return IntArray.this.array[this.index];
 			}
 
 			@Override
 			public Integer getValue() {
-				return IntegerArray.this.array[this.index + 1];
+				return IntArray.this.array[this.index + 1];
 			}
 
 			@Override
 			public int hashCode() {
-				int k = IntegerArray.this.array[this.index];
-				int v = IntegerArray.this.array[this.index + 1];
+				int k = IntArray.this.array[this.index];
+				int v = IntArray.this.array[this.index + 1];
 				return Integer.hashCode(k) ^
 					   Integer.hashCode(v);
 			}
@@ -1343,15 +1343,15 @@ public class IntegerArray extends Array<int[], Integer> {
 			@Override
 			public Integer setValue(Integer value) {
 				Objects.requireNonNull(value, "value");
-				int v = IntegerArray.this.array[this.index + 1];
-				IntegerArray.this.array[this.index + 1] = value;
+				int v = IntArray.this.array[this.index + 1];
+				IntArray.this.array[this.index + 1] = value;
 				return v;
 			}
 
 			@Override
 			public String toString() {
-				int k = IntegerArray.this.array[this.index];
-				int v = IntegerArray.this.array[this.index + 1];
+				int k = IntArray.this.array[this.index];
+				int v = IntArray.this.array[this.index + 1];
 				return k + "=" + v;
 			}
 		}
@@ -1373,13 +1373,13 @@ public class IntegerArray extends Array<int[], Integer> {
 					java.util.Map.Entry entry = (java.util.Map.Entry) object;
 					Object key = entry.getKey();
 
-					for (int i = IntegerArray.this.beginIndex;
-						 i < IntegerArray.this.endIndex; i += 2) {
-						int k = IntegerArray.this.array[i];
+					for (int i = IntArray.this.beginIndex;
+						 i < IntArray.this.endIndex; i += 2) {
+						int k = IntArray.this.array[i];
 
 						if (key != null && key.equals(k)) {
 							Object value = entry.getValue();
-							int v = IntegerArray.this.array[i + 1];
+							int v = IntArray.this.array[i + 1];
 
 							if (value != null && value.equals(v))
 								return true;
@@ -1406,13 +1406,13 @@ public class IntegerArray extends Array<int[], Integer> {
 								java.util.Map.Entry entry = (java.util.Map.Entry) object1;
 								Object key = entry.getKey();
 
-								for (int i = IntegerArray.this.beginIndex;
-									 i < IntegerArray.this.endIndex; i += 2) {
-									int k = IntegerArray.this.array[i];
+								for (int i = IntArray.this.beginIndex;
+									 i < IntArray.this.endIndex; i += 2) {
+									int k = IntArray.this.array[i];
 
 									if (key != null && key.equals(k)) {
 										Object value = entry.getValue();
-										int v = IntegerArray.this.array[i + 1];
+										int v = IntArray.this.array[i + 1];
 
 										if (value != null && value.equals(v))
 											continue for0;
@@ -1437,7 +1437,7 @@ public class IntegerArray extends Array<int[], Integer> {
 				Objects.requireNonNull(consumer, "consumer");
 
 				int i = 0;
-				int l = IntegerArray.this.length();
+				int l = IntArray.this.length();
 				for (; i < l; i += 2) {
 					Entry entry = new Entry(i);//trimmed index
 
@@ -1449,9 +1449,9 @@ public class IntegerArray extends Array<int[], Integer> {
 			public int hashCode() {
 				int hashCode = 0;
 
-				for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-					int k = IntegerArray.this.array[i];
-					int v = IntegerArray.this.array[i + 1];
+				for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+					int k = IntArray.this.array[i];
+					int v = IntArray.this.array[i + 1];
 					hashCode += Integer.hashCode(k) ^
 								Integer.hashCode(v);
 				}
@@ -1469,7 +1469,7 @@ public class IntegerArray extends Array<int[], Integer> {
 				Objects.requireNonNull(predicate, "predicate");
 
 				int i = 0;
-				int l = IntegerArray.this.length();
+				int l = IntArray.this.length();
 				for (; i < l; i += 2) {
 					Entry entry = new Entry(i); //trimmed index
 
@@ -1493,7 +1493,7 @@ public class IntegerArray extends Array<int[], Integer> {
 				Object[] product = new Object[length];
 
 				int i = 0;
-				int l = IntegerArray.this.length();
+				int l = IntArray.this.length();
 				for (int j = 0; i < l; i += 2, j++) {
 					Entry entry = new Entry(i);//trimmed index
 
@@ -1516,7 +1516,7 @@ public class IntegerArray extends Array<int[], Integer> {
 
 				//should trim the index for the entry creation
 				int i = 0;
-				int l = IntegerArray.this.length();
+				int l = IntArray.this.length();
 				for (int j = 0; i < l; i += 2, j++) {
 					Entry entry = new Entry(i);//trimmed index
 
@@ -1533,17 +1533,17 @@ public class IntegerArray extends Array<int[], Integer> {
 
 				StringBuilder builder = new StringBuilder("[");
 
-				int i = IntegerArray.this.beginIndex;
+				int i = IntArray.this.beginIndex;
 				while (true) {
-					int k = IntegerArray.this.array[i];
-					int v = IntegerArray.this.array[i + 1];
+					int k = IntArray.this.array[i];
+					int v = IntArray.this.array[i + 1];
 
 					builder.append(k)
 							.append("=")
 							.append(v);
 
 					i += 2;
-					if (i >= IntegerArray.this.endIndex)
+					if (i >= IntArray.this.endIndex)
 						return builder.append("]")
 								.toString();
 
@@ -1584,10 +1584,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public void forEachRemaining(Consumer<? super java.util.Map.Entry<Integer, Integer>> consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = IntegerArray.this.endIndex;
+					this.index = IntArray.this.endIndex;
 
-					int i = IntegerArray.this.thumb(index);
-					int l = IntegerArray.this.length();
+					int i = IntArray.this.thumb(index);
+					int l = IntArray.this.length();
 					for (; i < l; i += 2) {
 						Entry entry = new Entry(i);//trimmed index
 
@@ -1599,10 +1599,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public Entry next() {
 					int index = this.index;
 
-					if (index < IntegerArray.this.endIndex) {
+					if (index < IntArray.this.endIndex) {
 						this.index += 2;
 
-						int i = IntegerArray.this.thumb(index);
+						int i = IntArray.this.thumb(index);
 						return new Entry(i);//trimmed index
 					}
 
@@ -1643,10 +1643,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public void forEachRemaining(Consumer<? super java.util.Map.Entry<Integer, Integer>> consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = IntegerArray.this.endIndex;
+					this.index = IntArray.this.endIndex;
 
 					int i = 0;
-					int l = IntegerArray.this.length();
+					int l = IntArray.this.length();
 					for (; i < l; i += 2) {
 						Entry entry = new Entry(i);//trimmed index
 
@@ -1659,10 +1659,10 @@ public class IntegerArray extends Array<int[], Integer> {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
 
-					if (index < IntegerArray.this.endIndex) {
+					if (index < IntArray.this.endIndex) {
 						this.index += 2;
 
-						int i = IntegerArray.this.thumb(index);
+						int i = IntArray.this.thumb(index);
 						Entry entry = new Entry(i);//trimmed index
 						consumer.accept(entry);
 						return true;
@@ -1694,9 +1694,9 @@ public class IntegerArray extends Array<int[], Integer> {
 					if (set.size() == this.size()) {
 						for0:
 						for (Object key : set) {
-							for (int i = IntegerArray.this.beginIndex;
-								 i < IntegerArray.this.endIndex; i += 2) {
-								int k = IntegerArray.this.array[i];
+							for (int i = IntArray.this.beginIndex;
+								 i < IntArray.this.endIndex; i += 2) {
+								int k = IntArray.this.array[i];
 
 								if (key != null && key.equals(k))
 									continue for0;
@@ -1715,8 +1715,8 @@ public class IntegerArray extends Array<int[], Integer> {
 			@Override
 			public void forEach(Consumer<? super Integer> consumer) {
 				Objects.requireNonNull(consumer, "consumer");
-				for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-					int k = IntegerArray.this.array[i];
+				for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+					int k = IntArray.this.array[i];
 
 					consumer.accept(k);
 				}
@@ -1726,8 +1726,8 @@ public class IntegerArray extends Array<int[], Integer> {
 			public int hashCode() {
 				int hashCode = 0;
 
-				for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-					int k = IntegerArray.this.array[i];
+				for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+					int k = IntArray.this.array[i];
 
 					hashCode += Integer.hashCode(k);
 				}
@@ -1744,8 +1744,8 @@ public class IntegerArray extends Array<int[], Integer> {
 			public boolean removeIf(Predicate<? super Integer> predicate) {
 				Objects.requireNonNull(predicate, "predicate");
 
-				for (int i = IntegerArray.this.beginIndex; i < IntegerArray.this.endIndex; i += 2) {
-					int k = IntegerArray.this.array[i];
+				for (int i = IntArray.this.beginIndex; i < IntArray.this.endIndex; i += 2) {
+					int k = IntArray.this.array[i];
 
 					if (predicate.test(k))
 						//can not remove
@@ -1766,9 +1766,9 @@ public class IntegerArray extends Array<int[], Integer> {
 				int length = this.size();
 				Object[] product = new Object[length];
 
-				for (int i = IntegerArray.this.beginIndex, j = 0;
-					 i < IntegerArray.this.endIndex; i += 2, j++) {
-					int k = IntegerArray.this.array[i];
+				for (int i = IntArray.this.beginIndex, j = 0;
+					 i < IntArray.this.endIndex; i += 2, j++) {
+					int k = IntArray.this.array[i];
 
 					product[j] = k;
 				}
@@ -1787,9 +1787,9 @@ public class IntegerArray extends Array<int[], Integer> {
 				else
 					product[length] = null;
 
-				for (int i = IntegerArray.this.beginIndex, j = 0;
-					 i < IntegerArray.this.endIndex; i += 2, j++) {
-					int k = IntegerArray.this.array[i];
+				for (int i = IntArray.this.beginIndex, j = 0;
+					 i < IntArray.this.endIndex; i += 2, j++) {
+					int k = IntArray.this.array[i];
 
 					product[j] = (T) (Integer) k;
 				}
@@ -1804,14 +1804,14 @@ public class IntegerArray extends Array<int[], Integer> {
 
 				StringBuilder builder = new StringBuilder("[");
 
-				int i = IntegerArray.this.beginIndex;
+				int i = IntArray.this.beginIndex;
 				while (true) {
-					int k = IntegerArray.this.array[i];
+					int k = IntArray.this.array[i];
 
 					builder.append(k);
 
 					i += 2;
-					if (i >= IntegerArray.this.endIndex)
+					if (i >= IntArray.this.endIndex)
 						return builder.append("]")
 								.toString();
 
@@ -1852,10 +1852,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public void forEachRemaining(Consumer<? super Integer> consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = IntegerArray.this.endIndex;
+					this.index = IntArray.this.endIndex;
 
-					for (int i = index; i < IntegerArray.this.endIndex; i += 2) {
-						int k = IntegerArray.this.array[i];
+					for (int i = index; i < IntArray.this.endIndex; i += 2) {
+						int k = IntArray.this.array[i];
 
 						consumer.accept(k);
 					}
@@ -1865,10 +1865,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public void forEachRemaining(IntConsumer consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = IntegerArray.this.endIndex;
+					this.index = IntArray.this.endIndex;
 
-					for (int i = index; i < IntegerArray.this.endIndex; i += 2) {
-						int k = IntegerArray.this.array[i];
+					for (int i = index; i < IntArray.this.endIndex; i += 2) {
+						int k = IntArray.this.array[i];
 
 						consumer.accept(k);
 					}
@@ -1878,10 +1878,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public Integer next() {
 					int index = this.index;
 
-					if (index < IntegerArray.this.endIndex) {
+					if (index < IntArray.this.endIndex) {
 						this.index += 2;
 
-						return IntegerArray.this.array[index];
+						return IntArray.this.array[index];
 					}
 
 					throw new NoSuchElementException();
@@ -1891,10 +1891,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public int nextInt() {
 					int index = this.index;
 
-					if (index < IntegerArray.this.endIndex) {
+					if (index < IntArray.this.endIndex) {
 						this.index += 2;
 
-						return IntegerArray.this.array[index];
+						return IntArray.this.array[index];
 					}
 
 					throw new NoSuchElementException();
@@ -1934,10 +1934,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public void forEachRemaining(Consumer<? super Integer> consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = IntegerArray.this.endIndex;
+					this.index = IntArray.this.endIndex;
 
-					for (int i = index; i < IntegerArray.this.endIndex; i += 2) {
-						int k = IntegerArray.this.array[i];
+					for (int i = index; i < IntArray.this.endIndex; i += 2) {
+						int k = IntArray.this.array[i];
 
 						consumer.accept(k);
 					}
@@ -1947,10 +1947,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public void forEachRemaining(IntConsumer consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = IntegerArray.this.endIndex;
+					this.index = IntArray.this.endIndex;
 
-					for (int i = index; i < IntegerArray.this.endIndex; i += 2) {
-						int k = IntegerArray.this.array[i];
+					for (int i = index; i < IntArray.this.endIndex; i += 2) {
+						int k = IntArray.this.array[i];
 
 						consumer.accept(k);
 					}
@@ -1961,10 +1961,10 @@ public class IntegerArray extends Array<int[], Integer> {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
 
-					if (index < IntegerArray.this.endIndex) {
+					if (index < IntArray.this.endIndex) {
 						this.index += 2;
 
-						int k = IntegerArray.this.array[index];
+						int k = IntArray.this.array[index];
 						consumer.accept(k);
 						return true;
 					}
@@ -1977,10 +1977,10 @@ public class IntegerArray extends Array<int[], Integer> {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
 
-					if (index < IntegerArray.this.endIndex) {
+					if (index < IntArray.this.endIndex) {
 						this.index += 2;
 
-						int k = IntegerArray.this.array[index];
+						int k = IntArray.this.array[index];
 						consumer.accept(k);
 						return true;
 					}
@@ -2014,9 +2014,9 @@ public class IntegerArray extends Array<int[], Integer> {
 			@Override
 			public void forEach(Consumer<? super Integer> consumer) {
 				Objects.requireNonNull(consumer, "consumer");
-				for (int i = IntegerArray.this.beginIndex + 1;
-					 i < IntegerArray.this.endIndex; i += 2) {
-					int v = IntegerArray.this.array[i];
+				for (int i = IntArray.this.beginIndex + 1;
+					 i < IntArray.this.endIndex; i += 2) {
+					int v = IntArray.this.array[i];
 
 					consumer.accept(v);
 				}
@@ -2026,9 +2026,9 @@ public class IntegerArray extends Array<int[], Integer> {
 			public int hashCode() {
 				int hashCode = 0;
 
-				for (int i = IntegerArray.this.beginIndex + 1;
-					 i < IntegerArray.this.endIndex; i += 2) {
-					int v = IntegerArray.this.array[i];
+				for (int i = IntArray.this.beginIndex + 1;
+					 i < IntArray.this.endIndex; i += 2) {
+					int v = IntArray.this.array[i];
 
 					hashCode += Integer.hashCode(v);
 				}
@@ -2045,9 +2045,9 @@ public class IntegerArray extends Array<int[], Integer> {
 			public boolean removeIf(Predicate<? super Integer> predicate) {
 				Objects.requireNonNull(predicate, "predicate");
 
-				for (int i = IntegerArray.this.beginIndex + 1;
-					 i < IntegerArray.this.endIndex; i += 2) {
-					int v = IntegerArray.this.array[i];
+				for (int i = IntArray.this.beginIndex + 1;
+					 i < IntArray.this.endIndex; i += 2) {
+					int v = IntArray.this.array[i];
 
 					if (predicate.test(v))
 						//can not remove
@@ -2065,12 +2065,12 @@ public class IntegerArray extends Array<int[], Integer> {
 
 			@Override
 			public Object[] toArray() {
-				int length = IntegerArray.this.endIndex - IntegerArray.this.beginIndex >>> 1;
+				int length = IntArray.this.endIndex - IntArray.this.beginIndex >>> 1;
 				Object[] product = new Object[length];
 
-				for (int i = IntegerArray.this.beginIndex + 1, j = 0;
-					 i < IntegerArray.this.endIndex; i += 2, j++) {
-					int v = IntegerArray.this.array[i];
+				for (int i = IntArray.this.beginIndex + 1, j = 0;
+					 i < IntArray.this.endIndex; i += 2, j++) {
+					int v = IntArray.this.array[i];
 
 					product[j] = v;
 				}
@@ -2081,7 +2081,7 @@ public class IntegerArray extends Array<int[], Integer> {
 			@Override
 			public <T> T[] toArray(T[] array) {
 				Objects.requireNonNull(array, "array");
-				int length = IntegerArray.this.endIndex - IntegerArray.this.beginIndex >>> 1;
+				int length = IntArray.this.endIndex - IntArray.this.beginIndex >>> 1;
 				T[] product = array;
 
 				if (array.length < length)
@@ -2089,9 +2089,9 @@ public class IntegerArray extends Array<int[], Integer> {
 				else
 					product[length] = null;
 
-				for (int i = IntegerArray.this.beginIndex + 1, j = 0;
-					 i < IntegerArray.this.endIndex; i += 2, j++) {
-					int v = IntegerArray.this.array[i];
+				for (int i = IntArray.this.beginIndex + 1, j = 0;
+					 i < IntArray.this.endIndex; i += 2, j++) {
+					int v = IntArray.this.array[i];
 
 					product[j] = (T) (Integer) v;
 				}
@@ -2106,14 +2106,14 @@ public class IntegerArray extends Array<int[], Integer> {
 
 				StringBuilder builder = new StringBuilder("[");
 
-				int i = IntegerArray.this.beginIndex + 1;
+				int i = IntArray.this.beginIndex + 1;
 				while (true) {
-					int v = IntegerArray.this.array[i];
+					int v = IntArray.this.array[i];
 
 					builder.append(v);
 
 					i += 2;
-					if (i >= IntegerArray.this.endIndex)
+					if (i >= IntArray.this.endIndex)
 						return builder.append("]")
 								.toString();
 
@@ -2154,10 +2154,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public void forEachRemaining(Consumer<? super Integer> consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = IntegerArray.this.endIndex;
+					this.index = IntArray.this.endIndex;
 
-					for (int i = index + 1; i < IntegerArray.this.endIndex; i += 2) {
-						int v = IntegerArray.this.array[i];
+					for (int i = index + 1; i < IntArray.this.endIndex; i += 2) {
+						int v = IntArray.this.array[i];
 
 						consumer.accept(v);
 					}
@@ -2167,10 +2167,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public void forEachRemaining(IntConsumer consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = IntegerArray.this.endIndex;
+					this.index = IntArray.this.endIndex;
 
-					for (int i = index + 1; i < IntegerArray.this.endIndex; i += 2) {
-						int v = IntegerArray.this.array[i];
+					for (int i = index + 1; i < IntArray.this.endIndex; i += 2) {
+						int v = IntArray.this.array[i];
 
 						consumer.accept(v);
 					}
@@ -2180,10 +2180,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public Integer next() {
 					int index = this.index;
 
-					if (index < IntegerArray.this.endIndex) {
+					if (index < IntArray.this.endIndex) {
 						this.index += 2;
 
-						return IntegerArray.this.array[index + 1];
+						return IntArray.this.array[index + 1];
 					}
 
 					throw new NoSuchElementException();
@@ -2193,10 +2193,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public int nextInt() {
 					int index = this.index;
 
-					if (index < IntegerArray.this.endIndex) {
+					if (index < IntArray.this.endIndex) {
 						this.index += 2;
 
-						return IntegerArray.this.array[index + 1];
+						return IntArray.this.array[index + 1];
 					}
 
 					throw new NoSuchElementException();
@@ -2236,10 +2236,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public void forEachRemaining(Consumer<? super Integer> consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = IntegerArray.this.endIndex;
+					this.index = IntArray.this.endIndex;
 
-					for (int i = index + 1; i < IntegerArray.this.endIndex; i += 2) {
-						int v = IntegerArray.this.array[i];
+					for (int i = index + 1; i < IntArray.this.endIndex; i += 2) {
+						int v = IntArray.this.array[i];
 
 						consumer.accept(v);
 					}
@@ -2249,10 +2249,10 @@ public class IntegerArray extends Array<int[], Integer> {
 				public void forEachRemaining(IntConsumer consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = IntegerArray.this.endIndex;
+					this.index = IntArray.this.endIndex;
 
-					for (int i = index + 1; i < IntegerArray.this.endIndex; i += 2) {
-						int v = IntegerArray.this.array[i];
+					for (int i = index + 1; i < IntArray.this.endIndex; i += 2) {
+						int v = IntArray.this.array[i];
 
 						consumer.accept(v);
 					}
@@ -2263,10 +2263,10 @@ public class IntegerArray extends Array<int[], Integer> {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
 
-					if (index < IntegerArray.this.endIndex) {
+					if (index < IntArray.this.endIndex) {
 						this.index += 2;
 
-						int v = IntegerArray.this.array[index + 1];
+						int v = IntArray.this.array[index + 1];
 						consumer.accept(v);
 						return true;
 					}
@@ -2279,10 +2279,10 @@ public class IntegerArray extends Array<int[], Integer> {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
 
-					if (index < IntegerArray.this.endIndex) {
+					if (index < IntArray.this.endIndex) {
 						this.index += 2;
 
-						int v = IntegerArray.this.array[index + 1];
+						int v = IntArray.this.array[index + 1];
 						consumer.accept(v);
 						return true;
 					}
@@ -2331,10 +2331,10 @@ public class IntegerArray extends Array<int[], Integer> {
 		public void forEachRemaining(Consumer<? super Integer> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = IntegerArray.this.endIndex;
+			this.index = IntArray.this.endIndex;
 
-			for (int i = index; i < IntegerArray.this.endIndex; i++) {
-				int e = IntegerArray.this.array[i];
+			for (int i = index; i < IntArray.this.endIndex; i++) {
+				int e = IntArray.this.array[i];
 
 				consumer.accept(e);
 			}
@@ -2344,10 +2344,10 @@ public class IntegerArray extends Array<int[], Integer> {
 		public void forEachRemaining(IntConsumer consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = IntegerArray.this.endIndex;
+			this.index = IntArray.this.endIndex;
 
-			for (int i = index; i < IntegerArray.this.endIndex; i++) {
-				int e = IntegerArray.this.array[i];
+			for (int i = index; i < IntArray.this.endIndex; i++) {
+				int e = IntArray.this.array[i];
 
 				consumer.accept(e);
 			}
@@ -2358,9 +2358,9 @@ public class IntegerArray extends Array<int[], Integer> {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
 
-			if (index < IntegerArray.this.endIndex) {
+			if (index < IntArray.this.endIndex) {
 				this.index += 2;
-				int e = IntegerArray.this.array[index];
+				int e = IntArray.this.array[index];
 
 				consumer.accept(e);
 				return true;
@@ -2374,9 +2374,9 @@ public class IntegerArray extends Array<int[], Integer> {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
 
-			if (index < IntegerArray.this.endIndex) {
+			if (index < IntArray.this.endIndex) {
 				this.index += 2;
-				int e = IntegerArray.this.array[index];
+				int e = IntArray.this.array[index];
 
 				consumer.accept(e);
 				return true;

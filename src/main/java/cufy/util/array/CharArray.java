@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.03
  */
-public class CharacterArray extends Array<char[], Character> {
+public class CharArray extends Array<char[], Character> {
 	@SuppressWarnings("JavaDoc")
 	private static final long serialVersionUID = 3201994039505608491L;
 
@@ -42,7 +42,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @see java.lang.reflect.Array#newInstance(Class, int)
 	 * @since 0.1.5 ~2020.08.13
 	 */
-	public CharacterArray(int length) {
+	public CharArray(int length) {
 		super(new char[length]);
 	}
 
@@ -53,7 +53,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.05
 	 */
-	public CharacterArray(char[] array) {
+	public CharArray(char[] array) {
 		super(array);
 	}
 
@@ -72,7 +72,7 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.05
 	 */
-	public CharacterArray(char[] array, int beginIndex, int endIndex) {
+	public CharArray(char[] array, int beginIndex, int endIndex) {
 		super(array, beginIndex, endIndex);
 	}
 
@@ -85,8 +85,8 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @throws NullPointerException if the given {@code collection} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public CharacterArray(java.util.Collection<Character> collection) {
-		super(CharacterArray.from(collection));
+	public CharArray(java.util.Collection<Character> collection) {
+		super(CharArray.from(collection));
 	}
 
 	/**
@@ -97,8 +97,8 @@ public class CharacterArray extends Array<char[], Character> {
 	 * @throws NullPointerException if the given {@code map} is null.
 	 * @since 0.1.5 ~2020.08.12
 	 */
-	public CharacterArray(java.util.Map<Character, Character> map) {
-		super(CharacterArray.from(map));
+	public CharArray(java.util.Map<Character, Character> map) {
+		super(CharArray.from(map));
 	}
 
 	/**
@@ -295,9 +295,9 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public CharacterArray clone() {
+	public CharArray clone() {
 		// noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
-		return new CharacterArray(this.array());
+		return new CharArray(this.array());
 	}
 
 	@Override
@@ -319,9 +319,9 @@ public class CharacterArray extends Array<char[], Character> {
 		if (object == this)
 			//same identity
 			return true;
-		if (object instanceof CharacterArray) {
+		if (object instanceof CharArray) {
 			//same class
-			CharacterArray array = (CharacterArray) object;
+			CharArray array = (CharArray) object;
 
 			if (array.length() == this.length()) {
 				//same length
@@ -481,9 +481,9 @@ public class CharacterArray extends Array<char[], Character> {
 	}
 
 	@Override
-	public CharacterArray sub(int beginThumb, int endThumb) {
+	public CharArray sub(int beginThumb, int endThumb) {
 		this.range(beginThumb, endThumb);
-		return new CharacterArray(
+		return new CharArray(
 				this.array,
 				this.beginIndex + beginThumb,
 				this.beginIndex + endThumb
@@ -571,10 +571,10 @@ public class CharacterArray extends Array<char[], Character> {
 		public void forEachRemaining(Consumer<? super Character> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = CharacterArray.this.endIndex;
+			this.index = CharArray.this.endIndex;
 
-			for (int i = index; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = index; i < CharArray.this.endIndex; i++) {
+				char e = CharArray.this.array[i];
 
 				consumer.accept(e);
 			}
@@ -584,10 +584,10 @@ public class CharacterArray extends Array<char[], Character> {
 		public Character next() {
 			int index = this.index;
 
-			if (index < CharacterArray.this.endIndex) {
+			if (index < CharArray.this.endIndex) {
 				this.index++;
 
-				return CharacterArray.this.array[index];
+				return CharArray.this.array[index];
 			}
 
 			throw new NoSuchElementException();
@@ -607,8 +607,8 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public boolean contains(Object object) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i++) {
+				char e = CharArray.this.array[i];
 
 				if (object != null && object.equals(e))
 					return true;
@@ -629,13 +629,13 @@ public class CharacterArray extends Array<char[], Character> {
 				if (list.size() == this.size()) {
 					//same length
 
-					int i = CharacterArray.this.beginIndex;
+					int i = CharArray.this.beginIndex;
 					for (Object element : list) {
 						//for each element
 
-						if (i < CharacterArray.this.endIndex) {
+						if (i < CharArray.this.endIndex) {
 							//still same length
-							char e = CharacterArray.this.array[i++];
+							char e = CharArray.this.array[i++];
 
 							if (element != null && element.equals(e))
 								continue;
@@ -655,15 +655,15 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public Character get(int thumb) {
-			return CharacterArray.this.array[CharacterArray.this.index(thumb)];
+			return CharArray.this.array[CharArray.this.index(thumb)];
 		}
 
 		@Override
 		public int hashCode() {
 			int hashCode = 1;
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i++) {
+				char e = CharArray.this.array[i];
 
 				hashCode = 31 * hashCode + Character.hashCode(e);
 			}
@@ -673,11 +673,11 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public int indexOf(Object object) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i++) {
+				char e = CharArray.this.array[i];
 
 				if (object != null && object.equals(e))
-					return i - CharacterArray.this.beginIndex;
+					return i - CharArray.this.beginIndex;
 			}
 
 			return -1;
@@ -685,12 +685,12 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public int lastIndexOf(Object object) {
-			for (int i = CharacterArray.this.endIndex - 1;
-				 i >= CharacterArray.this.beginIndex; i--) {
-				char e = CharacterArray.this.array[i];
+			for (int i = CharArray.this.endIndex - 1;
+				 i >= CharArray.this.beginIndex; i--) {
+				char e = CharArray.this.array[i];
 
 				if (object != null && object.equals(e))
-					return i - CharacterArray.this.beginIndex;
+					return i - CharArray.this.beginIndex;
 			}
 
 			return -1;
@@ -705,8 +705,8 @@ public class CharacterArray extends Array<char[], Character> {
 		public boolean removeIf(Predicate<? super Character> predicate) {
 			Objects.requireNonNull(predicate, "predicate");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i++) {
+				char e = CharArray.this.array[i];
 
 				if (predicate.test(e))
 					//can not remove
@@ -720,35 +720,35 @@ public class CharacterArray extends Array<char[], Character> {
 		@Override
 		public void replaceAll(UnaryOperator<Character> operator) {
 			Objects.requireNonNull(operator, "operator");
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i++) {
+				char e = CharArray.this.array[i];
 				char n = operator.apply(e);
 
-				CharacterArray.this.array[i] = n;
+				CharArray.this.array[i] = n;
 			}
 		}
 
 		@Override
 		public Character set(int thumb, Character element) {
 			Objects.requireNonNull(element, "element");
-			int i = CharacterArray.this.index(thumb);
-			char old = CharacterArray.this.array[i];
-			CharacterArray.this.array[i] = element;
+			int i = CharArray.this.index(thumb);
+			char old = CharArray.this.array[i];
+			CharArray.this.array[i] = element;
 			return old;
 		}
 
 		@Override
 		public void sort(Comparator<? super Character> comparator) {//hard manual
 			if (comparator == null)
-				CharacterArray.this.sort();
+				CharArray.this.sort();
 			Character[] temp = new Character[this.size()];
-			for (int i = CharacterArray.this.beginIndex, j = 0;
-				 i < CharacterArray.this.endIndex; i++, j++)
-				temp[j] = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex, j = 0;
+				 i < CharArray.this.endIndex; i++, j++)
+				temp[j] = CharArray.this.array[i];
 			java.util.Arrays.sort(temp, comparator);
-			for (int i = CharacterArray.this.beginIndex, j = 0;
-				 i < CharacterArray.this.endIndex; i++, j++)
-				CharacterArray.this.array[i] = temp[j];
+			for (int i = CharArray.this.beginIndex, j = 0;
+				 i < CharArray.this.endIndex; i++, j++)
+				CharArray.this.array[i] = temp[j];
 		}
 	}
 
@@ -784,11 +784,11 @@ public class CharacterArray extends Array<char[], Character> {
 		public void forEachRemaining(Consumer<? super Character> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = CharacterArray.this.endIndex;
-			this.last = CharacterArray.this.endIndex - 1;
+			this.index = CharArray.this.endIndex;
+			this.last = CharArray.this.endIndex - 1;
 
-			for (int i = index; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = index; i < CharArray.this.endIndex; i++) {
+				char e = CharArray.this.array[i];
 
 				consumer.accept(e);
 			}
@@ -798,11 +798,11 @@ public class CharacterArray extends Array<char[], Character> {
 		public Character next() {
 			int index = this.index;
 
-			if (index < CharacterArray.this.endIndex) {
+			if (index < CharArray.this.endIndex) {
 				this.index++;
 				this.last = index;
 
-				return CharacterArray.this.array[index];
+				return CharArray.this.array[index];
 			}
 
 			throw new NoSuchElementException();
@@ -812,11 +812,11 @@ public class CharacterArray extends Array<char[], Character> {
 		public Character previous() {
 			int index = this.index - 1;
 
-			if (index >= CharacterArray.this.beginIndex) {
+			if (index >= CharArray.this.beginIndex) {
 				this.index--;
 				this.last = index;
 
-				return CharacterArray.this.array[index];
+				return CharArray.this.array[index];
 			}
 
 			throw new NoSuchElementException();
@@ -830,7 +830,7 @@ public class CharacterArray extends Array<char[], Character> {
 			if (index == -1)
 				throw new IllegalStateException();
 
-			CharacterArray.this.array[index] = element;
+			CharArray.this.array[index] = element;
 		}
 	}
 
@@ -850,11 +850,11 @@ public class CharacterArray extends Array<char[], Character> {
 			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
 
 				if (key.equals(k)) {
-					char v = CharacterArray.this.array[i + 1];
+					char v = CharArray.this.array[i + 1];
 					Character value = function.apply(k, v);
 
 					if (value == null)
@@ -862,7 +862,7 @@ public class CharacterArray extends Array<char[], Character> {
 						throw new UnsupportedOperationException("remove");
 
 					//old:found
-					CharacterArray.this.array[i + 1] = value;
+					CharArray.this.array[i + 1] = value;
 					return value;
 				}
 			}
@@ -876,12 +876,12 @@ public class CharacterArray extends Array<char[], Character> {
 			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
 
 				if (key.equals(k))
 					//old:notnull
-					return CharacterArray.this.array[i + 1];
+					return CharArray.this.array[i + 1];
 			}
 
 			//old:notfound
@@ -893,11 +893,11 @@ public class CharacterArray extends Array<char[], Character> {
 			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(function, "function");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
 
 				if (key.equals(k)) {
-					char v = CharacterArray.this.array[i + 1];
+					char v = CharArray.this.array[i + 1];
 					Character value = function.apply(k, v);
 
 					if (value == null)
@@ -905,7 +905,7 @@ public class CharacterArray extends Array<char[], Character> {
 						throw new UnsupportedOperationException("remove");
 
 					//old:notnull new:notnull
-					CharacterArray.this.array[i + 1] = value;
+					CharArray.this.array[i + 1] = value;
 					return value;
 				}
 			}
@@ -916,8 +916,8 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public boolean containsKey(Object key) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
 
 				if (key != null && key.equals(k))
 					return true;
@@ -928,8 +928,8 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public boolean containsValue(Object value) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char v = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char v = CharArray.this.array[i];
 
 				if (value != null && value.equals(v))
 					return true;
@@ -955,13 +955,13 @@ public class CharacterArray extends Array<char[], Character> {
 					for (java.util.Map.Entry entry : map.entrySet()) {
 						Object key = entry.getKey();
 
-						for (int i = CharacterArray.this.beginIndex;
-							 i < CharacterArray.this.endIndex; i += 2) {
-							char k = CharacterArray.this.array[i];
+						for (int i = CharArray.this.beginIndex;
+							 i < CharArray.this.endIndex; i += 2) {
+							char k = CharArray.this.array[i];
 
 							if (key != null && key.equals(k)) {
 								Object value = entry.getValue();
-								char v = CharacterArray.this.array[i + 1];
+								char v = CharArray.this.array[i + 1];
 
 								if (value != null && value.equals(v))
 									continue for0;
@@ -984,20 +984,20 @@ public class CharacterArray extends Array<char[], Character> {
 		public void forEach(BiConsumer<? super Character, ? super Character> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
-				char v = CharacterArray.this.array[i + 1];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
+				char v = CharArray.this.array[i + 1];
 				consumer.accept(k, v);
 			}
 		}
 
 		@Override
 		public Character get(Object key) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
 
 				if (key != null && key.equals(k))
-					return CharacterArray.this.array[i + 1];
+					return CharArray.this.array[i + 1];
 			}
 
 			return null;
@@ -1005,11 +1005,11 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public Character getOrDefault(Object key, Character defaultValue) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
 
 				if (key != null && key.equals(k))
-					return CharacterArray.this.array[i + 1];
+					return CharArray.this.array[i + 1];
 			}
 
 			return defaultValue;
@@ -1019,9 +1019,9 @@ public class CharacterArray extends Array<char[], Character> {
 		public int hashCode() {
 			int hashCode = 0;
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
-				char v = CharacterArray.this.array[i + 1];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
+				char v = CharArray.this.array[i + 1];
 				hashCode += Character.hashCode(k) ^
 							Character.hashCode(v);
 			}
@@ -1040,11 +1040,11 @@ public class CharacterArray extends Array<char[], Character> {
 			Objects.requireNonNull(value, "value");
 			Objects.requireNonNull(function, "function");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
 
 				if (key.equals(k)) {
-					char v = CharacterArray.this.array[i + 1];
+					char v = CharArray.this.array[i + 1];
 					Character newValue = function.apply(v, value);
 
 					if (newValue == null)
@@ -1052,7 +1052,7 @@ public class CharacterArray extends Array<char[], Character> {
 						throw new UnsupportedOperationException("remove");
 
 					//old:found new:notnull
-					CharacterArray.this.array[i + 1] = newValue;
+					CharArray.this.array[i + 1] = newValue;
 					return newValue;
 				}
 			}
@@ -1065,13 +1065,13 @@ public class CharacterArray extends Array<char[], Character> {
 		public Character put(Character key, Character value) {
 			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(value, "value");
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
 
 				if (key.equals(k)) {
 					//old:found
-					char v = CharacterArray.this.array[i + 1];
-					CharacterArray.this.array[i + 1] = value;
+					char v = CharArray.this.array[i + 1];
+					CharArray.this.array[i + 1] = value;
 					return v;
 				}
 			}
@@ -1088,13 +1088,13 @@ public class CharacterArray extends Array<char[], Character> {
 			for (java.util.Map.Entry<? extends Character, ? extends Character> entry : map.entrySet()) {
 				char key = entry.getKey();
 
-				for (int i = CharacterArray.this.beginIndex;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char k = CharacterArray.this.array[i];
+				for (int i = CharArray.this.beginIndex;
+					 i < CharArray.this.endIndex; i += 2) {
+					char k = CharArray.this.array[i];
 
 					if (key == k) {
 						char value = entry.getValue();
-						CharacterArray.this.array[i + 1] = value;
+						CharArray.this.array[i + 1] = value;
 						continue for0;
 					}
 				}
@@ -1106,12 +1106,12 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public Character putIfAbsent(Character key, Character value) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
 
 				if (key != null && key.equals(k))
 					//old:found
-					return CharacterArray.this.array[i + 1];
+					return CharArray.this.array[i + 1];
 			}
 
 			//old:notfound
@@ -1120,11 +1120,11 @@ public class CharacterArray extends Array<char[], Character> {
 
 		@Override
 		public boolean remove(Object key, Object value) {
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
 
 				if (key != null && key.equals(k)) {
-					char v = CharacterArray.this.array[i + 1];
+					char v = CharArray.this.array[i + 1];
 
 					if (value != null && value.equals(v))
 						//old:match
@@ -1142,15 +1142,15 @@ public class CharacterArray extends Array<char[], Character> {
 		public boolean replace(Character key, Character oldValue, Character newValue) {
 			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(newValue, "newValue");
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
 
 				if (key.equals(k)) {
-					char v = CharacterArray.this.array[i + 1];
+					char v = CharArray.this.array[i + 1];
 
 					if (oldValue != null && oldValue.equals(v)) {
 						//old:match
-						CharacterArray.this.array[i + 1] = newValue;
+						CharArray.this.array[i + 1] = newValue;
 						return true;
 					}
 
@@ -1166,13 +1166,13 @@ public class CharacterArray extends Array<char[], Character> {
 		public Character replace(Character key, Character value) {
 			Objects.requireNonNull(key, "key");
 			Objects.requireNonNull(value, "value");
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
 
 				if (key.equals(k)) {
 					//old:match
-					char v = CharacterArray.this.array[i + 1];
-					CharacterArray.this.array[i + 1] = value;
+					char v = CharArray.this.array[i + 1];
+					CharArray.this.array[i + 1] = value;
 					return v;
 				}
 			}
@@ -1185,12 +1185,12 @@ public class CharacterArray extends Array<char[], Character> {
 		public void replaceAll(BiFunction<? super Character, ? super Character, ? extends Character> function) {
 			Objects.requireNonNull(function, "function");
 
-			for (int i = CharacterArray.this.beginIndex; i < CharacterArray.this.endIndex; i += 2) {
-				char k = CharacterArray.this.array[i];
-				char v = CharacterArray.this.array[i + 1];
+			for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2) {
+				char k = CharArray.this.array[i];
+				char v = CharArray.this.array[i + 1];
 				char n = function.apply(k, v);
 
-				CharacterArray.this.array[i + 1] = n;
+				CharArray.this.array[i + 1] = n;
 			}
 		}
 
@@ -1201,17 +1201,17 @@ public class CharacterArray extends Array<char[], Character> {
 
 			StringBuilder builder = new StringBuilder("{");
 
-			int i = CharacterArray.this.beginIndex;
+			int i = CharArray.this.beginIndex;
 			while (true) {
-				char k = CharacterArray.this.array[i];
-				char v = CharacterArray.this.array[i + 1];
+				char k = CharArray.this.array[i];
+				char v = CharArray.this.array[i + 1];
 
 				builder.append(k)
 						.append("=")
 						.append(v);
 
 				i += 2;
-				if (i >= CharacterArray.this.endIndex)
+				if (i >= CharArray.this.endIndex)
 					return builder.append("}")
 							.toString();
 
@@ -1257,11 +1257,11 @@ public class CharacterArray extends Array<char[], Character> {
 				if (object instanceof java.util.Map.Entry) {
 					java.util.Map.Entry entry = (java.util.Map.Entry) object;
 					Object key = entry.getKey();
-					char k = CharacterArray.this.array[this.index];
+					char k = CharArray.this.array[this.index];
 
 					if (key != null && key.equals(k)) {
 						Object value = entry.getValue();
-						char v = CharacterArray.this.array[this.index + 1];
+						char v = CharArray.this.array[this.index + 1];
 
 						return value != null && value.equals(v);
 					}
@@ -1272,18 +1272,18 @@ public class CharacterArray extends Array<char[], Character> {
 
 			@Override
 			public Character getKey() {
-				return CharacterArray.this.array[this.index];
+				return CharArray.this.array[this.index];
 			}
 
 			@Override
 			public Character getValue() {
-				return CharacterArray.this.array[this.index + 1];
+				return CharArray.this.array[this.index + 1];
 			}
 
 			@Override
 			public int hashCode() {
-				char k = CharacterArray.this.array[this.index];
-				char v = CharacterArray.this.array[this.index + 1];
+				char k = CharArray.this.array[this.index];
+				char v = CharArray.this.array[this.index + 1];
 				return Character.hashCode(k) ^
 					   Character.hashCode(v);
 			}
@@ -1291,15 +1291,15 @@ public class CharacterArray extends Array<char[], Character> {
 			@Override
 			public Character setValue(Character value) {
 				Objects.requireNonNull(value, "value");
-				char v = CharacterArray.this.array[this.index + 1];
-				CharacterArray.this.array[this.index + 1] = value;
+				char v = CharArray.this.array[this.index + 1];
+				CharArray.this.array[this.index + 1] = value;
 				return v;
 			}
 
 			@Override
 			public String toString() {
-				char k = CharacterArray.this.array[this.index];
-				char v = CharacterArray.this.array[this.index + 1];
+				char k = CharArray.this.array[this.index];
+				char v = CharArray.this.array[this.index + 1];
 				return k + "=" + v;
 			}
 		}
@@ -1321,13 +1321,13 @@ public class CharacterArray extends Array<char[], Character> {
 					java.util.Map.Entry entry = (java.util.Map.Entry) object;
 					Object key = entry.getKey();
 
-					for (int i = CharacterArray.this.beginIndex;
-						 i < CharacterArray.this.endIndex; i += 2) {
-						char k = CharacterArray.this.array[i];
+					for (int i = CharArray.this.beginIndex;
+						 i < CharArray.this.endIndex; i += 2) {
+						char k = CharArray.this.array[i];
 
 						if (key != null && key.equals(k)) {
 							Object value = entry.getValue();
-							char v = CharacterArray.this.array[i + 1];
+							char v = CharArray.this.array[i + 1];
 
 							if (value != null && value.equals(v))
 								return true;
@@ -1354,13 +1354,13 @@ public class CharacterArray extends Array<char[], Character> {
 								java.util.Map.Entry entry = (java.util.Map.Entry) object1;
 								Object key = entry.getKey();
 
-								for (int i = CharacterArray.this.beginIndex;
-									 i < CharacterArray.this.endIndex; i += 2) {
-									char k = CharacterArray.this.array[i];
+								for (int i = CharArray.this.beginIndex;
+									 i < CharArray.this.endIndex; i += 2) {
+									char k = CharArray.this.array[i];
 
 									if (key != null && key.equals(k)) {
 										Object value = entry.getValue();
-										char v = CharacterArray.this.array[i + 1];
+										char v = CharArray.this.array[i + 1];
 
 										if (value != null && value.equals(v))
 											continue for0;
@@ -1385,7 +1385,7 @@ public class CharacterArray extends Array<char[], Character> {
 				Objects.requireNonNull(consumer, "consumer");
 
 				int i = 0;
-				int l = CharacterArray.this.length();
+				int l = CharArray.this.length();
 				for (; i < l; i += 2) {
 					Entry entry = new Entry(i);//trimmed index
 
@@ -1397,10 +1397,10 @@ public class CharacterArray extends Array<char[], Character> {
 			public int hashCode() {
 				int hashCode = 0;
 
-				for (int i = CharacterArray.this.beginIndex;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char k = CharacterArray.this.array[i];
-					char v = CharacterArray.this.array[i + 1];
+				for (int i = CharArray.this.beginIndex;
+					 i < CharArray.this.endIndex; i += 2) {
+					char k = CharArray.this.array[i];
+					char v = CharArray.this.array[i + 1];
 					hashCode += Character.hashCode(k) ^ Character.hashCode(v);
 				}
 
@@ -1417,7 +1417,7 @@ public class CharacterArray extends Array<char[], Character> {
 				Objects.requireNonNull(predicate, "predicate");
 
 				int i = 0;
-				int l = CharacterArray.this.length();
+				int l = CharArray.this.length();
 				for (; i < l; i += 2) {
 					Entry entry = new Entry(i); //trimmed index
 
@@ -1441,7 +1441,7 @@ public class CharacterArray extends Array<char[], Character> {
 				Object[] product = new Object[length];
 
 				int i = 0;
-				int l = CharacterArray.this.length();
+				int l = CharArray.this.length();
 				for (int j = 0; i < l; i += 2, j++) {
 					Entry entry = new Entry(i);//trimmed index
 
@@ -1464,7 +1464,7 @@ public class CharacterArray extends Array<char[], Character> {
 
 				//should trim the index for the entry creation
 				int i = 0;
-				int l = CharacterArray.this.length();
+				int l = CharArray.this.length();
 				for (int j = 0; i < l; i += 2, j++) {
 					Entry entry = new Entry(i);//trimmed index
 
@@ -1481,17 +1481,17 @@ public class CharacterArray extends Array<char[], Character> {
 
 				StringBuilder builder = new StringBuilder("[");
 
-				int i = CharacterArray.this.beginIndex;
+				int i = CharArray.this.beginIndex;
 				while (true) {
-					char k = CharacterArray.this.array[i];
-					char v = CharacterArray.this.array[i + 1];
+					char k = CharArray.this.array[i];
+					char v = CharArray.this.array[i + 1];
 
 					builder.append(k)
 							.append("=")
 							.append(v);
 
 					i += 2;
-					if (i >= CharacterArray.this.endIndex)
+					if (i >= CharArray.this.endIndex)
 						return builder.append("]")
 								.toString();
 
@@ -1532,10 +1532,10 @@ public class CharacterArray extends Array<char[], Character> {
 				public void forEachRemaining(Consumer<? super java.util.Map.Entry<Character, Character>> consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = CharacterArray.this.endIndex;
+					this.index = CharArray.this.endIndex;
 
-					int i = CharacterArray.this.thumb(index);
-					int l = CharacterArray.this.length();
+					int i = CharArray.this.thumb(index);
+					int l = CharArray.this.length();
 					for (; i < l; i += 2) {
 						Entry entry = new Entry(i);//trimmed index
 
@@ -1547,10 +1547,10 @@ public class CharacterArray extends Array<char[], Character> {
 				public Entry next() {
 					int index = this.index;
 
-					if (index < CharacterArray.this.endIndex) {
+					if (index < CharArray.this.endIndex) {
 						this.index += 2;
 
-						int i = CharacterArray.this.thumb(index);
+						int i = CharArray.this.thumb(index);
 						return new Entry(i);//trimmed index
 					}
 
@@ -1591,10 +1591,10 @@ public class CharacterArray extends Array<char[], Character> {
 				public void forEachRemaining(Consumer<? super java.util.Map.Entry<Character, Character>> consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = CharacterArray.this.endIndex;
+					this.index = CharArray.this.endIndex;
 
 					int i = 0;
-					int l = CharacterArray.this.length();
+					int l = CharArray.this.length();
 					for (; i < l; i += 2) {
 						Entry entry = new Entry(i);//trimmed index
 
@@ -1607,10 +1607,10 @@ public class CharacterArray extends Array<char[], Character> {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
 
-					if (index < CharacterArray.this.endIndex) {
+					if (index < CharArray.this.endIndex) {
 						this.index += 2;
 
-						int i = CharacterArray.this.thumb(index);
+						int i = CharArray.this.thumb(index);
 						Entry entry = new Entry(i);//trimmed index
 						consumer.accept(entry);
 						return true;
@@ -1642,9 +1642,9 @@ public class CharacterArray extends Array<char[], Character> {
 					if (set.size() == this.size()) {
 						for0:
 						for (Object key : set) {
-							for (int i = CharacterArray.this.beginIndex;
-								 i < CharacterArray.this.endIndex; i += 2) {
-								char k = CharacterArray.this.array[i];
+							for (int i = CharArray.this.beginIndex;
+								 i < CharArray.this.endIndex; i += 2) {
+								char k = CharArray.this.array[i];
 
 								if (key != null && key.equals(k))
 									continue for0;
@@ -1663,9 +1663,9 @@ public class CharacterArray extends Array<char[], Character> {
 			@Override
 			public void forEach(Consumer<? super Character> consumer) {
 				Objects.requireNonNull(consumer, "consumer");
-				for (int i = CharacterArray.this.beginIndex;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char k = CharacterArray.this.array[i];
+				for (int i = CharArray.this.beginIndex;
+					 i < CharArray.this.endIndex; i += 2) {
+					char k = CharArray.this.array[i];
 					consumer.accept(k);
 				}
 			}
@@ -1674,9 +1674,9 @@ public class CharacterArray extends Array<char[], Character> {
 			public int hashCode() {
 				int hashCode = 0;
 
-				for (int i = CharacterArray.this.beginIndex;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char k = CharacterArray.this.array[i];
+				for (int i = CharArray.this.beginIndex;
+					 i < CharArray.this.endIndex; i += 2) {
+					char k = CharArray.this.array[i];
 					hashCode += Character.hashCode(k);
 				}
 
@@ -1692,9 +1692,9 @@ public class CharacterArray extends Array<char[], Character> {
 			public boolean removeIf(Predicate<? super Character> predicate) {
 				Objects.requireNonNull(predicate, "predicate");
 
-				for (int i = CharacterArray.this.beginIndex;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char k = CharacterArray.this.array[i];
+				for (int i = CharArray.this.beginIndex;
+					 i < CharArray.this.endIndex; i += 2) {
+					char k = CharArray.this.array[i];
 					if (predicate.test(k))
 						//can not remove
 						throw new UnsupportedOperationException("remove");
@@ -1714,9 +1714,9 @@ public class CharacterArray extends Array<char[], Character> {
 				int length = this.size();
 				Object[] product = new Object[length];
 
-				for (int i = CharacterArray.this.beginIndex, j = 0;
-					 i < CharacterArray.this.endIndex; i += 2, j++) {
-					char k = CharacterArray.this.array[i];
+				for (int i = CharArray.this.beginIndex, j = 0;
+					 i < CharArray.this.endIndex; i += 2, j++) {
+					char k = CharArray.this.array[i];
 
 					product[j] = k;
 				}
@@ -1735,9 +1735,9 @@ public class CharacterArray extends Array<char[], Character> {
 				else
 					product[length] = null;
 
-				for (int i = CharacterArray.this.beginIndex, j = 0;
-					 i < CharacterArray.this.endIndex; i += 2, j++) {
-					char k = CharacterArray.this.array[i];
+				for (int i = CharArray.this.beginIndex, j = 0;
+					 i < CharArray.this.endIndex; i += 2, j++) {
+					char k = CharArray.this.array[i];
 
 					product[j] = (T) (Character) k;
 				}
@@ -1752,14 +1752,14 @@ public class CharacterArray extends Array<char[], Character> {
 
 				StringBuilder builder = new StringBuilder("[");
 
-				int i = CharacterArray.this.beginIndex;
+				int i = CharArray.this.beginIndex;
 				while (true) {
-					char k = CharacterArray.this.array[i];
+					char k = CharArray.this.array[i];
 
 					builder.append(k);
 
 					i += 2;
-					if (i >= CharacterArray.this.endIndex)
+					if (i >= CharArray.this.endIndex)
 						return builder.append("]")
 								.toString();
 
@@ -1800,10 +1800,10 @@ public class CharacterArray extends Array<char[], Character> {
 				public void forEachRemaining(Consumer<? super Character> consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = CharacterArray.this.endIndex;
+					this.index = CharArray.this.endIndex;
 
-					for (int i = index; i < CharacterArray.this.endIndex; i += 2) {
-						char k = CharacterArray.this.array[i];
+					for (int i = index; i < CharArray.this.endIndex; i += 2) {
+						char k = CharArray.this.array[i];
 
 						consumer.accept(k);
 					}
@@ -1813,10 +1813,10 @@ public class CharacterArray extends Array<char[], Character> {
 				public Character next() {
 					int index = this.index;
 
-					if (index < CharacterArray.this.endIndex) {
+					if (index < CharArray.this.endIndex) {
 						this.index += 2;
 
-						return CharacterArray.this.array[index];
+						return CharArray.this.array[index];
 					}
 
 					throw new NoSuchElementException();
@@ -1856,10 +1856,10 @@ public class CharacterArray extends Array<char[], Character> {
 				public void forEachRemaining(Consumer<? super Character> consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = CharacterArray.this.endIndex;
+					this.index = CharArray.this.endIndex;
 
-					for (int i = index; i < CharacterArray.this.endIndex; i += 2) {
-						char k = CharacterArray.this.array[i];
+					for (int i = index; i < CharArray.this.endIndex; i += 2) {
+						char k = CharArray.this.array[i];
 
 						consumer.accept(k);
 					}
@@ -1870,10 +1870,10 @@ public class CharacterArray extends Array<char[], Character> {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
 
-					if (index < CharacterArray.this.endIndex) {
+					if (index < CharArray.this.endIndex) {
 						this.index += 2;
 
-						char k = CharacterArray.this.array[index];
+						char k = CharArray.this.array[index];
 						consumer.accept(k);
 						return true;
 					}
@@ -1902,9 +1902,9 @@ public class CharacterArray extends Array<char[], Character> {
 			@Override
 			public void forEach(Consumer<? super Character> consumer) {
 				Objects.requireNonNull(consumer, "consumer");
-				for (int i = CharacterArray.this.beginIndex + 1;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char v = CharacterArray.this.array[i];
+				for (int i = CharArray.this.beginIndex + 1;
+					 i < CharArray.this.endIndex; i += 2) {
+					char v = CharArray.this.array[i];
 
 					consumer.accept(v);
 				}
@@ -1914,9 +1914,9 @@ public class CharacterArray extends Array<char[], Character> {
 			public int hashCode() {
 				int hashCode = 0;
 
-				for (int i = CharacterArray.this.beginIndex + 1;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char v = CharacterArray.this.array[i];
+				for (int i = CharArray.this.beginIndex + 1;
+					 i < CharArray.this.endIndex; i += 2) {
+					char v = CharArray.this.array[i];
 
 					hashCode += Character.hashCode(v);
 				}
@@ -1933,9 +1933,9 @@ public class CharacterArray extends Array<char[], Character> {
 			public boolean removeIf(Predicate<? super Character> predicate) {
 				Objects.requireNonNull(predicate, "predicate");
 
-				for (int i = CharacterArray.this.beginIndex + 1;
-					 i < CharacterArray.this.endIndex; i += 2) {
-					char v = CharacterArray.this.array[i];
+				for (int i = CharArray.this.beginIndex + 1;
+					 i < CharArray.this.endIndex; i += 2) {
+					char v = CharArray.this.array[i];
 
 					if (predicate.test(v))
 						//can not remove
@@ -1953,12 +1953,12 @@ public class CharacterArray extends Array<char[], Character> {
 
 			@Override
 			public Object[] toArray() {
-				int length = CharacterArray.this.endIndex - CharacterArray.this.beginIndex >>> 1;
+				int length = CharArray.this.endIndex - CharArray.this.beginIndex >>> 1;
 				Object[] product = new Object[length];
 
-				for (int i = CharacterArray.this.beginIndex + 1, j = 0;
-					 i < CharacterArray.this.endIndex; i += 2, j++) {
-					char v = CharacterArray.this.array[i];
+				for (int i = CharArray.this.beginIndex + 1, j = 0;
+					 i < CharArray.this.endIndex; i += 2, j++) {
+					char v = CharArray.this.array[i];
 
 					product[j] = v;
 				}
@@ -1969,7 +1969,7 @@ public class CharacterArray extends Array<char[], Character> {
 			@Override
 			public <T> T[] toArray(T[] array) {
 				Objects.requireNonNull(array, "array");
-				int length = CharacterArray.this.endIndex - CharacterArray.this.beginIndex >>> 1;
+				int length = CharArray.this.endIndex - CharArray.this.beginIndex >>> 1;
 				T[] product = array;
 
 				if (array.length < length)
@@ -1977,9 +1977,9 @@ public class CharacterArray extends Array<char[], Character> {
 				else
 					product[length] = null;
 
-				for (int i = CharacterArray.this.beginIndex + 1, j = 0;
-					 i < CharacterArray.this.endIndex; i += 2, j++) {
-					char v = CharacterArray.this.array[i];
+				for (int i = CharArray.this.beginIndex + 1, j = 0;
+					 i < CharArray.this.endIndex; i += 2, j++) {
+					char v = CharArray.this.array[i];
 
 					product[j] = (T) (Character) v;
 				}
@@ -1994,14 +1994,14 @@ public class CharacterArray extends Array<char[], Character> {
 
 				StringBuilder builder = new StringBuilder("[");
 
-				int i = CharacterArray.this.beginIndex + 1;
+				int i = CharArray.this.beginIndex + 1;
 				while (true) {
-					char v = CharacterArray.this.array[i];
+					char v = CharArray.this.array[i];
 
 					builder.append(v);
 
 					i += 2;
-					if (i >= CharacterArray.this.endIndex)
+					if (i >= CharArray.this.endIndex)
 						return builder.append("]")
 								.toString();
 
@@ -2042,10 +2042,10 @@ public class CharacterArray extends Array<char[], Character> {
 				public void forEachRemaining(Consumer<? super Character> consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = CharacterArray.this.endIndex;
+					this.index = CharArray.this.endIndex;
 
-					for (int i = index + 1; i < CharacterArray.this.endIndex; i += 2) {
-						char v = CharacterArray.this.array[i];
+					for (int i = index + 1; i < CharArray.this.endIndex; i += 2) {
+						char v = CharArray.this.array[i];
 
 						consumer.accept(v);
 					}
@@ -2055,10 +2055,10 @@ public class CharacterArray extends Array<char[], Character> {
 				public Character next() {
 					int index = this.index;
 
-					if (index < CharacterArray.this.endIndex) {
+					if (index < CharArray.this.endIndex) {
 						this.index += 2;
 
-						return CharacterArray.this.array[index + 1];
+						return CharArray.this.array[index + 1];
 					}
 
 					throw new NoSuchElementException();
@@ -2098,10 +2098,10 @@ public class CharacterArray extends Array<char[], Character> {
 				public void forEachRemaining(Consumer<? super Character> consumer) {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
-					this.index = CharacterArray.this.endIndex;
+					this.index = CharArray.this.endIndex;
 
-					for (int i = index + 1; i < CharacterArray.this.endIndex; i += 2) {
-						char v = CharacterArray.this.array[i];
+					for (int i = index + 1; i < CharArray.this.endIndex; i += 2) {
+						char v = CharArray.this.array[i];
 
 						consumer.accept(v);
 					}
@@ -2112,10 +2112,10 @@ public class CharacterArray extends Array<char[], Character> {
 					Objects.requireNonNull(consumer, "consumer");
 					int index = this.index;
 
-					if (index < CharacterArray.this.endIndex) {
+					if (index < CharArray.this.endIndex) {
 						this.index += 2;
 
-						char v = CharacterArray.this.array[index + 1];
+						char v = CharArray.this.array[index + 1];
 						consumer.accept(v);
 						return true;
 					}
@@ -2159,10 +2159,10 @@ public class CharacterArray extends Array<char[], Character> {
 		public void forEachRemaining(Consumer<? super Character> consumer) {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
-			this.index = CharacterArray.this.endIndex;
+			this.index = CharArray.this.endIndex;
 
-			for (int i = index; i < CharacterArray.this.endIndex; i++) {
-				char e = CharacterArray.this.array[i];
+			for (int i = index; i < CharArray.this.endIndex; i++) {
+				char e = CharArray.this.array[i];
 
 				consumer.accept(e);
 			}
@@ -2173,9 +2173,9 @@ public class CharacterArray extends Array<char[], Character> {
 			Objects.requireNonNull(consumer, "consumer");
 			int index = this.index;
 
-			if (index < CharacterArray.this.endIndex) {
+			if (index < CharArray.this.endIndex) {
 				this.index += 2;
-				char e = CharacterArray.this.array[index];
+				char e = CharArray.this.array[index];
 
 				consumer.accept(e);
 				return true;

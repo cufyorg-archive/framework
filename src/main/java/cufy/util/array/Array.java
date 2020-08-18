@@ -132,13 +132,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		if (array instanceof byte[] && other instanceof byte[])
 			return ByteArray.equals((byte[]) array, (byte[]) other);
 		if (array instanceof char[] && other instanceof char[])
-			return CharacterArray.equals((char[]) array, (char[]) other);
+			return CharArray.equals((char[]) array, (char[]) other);
 		if (array instanceof double[] && other instanceof double[])
 			return DoubleArray.equals((double[]) array, (double[]) other);
 		if (array instanceof float[] && other instanceof float[])
 			return FloatArray.equals((float[]) array, (float[]) other);
 		if (array instanceof int[] && other instanceof int[])
-			return IntegerArray.equals((int[]) array, (int[]) other);
+			return IntArray.equals((int[]) array, (int[]) other);
 		if (array instanceof long[] && other instanceof long[])
 			return LongArray.equals((long[]) array, (long[]) other);
 		if (array instanceof short[] && other instanceof short[])
@@ -166,13 +166,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		if (array instanceof byte[])
 			return ByteArray.hashCode((byte[]) array);
 		if (array instanceof char[])
-			return CharacterArray.hashCode((char[]) array);
+			return CharArray.hashCode((char[]) array);
 		if (array instanceof double[])
 			return DoubleArray.hashCode((double[]) array);
 		if (array instanceof float[])
 			return FloatArray.hashCode((float[]) array);
 		if (array instanceof int[])
-			return IntegerArray.hashCode((int[]) array);
+			return IntArray.hashCode((int[]) array);
 		if (array instanceof long[])
 			return LongArray.hashCode((long[]) array);
 		if (array instanceof short[])
@@ -200,13 +200,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		if (array instanceof byte[])
 			return ByteArray.toString((byte[]) array);
 		if (array instanceof char[])
-			return CharacterArray.toString((char[]) array);
+			return CharArray.toString((char[]) array);
 		if (array instanceof double[])
 			return DoubleArray.toString((double[]) array);
 		if (array instanceof float[])
 			return FloatArray.toString((float[]) array);
 		if (array instanceof int[])
-			return IntegerArray.toString((int[]) array);
+			return IntArray.toString((int[]) array);
 		if (array instanceof long[])
 			return LongArray.toString((long[]) array);
 		if (array instanceof short[])
@@ -239,13 +239,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		if (array instanceof byte[] && other instanceof byte[])
 			return ByteArray.equals((byte[]) array, (byte[]) other);
 		if (array instanceof char[] && other instanceof char[])
-			return CharacterArray.equals((char[]) array, (char[]) other);
+			return CharArray.equals((char[]) array, (char[]) other);
 		if (array instanceof double[] && other instanceof double[])
 			return DoubleArray.equals((double[]) array, (double[]) other);
 		if (array instanceof float[] && other instanceof float[])
 			return FloatArray.equals((float[]) array, (float[]) other);
 		if (array instanceof int[] && other instanceof int[])
-			return IntegerArray.equals((int[]) array, (int[]) other);
+			return IntArray.equals((int[]) array, (int[]) other);
 		if (array instanceof long[] && other instanceof long[])
 			return LongArray.equals((long[]) array, (long[]) other);
 		if (array instanceof short[] && other instanceof short[])
@@ -274,13 +274,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		if (array instanceof byte[])
 			return ByteArray.hashCode((byte[]) array);
 		if (array instanceof char[])
-			return CharacterArray.hashCode((char[]) array);
+			return CharArray.hashCode((char[]) array);
 		if (array instanceof double[])
 			return DoubleArray.hashCode((double[]) array);
 		if (array instanceof float[])
 			return FloatArray.hashCode((float[]) array);
 		if (array instanceof int[])
-			return IntegerArray.hashCode((int[]) array);
+			return IntArray.hashCode((int[]) array);
 		if (array instanceof long[])
 			return LongArray.hashCode((long[]) array);
 		if (array instanceof short[])
@@ -324,13 +324,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		if (componentType == byte.class)
 			return (Array<A, E>) new ByteArray(length);
 		if (componentType == char.class)
-			return (Array<A, E>) new CharacterArray(length);
+			return (Array<A, E>) new CharArray(length);
 		if (componentType == double.class)
 			return (Array<A, E>) new DoubleArray(length);
 		if (componentType == float.class)
 			return (Array<A, E>) new FloatArray(length);
 		if (componentType == int.class)
-			return (Array<A, E>) new IntegerArray(length);
+			return (Array<A, E>) new IntArray(length);
 		if (componentType == long.class)
 			return (Array<A, E>) new LongArray(length);
 		if (componentType == short.class)
@@ -385,13 +385,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		if (array instanceof byte[])
 			return (Array) new ByteArray((byte[]) array);
 		if (array instanceof char[])
-			return (Array) new CharacterArray((char[]) array);
+			return (Array) new CharArray((char[]) array);
 		if (array instanceof double[])
 			return (Array) new DoubleArray((double[]) array);
 		if (array instanceof float[])
 			return (Array) new FloatArray((float[]) array);
 		if (array instanceof int[])
-			return (Array) new IntegerArray((int[]) array);
+			return (Array) new IntArray((int[]) array);
 		if (array instanceof long[])
 			return (Array) new LongArray((long[]) array);
 		if (array instanceof short[])
@@ -428,13 +428,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		if (array instanceof byte[])
 			return (Array) new ByteArray((byte[]) array, beginIndex, endIndex);
 		if (array instanceof char[])
-			return (Array) new CharacterArray((char[]) array, beginIndex, endIndex);
+			return (Array) new CharArray((char[]) array, beginIndex, endIndex);
 		if (array instanceof double[])
 			return (Array) new DoubleArray((double[]) array, beginIndex, endIndex);
 		if (array instanceof float[])
 			return (Array) new FloatArray((float[]) array, beginIndex, endIndex);
 		if (array instanceof int[])
-			return (Array) new IntegerArray((int[]) array, beginIndex, endIndex);
+			return (Array) new IntArray((int[]) array, beginIndex, endIndex);
 		if (array instanceof long[])
 			return (Array) new LongArray((long[]) array, beginIndex, endIndex);
 		if (array instanceof short[])
@@ -487,13 +487,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		if (klass == byte[].class)
 			return (Array<A, E>) new ByteArray((java.util.Map) map);
 		if (klass == char[].class)
-			return (Array<A, E>) new CharacterArray((java.util.Map) map);
+			return (Array<A, E>) new CharArray((java.util.Map) map);
 		if (klass == double[].class)
 			return (Array<A, E>) new DoubleArray((java.util.Map) map);
 		if (klass == float[].class)
 			return (Array<A, E>) new FloatArray((java.util.Map) map);
 		if (klass == int[].class)
-			return (Array<A, E>) new IntegerArray((java.util.Map) map);
+			return (Array<A, E>) new IntArray((java.util.Map) map);
 		if (klass == long[].class)
 			return (Array<A, E>) new LongArray((java.util.Map) map);
 		if (klass == short[].class)
@@ -520,13 +520,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		if (klass == byte[].class)
 			return (Array<A, E>) new ByteArray((java.util.Collection) collection);
 		if (klass == char[].class)
-			return (Array<A, E>) new CharacterArray((java.util.Collection) collection);
+			return (Array<A, E>) new CharArray((java.util.Collection) collection);
 		if (klass == double[].class)
 			return (Array<A, E>) new DoubleArray((java.util.Collection) collection);
 		if (klass == float[].class)
 			return (Array<A, E>) new FloatArray((java.util.Collection) collection);
 		if (klass == int[].class)
-			return (Array<A, E>) new IntegerArray((java.util.Collection) collection);
+			return (Array<A, E>) new IntArray((java.util.Collection) collection);
 		if (klass == long[].class)
 			return (Array<A, E>) new LongArray((java.util.Collection) collection);
 		if (klass == short[].class)
@@ -554,13 +554,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		if (array instanceof byte[])
 			return ByteArray.toString((byte[]) array);
 		if (array instanceof char[])
-			return CharacterArray.toString((char[]) array);
+			return CharArray.toString((char[]) array);
 		if (array instanceof double[])
 			return DoubleArray.toString((double[]) array);
 		if (array instanceof float[])
 			return FloatArray.toString((float[]) array);
 		if (array instanceof int[])
-			return IntegerArray.toString((int[]) array);
+			return IntArray.toString((int[]) array);
 		if (array instanceof long[])
 			return LongArray.toString((long[]) array);
 		if (array instanceof short[])
