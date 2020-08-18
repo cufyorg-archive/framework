@@ -1102,7 +1102,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 			if (array.length < length)
 				product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-			else
+			else if (product.length > length)
 				product[length] = null;
 
 			Array.this.sub(0, Math.min(array.length, length))

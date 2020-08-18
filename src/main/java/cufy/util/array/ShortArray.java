@@ -1487,7 +1487,7 @@ public class ShortArray extends Array<short[], Short> {
 
 				if (array.length < length)
 					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-				else
+				else if (array.length > length)
 					product[length] = null;
 
 				//should trim the index for the entry creation
@@ -1760,7 +1760,7 @@ public class ShortArray extends Array<short[], Short> {
 
 				if (array.length < length)
 					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-				else
+				else if (array.length > length)
 					product[length] = null;
 
 				for (int i = ShortArray.this.beginIndex, j = 0;
@@ -2002,7 +2002,7 @@ public class ShortArray extends Array<short[], Short> {
 
 				if (array.length < length)
 					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-				else
+				else if (array.length > length)
 					product[length] = null;
 
 				for (int i = ShortArray.this.beginIndex + 1, j = 0;

@@ -1543,7 +1543,7 @@ public class DoubleArray extends Array<double[], Double> {
 
 				if (array.length < length)
 					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-				else
+				else if (array.length > length)
 					product[length] = null;
 
 				//should trim the index for the entry creation
@@ -1816,7 +1816,7 @@ public class DoubleArray extends Array<double[], Double> {
 
 				if (array.length < length)
 					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-				else
+				else if (array.length > length)
 					product[length] = null;
 
 				for (int i = DoubleArray.this.beginIndex, j = 0;
@@ -2118,7 +2118,7 @@ public class DoubleArray extends Array<double[], Double> {
 
 				if (array.length < length)
 					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-				else
+				else if (array.length > length)
 					product[length] = null;
 
 				for (int i = DoubleArray.this.beginIndex + 1, j = 0;

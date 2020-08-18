@@ -1490,7 +1490,7 @@ public class FloatArray extends Array<float[], Float> {
 
 				if (array.length < length)
 					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-				else
+				else if (array.length > length)
 					product[length] = null;
 
 				//should trim the index for the entry creation
@@ -1763,7 +1763,7 @@ public class FloatArray extends Array<float[], Float> {
 
 				if (array.length < length)
 					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-				else
+				else if (array.length > length)
 					product[length] = null;
 
 				for (int i = FloatArray.this.beginIndex, j = 0;
@@ -2005,7 +2005,7 @@ public class FloatArray extends Array<float[], Float> {
 
 				if (array.length < length)
 					product = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), length);
-				else
+				else if (array.length > length)
 					product[length] = null;
 
 				for (int i = FloatArray.this.beginIndex + 1, j = 0;
