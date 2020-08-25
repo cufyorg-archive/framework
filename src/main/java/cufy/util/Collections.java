@@ -2534,7 +2534,7 @@ public interface Collections {
 
 			@Override
 			public void forEachRemaining(Consumer<? super Entry<K, V>> consumer) {
-				this.iterator.forEachRemaining(entry -> consumer.accept(new CheckedEntry(entry, this.valueType)));
+				this.iterator.forEachRemaining(entry -> consumer.accept(new CheckedEntry<>(entry, this.valueType)));
 			}
 
 			@Override
@@ -2644,7 +2644,7 @@ public interface Collections {
 			@Override
 			public void forEach(Consumer<? super Entry<K, V>> consumer) {
 				Objects.requireNonNull(consumer, "consumer");
-				this.entrySet.forEach(entry -> consumer.accept(new CheckedEntry(entry, this.valueType)));
+				this.entrySet.forEach(entry -> consumer.accept(new CheckedEntry<>(entry, this.valueType)));
 			}
 
 			@Override
@@ -2693,7 +2693,7 @@ public interface Collections {
 			@Override
 			public boolean removeIf(Predicate<? super Entry<K, V>> predicate) {
 				Objects.requireNonNull(predicate, "predicate");
-				return this.entrySet.removeIf(entry -> predicate.test(new CheckedEntry(entry, this.valueType)));
+				return this.entrySet.removeIf(entry -> predicate.test(new CheckedEntry<>(entry, this.valueType)));
 			}
 
 			@Override
@@ -2832,7 +2832,7 @@ public interface Collections {
 
 			@Override
 			public void forEachRemaining(Consumer<? super Entry<K, V>> consumer) {
-				this.spliterator.forEachRemaining(entry -> consumer.accept(new CheckedEntry(entry, this.valueType)));
+				this.spliterator.forEachRemaining(entry -> consumer.accept(new CheckedEntry<>(entry, this.valueType)));
 			}
 
 			@Override
@@ -2852,7 +2852,7 @@ public interface Collections {
 
 			@Override
 			public boolean tryAdvance(Consumer<? super Entry<K, V>> consumer) {
-				return this.spliterator.tryAdvance(entry -> consumer.accept(new CheckedEntry(entry, this.valueType)));
+				return this.spliterator.tryAdvance(entry -> consumer.accept(new CheckedEntry<>(entry, this.valueType)));
 			}
 
 			@Override
@@ -8449,7 +8449,7 @@ public interface Collections {
 			@Override
 			public void forEachRemaining(Consumer<? super Entry<K, V>> consumer) {
 				Objects.requireNonNull(consumer, "consumer");
-				this.iterator.forEachRemaining(entry -> consumer.accept(new UnmodifiableEntry(entry)));
+				this.iterator.forEachRemaining(entry -> consumer.accept(new UnmodifiableEntry<>(entry)));
 			}
 
 			@Override
@@ -8548,7 +8548,7 @@ public interface Collections {
 			@Override
 			public void forEach(Consumer<? super Entry<K, V>> consumer) {
 				Objects.requireNonNull(consumer, "consumer");
-				this.entrySet.forEach(entry -> consumer.accept(new UnmodifiableEntry(entry)));
+				this.entrySet.forEach(entry -> consumer.accept(new UnmodifiableEntry<>(entry)));
 			}
 
 			@Override
@@ -8586,7 +8586,7 @@ public interface Collections {
 			@Override
 			public boolean removeIf(Predicate<? super Entry<K, V>> predicate) {
 				for (Entry<K, V> entry : this.entrySet)
-					if (predicate.test(new UnmodifiableEntry(entry)))
+					if (predicate.test(new UnmodifiableEntry<>(entry)))
 						throw new UnsupportedOperationException("remove");
 
 				return false;
@@ -8705,7 +8705,7 @@ public interface Collections {
 			@Override
 			public void forEachRemaining(Consumer<? super Entry<K, V>> consumer) {
 				Objects.requireNonNull(consumer, "consumer");
-				this.spliterator.forEachRemaining(entry -> consumer.accept(new UnmodifiableEntry(entry)));
+				this.spliterator.forEachRemaining(entry -> consumer.accept(new UnmodifiableEntry<>(entry)));
 			}
 
 			@Override
@@ -8726,7 +8726,7 @@ public interface Collections {
 			@Override
 			public boolean tryAdvance(Consumer<? super Entry<K, V>> consumer) {
 				Objects.requireNonNull(consumer, "consumer");
-				return this.spliterator.tryAdvance(entry -> consumer.accept(new UnmodifiableEntry(entry)));
+				return this.spliterator.tryAdvance(entry -> consumer.accept(new UnmodifiableEntry<>(entry)));
 			}
 
 			@Override
