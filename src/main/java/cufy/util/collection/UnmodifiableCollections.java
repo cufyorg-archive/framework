@@ -40,6 +40,7 @@ public interface UnmodifiableCollections {
 	 * @param <T>        the type of the elements.
 	 * @return an unmodifiable view of the given {@code collection}.
 	 * @throws NullPointerException if the given {@code collection} is null.
+	 * @see java.util.Collections#unmodifiableCollection(Collection)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> UnmodifiableCollection<T> unmodifiableCollection(Collection<? extends T> collection) {
@@ -79,6 +80,7 @@ public interface UnmodifiableCollections {
 	 * @param <T>  the type of the elements.
 	 * @return an unmodifiable view of the given {@code list}.
 	 * @throws NullPointerException if the given {@code list} is null.
+	 * @see java.util.Collections#unmodifiableList(List)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> UnmodifiableList<T> unmodifiableList(List<? extends T> list) {
@@ -108,6 +110,7 @@ public interface UnmodifiableCollections {
 	 * @param <V> the type of the values.
 	 * @return an unmodifiable view of the given {@code map}.
 	 * @throws NullPointerException if the given {@code map} is null.
+	 * @see java.util.Collections#unmodifiableMap(Map)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <K, V> UnmodifiableMap<K, V> unmodifiableMap(Map<? extends K, ? extends V> map) {
@@ -122,6 +125,7 @@ public interface UnmodifiableCollections {
 	 * @param <V> the type of the values.
 	 * @return an unmodifiable view of the given {@code map}.
 	 * @throws NullPointerException if the given {@code map} is null.
+	 * @see java.util.Collections#unmodifiableNavigableMap(NavigableMap)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <K, V> UnmodifiableNavigableMap<K, V> unmodifiableNavigableMap(NavigableMap<K, ? extends V> map) {
@@ -135,6 +139,7 @@ public interface UnmodifiableCollections {
 	 * @param <T> the type of the elements.
 	 * @return an unmodifiable view of the given {@code set}.
 	 * @throws NullPointerException if the given {@code set} is null.
+	 * @see java.util.Collections#unmodifiableNavigableSet(NavigableSet)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> UnmodifiableNavigableSet<T> unmodifiableNavigableSet(NavigableSet<T> set) {
@@ -148,6 +153,7 @@ public interface UnmodifiableCollections {
 	 * @param <T> the type of the elements.
 	 * @return an unmodifiable view of the given {@code set}.
 	 * @throws NullPointerException if the given {@code set} is null.
+	 * @see java.util.Collections#unmodifiableSet(Set)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> UnmodifiableSet<T> unmodifiableSet(Set<T> set) {
@@ -162,6 +168,7 @@ public interface UnmodifiableCollections {
 	 * @param <V> the type of the values.
 	 * @return an unmodifiable view of the given {@code map}.
 	 * @throws NullPointerException if the given {@code map} is null.
+	 * @see java.util.Collections#unmodifiableSortedMap(SortedMap)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <K, V> UnmodifiableSortedMap<K, V> unmodifiableSortedMap(SortedMap<K, ? extends V> map) {
@@ -175,6 +182,7 @@ public interface UnmodifiableCollections {
 	 * @param <T> the type of the elements.
 	 * @return an unmodifiable view of the given {@code set}.
 	 * @throws NullPointerException if the given {@code set} is null.
+	 * @see java.util.Collections#unmodifiableSortedSet(SortedSet)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> UnmodifiableSortedSet<T> unmodifiableSortedSet(SortedSet<T> set) {
@@ -774,7 +782,6 @@ public interface UnmodifiableCollections {
 			public boolean equals(Object object) {
 				return object == this ||
 					   object instanceof Entry &&
-					   //todo why SimpleImmutableEntry?
 					   this.entry.equals(new AbstractMap.SimpleImmutableEntry((Entry) object));
 			}
 
@@ -926,16 +933,10 @@ public interface UnmodifiableCollections {
 
 			@Override
 			public boolean equals(Object object) {
-				if (object == this)
-					return true;
-				if (object instanceof Set) {
-					Set set = (Set) object;
-
-					return set.size() == this.entrySet.size() &&
-						   this.containsAll(set);
-				}
-
-				return false;
+				return object == this ||
+					   object instanceof Set &&
+					   ((Set) object).size() == this.entrySet.size() &&
+					   this.containsAll((Set) object);
 			}
 
 			@Override

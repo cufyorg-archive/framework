@@ -23,7 +23,7 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 /**
- * A class holding the empty collection classes.
+ * A class holding the empty collection classes. Empty collections are unmodifiable collections.
  * <p>
  * Note: this class chosen to be an interface to allow inheritance in the utility classes.
  *
@@ -42,18 +42,21 @@ public interface EmptyCollections {
 	/**
 	 * A global instance of an empty enumeration to avoid redundant instances constructions.
 	 *
+	 * @see java.util.Collections.EmptyEnumeration#EMPTY_ENUMERATION
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	EmptyEnumeration EMPTY_ENUMERATION = new EmptyEnumeration();
 	/**
 	 * A global instance of an empty iterator to avoid redundant instances constructions.
 	 *
+	 * @see java.util.Collections.EmptyIterator#EMPTY_ITERATOR
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	EmptyIterator EMPTY_ITERATOR = new EmptyIterator();
 	/**
 	 * A global instance of an empty list to avoid redundant instances constructions.
 	 *
+	 * @see java.util.Collections#EMPTY_LIST
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	@SuppressWarnings("PublicStaticCollectionField")
@@ -61,12 +64,14 @@ public interface EmptyCollections {
 	/**
 	 * A global instance of an empty iterator to avoid redundant instances constructions.
 	 *
+	 * @see java.util.Collections.EmptyListIterator#EMPTY_ITERATOR
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	EmptyListIterator EMPTY_LIST_ITERATOR = new EmptyListIterator();
 	/**
 	 * A global instance of an empty map to avoid redundant instances constructions.
 	 *
+	 * @see java.util.Collections#EMPTY_MAP
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	@SuppressWarnings("PublicStaticCollectionField")
@@ -74,6 +79,7 @@ public interface EmptyCollections {
 	/**
 	 * A global instance of an empty map to avoid redundant instances constructions.
 	 *
+	 * @see java.util.Collections.UnmodifiableNavigableMap#EMPTY_NAVIGABLE_MAP
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	@SuppressWarnings("PublicStaticCollectionField")
@@ -81,6 +87,7 @@ public interface EmptyCollections {
 	/**
 	 * A global instance of an empty set to avoid redundant instances constructions.
 	 *
+	 * @see java.util.Collections.UnmodifiableNavigableSet#EMPTY_NAVIGABLE_SET
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	@SuppressWarnings("PublicStaticCollectionField")
@@ -95,6 +102,7 @@ public interface EmptyCollections {
 	/**
 	 * A global instance of an empty set to avoid redundant instances constructions.
 	 *
+	 * @see java.util.Collections#EMPTY_SET
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	@SuppressWarnings("PublicStaticCollectionField")
@@ -136,6 +144,7 @@ public interface EmptyCollections {
 	 *
 	 * @param <T> the type of the elements.
 	 * @return an empty enumeration.
+	 * @see Collections#emptyEnumeration()
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> EmptyEnumeration<T> emptyEnumeration() {
@@ -147,6 +156,7 @@ public interface EmptyCollections {
 	 *
 	 * @param <T> the type of the elements.
 	 * @return an empty iterator.
+	 * @see Collections#emptyIterator()
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> EmptyIterator<T> emptyIterator() {
@@ -158,6 +168,7 @@ public interface EmptyCollections {
 	 *
 	 * @param <T> the type of the elements.
 	 * @return an empty list.
+	 * @see Collections#emptyList()
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> EmptyList<T> emptyList() {
@@ -169,6 +180,7 @@ public interface EmptyCollections {
 	 *
 	 * @param <T> the type of the elements.
 	 * @return an empty iterator.
+	 * @see Collections#emptyListIterator()
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> EmptyListIterator<T> emptyListIterator() {
@@ -181,6 +193,7 @@ public interface EmptyCollections {
 	 * @param <K> the type of the keys.
 	 * @param <V> the type of the values.
 	 * @return an empty map.
+	 * @see Collections#emptyMap()
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <K, V> EmptyMap<K, V> emptyMap() {
@@ -193,6 +206,7 @@ public interface EmptyCollections {
 	 * @param <K> the type of the keys.
 	 * @param <V> the type of the values.
 	 * @return an empty map.
+	 * @see Collections#emptyNavigableMap()
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <K, V> EmptyNavigableMap<K, V> emptyNavigableMap() {
@@ -204,6 +218,7 @@ public interface EmptyCollections {
 	 *
 	 * @param <T> the type of the elements.
 	 * @return an empty set.
+	 * @see Collections#emptyNavigableSet()
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> EmptyNavigableSet<T> emptyNavigableSet() {
@@ -226,6 +241,7 @@ public interface EmptyCollections {
 	 *
 	 * @param <T> the type of the elements.
 	 * @return an empty set.
+	 * @see Collections#emptySet()
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> EmptySet<T> emptySet() {
@@ -238,6 +254,7 @@ public interface EmptyCollections {
 	 * @param <K> the type of the keys.
 	 * @param <V> the type of the values.
 	 * @return an empty map.
+	 * @see Collections#emptySortedMap()
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <K, V> EmptySortedMap<K, V> emptySortedMap() {
@@ -249,6 +266,7 @@ public interface EmptyCollections {
 	 *
 	 * @param <T> the type of the elements.
 	 * @return an empty set.
+	 * @see Collections#emptySortedSet()
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> EmptySortedSet<T> emptySortedSet() {

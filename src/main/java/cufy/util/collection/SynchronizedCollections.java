@@ -41,6 +41,7 @@ public interface SynchronizedCollections {
 	 * @param <T>        the type of the elements.
 	 * @return a synchronized view of the given {@code collection}.
 	 * @throws NullPointerException if the given {@code collection} is null.
+	 * @see java.util.Collections#synchronizedCollection(Collection)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <T> SynchronizedCollection<T> synchronizedCollection(Collection<T> collection) {
@@ -68,6 +69,7 @@ public interface SynchronizedCollections {
 	 * @param <T>  the type of the elements.
 	 * @return a synchronized view of the given {@code list}.
 	 * @throws NullPointerException if the given {@code list} is null.
+	 * @see java.util.Collections#synchronizedList(List)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <T> SynchronizedList<T> synchronizedList(List<T> list) {
@@ -100,6 +102,7 @@ public interface SynchronizedCollections {
 	 * @param <V> the type of the values.
 	 * @return a synchronized view of the given {@code map}.
 	 * @throws NullPointerException if the given {@code map} is null.
+	 * @see java.util.Collections#synchronizedMap(Map)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <K, V> SynchronizedMap<K, V> synchronizedMap(Map<K, V> map) {
@@ -129,6 +132,7 @@ public interface SynchronizedCollections {
 	 * @param <V> the type of the values.
 	 * @return a synchronized view of the given {@code map}.
 	 * @throws NullPointerException if the given {@code map} is null.
+	 * @see java.util.Collections#synchronizedNavigableMap(NavigableMap)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <K, V> SynchronizedNavigableMap<K, V> synchronizedNavigableMap(NavigableMap<K, V> map) {
@@ -157,6 +161,7 @@ public interface SynchronizedCollections {
 	 * @param <T> the type of the elements.
 	 * @return a synchronized view of the given {@code set}.
 	 * @throws NullPointerException if the given {@code set} is null.
+	 * @see java.util.Collections#synchronizedNavigableSet(NavigableSet)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <T> SynchronizedNavigableSet<T> synchronizedNavigableSet(NavigableSet<T> set) {
@@ -184,6 +189,7 @@ public interface SynchronizedCollections {
 	 * @param <T> the type of the elements.
 	 * @return a synchronized view of the given {@code set}.
 	 * @throws NullPointerException if the given {@code set} is null.
+	 * @see java.util.Collections#synchronizedSet(Set)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <T> SynchronizedSet<T> synchronizedSet(Set<T> set) {
@@ -212,6 +218,7 @@ public interface SynchronizedCollections {
 	 * @param <V> the type of the values.
 	 * @return a synchronized view of the given {@code map}.
 	 * @throws NullPointerException if the given {@code map} is null.
+	 * @see java.util.Collections#synchronizedSortedMap(SortedMap)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <K, V> SynchronizedSortedMap<K, V> synchronizedSortedMap(SortedMap<K, V> map) {
@@ -240,6 +247,7 @@ public interface SynchronizedCollections {
 	 * @param <T> the type of the elements.
 	 * @return a synchronized view of the given {@code set}.
 	 * @throws NullPointerException if the given {@code set} is null.
+	 * @see java.util.Collections#synchronizedSortedSet(SortedSet)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <T> SynchronizedSortedSet<T> synchronizedSortedSet(SortedSet<T> set) {

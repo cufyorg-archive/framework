@@ -23,7 +23,8 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 /**
- * A class holding the singleton collection classes.
+ * A class holding the singleton collection classes. Singleton collections are unmodifiable
+ * collections.
  * <p>
  * Note: this class chosen to be an interface to allow inheritance in the utility classes.
  *
@@ -38,6 +39,7 @@ public interface SingletonCollections {
 	 * @param element the only element the returned set will have.
 	 * @param <T>     the type of the element.
 	 * @return a set with only the given {@code element}.
+	 * @see Collections#singleton(Object)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> SingletonSet<T> singleton(T element) {
@@ -74,6 +76,7 @@ public interface SingletonCollections {
 	 * @param element the only element the returned iterator will have.
 	 * @param <T>     the type of the element.
 	 * @return an iterator with only the given {@code element}.
+	 * @see Collections#singletonIterator(Object)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> SingletonIterator<T> singletonIterator(T element) {
@@ -86,6 +89,7 @@ public interface SingletonCollections {
 	 * @param element the only element the returned list will have.
 	 * @param <T>     the type of the element.
 	 * @return a list with only the given {@code element}.
+	 * @see Collections#singletonList(Object)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> SingletonList<T> singletonList(T element) {
@@ -112,6 +116,7 @@ public interface SingletonCollections {
 	 * @param <K>   the type of hte keys.
 	 * @param <V>   the type of the values
 	 * @return a map with only the given {@code key} and {@code value} pair.
+	 * @see Collections#singletonMap(Object, Object)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <K, V> SingletonMap<K, V> singletonMap(K key, V value) {
@@ -124,6 +129,7 @@ public interface SingletonCollections {
 	 * @param element the only element the returned spliterator will have.
 	 * @param <T>     the type of the element.
 	 * @return an spliterator with only the given {@code element}.
+	 * @see Collections#singletonSpliterator(Object)
 	 * @since 0.1.5 ~2020.08.19
 	 */
 	static <T> SingletonSpliterator<T> singletonSpliterator(T element) {
@@ -177,13 +183,19 @@ public interface SingletonCollections {
 
 		@Override
 		public boolean contains(Object object) {
-			return object == this.element || object != null && object.equals(this.element);
+			return this.eq(object, this.element);
 		}
 
 		@Override
 		public boolean containsAll(Collection<?> collection) {
-			return collection.size() == 1 &&
-				   collection.contains(this.element);
+			for (Object object : collection) {
+				if (this.eq(object, this.element))
+					continue;
+
+				return false;
+			}
+
+			return true;
 		}
 
 		@Override
@@ -268,6 +280,20 @@ public interface SingletonCollections {
 		@Override
 		public String toString() {
 			return "[" + this.element + "]";
+		}
+
+		/**
+		 * Determine if the given two elements are equal or not. This is the base equality check in
+		 * this class and it should be for its subclasses.
+		 *
+		 * @param element the first element.
+		 * @param e       the second element.
+		 * @return true, if the given {@code element} equals the given {@code e} in this class's
+		 * 		standard.
+		 * @since 0.1.5 ~2020.08.18
+		 */
+		protected boolean eq(Object element, E e) {
+			return element == e || element != null && element.equals(e);
 		}
 	}
 
@@ -436,12 +462,12 @@ public interface SingletonCollections {
 
 		@Override
 		public int indexOf(Object object) {
-			return object == this.element || object != null && object.equals(this.element) ? 0 : -1;
+			return this.eq(object, this.element) ? 0 : -1;
 		}
 
 		@Override
 		public int lastIndexOf(Object object) {
-			return object == this.element || object != null && object.equals(this.element) ? 0 : -1;
+			return this.eq(object, this.element) ? 0 : -1;
 		}
 
 		@Override
@@ -621,12 +647,12 @@ public interface SingletonCollections {
 
 		@Override
 		public boolean containsKey(Object key) {
-			return key == this.key || key != null && key.equals(this.key);
+			return this.keq(key, this.key);
 		}
 
 		@Override
 		public boolean containsValue(Object value) {
-			return value == this.value || value != null && value.equals(this.value);
+			return this.veq(value, this.value);
 		}
 
 		@Override
@@ -636,18 +662,11 @@ public interface SingletonCollections {
 
 		@Override
 		public boolean equals(Object object) {
-			if (object == this)
-				return true;
-			if (object instanceof Map) {
-				Map map = (Map) object;
-
-				if (map.size() == 1) {
-					Object value = map.get(this.key);
-					return value == this.value || value != null && value.equals(this.value);
-				}
-			}
-
-			return false;
+			return object == this ||
+				   object instanceof Map &&
+				   ((Map) object).size() == 1 &&
+				   ((Map) object).containsKey(this.key) &&
+				   ((Map) object).containsValue(this.value);
 		}
 
 		@Override
@@ -658,14 +677,12 @@ public interface SingletonCollections {
 
 		@Override
 		public V get(Object key) {
-			return key == this.key || key != null && key.equals(this.key) ?
-				   this.value : null;
+			return this.keq(key, this.key) ? this.value : null;
 		}
 
 		@Override
 		public V getOrDefault(Object key, V defaultValue) {
-			return key == this.key || key != null && key.equals(this.key) ?
-				   this.value : defaultValue;
+			return this.keq(key, this.key) ? this.value : defaultValue;
 		}
 
 		@Override
@@ -742,6 +759,34 @@ public interface SingletonCollections {
 		@Override
 		public SingletonCollection<V> values() {
 			return new SingletonCollection(this.value);
+		}
+
+		/**
+		 * Determine if the given two elements are equal or not. This is the base equality check in
+		 * this class and it should be for its subclasses.
+		 *
+		 * @param key the first key.
+		 * @param k   the second key.
+		 * @return true, if the given {@code key} equals the given {@code k} in this class's
+		 * 		standard.
+		 * @since 0.1.5 ~2020.08.18
+		 */
+		protected boolean keq(Object key, K k) {
+			return key == k || key != null && key.equals(k);
+		}
+
+		/**
+		 * Determine if the given two elements are equal or not. This is the base equality check in
+		 * this class and it should be for its subclasses.
+		 *
+		 * @param value the first value.
+		 * @param v     the second value.
+		 * @return true, if the given {@code value} equals the given {@code v} in this class's
+		 * 		standard.
+		 * @since 0.1.5 ~2020.08.18
+		 */
+		protected boolean veq(Object value, V v) {
+			return value == v || value != null && value.equals(v);
 		}
 	}
 

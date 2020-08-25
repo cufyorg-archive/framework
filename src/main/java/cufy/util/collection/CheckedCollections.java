@@ -44,6 +44,7 @@ public interface CheckedCollections {
 	 * @param <T>        the type of the elements.
 	 * @return a checked view of the given {@code collection}.
 	 * @throws NullPointerException if the given {@code collection} or {@code type} is null.
+	 * @see java.util.Collections#checkedCollection(Collection, Class)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <T> CheckedCollection<T> checkedCollection(Collection<T> collection, Class<T> type) {
@@ -85,6 +86,7 @@ public interface CheckedCollections {
 	 * @param <T>  the type of the elements.
 	 * @return a checked view of the given {@code list}.
 	 * @throws NullPointerException if the given {@code list} or {@code type} is null.
+	 * @see java.util.Collections#checkedList(List, Class)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <T> CheckedList<T> checkedList(List<T> list, Class<T> type) {
@@ -121,6 +123,7 @@ public interface CheckedCollections {
 	 * @return a checked view of the given {@code map}.
 	 * @throws NullPointerException if the given {@code map} or {@code keyType} or {@code valueType}
 	 *                              is null.
+	 * @see java.util.Collections#checkedMap(Map, Class, Class)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <K, V> CheckedMap<K, V> checkedMap(Map<K, V> map, Class<K> keyType, Class<V> valueType) {
@@ -140,6 +143,7 @@ public interface CheckedCollections {
 	 * @return a checked view of the given {@code map}.
 	 * @throws NullPointerException if the given {@code map} or {@code keyType} or {@code valueType}
 	 *                              is null.
+	 * @see java.util.Collections#checkedNavigableMap(NavigableMap, Class, Class)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <K, V> CheckedNavigableMap<K, V> checkedNavigableMap(NavigableMap<K, V> map, Class<K> keyType, Class<V> valueType) {
@@ -155,6 +159,7 @@ public interface CheckedCollections {
 	 * @param <T>  the type of the elements.
 	 * @return a checked view of the given {@code set}.
 	 * @throws NullPointerException if the given {@code set} or {@code type} is null.
+	 * @see java.util.Collections#checkedNavigableSet(NavigableSet, Class)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <T> CheckedNavigableSet<T> checkedNavigableSet(NavigableSet<T> set, Class<T> type) {
@@ -170,6 +175,7 @@ public interface CheckedCollections {
 	 * @param <T>   the type of the elements.
 	 * @return a checked view of the given {@code queue}.
 	 * @throws NullPointerException if the given {@code queue} or {@code type} is null.
+	 * @see java.util.Collections#checkedQueue(Queue, Class)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <T> CheckedQueue<T> checkedQueue(Queue<T> queue, Class<T> type) {
@@ -185,6 +191,7 @@ public interface CheckedCollections {
 	 * @param <T>  the type of the elements.
 	 * @return a checked view of the given {@code set}.
 	 * @throws NullPointerException if the given {@code set} or {@code type} is null.
+	 * @see java.util.Collections#checkedSet(Set, Class)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <T> CheckedSet<T> checkedSet(Set<T> set, Class<T> type) {
@@ -204,6 +211,7 @@ public interface CheckedCollections {
 	 * @return a checked view of the given {@code map}.
 	 * @throws NullPointerException if the given {@code map} or {@code keyType} or {@code valueType}
 	 *                              is null.
+	 * @see java.util.Collections#checkedSortedMap(SortedMap, Class, Class)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <K, V> CheckedSortedMap<K, V> checkedSortedMap(SortedMap<K, V> map, Class<K> keyType, Class<V> valueType) {
@@ -219,6 +227,7 @@ public interface CheckedCollections {
 	 * @param <T>  the type of the elements.
 	 * @return a checked view of the given {@code set}.
 	 * @throws NullPointerException if the given {@code set} or {@code type} is null.
+	 * @see java.util.Collections#checkedSortedSet(SortedSet, Class)
 	 * @since 0.1.5 ~2020.08.22
 	 */
 	static <T> CheckedSortedSet<T> checkedSortedSet(SortedSet<T> set, Class<T> type) {
@@ -1004,7 +1013,6 @@ public interface CheckedCollections {
 			public boolean equals(Object object) {
 				return object == this ||
 					   object instanceof Entry &&
-					   //todo why SimpleImmutableEntry?
 					   this.entry.equals(new AbstractMap.SimpleImmutableEntry((Entry) object));
 			}
 
@@ -1190,16 +1198,10 @@ public interface CheckedCollections {
 
 			@Override
 			public boolean equals(Object object) {
-				if (object == this)
-					return true;
-				if (object instanceof Set) {
-					Set set = (Set) object;
-
-					return set.size() == this.entrySet.size() &&
-						   this.containsAll(set);
-				}
-
-				return false;
+				return object == this ||
+					   object instanceof Set &&
+					   ((Set) object).size() == this.entrySet.size() &&
+					   this.containsAll((Set) object);
 			}
 
 			@Override
