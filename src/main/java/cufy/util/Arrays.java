@@ -29,32 +29,20 @@ import java.util.stream.Stream;
 
 /**
  * An Utility class for raw arrays. Supporting various kinds of array operations. All methods
- * accepts any kind of array and has a reflection way method and a switcher method.
+ * accepts any kind of array.
  * <p>
  * This class includes all the methods in the standard {@link java.util.Arrays} utility class with
  * the same behaviour. So switching to import this class will not make any changes to files
  * previously imported {@link java.util.Arrays}.
  * <p>
- * Note: the class is not final nor have a private constructor ;). Anyone can override this class to
- * provide more static methods meanwhile provide access to the methods of this class with the
- * sub-class's signature. But, don't forget that this class is not made for OOP! So, any attempt to
- * construct any sub-class of this class will fail no matter what.
+ * Note: this class chosen to be an interface to allow inheritance in the utility classes.
  *
  * @author LSafer
  * @version 0.1.5
  * @since 0.0.a ~2019.06.11
  */
-public class Arrays {
-	/**
-	 * This is an util class and must not be instanced as an object.
-	 *
-	 * @throws AssertionError when called.
-	 */
-	protected Arrays() {
-		throw new AssertionError("No instance for you!");
-	}
-
-	//..array
+public interface Arrays {
+	//..array(A[])
 
 	/**
 	 * Construct a new array wrapper for the given {@code array}.
@@ -65,7 +53,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static <E> ObjectArray<E> array(E... array) {
+	static <E> ObjectArray<E> array(E... array) {
 		return new ObjectArray(array);
 	}
 
@@ -77,7 +65,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static BooleanArray array(boolean[] array) {
+	static BooleanArray array(boolean[] array) {
 		return new BooleanArray(array);
 	}
 
@@ -89,7 +77,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static ByteArray array(byte[] array) {
+	static ByteArray array(byte[] array) {
 		return new ByteArray(array);
 	}
 
@@ -101,8 +89,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static CharacterArray array(char[] array) {
-		return new CharacterArray(array);
+	static CharArray array(char[] array) {
+		return new CharArray(array);
 	}
 
 	/**
@@ -113,7 +101,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static DoubleArray array(double[] array) {
+	static DoubleArray array(double[] array) {
 		return new DoubleArray(array);
 	}
 
@@ -125,7 +113,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static FloatArray array(float[] array) {
+	static FloatArray array(float[] array) {
 		return new FloatArray(array);
 	}
 
@@ -137,8 +125,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static IntegerArray array(int[] array) {
-		return new IntegerArray(array);
+	static IntArray array(int[] array) {
+		return new IntArray(array);
 	}
 
 	/**
@@ -149,7 +137,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static LongArray array(long[] array) {
+	static LongArray array(long[] array) {
 		return new LongArray(array);
 	}
 
@@ -161,8 +149,182 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static ShortArray array(short[] array) {
+	static ShortArray array(short[] array) {
 		return new ShortArray(array);
+	}
+
+	//..array(A[], int, int)
+
+	/**
+	 * Construct a new array wrapper for the given {@code array}.
+	 *
+	 * @param array      the array to be wrapped.
+	 * @param beginIndex the first index of the area at the given {@code array} to be backing the
+	 *                   constructed array.
+	 * @param endIndex   one past the last index of the area at the given {@code array} to be
+	 *                   backing the constructed array.
+	 * @param <E>        the type of the elements.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length}.
+	 * @throws IllegalArgumentException       if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.22
+	 */
+	static <E> ObjectArray<E> array(E[] array, int beginIndex, int endIndex) {
+		return new ObjectArray(array, beginIndex, endIndex);
+	}
+
+	/**
+	 * Construct a new array wrapper for the given {@code array}.
+	 *
+	 * @param array      the array to be wrapped.
+	 * @param beginIndex the first index of the area at the given {@code array} to be backing the
+	 *                   constructed array.
+	 * @param endIndex   one past the last index of the area at the given {@code array} to be
+	 *                   backing the constructed array.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length}.
+	 * @throws IllegalArgumentException       if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.22
+	 */
+	static BooleanArray array(boolean[] array, int beginIndex, int endIndex) {
+		return new BooleanArray(array, beginIndex, endIndex);
+	}
+
+	/**
+	 * Construct a new array wrapper for the given {@code array}.
+	 *
+	 * @param array      the array to be wrapped.
+	 * @param beginIndex the first index of the area at the given {@code array} to be backing the
+	 *                   constructed array.
+	 * @param endIndex   one past the last index of the area at the given {@code array} to be
+	 *                   backing the constructed array.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length}.
+	 * @throws IllegalArgumentException       if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.22
+	 */
+	static ByteArray array(byte[] array, int beginIndex, int endIndex) {
+		return new ByteArray(array, beginIndex, endIndex);
+	}
+
+	/**
+	 * Construct a new array wrapper for the given {@code array}.
+	 *
+	 * @param array      the array to be wrapped.
+	 * @param beginIndex the first index of the area at the given {@code array} to be backing the
+	 *                   constructed array.
+	 * @param endIndex   one past the last index of the area at the given {@code array} to be
+	 *                   backing the constructed array.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length}.
+	 * @throws IllegalArgumentException       if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.22
+	 */
+	static CharArray array(char[] array, int beginIndex, int endIndex) {
+		return new CharArray(array, beginIndex, endIndex);
+	}
+
+	/**
+	 * Construct a new array wrapper for the given {@code array}.
+	 *
+	 * @param array      the array to be wrapped.
+	 * @param beginIndex the first index of the area at the given {@code array} to be backing the
+	 *                   constructed array.
+	 * @param endIndex   one past the last index of the area at the given {@code array} to be
+	 *                   backing the constructed array.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length}.
+	 * @throws IllegalArgumentException       if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.22
+	 */
+	static DoubleArray array(double[] array, int beginIndex, int endIndex) {
+		return new DoubleArray(array, beginIndex, endIndex);
+	}
+
+	/**
+	 * Construct a new array wrapper for the given {@code array}.
+	 *
+	 * @param array      the array to be wrapped.
+	 * @param beginIndex the first index of the area at the given {@code array} to be backing the
+	 *                   constructed array.
+	 * @param endIndex   one past the last index of the area at the given {@code array} to be
+	 *                   backing the constructed array.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length}.
+	 * @throws IllegalArgumentException       if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.22
+	 */
+	static FloatArray array(float[] array, int beginIndex, int endIndex) {
+		return new FloatArray(array, beginIndex, endIndex);
+	}
+
+	/**
+	 * Construct a new array wrapper for the given {@code array}.
+	 *
+	 * @param array      the array to be wrapped.
+	 * @param beginIndex the first index of the area at the given {@code array} to be backing the
+	 *                   constructed array.
+	 * @param endIndex   one past the last index of the area at the given {@code array} to be
+	 *                   backing the constructed array.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length}.
+	 * @throws IllegalArgumentException       if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.22
+	 */
+	static IntArray array(int[] array, int beginIndex, int endIndex) {
+		return new IntArray(array, beginIndex, endIndex);
+	}
+
+	/**
+	 * Construct a new array wrapper for the given {@code array}.
+	 *
+	 * @param array      the array to be wrapped.
+	 * @param beginIndex the first index of the area at the given {@code array} to be backing the
+	 *                   constructed array.
+	 * @param endIndex   one past the last index of the area at the given {@code array} to be
+	 *                   backing the constructed array.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length}.
+	 * @throws IllegalArgumentException       if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.22
+	 */
+	static LongArray array(long[] array, int beginIndex, int endIndex) {
+		return new LongArray(array, beginIndex, endIndex);
+	}
+
+	/**
+	 * Construct a new array wrapper for the given {@code array}.
+	 *
+	 * @param array      the array to be wrapped.
+	 * @param beginIndex the first index of the area at the given {@code array} to be backing the
+	 *                   constructed array.
+	 * @param endIndex   one past the last index of the area at the given {@code array} to be
+	 *                   backing the constructed array.
+	 * @return an array wrapper for the given {@code array}.
+	 * @throws NullPointerException           if the given {@code array} is null.
+	 * @throws ArrayIndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                        array.length}.
+	 * @throws IllegalArgumentException       if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.22
+	 */
+	static ShortArray array(short[] array, int beginIndex, int endIndex) {
+		return new ShortArray(array, beginIndex, endIndex);
 	}
 
 	//.asList(A)
@@ -177,7 +339,7 @@ public class Arrays {
 	 * @see java.util.Arrays#asList(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> ObjectArray<E>.List asList(E... array) {
+	static <E> ObjectArray<E>.List asList(E... array) {
 		return new ObjectArray(array).list();
 	}
 
@@ -189,7 +351,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static BooleanArray.List asList(boolean[] array) {
+	static BooleanArray.List asList(boolean[] array) {
 		return new BooleanArray(array).list();
 	}
 
@@ -201,7 +363,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static ByteArray.List asList(byte[] array) {
+	static ByteArray.List asList(byte[] array) {
 		return new ByteArray(array).list();
 	}
 
@@ -213,8 +375,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static CharacterArray.List asList(char[] array) {
-		return new CharacterArray(array).list();
+	static CharArray.List asList(char[] array) {
+		return new CharArray(array).list();
 	}
 
 	/**
@@ -225,7 +387,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static DoubleArray.List asList(double[] array) {
+	static DoubleArray.List asList(double[] array) {
 		return new DoubleArray(array).list();
 	}
 
@@ -237,7 +399,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static FloatArray.List asList(float[] array) {
+	static FloatArray.List asList(float[] array) {
 		return new FloatArray(array).list();
 	}
 
@@ -249,8 +411,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static IntegerArray.List asList(int[] array) {
-		return new IntegerArray(array).list();
+	static IntArray.List asList(int[] array) {
+		return new IntArray(array).list();
 	}
 
 	/**
@@ -261,7 +423,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static LongArray.List asList(long[] array) {
+	static LongArray.List asList(long[] array) {
 		return new LongArray(array).list();
 	}
 
@@ -273,7 +435,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static ShortArray.List asList(short[] array) {
+	static ShortArray.List asList(short[] array) {
 		return new ShortArray(array).list();
 	}
 
@@ -291,7 +453,7 @@ public class Arrays {
 	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E, K extends E, V extends E> ObjectArray<E>.Map<K, V> asMap(E... array) {
+	static <E, K extends E, V extends E> ObjectArray<E>.Map<K, V> asMap(E... array) {
 		return new ObjectArray(array).map();
 	}
 
@@ -304,7 +466,7 @@ public class Arrays {
 	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static BooleanArray.Map asMap(boolean[] array) {
+	static BooleanArray.Map asMap(boolean[] array) {
 		return new BooleanArray(array).map();
 	}
 
@@ -317,7 +479,7 @@ public class Arrays {
 	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static ByteArray.Map asMap(byte[] array) {
+	static ByteArray.Map asMap(byte[] array) {
 		return new ByteArray(array).map();
 	}
 
@@ -330,8 +492,8 @@ public class Arrays {
 	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static CharacterArray.Map asMap(char[] array) {
-		return new CharacterArray(array).map();
+	static CharArray.Map asMap(char[] array) {
+		return new CharArray(array).map();
 	}
 
 	/**
@@ -343,7 +505,7 @@ public class Arrays {
 	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static DoubleArray.Map asMap(double[] array) {
+	static DoubleArray.Map asMap(double[] array) {
 		return new DoubleArray(array).map();
 	}
 
@@ -356,7 +518,7 @@ public class Arrays {
 	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static FloatArray.Map asMap(float[] array) {
+	static FloatArray.Map asMap(float[] array) {
 		return new FloatArray(array).map();
 	}
 
@@ -369,8 +531,8 @@ public class Arrays {
 	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static IntegerArray.Map asMap(int[] array) {
-		return new IntegerArray(array).map();
+	static IntArray.Map asMap(int[] array) {
+		return new IntArray(array).map();
 	}
 
 	/**
@@ -382,7 +544,7 @@ public class Arrays {
 	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static LongArray.Map asMap(long[] array) {
+	static LongArray.Map asMap(long[] array) {
 		return new LongArray(array).map();
 	}
 
@@ -395,7 +557,7 @@ public class Arrays {
 	 * @throws IllegalArgumentException if {@code array.length % 2 != 0}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static ShortArray.Map asMap(short[] array) {
+	static ShortArray.Map asMap(short[] array) {
 		return new ShortArray(array).map();
 	}
 
@@ -420,7 +582,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(Object[], Object)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> int binarySearch(E[] array, E key) {
+	static <E> int binarySearch(E[] array, E key) {
 		return new ObjectArray(array).binarySearch(key);
 	}
 
@@ -443,7 +605,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(Object[], Object, Comparator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> int binarySearch(E[] array, E key, Comparator<? super E> comparator) {
+	static <E> int binarySearch(E[] array, E key, Comparator<? super E> comparator) {
 		return new ObjectArray(array).binarySearch(key, comparator);
 	}
 
@@ -464,7 +626,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(boolean[] array, boolean key) {
+	static int binarySearch(boolean[] array, boolean key) {
 		return new BooleanArray(array).binarySearch(key);
 	}
 
@@ -486,7 +648,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(byte[], byte)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(byte[] array, byte key) {
+	static int binarySearch(byte[] array, byte key) {
 		return new ByteArray(array).binarySearch(key);
 	}
 
@@ -508,8 +670,8 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(char[], char)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(char[] array, char key) {
-		return new CharacterArray(array).binarySearch(key);
+	static int binarySearch(char[] array, char key) {
+		return new CharArray(array).binarySearch(key);
 	}
 
 	/**
@@ -530,7 +692,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(double[], double)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(double[] array, double key) {
+	static int binarySearch(double[] array, double key) {
 		return new DoubleArray(array).binarySearch(key);
 	}
 
@@ -552,7 +714,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(float[], float)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(float[] array, float key) {
+	static int binarySearch(float[] array, float key) {
 		return new FloatArray(array).binarySearch(key);
 	}
 
@@ -574,8 +736,8 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(int[], int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(int[] array, int key) {
-		return new IntegerArray(array).binarySearch(key);
+	static int binarySearch(int[] array, int key) {
+		return new IntArray(array).binarySearch(key);
 	}
 
 	/**
@@ -596,7 +758,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(long[], long)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(long[] array, long key) {
+	static int binarySearch(long[] array, long key) {
 		return new LongArray(array).binarySearch(key);
 	}
 
@@ -618,7 +780,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(short[], short)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(short[] array, short key) {
+	static int binarySearch(short[] array, short key) {
 		return new ShortArray(array).binarySearch(key);
 	}
 
@@ -648,7 +810,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(Object[], int, int, Object)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> int binarySearch(E[] array, int beginIndex, int endIndex, E key) {
+	static <E> int binarySearch(E[] array, int beginIndex, int endIndex, E key) {
 		return new ObjectArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
@@ -676,7 +838,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(Object[], int, int, Object, Comparator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> int binarySearch(E[] array, int beginIndex, int endIndex, E key, Comparator<? super E> comparator) {
+	static <E> int binarySearch(E[] array, int beginIndex, int endIndex, E key, Comparator<? super E> comparator) {
 		return new ObjectArray(array, beginIndex, endIndex).binarySearch(key, comparator);
 	}
 
@@ -702,7 +864,7 @@ public class Arrays {
 	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(boolean[] array, int beginIndex, int endIndex, boolean key) {
+	static int binarySearch(boolean[] array, int beginIndex, int endIndex, boolean key) {
 		return new BooleanArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
@@ -729,7 +891,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(byte[], int, int, byte)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(byte[] array, int beginIndex, int endIndex, byte key) {
+	static int binarySearch(byte[] array, int beginIndex, int endIndex, byte key) {
 		return new ByteArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
@@ -756,8 +918,8 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(char[], int, int, char)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(char[] array, int beginIndex, int endIndex, char key) {
-		return new CharacterArray(array, beginIndex, endIndex).binarySearch(key);
+	static int binarySearch(char[] array, int beginIndex, int endIndex, char key) {
+		return new CharArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
 	/**
@@ -783,7 +945,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(double[], int, int, double)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(double[] array, int beginIndex, int endIndex, double key) {
+	static int binarySearch(double[] array, int beginIndex, int endIndex, double key) {
 		return new DoubleArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
@@ -810,7 +972,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(float[], int, int, float)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(float[] array, int beginIndex, int endIndex, float key) {
+	static int binarySearch(float[] array, int beginIndex, int endIndex, float key) {
 		return new FloatArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
@@ -837,8 +999,8 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(int[], int, int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(int[] array, int beginIndex, int endIndex, int key) {
-		return new IntegerArray(array, beginIndex, endIndex).binarySearch(key);
+	static int binarySearch(int[] array, int beginIndex, int endIndex, int key) {
+		return new IntArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
 	/**
@@ -864,7 +1026,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(long[], int, int, long)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(long[] array, int beginIndex, int endIndex, long key) {
+	static int binarySearch(long[] array, int beginIndex, int endIndex, long key) {
 		return new LongArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
@@ -891,7 +1053,7 @@ public class Arrays {
 	 * @see java.util.Arrays#binarySearch(short[], int, int, short)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static int binarySearch(short[] array, int beginIndex, int endIndex, short key) {
+	static int binarySearch(short[] array, int beginIndex, int endIndex, short key) {
 		return new ShortArray(array, beginIndex, endIndex).binarySearch(key);
 	}
 
@@ -919,7 +1081,7 @@ public class Arrays {
 	 * @see System#arraycopy(Object, int, Object, int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void copy(Object src, int srcPos, Object dest, int destPos, int length) {
+	static void copy(Object src, int srcPos, Object dest, int destPos, int length) {
 		Objects.requireNonNull(src, "src");
 		Objects.requireNonNull(dest, "dest");
 		Class srcClass = src.getClass();
@@ -966,7 +1128,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOf(Object[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> E[] copyOf(E[] array, int length) {
+	static <E> E[] copyOf(E[] array, int length) {
 		return new ObjectArray<>(array).array(length);
 	}
 
@@ -986,7 +1148,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOf(Object[], int, Class)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E extends T, T> T[] copyOf(E[] array, int length, Class<? extends T[]> klass) {
+	static <E extends T, T> T[] copyOf(E[] array, int length, Class<? extends T[]> klass) {
 		E[] product = (E[]) java.lang.reflect.Array.newInstance(
 				klass.getComponentType(),
 				length
@@ -1012,7 +1174,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOf(boolean[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static boolean[] copyOf(boolean[] array, int length) {
+	static boolean[] copyOf(boolean[] array, int length) {
 		return new BooleanArray(array).array(length);
 	}
 
@@ -1027,7 +1189,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOf(byte[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static byte[] copyOf(byte[] array, int length) {
+	static byte[] copyOf(byte[] array, int length) {
 		return new ByteArray(array).array(length);
 	}
 
@@ -1042,8 +1204,8 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOf(char[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static char[] copyOf(char[] array, int length) {
-		return new CharacterArray(array).array(length);
+	static char[] copyOf(char[] array, int length) {
+		return new CharArray(array).array(length);
 	}
 
 	/**
@@ -1057,7 +1219,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOf(double[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static double[] copyOf(double[] array, int length) {
+	static double[] copyOf(double[] array, int length) {
 		return new DoubleArray(array).array(length);
 	}
 
@@ -1072,7 +1234,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOf(float[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static float[] copyOf(float[] array, int length) {
+	static float[] copyOf(float[] array, int length) {
 		return new FloatArray(array).array(length);
 	}
 
@@ -1087,8 +1249,8 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOf(int[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static int[] copyOf(int[] array, int length) {
-		return new IntegerArray(array).array(length);
+	static int[] copyOf(int[] array, int length) {
+		return new IntArray(array).array(length);
 	}
 
 	/**
@@ -1102,7 +1264,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOf(long[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static long[] copyOf(long[] array, int length) {
+	static long[] copyOf(long[] array, int length) {
 		return new LongArray(array).array(length);
 	}
 
@@ -1117,7 +1279,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOf(short[], int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static short[] copyOf(short[] array, int length) {
+	static short[] copyOf(short[] array, int length) {
 		return new ShortArray(array).array(length);
 	}
 
@@ -1141,7 +1303,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOfRange(Object[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> E[] copyOfRange(E[] array, int beginIndex, int endIndex) {
+	static <E> E[] copyOfRange(E[] array, int beginIndex, int endIndex) {
 		return new ObjectArray<>(array, beginIndex, array.length)
 				.array(endIndex - beginIndex);
 	}
@@ -1168,7 +1330,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOfRange(Object[], int, int, Class)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E extends T, T> T[] copyOfRange(E[] array, int beginIndex, int endIndex, Class<T[]> klass) {
+	static <E extends T, T> T[] copyOfRange(E[] array, int beginIndex, int endIndex, Class<T[]> klass) {
 		int length = endIndex - beginIndex;
 		T[] product = (T[]) java.lang.reflect.Array.newInstance(
 				klass.getComponentType(),
@@ -1201,7 +1363,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOfRange(boolean[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static boolean[] copyOfRange(boolean[] array, int beginIndex, int endIndex) {
+	static boolean[] copyOfRange(boolean[] array, int beginIndex, int endIndex) {
 		return new BooleanArray(array, beginIndex, array.length)
 				.array(endIndex - beginIndex);
 	}
@@ -1223,7 +1385,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOfRange(byte[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static byte[] copyOfRange(byte[] array, int beginIndex, int endIndex) {
+	static byte[] copyOfRange(byte[] array, int beginIndex, int endIndex) {
 		return new ByteArray(array, beginIndex, array.length)
 				.array(endIndex - beginIndex);
 	}
@@ -1245,8 +1407,8 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOfRange(char[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static char[] copyOfRange(char[] array, int beginIndex, int endIndex) {
-		return new CharacterArray(array, beginIndex, array.length)
+	static char[] copyOfRange(char[] array, int beginIndex, int endIndex) {
+		return new CharArray(array, beginIndex, array.length)
 				.array(endIndex - beginIndex);
 	}
 
@@ -1267,7 +1429,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOfRange(double[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static double[] copyOfRange(double[] array, int beginIndex, int endIndex) {
+	static double[] copyOfRange(double[] array, int beginIndex, int endIndex) {
 		return new DoubleArray(array, beginIndex, array.length)
 				.array(endIndex - beginIndex);
 	}
@@ -1289,7 +1451,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOfRange(float[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static float[] copyOfRange(float[] array, int beginIndex, int endIndex) {
+	static float[] copyOfRange(float[] array, int beginIndex, int endIndex) {
 		return new FloatArray(array, beginIndex, array.length)
 				.array(endIndex - beginIndex);
 	}
@@ -1311,8 +1473,8 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOfRange(int[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static int[] copyOfRange(int[] array, int beginIndex, int endIndex) {
-		return new IntegerArray(array, beginIndex, array.length)
+	static int[] copyOfRange(int[] array, int beginIndex, int endIndex) {
+		return new IntArray(array, beginIndex, array.length)
 				.array(endIndex - beginIndex);
 	}
 
@@ -1333,7 +1495,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOfRange(long[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static long[] copyOfRange(long[] array, int beginIndex, int endIndex) {
+	static long[] copyOfRange(long[] array, int beginIndex, int endIndex) {
 		return new LongArray(array, beginIndex, array.length)
 				.array(endIndex - beginIndex);
 	}
@@ -1355,7 +1517,7 @@ public class Arrays {
 	 * @see java.util.Arrays#copyOfRange(short[], int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static short[] copyOfRange(short[] array, int beginIndex, int endIndex) {
+	static short[] copyOfRange(short[] array, int beginIndex, int endIndex) {
 		return new ShortArray(array, beginIndex, array.length)
 				.array(endIndex - beginIndex);
 	}
@@ -1374,7 +1536,7 @@ public class Arrays {
 	 * @see java.util.Arrays#deepEquals(Object[], Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> boolean deepEquals(E[] array, E... other) {
+	static <E> boolean deepEquals(E[] array, E... other) {
 		return ObjectArray.deepEquals(array, other);
 	}
 
@@ -1389,7 +1551,7 @@ public class Arrays {
 	 * @see java.util.Arrays#deepHashCode(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> int deepHashCode(E... array) {
+	static <E> int deepHashCode(E... array) {
 		return ObjectArray.deepHashCode(array);
 	}
 
@@ -1404,7 +1566,7 @@ public class Arrays {
 	 * @see java.util.Arrays#deepToString(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> String deepToString(E... array) {
+	static <E> String deepToString(E... array) {
 		return ObjectArray.deepToString(array);
 	}
 
@@ -1422,7 +1584,7 @@ public class Arrays {
 	 * @see java.util.Arrays#equals(Object[], Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <T> boolean equals(T[] array, T... other) {
+	static <T> boolean equals(T[] array, T... other) {
 		return ObjectArray.equals(array, other);
 	}
 
@@ -1437,7 +1599,7 @@ public class Arrays {
 	 * @see java.util.Arrays#equals(boolean[], boolean[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static boolean equals(boolean[] array, boolean... other) {
+	static boolean equals(boolean[] array, boolean... other) {
 		return BooleanArray.equals(array, other);
 	}
 
@@ -1452,7 +1614,7 @@ public class Arrays {
 	 * @see java.util.Arrays#equals(byte[], byte[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static boolean equals(byte[] array, byte... other) {
+	static boolean equals(byte[] array, byte... other) {
 		return ByteArray.equals(array, other);
 	}
 
@@ -1467,8 +1629,8 @@ public class Arrays {
 	 * @see java.util.Arrays#equals(char[], char[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static boolean equals(char[] array, char... other) {
-		return CharacterArray.equals(array, other);
+	static boolean equals(char[] array, char... other) {
+		return CharArray.equals(array, other);
 	}
 
 	/**
@@ -1482,7 +1644,7 @@ public class Arrays {
 	 * @see java.util.Arrays#equals(double[], double[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static boolean equals(double[] array, double... other) {
+	static boolean equals(double[] array, double... other) {
 		return DoubleArray.equals(array, other);
 	}
 
@@ -1497,7 +1659,7 @@ public class Arrays {
 	 * @see java.util.Arrays#equals(float[], float[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static boolean equals(float[] array, float... other) {
+	static boolean equals(float[] array, float... other) {
 		return FloatArray.equals(array, other);
 	}
 
@@ -1512,8 +1674,8 @@ public class Arrays {
 	 * @see java.util.Arrays#equals(int[], int[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static boolean equals(int[] array, int... other) {
-		return IntegerArray.equals(array, other);
+	static boolean equals(int[] array, int... other) {
+		return IntArray.equals(array, other);
 	}
 
 	/**
@@ -1527,7 +1689,7 @@ public class Arrays {
 	 * @see java.util.Arrays#equals(long[], long[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static boolean equals(long[] array, long... other) {
+	static boolean equals(long[] array, long... other) {
 		return LongArray.equals(array, other);
 	}
 
@@ -1542,7 +1704,7 @@ public class Arrays {
 	 * @see java.util.Arrays#equals(short[], short[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static boolean equals(short[] array, short... other) {
+	static boolean equals(short[] array, short... other) {
 		return ShortArray.equals(array, other);
 	}
 
@@ -1560,7 +1722,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(Object[], Object)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> void fill(E[] array, E element) {
+	static <E> void fill(E[] array, E element) {
 		new ObjectArray(array).fill(element);
 	}
 
@@ -1573,7 +1735,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(boolean[], boolean)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(boolean[] array, boolean element) {
+	static void fill(boolean[] array, boolean element) {
 		new BooleanArray(array).fill(element);
 	}
 
@@ -1586,7 +1748,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(byte[], byte)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(byte[] array, byte element) {
+	static void fill(byte[] array, byte element) {
 		new ByteArray(array).fill(element);
 	}
 
@@ -1599,8 +1761,8 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(char[], char)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(char[] array, char element) {
-		new CharacterArray(array).fill(element);
+	static void fill(char[] array, char element) {
+		new CharArray(array).fill(element);
 	}
 
 	/**
@@ -1612,7 +1774,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(double[], double)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(double[] array, double element) {
+	static void fill(double[] array, double element) {
 		new DoubleArray(array).fill(element);
 	}
 
@@ -1625,7 +1787,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(float[], float)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(float[] array, float element) {
+	static void fill(float[] array, float element) {
 		new FloatArray(array).fill(element);
 	}
 
@@ -1638,7 +1800,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(long[], long)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(long[] array, long element) {
+	static void fill(long[] array, long element) {
 		new LongArray(array).fill(element);
 	}
 
@@ -1651,7 +1813,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(short[], short)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(short[] array, short element) {
+	static void fill(short[] array, short element) {
 		new ShortArray(array).fill(element);
 	}
 
@@ -1675,7 +1837,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(Object[], int, int, Object)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> void fill(E[] array, int beginIndex, int endIndex, E element) {
+	static <E> void fill(E[] array, int beginIndex, int endIndex, E element) {
 		new ObjectArray(array, beginIndex, endIndex).fill(element);
 	}
 
@@ -1694,7 +1856,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(boolean[], int, int, boolean)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(boolean[] array, int beginIndex, int endIndex, boolean element) {
+	static void fill(boolean[] array, int beginIndex, int endIndex, boolean element) {
 		new BooleanArray(array, beginIndex, endIndex).fill(element);
 	}
 
@@ -1713,7 +1875,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(byte[], int, int, byte)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(byte[] array, int beginIndex, int endIndex, byte element) {
+	static void fill(byte[] array, int beginIndex, int endIndex, byte element) {
 		new ByteArray(array, beginIndex, endIndex).fill(element);
 	}
 
@@ -1732,8 +1894,8 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(char[], int, int, char)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(char[] array, int beginIndex, int endIndex, char element) {
-		new CharacterArray(array, beginIndex, endIndex).fill(element);
+	static void fill(char[] array, int beginIndex, int endIndex, char element) {
+		new CharArray(array, beginIndex, endIndex).fill(element);
 	}
 
 	/**
@@ -1751,7 +1913,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(double[], int, int, double)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(double[] array, int beginIndex, int endIndex, double element) {
+	static void fill(double[] array, int beginIndex, int endIndex, double element) {
 		new DoubleArray(array, beginIndex, endIndex).fill(element);
 	}
 
@@ -1770,7 +1932,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(float[], int, int, float)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(float[] array, int beginIndex, int endIndex, float element) {
+	static void fill(float[] array, int beginIndex, int endIndex, float element) {
 		new FloatArray(array, beginIndex, endIndex).fill(element);
 	}
 
@@ -1789,8 +1951,8 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(int[], int, int, int)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(int[] array, int beginIndex, int endIndex, int element) {
-		new IntegerArray(array, beginIndex, endIndex).fill(element);
+	static void fill(int[] array, int beginIndex, int endIndex, int element) {
+		new IntArray(array, beginIndex, endIndex).fill(element);
 	}
 
 	/**
@@ -1808,7 +1970,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(long[], int, int, long)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(long[] array, int beginIndex, int endIndex, long element) {
+	static void fill(long[] array, int beginIndex, int endIndex, long element) {
 		new LongArray(array, beginIndex, endIndex).fill(element);
 	}
 
@@ -1827,7 +1989,7 @@ public class Arrays {
 	 * @see java.util.Arrays#fill(short[], int, int, short)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void fill(short[] array, int beginIndex, int endIndex, short element) {
+	static void fill(short[] array, int beginIndex, int endIndex, short element) {
 		new ShortArray(array, beginIndex, endIndex).fill(element);
 	}
 
@@ -1841,7 +2003,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code collection} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static Object[] from(Collection<?> collection) {
+	static Object[] from(Collection<?> collection) {
 		return ObjectArray.from(collection);
 	}
 
@@ -1858,19 +2020,19 @@ public class Arrays {
 	 * @throws IllegalArgumentException if the given {@code klass} is not an array.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static <A> A from(Collection<?> collection, Class<A> klass) {
+	static <A> A from(Collection<?> collection, Class<A> klass) {
 		if (klass == boolean[].class)
 			return (A) BooleanArray.from((Collection) collection);
 		if (klass == byte[].class)
 			return (A) ByteArray.from((Collection) collection);
 		if (klass == char[].class)
-			return (A) CharacterArray.from((Collection) collection);
+			return (A) CharArray.from((Collection) collection);
 		if (klass == double[].class)
 			return (A) DoubleArray.from((Collection) collection);
 		if (klass == float[].class)
 			return (A) FloatArray.from((Collection) collection);
 		if (klass == int[].class)
-			return (A) IntegerArray.from((Collection) collection);
+			return (A) IntArray.from((Collection) collection);
 		if (klass == long[].class)
 			return (A) LongArray.from((Collection) collection);
 		if (klass == short[].class)
@@ -1889,7 +2051,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code map} is null.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static Object[] from(Map<?, ?> map) {
+	static Object[] from(Map<?, ?> map) {
 		return ObjectArray.from(map);
 	}
 
@@ -1906,19 +2068,19 @@ public class Arrays {
 	 * @throws IllegalArgumentException if the given {@code klass} is not an array class.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public static <A> A from(Map<?, ?> map, Class<A> klass) {
+	static <A> A from(Map<?, ?> map, Class<A> klass) {
 		if (klass == boolean[].class)
 			return (A) BooleanArray.from((Map) map);
 		if (klass == byte[].class)
 			return (A) ByteArray.from((Map) map);
 		if (klass == char[].class)
-			return (A) CharacterArray.from((Map) map);
+			return (A) CharArray.from((Map) map);
 		if (klass == double[].class)
 			return (A) DoubleArray.from((Map) map);
 		if (klass == float[].class)
 			return (A) FloatArray.from((Map) map);
 		if (klass == int[].class)
-			return (A) IntegerArray.from((Map) map);
+			return (A) IntArray.from((Map) map);
 		if (klass == long[].class)
 			return (A) LongArray.from((Map) map);
 		if (klass == short[].class)
@@ -1938,7 +2100,7 @@ public class Arrays {
 	 * @see java.util.Arrays#hashCode(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> int hashCode(E... array) {
+	static <E> int hashCode(E... array) {
 		return ObjectArray.hashCode(array);
 	}
 
@@ -1950,7 +2112,7 @@ public class Arrays {
 	 * @see java.util.Arrays#hashCode(boolean[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static int hashCode(boolean[] array) {
+	static int hashCode(boolean[] array) {
 		return BooleanArray.hashCode(array);
 	}
 
@@ -1962,7 +2124,7 @@ public class Arrays {
 	 * @see java.util.Arrays#hashCode(byte[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static int hashCode(byte[] array) {
+	static int hashCode(byte[] array) {
 		return ByteArray.hashCode(array);
 	}
 
@@ -1974,8 +2136,8 @@ public class Arrays {
 	 * @see java.util.Arrays#hashCode(char[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static int hashCode(char[] array) {
-		return CharacterArray.hashCode(array);
+	static int hashCode(char[] array) {
+		return CharArray.hashCode(array);
 	}
 
 	/**
@@ -1986,7 +2148,7 @@ public class Arrays {
 	 * @see java.util.Arrays#hashCode(double[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static int hashCode(double[] array) {
+	static int hashCode(double[] array) {
 		return DoubleArray.hashCode(array);
 	}
 
@@ -1998,7 +2160,7 @@ public class Arrays {
 	 * @see java.util.Arrays#hashCode(float[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static int hashCode(float[] array) {
+	static int hashCode(float[] array) {
 		return FloatArray.hashCode(array);
 	}
 
@@ -2010,8 +2172,8 @@ public class Arrays {
 	 * @see java.util.Arrays#hashCode(int[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static int hashCode(int[] array) {
-		return IntegerArray.hashCode(array);
+	static int hashCode(int[] array) {
+		return IntArray.hashCode(array);
 	}
 
 	/**
@@ -2022,7 +2184,7 @@ public class Arrays {
 	 * @see java.util.Arrays#hashCode(long[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static int hashCode(long[] array) {
+	static int hashCode(long[] array) {
 		return LongArray.hashCode(array);
 	}
 
@@ -2034,7 +2196,7 @@ public class Arrays {
 	 * @see java.util.Arrays#hashCode(short[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static int hashCode(short[] array) {
+	static int hashCode(short[] array) {
 		return ShortArray.hashCode(array);
 	}
 
@@ -2049,7 +2211,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> ObjectArray.Iterator iterator(E... array) {
+	static <E> ObjectArray.Iterator iterator(E... array) {
 		return new ObjectArray(array).iterator();
 	}
 
@@ -2061,7 +2223,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static BooleanArray.Iterator iterator(boolean[] array) {
+	static BooleanArray.Iterator iterator(boolean[] array) {
 		return new BooleanArray(array).iterator();
 	}
 
@@ -2073,7 +2235,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static ByteArray.Iterator iterator(byte[] array) {
+	static ByteArray.Iterator iterator(byte[] array) {
 		return new ByteArray(array).iterator();
 	}
 
@@ -2085,8 +2247,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static CharacterArray.Iterator iterator(char[] array) {
-		return new CharacterArray(array).iterator();
+	static CharArray.Iterator iterator(char[] array) {
+		return new CharArray(array).iterator();
 	}
 
 	/**
@@ -2097,7 +2259,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static DoubleArray.Iterator iterator(double[] array) {
+	static DoubleArray.Iterator iterator(double[] array) {
 		return new DoubleArray(array).iterator();
 	}
 
@@ -2109,7 +2271,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static FloatArray.Iterator iterator(float[] array) {
+	static FloatArray.Iterator iterator(float[] array) {
 		return new FloatArray(array).iterator();
 	}
 
@@ -2121,8 +2283,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static IntegerArray.Iterator iterator(int[] array) {
-		return new IntegerArray(array).iterator();
+	static IntArray.Iterator iterator(int[] array) {
+		return new IntArray(array).iterator();
 	}
 
 	/**
@@ -2133,7 +2295,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static LongArray.Iterator iterator(long[] array) {
+	static LongArray.Iterator iterator(long[] array) {
 		return new LongArray(array).iterator();
 	}
 
@@ -2145,7 +2307,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static ShortArray.Iterator iterator(short[] array) {
+	static ShortArray.Iterator iterator(short[] array) {
 		return new ShortArray(array).iterator();
 	}
 
@@ -2164,7 +2326,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelPrefix(Object[], BinaryOperator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> void parallelPrefix(E[] array, BinaryOperator<E> operator) {
+	static <E> void parallelPrefix(E[] array, BinaryOperator<E> operator) {
 		new ObjectArray(array).parallelPrefix(operator);
 	}
 
@@ -2179,7 +2341,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(boolean[] array, BinaryOperator<Boolean> operator) {
+	static void parallelPrefix(boolean[] array, BinaryOperator<Boolean> operator) {
 		new BooleanArray(array).parallelPrefix(operator);
 	}
 
@@ -2194,7 +2356,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(byte[] array, BinaryOperator<Byte> operator) {
+	static void parallelPrefix(byte[] array, BinaryOperator<Byte> operator) {
 		new ByteArray(array).parallelPrefix(operator);
 	}
 
@@ -2209,8 +2371,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(char[] array, BinaryOperator<Character> operator) {
-		new CharacterArray(array).parallelPrefix(operator);
+	static void parallelPrefix(char[] array, BinaryOperator<Character> operator) {
+		new CharArray(array).parallelPrefix(operator);
 	}
 
 	/**
@@ -2225,7 +2387,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelPrefix(double[], DoubleBinaryOperator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(double[] array, DoubleBinaryOperator operator) {
+	static void parallelPrefix(double[] array, DoubleBinaryOperator operator) {
 		new DoubleArray(array).parallelPrefix(operator::applyAsDouble);
 	}
 
@@ -2240,7 +2402,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(float[] array, BinaryOperator<Float> operator) {
+	static void parallelPrefix(float[] array, BinaryOperator<Float> operator) {
 		new FloatArray(array).parallelPrefix(operator);
 	}
 
@@ -2256,8 +2418,8 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelPrefix(int[], IntBinaryOperator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(int[] array, IntBinaryOperator operator) {
-		new IntegerArray(array).parallelPrefix(operator::applyAsInt);
+	static void parallelPrefix(int[] array, IntBinaryOperator operator) {
+		new IntArray(array).parallelPrefix(operator::applyAsInt);
 	}
 
 	/**
@@ -2272,7 +2434,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelPrefix(long[], LongBinaryOperator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(long[] array, LongBinaryOperator operator) {
+	static void parallelPrefix(long[] array, LongBinaryOperator operator) {
 		new LongArray(array).parallelPrefix(operator::applyAsLong);
 	}
 
@@ -2287,7 +2449,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} or {@code operator} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(short[] array, BinaryOperator<Short> operator) {
+	static void parallelPrefix(short[] array, BinaryOperator<Short> operator) {
 		new ShortArray(array).parallelPrefix(operator);
 	}
 
@@ -2311,7 +2473,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelPrefix(Object[], int, int, BinaryOperator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> void parallelPrefix(E[] array, int beginIndex, int endIndex, BinaryOperator<E> operator) {
+	static <E> void parallelPrefix(E[] array, int beginIndex, int endIndex, BinaryOperator<E> operator) {
 		new ObjectArray(array, beginIndex, endIndex).parallelPrefix(operator);
 	}
 
@@ -2331,7 +2493,7 @@ public class Arrays {
 	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(boolean[] array, int beginIndex, int endIndex, BinaryOperator<Boolean> operator) {
+	static void parallelPrefix(boolean[] array, int beginIndex, int endIndex, BinaryOperator<Boolean> operator) {
 		new BooleanArray(array, beginIndex, endIndex).parallelPrefix(operator);
 	}
 
@@ -2351,7 +2513,7 @@ public class Arrays {
 	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(byte[] array, int beginIndex, int endIndex, BinaryOperator<Byte> operator) {
+	static void parallelPrefix(byte[] array, int beginIndex, int endIndex, BinaryOperator<Byte> operator) {
 		new ByteArray(array, beginIndex, endIndex).parallelPrefix(operator);
 	}
 
@@ -2371,8 +2533,8 @@ public class Arrays {
 	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(char[] array, int beginIndex, int endIndex, BinaryOperator<Character> operator) {
-		new CharacterArray(array, beginIndex, endIndex).parallelPrefix(operator);
+	static void parallelPrefix(char[] array, int beginIndex, int endIndex, BinaryOperator<Character> operator) {
+		new CharArray(array, beginIndex, endIndex).parallelPrefix(operator);
 	}
 
 	/**
@@ -2392,7 +2554,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelPrefix(double[], int, int, DoubleBinaryOperator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(double[] array, int beginIndex, int endIndex, DoubleBinaryOperator operator) {
+	static void parallelPrefix(double[] array, int beginIndex, int endIndex, DoubleBinaryOperator operator) {
 		new DoubleArray(array, beginIndex, endIndex).parallelPrefix(operator::applyAsDouble);
 	}
 
@@ -2412,7 +2574,7 @@ public class Arrays {
 	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(float[] array, int beginIndex, int endIndex, BinaryOperator<Float> operator) {
+	static void parallelPrefix(float[] array, int beginIndex, int endIndex, BinaryOperator<Float> operator) {
 		new FloatArray(array, beginIndex, endIndex).parallelPrefix(operator);
 	}
 
@@ -2433,8 +2595,8 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelPrefix(int[], int, int, IntBinaryOperator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(int[] array, int beginIndex, int endIndex, IntBinaryOperator operator) {
-		new IntegerArray(array, beginIndex, endIndex).parallelPrefix(operator::applyAsInt);
+	static void parallelPrefix(int[] array, int beginIndex, int endIndex, IntBinaryOperator operator) {
+		new IntArray(array, beginIndex, endIndex).parallelPrefix(operator::applyAsInt);
 	}
 
 	/**
@@ -2454,7 +2616,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelPrefix(long[], int, int, LongBinaryOperator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(long[] array, int beginIndex, int endIndex, LongBinaryOperator operator) {
+	static void parallelPrefix(long[] array, int beginIndex, int endIndex, LongBinaryOperator operator) {
 		new LongArray(array, beginIndex, endIndex).parallelPrefix(operator::applyAsLong);
 	}
 
@@ -2474,7 +2636,7 @@ public class Arrays {
 	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelPrefix(short[] array, int beginIndex, int endIndex, BinaryOperator<Short> operator) {
+	static void parallelPrefix(short[] array, int beginIndex, int endIndex, BinaryOperator<Short> operator) {
 		new ShortArray(array, beginIndex, endIndex).parallelPrefix(operator);
 	}
 
@@ -2492,7 +2654,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSetAll(Object[], IntFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> void parallelSetAll(E[] array, IntFunction<? extends E> function) {
+	static <E> void parallelSetAll(E[] array, IntFunction<? extends E> function) {
 		new ObjectArray(array).parallelSetAll(function);
 	}
 
@@ -2506,7 +2668,7 @@ public class Arrays {
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void parallelSetAll(boolean[] array, IntFunction<Boolean> function) {
+	static void parallelSetAll(boolean[] array, IntFunction<Boolean> function) {
 		new BooleanArray(array).parallelSetAll(function);
 	}
 
@@ -2520,7 +2682,7 @@ public class Arrays {
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void parallelSetAll(byte[] array, IntFunction<Byte> function) {
+	static void parallelSetAll(byte[] array, IntFunction<Byte> function) {
 		new ByteArray(array).parallelSetAll(function);
 	}
 
@@ -2534,8 +2696,8 @@ public class Arrays {
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void parallelSetAll(char[] array, IntFunction<Character> function) {
-		new CharacterArray(array).parallelSetAll(function);
+	static void parallelSetAll(char[] array, IntFunction<Character> function) {
+		new CharArray(array).parallelSetAll(function);
 	}
 
 	/**
@@ -2548,7 +2710,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSetAll(double[], IntToDoubleFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void parallelSetAll(double[] array, IntToDoubleFunction function) {
+	static void parallelSetAll(double[] array, IntToDoubleFunction function) {
 		new DoubleArray(array).parallelSetAll(function::applyAsDouble);
 	}
 
@@ -2562,7 +2724,7 @@ public class Arrays {
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void parallelSetAll(float[] array, IntFunction<Float> function) {
+	static void parallelSetAll(float[] array, IntFunction<Float> function) {
 		new FloatArray(array).parallelSetAll(function);
 	}
 
@@ -2576,8 +2738,8 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSetAll(int[], IntUnaryOperator)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void parallelSetAll(int[] array, IntUnaryOperator function) {
-		new IntegerArray(array).parallelSetAll(function::applyAsInt);
+	static void parallelSetAll(int[] array, IntUnaryOperator function) {
+		new IntArray(array).parallelSetAll(function::applyAsInt);
 	}
 
 	/**
@@ -2590,7 +2752,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSetAll(long[], IntToLongFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void parallelSetAll(long[] array, IntToLongFunction function) {
+	static void parallelSetAll(long[] array, IntToLongFunction function) {
 		new LongArray(array).parallelSetAll(function::applyAsLong);
 	}
 
@@ -2604,7 +2766,7 @@ public class Arrays {
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void parallelSetAll(short[] array, IntFunction<Short> function) {
+	static void parallelSetAll(short[] array, IntFunction<Short> function) {
 		new ShortArray(array).parallelSetAll(function);
 	}
 
@@ -2619,7 +2781,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(Comparable[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E extends Comparable<? super E>> void parallelSort(E[] array) {
+	static <E extends Comparable<? super E>> void parallelSort(E[] array) {
 		new ObjectArray(array).parallelSort();
 	}
 
@@ -2635,7 +2797,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(Object[], Comparator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> void parallelSort(E[] array, Comparator<? super E> comparator) {
+	static <E> void parallelSort(E[] array, Comparator<? super E> comparator) {
 		new ObjectArray(array).parallelSort(comparator);
 	}
 
@@ -2646,7 +2808,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(boolean[] array) {
+	static void parallelSort(boolean[] array) {
 		new BooleanArray(array).parallelSort();
 	}
 
@@ -2658,7 +2820,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(byte[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(byte[] array) {
+	static void parallelSort(byte[] array) {
 		new ByteArray(array).parallelSort();
 	}
 
@@ -2670,8 +2832,8 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(char[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(char[] array) {
-		new CharacterArray(array).parallelSort();
+	static void parallelSort(char[] array) {
+		new CharArray(array).parallelSort();
 	}
 
 	/**
@@ -2682,7 +2844,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(double[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(double[] array) {
+	static void parallelSort(double[] array) {
 		new DoubleArray(array).parallelSort();
 	}
 
@@ -2694,7 +2856,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(float[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(float[] array) {
+	static void parallelSort(float[] array) {
 		new FloatArray(array).parallelSort();
 	}
 
@@ -2706,8 +2868,8 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(int[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(int[] array) {
-		new IntegerArray(array).parallelSort();
+	static void parallelSort(int[] array) {
+		new IntArray(array).parallelSort();
 	}
 
 	/**
@@ -2718,7 +2880,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(long[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(long[] array) {
+	static void parallelSort(long[] array) {
 		new LongArray(array).parallelSort();
 	}
 
@@ -2730,7 +2892,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(short[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(short[] array) {
+	static void parallelSort(short[] array) {
 		new ShortArray(array).parallelSort();
 	}
 
@@ -2752,7 +2914,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(Comparable[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E extends Comparable<? super E>> void parallelSort(E[] array, int beginIndex, int endIndex) {
+	static <E extends Comparable<? super E>> void parallelSort(E[] array, int beginIndex, int endIndex) {
 		new ObjectArray(array, beginIndex, endIndex).parallelSort();
 	}
 
@@ -2775,7 +2937,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(Object[], int, int, Comparator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> void parallelSort(E[] array, int beginIndex, int endIndex, Comparator<? super E> comparator) {
+	static <E> void parallelSort(E[] array, int beginIndex, int endIndex, Comparator<? super E> comparator) {
 		new ObjectArray(array, beginIndex, endIndex).parallelSort(comparator);
 	}
 
@@ -2793,7 +2955,7 @@ public class Arrays {
 	 *                                   array.length}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(boolean[] array, int beginIndex, int endIndex) {
+	static void parallelSort(boolean[] array, int beginIndex, int endIndex) {
 		new BooleanArray(array, beginIndex, endIndex).parallelSort();
 	}
 
@@ -2812,7 +2974,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(byte[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(byte[] array, int beginIndex, int endIndex) {
+	static void parallelSort(byte[] array, int beginIndex, int endIndex) {
 		new ByteArray(array, beginIndex, endIndex).parallelSort();
 	}
 
@@ -2831,8 +2993,8 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(char[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(char[] array, int beginIndex, int endIndex) {
-		new CharacterArray(array, beginIndex, endIndex).parallelSort();
+	static void parallelSort(char[] array, int beginIndex, int endIndex) {
+		new CharArray(array, beginIndex, endIndex).parallelSort();
 	}
 
 	/**
@@ -2850,7 +3012,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(double[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(double[] array, int beginIndex, int endIndex) {
+	static void parallelSort(double[] array, int beginIndex, int endIndex) {
 		new DoubleArray(array, beginIndex, endIndex).parallelSort();
 	}
 
@@ -2869,7 +3031,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(float[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(float[] array, int beginIndex, int endIndex) {
+	static void parallelSort(float[] array, int beginIndex, int endIndex) {
 		new FloatArray(array, beginIndex, endIndex).parallelSort();
 	}
 
@@ -2888,8 +3050,8 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(int[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(int[] array, int beginIndex, int endIndex) {
-		new IntegerArray(array, beginIndex, endIndex).parallelSort();
+	static void parallelSort(int[] array, int beginIndex, int endIndex) {
+		new IntArray(array, beginIndex, endIndex).parallelSort();
 	}
 
 	/**
@@ -2907,7 +3069,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(long[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(long[] array, int beginIndex, int endIndex) {
+	static void parallelSort(long[] array, int beginIndex, int endIndex) {
 		new LongArray(array, beginIndex, endIndex).parallelSort();
 	}
 
@@ -2926,7 +3088,7 @@ public class Arrays {
 	 * @see java.util.Arrays#parallelSort(short[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void parallelSort(short[] array, int beginIndex, int endIndex) {
+	static void parallelSort(short[] array, int beginIndex, int endIndex) {
 		new ShortArray(array, beginIndex, endIndex).parallelSort();
 	}
 
@@ -2944,7 +3106,7 @@ public class Arrays {
 	 * @see java.util.Arrays#setAll(Object[], IntFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> void setAll(E[] array, IntFunction<? extends E> function) {
+	static <E> void setAll(E[] array, IntFunction<? extends E> function) {
 		new ObjectArray(array).setAll(function);
 	}
 
@@ -2958,7 +3120,7 @@ public class Arrays {
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void setAll(boolean[] array, IntFunction<Boolean> function) {
+	static void setAll(boolean[] array, IntFunction<Boolean> function) {
 		new BooleanArray(array).setAll(function);
 	}
 
@@ -2972,7 +3134,7 @@ public class Arrays {
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void setAll(byte[] array, IntFunction<Byte> function) {
+	static void setAll(byte[] array, IntFunction<Byte> function) {
 		new ByteArray(array).setAll(function);
 	}
 
@@ -2986,8 +3148,8 @@ public class Arrays {
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void setAll(char[] array, IntFunction<Character> function) {
-		new CharacterArray(array).setAll(function);
+	static void setAll(char[] array, IntFunction<Character> function) {
+		new CharArray(array).setAll(function);
 	}
 
 	/**
@@ -3000,7 +3162,7 @@ public class Arrays {
 	 * @see java.util.Arrays#setAll(double[], IntToDoubleFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void setAll(double[] array, IntToDoubleFunction function) {
+	static void setAll(double[] array, IntToDoubleFunction function) {
 		new DoubleArray(array).setAll(function::applyAsDouble);
 	}
 
@@ -3014,7 +3176,7 @@ public class Arrays {
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void setAll(float[] array, IntFunction<Float> function) {
+	static void setAll(float[] array, IntFunction<Float> function) {
 		new FloatArray(array).setAll(function);
 	}
 
@@ -3028,8 +3190,8 @@ public class Arrays {
 	 * @see java.util.Arrays#setAll(int[], IntUnaryOperator)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void setAll(int[] array, IntUnaryOperator function) {
-		new IntegerArray(array).setAll(function::applyAsInt);
+	static void setAll(int[] array, IntUnaryOperator function) {
+		new IntArray(array).setAll(function::applyAsInt);
 	}
 
 	/**
@@ -3042,7 +3204,7 @@ public class Arrays {
 	 * @see java.util.Arrays#setAll(long[], IntToLongFunction)
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void setAll(long[] array, IntToLongFunction function) {
+	static void setAll(long[] array, IntToLongFunction function) {
 		new LongArray(array).setAll(function::applyAsLong);
 	}
 
@@ -3056,7 +3218,7 @@ public class Arrays {
 	 * @throws ArrayStoreException  if an element can not be stored in the given {@code array}.
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static void setAll(short[] array, IntFunction<Short> function) {
+	static void setAll(short[] array, IntFunction<Short> function) {
 		new ShortArray(array).setAll(function);
 	}
 
@@ -3071,7 +3233,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(Object[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> void sort(E[] array) {
+	static <E> void sort(E[] array) {
 		new ObjectArray(array).sort();
 	}
 
@@ -3087,7 +3249,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(Object[], Comparator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> void sort(E[] array, Comparator<? super E> comparator) {
+	static <E> void sort(E[] array, Comparator<? super E> comparator) {
 		new ObjectArray(array).sort(comparator);
 	}
 
@@ -3098,7 +3260,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(boolean[] array) {
+	static void sort(boolean[] array) {
 		new BooleanArray(array).sort();
 	}
 
@@ -3110,7 +3272,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(byte[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(byte[] array) {
+	static void sort(byte[] array) {
 		new ByteArray(array).sort();
 	}
 
@@ -3122,8 +3284,8 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(char[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(char[] array) {
-		new CharacterArray(array).sort();
+	static void sort(char[] array) {
+		new CharArray(array).sort();
 	}
 
 	/**
@@ -3134,7 +3296,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(double[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(double[] array) {
+	static void sort(double[] array) {
 		new DoubleArray(array).sort();
 	}
 
@@ -3146,7 +3308,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(float[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(float[] array) {
+	static void sort(float[] array) {
 		new FloatArray(array).sort();
 	}
 
@@ -3158,8 +3320,8 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(int[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(int[] array) {
-		new IntegerArray(array).sort();
+	static void sort(int[] array) {
+		new IntArray(array).sort();
 	}
 
 	/**
@@ -3170,7 +3332,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(long[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(long[] array) {
+	static void sort(long[] array) {
 		new LongArray(array).sort();
 	}
 
@@ -3182,7 +3344,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(short[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(short[] array) {
+	static void sort(short[] array) {
 		new ShortArray(array).sort();
 	}
 
@@ -3204,7 +3366,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(Object[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> void sort(E[] array, int beginIndex, int endIndex) {
+	static <E> void sort(E[] array, int beginIndex, int endIndex) {
 		new ObjectArray(array, beginIndex, endIndex).sort();
 	}
 
@@ -3227,7 +3389,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(Object[], int, int, Comparator)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> void sort(E[] array, int beginIndex, int endIndex, Comparator<? super E> comparator) {
+	static <E> void sort(E[] array, int beginIndex, int endIndex, Comparator<? super E> comparator) {
 		new ObjectArray(array, beginIndex, endIndex).sort(comparator);
 	}
 
@@ -3245,7 +3407,7 @@ public class Arrays {
 	 *                                   array.length}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(boolean[] array, int beginIndex, int endIndex) {
+	static void sort(boolean[] array, int beginIndex, int endIndex) {
 		new BooleanArray(array, beginIndex, endIndex).sort();
 	}
 
@@ -3264,7 +3426,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(byte[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(byte[] array, int beginIndex, int endIndex) {
+	static void sort(byte[] array, int beginIndex, int endIndex) {
 		new ByteArray(array, beginIndex, endIndex).sort();
 	}
 
@@ -3283,8 +3445,8 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(char[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(char[] array, int beginIndex, int endIndex) {
-		new CharacterArray(array, beginIndex, endIndex).sort();
+	static void sort(char[] array, int beginIndex, int endIndex) {
+		new CharArray(array, beginIndex, endIndex).sort();
 	}
 
 	/**
@@ -3302,7 +3464,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(double[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(double[] array, int beginIndex, int endIndex) {
+	static void sort(double[] array, int beginIndex, int endIndex) {
 		new DoubleArray(array, beginIndex, endIndex).sort();
 	}
 
@@ -3321,7 +3483,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(float[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(float[] array, int beginIndex, int endIndex) {
+	static void sort(float[] array, int beginIndex, int endIndex) {
 		new FloatArray(array, beginIndex, endIndex).sort();
 	}
 
@@ -3340,8 +3502,8 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(int[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(int[] array, int beginIndex, int endIndex) {
-		new IntegerArray(array, beginIndex, endIndex).sort();
+	static void sort(int[] array, int beginIndex, int endIndex) {
+		new IntArray(array, beginIndex, endIndex).sort();
 	}
 
 	/**
@@ -3359,7 +3521,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(long[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(long[] array, int beginIndex, int endIndex) {
+	static void sort(long[] array, int beginIndex, int endIndex) {
 		new LongArray(array, beginIndex, endIndex).sort();
 	}
 
@@ -3378,7 +3540,7 @@ public class Arrays {
 	 * @see java.util.Arrays#sort(short[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static void sort(short[] array, int beginIndex, int endIndex) {
+	static void sort(short[] array, int beginIndex, int endIndex) {
 		new ShortArray(array, beginIndex, endIndex).sort();
 	}
 
@@ -3397,7 +3559,7 @@ public class Arrays {
 	 * @see java.util.Arrays#spliterator(Object[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> ObjectArray.Spliterator spliterator(E... array) {
+	static <E> ObjectArray.Spliterator spliterator(E... array) {
 		return new ObjectArray(array).spliterator();
 	}
 
@@ -3412,7 +3574,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static BooleanArray.Spliterator spliterator(boolean[] array) {
+	static BooleanArray.Spliterator spliterator(boolean[] array) {
 		return new BooleanArray(array).spliterator();
 	}
 
@@ -3427,7 +3589,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static ByteArray.Spliterator spliterator(byte[] array) {
+	static ByteArray.Spliterator spliterator(byte[] array) {
 		return new ByteArray(array).spliterator();
 	}
 
@@ -3442,8 +3604,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static CharacterArray.Spliterator spliterator(char[] array) {
-		return new CharacterArray(array).spliterator();
+	static CharArray.Spliterator spliterator(char[] array) {
+		return new CharArray(array).spliterator();
 	}
 
 	/**
@@ -3458,7 +3620,7 @@ public class Arrays {
 	 * @see java.util.Arrays#spliterator(double[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static DoubleArray.Spliterator spliterator(double[] array) {
+	static DoubleArray.Spliterator spliterator(double[] array) {
 		return new DoubleArray(array).spliterator();
 	}
 
@@ -3473,7 +3635,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static FloatArray.Spliterator spliterator(float[] array) {
+	static FloatArray.Spliterator spliterator(float[] array) {
 		return new FloatArray(array).spliterator();
 	}
 
@@ -3489,8 +3651,8 @@ public class Arrays {
 	 * @see java.util.Arrays#spliterator(int[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static IntegerArray.Spliterator spliterator(int[] array) {
-		return new IntegerArray(array).spliterator();
+	static IntArray.Spliterator spliterator(int[] array) {
+		return new IntArray(array).spliterator();
 	}
 
 	/**
@@ -3505,7 +3667,7 @@ public class Arrays {
 	 * @see java.util.Arrays#spliterator(long[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static LongArray.Spliterator spliterator(long[] array) {
+	static LongArray.Spliterator spliterator(long[] array) {
 		return new LongArray(array).spliterator();
 	}
 
@@ -3520,7 +3682,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static ShortArray.Spliterator spliterator(short[] array) {
+	static ShortArray.Spliterator spliterator(short[] array) {
 		return new ShortArray(array).spliterator();
 	}
 
@@ -3543,7 +3705,7 @@ public class Arrays {
 	 * @see java.util.Arrays#spliterator(Object[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> ObjectArray.Spliterator spliterator(E[] array, int beginIndex, int endIndex) {
+	static <E> ObjectArray.Spliterator spliterator(E[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -3566,7 +3728,7 @@ public class Arrays {
 	 *                                        array.length} or {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static BooleanArray.Spliterator spliterator(boolean[] array, int beginIndex, int endIndex) {
+	static BooleanArray.Spliterator spliterator(boolean[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -3589,7 +3751,7 @@ public class Arrays {
 	 *                                        array.length} or {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static ByteArray.Spliterator spliterator(byte[] array, int beginIndex, int endIndex) {
+	static ByteArray.Spliterator spliterator(byte[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -3612,12 +3774,12 @@ public class Arrays {
 	 *                                        array.length} or {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static CharacterArray.Spliterator spliterator(char[] array, int beginIndex, int endIndex) {
+	static CharArray.Spliterator spliterator(char[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
 					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
-		return new CharacterArray(array, beginIndex, endIndex).spliterator();
+		return new CharArray(array, beginIndex, endIndex).spliterator();
 	}
 
 	/**
@@ -3636,7 +3798,7 @@ public class Arrays {
 	 * @see java.util.Arrays#spliterator(double[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static DoubleArray.Spliterator spliterator(double[] array, int beginIndex, int endIndex) {
+	static DoubleArray.Spliterator spliterator(double[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -3659,7 +3821,7 @@ public class Arrays {
 	 *                                        array.length} or {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static FloatArray.Spliterator spliterator(float[] array, int beginIndex, int endIndex) {
+	static FloatArray.Spliterator spliterator(float[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -3683,12 +3845,12 @@ public class Arrays {
 	 * @see java.util.Arrays#spliterator(int[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static IntegerArray.Spliterator spliterator(int[] array, int beginIndex, int endIndex) {
+	static IntArray.Spliterator spliterator(int[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
 					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
-		return new IntegerArray(array, beginIndex, endIndex).spliterator();
+		return new IntArray(array, beginIndex, endIndex).spliterator();
 	}
 
 	/**
@@ -3707,7 +3869,7 @@ public class Arrays {
 	 * @see java.util.Arrays#spliterator(long[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static LongArray.Spliterator spliterator(long[] array, int beginIndex, int endIndex) {
+	static LongArray.Spliterator spliterator(long[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -3730,7 +3892,7 @@ public class Arrays {
 	 *                                        array.length} or {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static ShortArray.Spliterator spliterator(short[] array, int beginIndex, int endIndex) {
+	static ShortArray.Spliterator spliterator(short[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -3750,7 +3912,7 @@ public class Arrays {
 	 * @see java.util.Arrays#stream(Object[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> Stream<E> stream(E... array) {
+	static <E> Stream<E> stream(E... array) {
 		return new ObjectArray(array).stream();
 	}
 
@@ -3762,7 +3924,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static Stream<Boolean> stream(boolean[] array) {
+	static Stream<Boolean> stream(boolean[] array) {
 		return new BooleanArray(array).stream();
 	}
 
@@ -3774,7 +3936,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static Stream<Byte> stream(byte[] array) {
+	static Stream<Byte> stream(byte[] array) {
 		return new ByteArray(array).stream();
 	}
 
@@ -3786,8 +3948,8 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static Stream<Character> stream(char[] array) {
-		return new CharacterArray(array).stream();
+	static Stream<Character> stream(char[] array) {
+		return new CharArray(array).stream();
 	}
 
 	/**
@@ -3799,7 +3961,7 @@ public class Arrays {
 	 * @see java.util.Arrays#stream(double[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static DoubleStream stream(double[] array) {
+	static DoubleStream stream(double[] array) {
 		return new DoubleArray(array).doubleStream();
 	}
 
@@ -3811,7 +3973,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static Stream<Float> stream(float[] array) {
+	static Stream<Float> stream(float[] array) {
 		return new FloatArray(array).stream();
 	}
 
@@ -3824,8 +3986,8 @@ public class Arrays {
 	 * @see java.util.Arrays#stream(int[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static IntStream stream(int[] array) {
-		return new IntegerArray(array).intStream();
+	static IntStream stream(int[] array) {
+		return new IntArray(array).intStream();
 	}
 
 	/**
@@ -3837,7 +3999,7 @@ public class Arrays {
 	 * @see java.util.Arrays#stream(long[])
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static LongStream stream(long[] array) {
+	static LongStream stream(long[] array) {
 		return new LongArray(array).longStream();
 	}
 
@@ -3849,7 +4011,7 @@ public class Arrays {
 	 * @throws NullPointerException if the given {@code array} is null.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static Stream<Short> stream(short[] array) {
+	static Stream<Short> stream(short[] array) {
 		return new ShortArray(array).stream();
 	}
 
@@ -3870,7 +4032,7 @@ public class Arrays {
 	 * @see java.util.Arrays#stream(Object[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static <E> Stream<E> stream(E[] array, int beginIndex, int endIndex) {
+	static <E> Stream<E> stream(E[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -3891,7 +4053,7 @@ public class Arrays {
 	 *                                        array.length} or {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static Stream<Boolean> stream(boolean[] array, int beginIndex, int endIndex) {
+	static Stream<Boolean> stream(boolean[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -3912,7 +4074,7 @@ public class Arrays {
 	 *                                        array.length} or {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static Stream<Byte> stream(byte[] array, int beginIndex, int endIndex) {
+	static Stream<Byte> stream(byte[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -3933,12 +4095,12 @@ public class Arrays {
 	 *                                        array.length} or {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static Stream<Character> stream(char[] array, int beginIndex, int endIndex) {
+	static Stream<Character> stream(char[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
 					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
-		return new CharacterArray(array, beginIndex, endIndex).stream();
+		return new CharArray(array, beginIndex, endIndex).stream();
 	}
 
 	/**
@@ -3955,7 +4117,7 @@ public class Arrays {
 	 * @see java.util.Arrays#stream(double[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static DoubleStream stream(double[] array, int beginIndex, int endIndex) {
+	static DoubleStream stream(double[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -3976,7 +4138,7 @@ public class Arrays {
 	 *                                        array.length} or {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static Stream<Float> stream(float[] array, int beginIndex, int endIndex) {
+	static Stream<Float> stream(float[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -3998,12 +4160,12 @@ public class Arrays {
 	 * @see java.util.Arrays#stream(int[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static IntStream stream(int[] array, int beginIndex, int endIndex) {
+	static IntStream stream(int[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
 					"beginIndex(" + beginIndex + ") > endIndex(" + endIndex + ")");
-		return new IntegerArray(array, beginIndex, endIndex).intStream();
+		return new IntArray(array, beginIndex, endIndex).intStream();
 	}
 
 	/**
@@ -4020,7 +4182,7 @@ public class Arrays {
 	 * @see java.util.Arrays#stream(long[], int, int)
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static LongStream stream(long[] array, int beginIndex, int endIndex) {
+	static LongStream stream(long[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -4041,7 +4203,7 @@ public class Arrays {
 	 *                                        array.length} or {@code beginIndex > endIndex}.
 	 * @since 0.1.5 ~2020.08.10
 	 */
-	public static Stream<Short> stream(short[] array, int beginIndex, int endIndex) {
+	static Stream<Short> stream(short[] array, int beginIndex, int endIndex) {
 		if (beginIndex > endIndex)
 			//since the constructor throws IllegalArgumentException for this condition
 			throw new ArrayIndexOutOfBoundsException(
@@ -4060,7 +4222,7 @@ public class Arrays {
 	 * @see java.util.Arrays#toString(Object[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static <E> String toString(E... array) {
+	static <E> String toString(E... array) {
 		return ObjectArray.toString(array);
 	}
 
@@ -4072,7 +4234,7 @@ public class Arrays {
 	 * @see java.util.Arrays#toString(boolean[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static String toString(boolean[] array) {
+	static String toString(boolean[] array) {
 		return BooleanArray.toString(array);
 	}
 
@@ -4084,7 +4246,7 @@ public class Arrays {
 	 * @see java.util.Arrays#toString(byte[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static String toString(byte[] array) {
+	static String toString(byte[] array) {
 		return ByteArray.toString(array);
 	}
 
@@ -4096,8 +4258,8 @@ public class Arrays {
 	 * @see java.util.Arrays#toString(char[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static String toString(char[] array) {
-		return CharacterArray.toString(array);
+	static String toString(char[] array) {
+		return CharArray.toString(array);
 	}
 
 	/**
@@ -4108,7 +4270,7 @@ public class Arrays {
 	 * @see java.util.Arrays#toString(double[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static String toString(double[] array) {
+	static String toString(double[] array) {
 		return DoubleArray.toString(array);
 	}
 
@@ -4120,7 +4282,7 @@ public class Arrays {
 	 * @see java.util.Arrays#toString(float[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static String toString(float[] array) {
+	static String toString(float[] array) {
 		return FloatArray.toString(array);
 	}
 
@@ -4132,8 +4294,8 @@ public class Arrays {
 	 * @see java.util.Arrays#toString(int[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static String toString(int[] array) {
-		return IntegerArray.toString(array);
+	static String toString(int[] array) {
+		return IntArray.toString(array);
 	}
 
 	/**
@@ -4144,7 +4306,7 @@ public class Arrays {
 	 * @see java.util.Arrays#toString(long[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static String toString(long[] array) {
+	static String toString(long[] array) {
 		return LongArray.toString(array);
 	}
 
@@ -4156,7 +4318,7 @@ public class Arrays {
 	 * @see java.util.Arrays#toString(short[])
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public static String toString(short[] array) {
+	static String toString(short[] array) {
 		return ShortArray.toString(array);
 	}
 }

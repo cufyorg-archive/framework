@@ -1634,9 +1634,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				@Override
 				public Comparator<? super java.util.Map.Entry<K, V>> getComparator() {
-					if ((Spliterator.CHARACTERISTICS & java.util.Spliterator.SORTED) != 0)
-						return null;
-
 					throw new IllegalStateException();
 				}
 
@@ -1901,9 +1898,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				@Override
 				public Comparator<? super E> getComparator() {
-					if ((Spliterator.CHARACTERISTICS & java.util.Spliterator.SORTED) != 0)
-						return null;
-
 					throw new IllegalStateException();
 				}
 
@@ -2168,9 +2162,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 				@Override
 				public Comparator<? super V> getComparator() {
-					if ((Spliterator.CHARACTERISTICS & java.util.Spliterator.SORTED) != 0)
-						return null;
-
 					throw new IllegalStateException();
 				}
 
@@ -2271,9 +2262,6 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 		@Override
 		public Comparator<? super E> getComparator() {
-			if ((Spliterator.CHARACTERISTICS & java.util.Spliterator.SORTED) != 0)
-				return null;
-
 			throw new IllegalStateException();
 		}
 
