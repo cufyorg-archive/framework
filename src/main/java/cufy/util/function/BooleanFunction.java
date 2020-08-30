@@ -15,37 +15,27 @@
  */
 package cufy.util.function;
 
-import cufy.util.Reflection;
-
-import java.util.function.BinaryOperator;
+import java.util.function.Function;
 
 /**
- * Functional Interface that can be specified to throw an exception.
+ * Represents a function that accepts a {@code boolean}-valued argument and produces a result.  This
+ * is the {@code boolean}-consuming primitive specialization for {@link Function}.
+ * <p>
+ * This is a {@code functional interface} whose functional method is {@link #apply(boolean)}.
  *
- * @param <T> the type of the operands and result of the operator.
- * @param <E> the exception.
+ * @param <R> the type of the result of the function
  * @author LSafer
- * @version 0.1.3
- * @since 0.1.0 ~2020.02.13
+ * @version 0.1.5
+ * @since 0.1.5 ~2020.08.30
  */
 @FunctionalInterface
-public interface ThrowBinaryOperator<T, E extends Throwable> extends BinaryOperator<T> {
-	@Override
-	default T apply(T t, T t2) {
-		try {
-			return this.apply0(t, t2);
-		} catch (Throwable e) {
-			throw Reflection.ignite(e);
-		}
-	}
-
+public interface BooleanFunction<R> {
 	/**
-	 * Applies this function to the given arguments.
+	 * Applies this function to the given argument.
 	 *
-	 * @param t  the first function argument.
-	 * @param t2 the second function argument.
+	 * @param value the function argument.
 	 * @return the function result.
-	 * @throws E the exception.
+	 * @since 0.1.5 ~2020.08.30
 	 */
-	T apply0(T t, T t2) throws E;
+	R apply(boolean value);
 }

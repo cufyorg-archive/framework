@@ -15,37 +15,30 @@
  */
 package cufy.util.function;
 
-import cufy.util.Reflection;
-
 import java.util.function.BiConsumer;
 
 /**
- * Functional Interface that can be specified to throw an exception.
+ * Represents an operation that accepts an object-valued and a {@code boolean}-valued argument, and
+ * returns no result.  This is the {@code (reference, boolean)} specialization of {@link
+ * BiConsumer}. Unlike most other functional interfaces, {@code ObjBooleanConsumer} is expected to
+ * operate via side-effects.
+ * <p>
+ * This is a {@code functional interface} whose functional method is {@link #accept(Object,
+ * boolean)}.
  *
- * @param <E> the exception.
- * @param <T> the type of the first argument to the operation.
- * @param <U> the type of the second argument to the operation.
+ * @param <T> the type of the object argument to the operation.
  * @author LSafer
- * @version 0.1.3
- * @since 0.1.0 ~2020.02.13
+ * @version 0.1.5
+ * @since 0.1.5 ~2020.08.30
  */
 @FunctionalInterface
-public interface ThrowBiConsumer<T, U, E extends Throwable> extends BiConsumer<T, U> {
-	@Override
-	default void accept(T t, U u) {
-		try {
-			this.accept0(t, u);
-		} catch (Throwable e) {
-			throw Reflection.ignite(e);
-		}
-	}
-
+public interface ObjBooleanConsumer<T> {
 	/**
 	 * Performs this operation on the given arguments.
 	 *
-	 * @param t the first input argument.
-	 * @param u the second input argument.
-	 * @throws E the exception.
+	 * @param t     the first input argument.
+	 * @param value the second input argument.
+	 * @since 0.1.5 ~2020.08.30
 	 */
-	void accept0(T t, U u) throws E;
+	void accept(T t, boolean value);
 }

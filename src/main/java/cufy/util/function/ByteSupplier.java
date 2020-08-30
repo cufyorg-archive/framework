@@ -13,12 +13,29 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+package cufy.util.function;
+
+import java.util.function.Supplier;
+
 /**
- * Extra functional interfaces that has not been included in the standard java library.
+ * Represents a supplier of {@code byte}-valued results. This is the {@code byte}-producing
+ * primitive specialization of {@link Supplier}.
+ * <p>
+ * There is no requirement that a distinct result be returned each time the supplier is invoked.
+ * <p>
+ * This is a {@code functional interface} whose functional method is {@link #getAsByte()}.
  *
  * @author LSafer
  * @version 0.1.5
- * @see <a href="https://framework.cufy.org/util#function">framework.cufy.org/util#function</a>
- * @since 0.0.4 ~2020.02.13
+ * @since 0.1.5 ~2020.08.30
  */
-package cufy.util.function;
+@FunctionalInterface
+public interface ByteSupplier {
+	/**
+	 * Gets a result.
+	 *
+	 * @return a result.
+	 * @since 0.1.5 ~2020.08.30
+	 */
+	byte getAsByte();
+}

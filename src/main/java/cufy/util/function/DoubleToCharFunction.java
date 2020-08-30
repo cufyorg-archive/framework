@@ -15,36 +15,26 @@
  */
 package cufy.util.function;
 
-import cufy.util.Reflection;
-
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 
 /**
- * Functional Interface that can be specified to throw an exception.
+ * Represents a function that accepts a double-valued argument and produces a char-valued result.
+ * This is the {@code double}-to-{@code char} primitive specialization for {@link Function}.
+ * <p>
+ * This is a {@code functional interface} whose functional method is {@link #applyAsChar(double)}.
  *
- * @param <T> the type of the operand and result of the operator.
- * @param <E> the exception.
  * @author LSafer
- * @version 0.1.3
- * @since 0.1.0 ~2020.02.13
+ * @version 0.1.5
+ * @since 0.1.5 ~2020.08.30
  */
 @FunctionalInterface
-public interface ThrowUnaryOperator<T, E extends Throwable> extends UnaryOperator<T> {
-	@Override
-	default T apply(T t) {
-		try {
-			return this.apply0(t);
-		} catch (Throwable e) {
-			throw Reflection.ignite(e);
-		}
-	}
-
+public interface DoubleToCharFunction {
 	/**
 	 * Applies this function to the given argument.
 	 *
-	 * @param t the function argument.
+	 * @param value the function argument.
 	 * @return the function result.
-	 * @throws E the exception.
+	 * @since 0.1.5 ~2020.08.30
 	 */
-	T apply0(T t) throws E;
+	char applyAsChar(double value);
 }

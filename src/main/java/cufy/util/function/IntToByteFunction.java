@@ -15,35 +15,26 @@
  */
 package cufy.util.function;
 
-import cufy.util.Reflection;
-
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
- * Functional Interface that can be specified to throw an exception.
+ * Represents a function that accepts an int-valued argument and produces a byte-valued result. This
+ * is the {@code int}-to-{@code byte} primitive specialization for {@link Function}.
+ * <p>
+ * This is a {@code functional interface} whose functional method is {@link #applyAsByte(int)}.
  *
- * @param <E> the exception.
- * @param <T> the type of the input to the operation.
  * @author LSafer
- * @version 0.1.3
- * @since 0.1.0 ~2020.02.13
+ * @version 0.1.5
+ * @since 0.1.5 ~2020.08.30
  */
 @FunctionalInterface
-public interface ThrowConsumer<T, E extends Throwable> extends Consumer<T> {
-	@Override
-	default void accept(T t) {
-		try {
-			this.accept0(t);
-		} catch (Throwable e) {
-			throw Reflection.ignite(e);
-		}
-	}
-
+public interface IntToByteFunction {
 	/**
-	 * Performs this operation on the given argument.
+	 * Applies this function to the given argument.
 	 *
-	 * @param t the input argument.
-	 * @throws E the exception that this runnable throws.
+	 * @param value the function argument.
+	 * @return the function result.
+	 * @since 0.1.5 ~2020.08.30
 	 */
-	void accept0(T t) throws E;
+	byte applyAsByte(int value);
 }

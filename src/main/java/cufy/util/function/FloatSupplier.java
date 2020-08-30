@@ -15,35 +15,27 @@
  */
 package cufy.util.function;
 
-import cufy.util.Reflection;
-
 import java.util.function.Supplier;
 
 /**
- * Functional Interface that can be specified to throw an exception.
+ * Represents a supplier of {@code float}-valued results. This is the {@code float}-producing
+ * primitive specialization of {@link Supplier}.
+ * <p>
+ * There is no requirement that a distinct result be returned each time the supplier is invoked.
+ * <p>
+ * This is a {@code functional interface} whose functional method is {@link #getAsFloat()}.
  *
- * @param <T> the type of results supplied by this supplier.
- * @param <E> the exception.
  * @author LSafer
- * @version 0.1.3
- * @since 0.1.0 ~2020.02.13
+ * @version 0.1.5
+ * @since 0.1.5 ~2020.08.30
  */
 @FunctionalInterface
-public interface ThrowSupplier<T, E extends Throwable> extends Supplier<T> {
-	@Override
-	default T get() {
-		try {
-			return this.get0();
-		} catch (Throwable e) {
-			throw Reflection.ignite(e);
-		}
-	}
-
+public interface FloatSupplier {
 	/**
 	 * Gets a result.
 	 *
 	 * @return a result.
-	 * @throws E the exception.
+	 * @since 0.1.5 ~2020.08.30
 	 */
-	T get0() throws E;
+	float getAsFloat();
 }
