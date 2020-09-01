@@ -15,8 +15,6 @@
  */
 package cufy.util;
 
-import cufy.util.array.Array;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -141,7 +139,7 @@ public interface Collections {
 	 *
 	 * @since 0.1.5 ~2020.08.25
 	 */
-	ReverseNaturalComparator REVERSE_NATURAL_COMPARATOR = new ReverseNaturalComparator();
+	ReverseOrderComparator REVERSE_NATURAL_COMPARATOR = new ReverseOrderComparator();
 
 	/**
 	 * Add all the given {@code elements} to the given {@code collection}.
@@ -1836,9 +1834,42 @@ public interface Collections {
 		protected Collection<E> checkedCollection(Collection<? extends E> collection) {
 			Objects.requireNonNull(collection, "collection");
 
+			//I do not follow what the java standard library has done!
+			//cloning the array 4 times just to be safe? completely redundant.
 			try {
-				return (Collection<E>) Array.of(collection, this.type).list();
+				//retrieve an array from the collection
+				//with the type of the array specified
+				E[] array = collection.toArray(
+						(E[]) java.lang.reflect.Array.newInstance(this.type, 0)
+				);
+
+				//check if the array can be trusted
+				if (array.getClass().getComponentType() == this.type)
+					return Arrays.asList(array);
+
+				//ok, we can do this together; create a new trusted array.
+				E[] checked = (E[]) java.lang.reflect.Array.newInstance(this.type, array.length);
+
+				//avoid manually casting each element.
+				//use System array copy to copy from the non-trusted array
+				//to the locally created trusted array.
+				System.arraycopy(
+						array,
+						0,
+						checked,
+						0,
+						array.length
+				);
+
+				//wrap the created trusted array with a list
+				return Arrays.asList(checked);
 			} catch (ArrayStoreException e) {
+				//it will be thrown if the collection.toArray() call failed
+				//(witch is what it suppose to happen).
+				//or if the System.arraycopy() call failed, witch is just like
+				//manually copy-casting the elements.
+				//better than manually checking each element after failing
+				//on invoking Arrays.copyOf(Object[], int, Class)
 				throw new ClassCastException(e.getMessage());
 			}
 		}
@@ -5662,7 +5693,7 @@ public interface Collections {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.25
 	 */
-	class ReverseNaturalComparator<E extends Comparable<E>> implements Comparator<E>, Serializable {
+	class ReverseOrderComparator<E extends Comparable<E>> implements Comparator<E>, Serializable {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -1204085588134449462L;
 
