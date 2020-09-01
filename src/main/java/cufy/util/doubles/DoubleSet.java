@@ -13,11 +13,33 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+package cufy.util.doubles;
+
+import cufy.util.PrimitiveSet;
+
+import java.util.PrimitiveIterator;
+import java.util.Spliterator;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoublePredicate;
+
 /**
- * Utilities for arrays.
+ * A set specified for {@code double} values.
  *
  * @author LSafer
  * @version 0.1.5
- * @since 0.1.5 ~2020.08.03
+ * @since 0.1.5 ~2020.09.01
  */
-package cufy.util.array;
+public interface DoubleSet extends DoubleCollection, PrimitiveSet<
+		Double,
+		DoubleConsumer,
+		DoublePredicate,
+		PrimitiveIterator.OfDouble,
+		Spliterator.OfDouble,
+		DoubleCollection,
+		DoubleSet
+		> {
+	@Override
+	default Spliterator.OfDouble spliterator() {
+		return DoubleCollection.super.spliterator();
+	}
+}

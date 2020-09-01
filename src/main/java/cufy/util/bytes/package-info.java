@@ -14,11 +14,10 @@
  *	limitations under the License.
  */
 /**
- * Extra functional interfaces that has not been included in the standard java library.
+ * A package for utilities specialized for {@code byte} values.
  *
  * @author LSafer
  * @version 0.1.5
- * @see <a href="https://framework.cufy.org/util#function">framework.cufy.org/util#function</a>
- * @since 0.0.4 ~2020.02.13
+ * @since 0.1.5 ~2020.09.01
  */
-package cufy.util.function;
+package cufy.util.bytes;
