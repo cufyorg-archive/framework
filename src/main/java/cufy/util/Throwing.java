@@ -28,6 +28,7 @@ import java.util.function.*;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.30
  */
+@Deprecated
 public interface Throwing {
 	/**
 	 * A helper method to instantiate a new throw lambda.
