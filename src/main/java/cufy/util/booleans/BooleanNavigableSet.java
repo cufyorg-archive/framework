@@ -99,23 +99,23 @@ public interface BooleanNavigableSet extends BooleanSortedSet, PrimitiveNavigabl
 	}
 
 	/**
-	 * Returns the least element in this set greater than or equal to the given element.
+	 * Returns the least element in this set greater than or equal to the given element, or the
+	 * {@code default byte value} if no such element.
 	 *
 	 * @param element the value to match.
-	 * @return the least element greater than or equal to {@code element}.
-	 * @throws java.util.NoSuchElementException if there is no such element.
-	 * @see #hasCeiling(boolean)
+	 * @return the least element greater than or equal to {@code element}, or the {@code default
+	 * 		byte value} if no such element.
 	 * @since 0.1.5 ~2020.09.01
 	 */
 	boolean ceilingBoolean(boolean element);
 
 	/**
-	 * Returns the greatest element in this set less than or equal to the given element.
+	 * Returns the greatest element in this set less than or equal to the given element, or the
+	 * {@code default byte value} if no such element.
 	 *
 	 * @param element the value to match.
-	 * @return the greatest element less than or equal to {@code element}.
-	 * @throws java.util.NoSuchElementException if there is no such element.
-	 * @see #hasFloor(boolean)
+	 * @return the greatest element less than or equal to {@code element}, or the {@code default
+	 * 		byte value} if no such element.
 	 * @since 0.1.5 ~2020.09.01
 	 */
 	boolean floorBoolean(boolean element);
@@ -181,42 +181,42 @@ public interface BooleanNavigableSet extends BooleanSortedSet, PrimitiveNavigabl
 	BooleanNavigableSet headSet(boolean endElement, boolean inclusive);
 
 	/**
-	 * Returns the least element in this set strictly greater than the given element.
+	 * Returns the least element in this set strictly greater than the given element, or the {@code
+	 * default byte value} if no such element.
 	 *
 	 * @param element the value to match.
-	 * @return the least element greater than {@code element}.
-	 * @throws java.util.NoSuchElementException if there is no such element.
-	 * @see #hasHigher(boolean)
+	 * @return the least element greater than {@code element}, or the {@code default byte value} if
+	 * 		no such element.
 	 * @since 0.1.5 ~2020.09.01
 	 */
 	boolean higherBoolean(boolean element);
 
 	/**
-	 * Returns the greatest element in this set strictly less than the given element.
+	 * Returns the greatest element in this set strictly less than the given element, or the {@code
+	 * default byte value} if no such element.
 	 *
 	 * @param element the value to match.
-	 * @return the greatest element less than {@code element}.
-	 * @throws java.util.NoSuchElementException if there is no such element.
-	 * @see #hasLower(boolean)
+	 * @return the greatest element less than {@code element}, or the {@code default byte value} if
+	 * 		no such element.
 	 * @since 0.1.5 ~2020.09.01
 	 */
 	boolean lowerBoolean(boolean element);
 
 	/**
-	 * Retrieves and removes the first (lowest) element.
+	 * Retrieves and removes the first (lowest) element, or the {@code default byte value} if no
+	 * such element.
 	 *
-	 * @return the first element.
-	 * @throws java.util.NoSuchElementException if this set is empty.
-	 * @since 0.1.5
+	 * @return the first element, or the {@code default byte value} if no such element.
+	 * @since 0.1.5 ~2020.09.01
 	 */
 	boolean pollFirstBoolean();
 
 	/**
-	 * Retrieves and removes the last (highest) element.
+	 * Retrieves and removes the last (highest) element, or the {@code default byte value} if no
+	 * such element.
 	 *
-	 * @return the last element.
-	 * @throws java.util.NoSuchElementException if this set is empty.
-	 * @since 0.1.5
+	 * @return the last element, or the {@code default byte value} if no such element.
+	 * @since 0.1.5 ~2020.09.01
 	 */
 	boolean pollLastBoolean();
 
