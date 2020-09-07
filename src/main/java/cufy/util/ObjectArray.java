@@ -21,7 +21,7 @@ import java.util.function.*;
 import java.util.stream.IntStream;
 
 /**
- * A holder for an array of {@link Object}s.
+ * An array specialized for {@link Object}s.
  *
  * @param <E> the type of the elements.
  * @author LSafer
