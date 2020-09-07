@@ -15,6 +15,8 @@
  */
 package cufy.util;
 
+import cufy.lang.PrimitiveIterable;
+
 import java.util.Collection;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;

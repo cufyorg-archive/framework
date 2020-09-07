@@ -66,7 +66,7 @@ public interface PrimitiveList<
 	SPLITERATOR spliterator();
 
 	@Override
-	LIST subList(int fromIndex, int toIndex);
+	LIST subList(int beginIndex, int endIndex);
 
 	/**
 	 * Inserts all of the elements in the specified collection into this list at the specified
