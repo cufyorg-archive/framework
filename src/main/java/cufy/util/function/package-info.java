@@ -13,26 +13,11 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
-package cufy.primitive.util;
-
-import cufy.primitive.util.function.CharConsumer;
-import cufy.primitive.util.function.CharPredicate;
-import cufy.util.PrimitiveSet;
-
 /**
- * A set specified for {@code char} values.
+ * Additional {@code functional interface}s that is not included in the java standard library.
  *
  * @author LSafer
  * @version 0.1.5
- * @since 0.1.5 ~2020.09.01
+ * @since 0.1.5 ~2020.09.07
  */
-public interface CharSet extends CharCollection, PrimitiveSet<
-		Character,
-		CharConsumer,
-		CharPredicate,
-		CharIterator,
-		CharSpliterator,
-		CharCollection,
-		CharSet
-		> {
-}
+package cufy.util.function;

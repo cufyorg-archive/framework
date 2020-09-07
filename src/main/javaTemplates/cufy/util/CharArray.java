@@ -46,6 +46,12 @@ elif double|int|long primitive //Spliterator.OfChar//
 endif ////
 enddefine
 *//*
+define Stream ////
+if boolean|byte|char|float|short primitive //Stream<Character>//
+elif double|int|long primitive //CharStream//
+endif ////
+enddefine
+*//*
  *	Copyright 2020 Cufy
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
@@ -657,7 +663,7 @@ public class CharArray extends PrimitiveArray<
 	 * @see java.util.Arrays#stream(char[])
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public CharStream charStream() {
+	public /*Stream*/ charStream() {
 		return StreamSupport.charStream(this.spliterator(), false);
 	}
 
@@ -668,7 +674,7 @@ public class CharArray extends PrimitiveArray<
 	 * @see java.util.Arrays#stream(char[])
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public CharStream parallelCharStream() {
+	public /*Stream*/ parallelCharStream() {
 		return StreamSupport.charStream(this.spliterator(), true);
 	}
 	/*

@@ -13,6 +13,12 @@ elif double|int|long primitive //Spliterator.OfChar//
 endif ////
 enddefine
 *//*
+define Stream////
+if boolean|byte|char|float|short primitive //Stream<Character>//
+elif double|int|long primitive //CharStream//
+endif ////
+enddefine
+*//*
  *	Copyright 2020 Cufy
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
@@ -119,7 +125,7 @@ public interface CharCollection extends PrimitiveCollection<
 	 * @return a stream streaming the elements in this collection.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	default CharStream charStream() {
+	default /*Stream*/ charStream() {
 		return StreamSupport.charStream(this.spliterator(), false);
 	}
 
@@ -129,7 +135,7 @@ public interface CharCollection extends PrimitiveCollection<
 	 * @return a stream streaming the elements in this collection.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	default CharStream parallelCharStream() {
+	default /*Stream*/ parallelCharStream() {
 		return StreamSupport.charStream(this.spliterator(), true);
 	}
 	/*
