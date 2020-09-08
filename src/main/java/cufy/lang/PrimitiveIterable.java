@@ -13,7 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
-package cufy.util;
+package cufy.lang;
 
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
