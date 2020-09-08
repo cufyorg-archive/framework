@@ -1,4 +1,4 @@
-PLEASE use 0.1.4 version, since 0.1.5 is still under-develoopment!
+PLEASE use 0.1.4 version, since 0.1.5 is still under-development!
 
 <p align="center">
   <a href="https://framework.cufy.org/">
