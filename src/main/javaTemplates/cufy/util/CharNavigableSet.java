@@ -10,19 +10,19 @@ elif long primitive //0L//
 endif ////
 enddefine
 *//*
-define ToDouble ////
+define ToDoubleFunction ////
 if boolean|byte|char|float|int|long|short primitive //CharToDoubleFunction//
 elif double primitive //DoubleUnaryOperator//
 endif ////
 enddefine
 *//*
-define ToInt ////
+define ToIntFunction ////
 if boolean|byte|char|double|float|long|short primitive //CharToIntFunction//
 elif int primitive //IntUnaryOperator//
 endif ////
 enddefine
 *//*
-define ToLong ////
+define ToLongFunction ////
 if boolean|byte|char|double|float|int|short primitive //CharToLongFunction//
 elif long primitive //LongUnaryOperator//
 endif ////
@@ -91,22 +91,10 @@ import cufy.util.function.CharUnaryOperator;
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
-public interface CharNavigableSet extends CharSortedSet, PrimitiveNavigableSet<
-		Character,
-		CharConsumer,
-		CharPredicate,
-		CharUnaryOperator,
-		/*ToDouble*/,
-		/*ToInt*/,
-		/*ToLong*/,
-		CharComparator,
-		/*Iterator*/,
-		/*Spliterator*/,
-		CharCollection,
-		CharSet,
+public interface CharNavigableSet
+		extends
 		CharSortedSet,
-		CharNavigableSet
-		> {
+		PrimitiveNavigableSet<Character, CharConsumer, CharPredicate> {
 	@Override
 	default Character ceiling(Character element) {
 		return this.hasCeiling(element) ?
@@ -189,6 +177,12 @@ public interface CharNavigableSet extends CharSortedSet, PrimitiveNavigableSet<
 	default CharNavigableSet tailSet(Character beginElement, boolean inclusive) {
 		return this.tailSet((char) beginElement, inclusive);
 	}
+
+	@Override
+	/* Iterator */ descendingIterator();
+
+	@Override
+	CharNavigableSet descendingSet();
 
 	/**
 	 * Returns the least element in this set greater than or equal to the given element, or the

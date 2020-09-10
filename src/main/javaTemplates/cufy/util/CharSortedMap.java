@@ -43,18 +43,10 @@ import java.util.Set;
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.03
  */
-public interface CharSortedMap extends PrimitiveSortedMap<
-		Character,
-		Character,
-		CharBiConsumer,
-		CharBinaryOperator,
-		CharComparator,
-		Set<Map.Entry<Character, Character>>,
-		CharSet,
-		CharCollection,
+public interface CharSortedMap
+		extends
 		CharMap,
-		CharSortedMap
-		>, CharMap {
+		PrimitiveSortedMap<Character, Character, CharBiConsumer, CharBinaryOperator> {
 	@Override
 	default Character firstKey() {
 		return this.firstCharKey();
@@ -79,6 +71,9 @@ public interface CharSortedMap extends PrimitiveSortedMap<
 	default CharSortedMap tailMap(Character beginKey) {
 		return this.tailMap((char) beginKey);
 	}
+
+	@Override
+	CharComparator comparator();
 
 	/**
 	 * Returns the first (lowest) key currently in this map.

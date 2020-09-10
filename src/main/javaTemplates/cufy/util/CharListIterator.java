@@ -39,16 +39,15 @@ import java.util.NoSuchElementException;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.31
  */
-public interface CharListIterator extends /* Iterator */, PrimitiveListIterator<
-		Character,
-		CharConsumer
-		> {
+public interface CharListIterator
+		extends
+		/* Iterator */,
+		PrimitiveListIterator<Character, CharConsumer> {
 	@Override
 	default void add(Character value) {
 		this.addChar(value);
 	}
 
-	@SuppressWarnings("IteratorNextCanNotThrowNoSuchElementException")
 	@Override
 	default Character next() {
 		return this.nextChar();

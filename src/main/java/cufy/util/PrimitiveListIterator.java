@@ -21,14 +21,17 @@ import java.util.PrimitiveIterator;
 /**
  * A base type for primitive specialization of {@code ListIterator}..
  *
- * @param <E>        the type of the elements.
- * @param <CONSUMER> the type of a consumer consuming the elements.
+ * @param <E> the type of the elements.
+ * @param <C> the type of a consumer consuming the elements.
  * @author LSafer
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.31
  */
-public interface PrimitiveListIterator<
-		E,
-		CONSUMER
-		> extends PrimitiveIterator<E, CONSUMER>, ListIterator<E> {
+public interface PrimitiveListIterator
+		<E, C>
+		extends PrimitiveIterator<E, C>,
+		ListIterator<E> {
+	//void addPrimitive(primitive value)
+	//primitive previousPrimitive()
+	//void setPrimitive(primitive value)
 }

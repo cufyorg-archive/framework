@@ -52,16 +52,9 @@ import java.util.function.Function;
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.02
  */
-public interface CharMap extends PrimitiveMap<
-		Character,
-		Character,
-		CharBiConsumer,
-		CharBinaryOperator,
-		Set<Map.Entry<Character, Character>>,
-		CharSet,
-		CharCollection,
-		CharMap
-		> {
+public interface CharMap
+		extends
+		PrimitiveMap<Character, Character, CharBiConsumer, CharBinaryOperator> {
 	@Override
 	default Character compute(Character key, BiFunction<? super Character, ? super Character, ? extends Character> function) {
 		Objects.requireNonNull(function, "function");
@@ -240,6 +233,12 @@ public interface CharMap extends PrimitiveMap<
 		);
 	}
 
+	@Override
+	CharSet keySet();
+
+	@Override
+	CharCollection values();
+
 	/**
 	 * Attempts to compute a mapping for the specified key and its current mapped value.
 	 * <p>
@@ -256,7 +255,6 @@ public interface CharMap extends PrimitiveMap<
 	 *                                       map.
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	@SuppressWarnings("LambdaUnfriendlyMethodOverload")
 	default char compute(char key, CharObjBiFunction<Character, Character> function) {
 		Objects.requireNonNull(function, "function");
 		boolean oldNotnull = this.containsKey(key);
@@ -289,7 +287,6 @@ public interface CharMap extends PrimitiveMap<
 	 *                                       map.
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	@SuppressWarnings("LambdaUnfriendlyMethodOverload")
 	default char computeIfAbsent(char key, CharFunction<Character> function) {
 		Objects.requireNonNull(function, "function");
 		if (this.containsKey(key))
@@ -321,7 +318,6 @@ public interface CharMap extends PrimitiveMap<
 	 *                                       map.
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	@SuppressWarnings("LambdaUnfriendlyMethodOverload")
 	default char computeIfPresent(char key, CharBiFunction<Character> function) {
 		Objects.requireNonNull(function, "function");
 		if (this.containsKey(key)) {
@@ -375,7 +371,6 @@ public interface CharMap extends PrimitiveMap<
 	 * @throws NullPointerException          if the given {@code function} is null.
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	@SuppressWarnings("LambdaUnfriendlyMethodOverload")
 	default char merge(char key, char value, CharBiFunction<Character> function) {
 		Objects.requireNonNull(function, "function");
 		if (this.containsKey(key)) {
@@ -442,6 +437,26 @@ public interface CharMap extends PrimitiveMap<
 	}
 
 	/**
+	 * Replaces the entry for the specified key only if it is currently mapped to some value.
+	 *
+	 * @param key   key with which the specified value is associated.
+	 * @param value value to be associated with the specified key.
+	 * @return the previous value associated with the specified key, or {@code //DefaultValue//}
+	 * 		if there was no mapping for the key. (A {@code //DefaultValue//} return can also indicate
+	 * 		that the map previously associated {@code //DefaultValue//} with the key).
+	 * @throws UnsupportedOperationException if the {@code put} operation is not supported by this
+	 *                                       map.
+	 * @throws IllegalArgumentException      if some property of the specified key or value prevents
+	 *                                       it from being stored in this map.
+	 * @since 0.1.5 ~2020.09.02
+	 */
+	default char replaceChar(char key, char value) {
+		return this.containsKey(key) ?
+			   this.putChar(key, value) :
+				/*DefaultValue*/;
+	}
+
+	/**
 	 * Replaces the entry for the specified key only if currently mapped to the specified value.
 	 *
 	 * @param key      key with which the specified value is associated.
@@ -465,26 +480,6 @@ public interface CharMap extends PrimitiveMap<
 		}
 
 		return false;
-	}
-
-	/**
-	 * Replaces the entry for the specified key only if it is currently mapped to some value.
-	 *
-	 * @param key   key with which the specified value is associated.
-	 * @param value value to be associated with the specified key.
-	 * @return the previous value associated with the specified key, or {@code //DefaultValue//}
-	 * 		if there was no mapping for the key. (A {@code //DefaultValue//} return can also indicate
-	 * 		that the map previously associated {@code //DefaultValue//} with the key).
-	 * @throws UnsupportedOperationException if the {@code put} operation is not supported by this
-	 *                                       map.
-	 * @throws IllegalArgumentException      if some property of the specified key or value prevents
-	 *                                       it from being stored in this map.
-	 * @since 0.1.5 ~2020.09.02
-	 */
-	default char replaceChar(char key, char value) {
-		return this.containsKey(key) ?
-			   this.putChar(key, value) :
-			   /*DefaultValue*/;
 	}
 
 	/**
@@ -568,10 +563,9 @@ public interface CharMap extends PrimitiveMap<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.02
 	 */
-	interface CharEntry extends PrimitiveEntry<
-			Character,
-			Character
-			> {
+	interface CharEntry
+			extends
+			PrimitiveEntry<Character, Character> {
 		@Override
 		default Character getKey() {
 			return this.getCharKey();

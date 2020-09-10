@@ -1,12 +1,6 @@
 /*
 with char|boolean|byte|double|float|int|long|short primitive
 *//*
-define Iterator ////
-if boolean|byte|char|float|short primitive //CharIterator//
-elif double|int|long primitive //PrimitiveIterator.OfChar//
-endif ////
-enddefine
-*//*
 define Spliterator ////
 if boolean|byte|char|float|short primitive //CharSpliterator//
 elif double|int|long primitive //Spliterator.OfChar//
@@ -49,18 +43,13 @@ import java.util.Spliterators;
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
-public interface CharSet extends CharCollection, PrimitiveSet<
-		Character,
-		CharConsumer,
-		CharPredicate,
-		/*Iterator*/,
-		/*Spliterator*/,
+public interface CharSet
+		extends
 		CharCollection,
-		CharSet
-		> {
+		PrimitiveSet<Character, CharConsumer, CharPredicate> {
 	@Override
-	default boolean add(Character element) {
-		return this.addChar(element);
+	default boolean remove(Object object) {
+		return object instanceof Character && this.removeChar((char) object);
 	}
 
 	@Override
@@ -69,8 +58,8 @@ public interface CharSet extends CharCollection, PrimitiveSet<
 	}
 
 	@Override
-	default boolean remove(Object object) {
-		return object instanceof Character && this.removeChar((char) object);
+	default boolean add(Character element) {
+		return this.addChar(element);
 	}
 	/*
 	if double|int|long primitive

@@ -15,85 +15,75 @@
  */
 package cufy.util;
 
-import java.util.*;
+import java.util.NavigableMap;
 
 /**
  * A map specialized for primitive values. Map view collections is kept for the sub class to provide
  * its own implementation to allow various mixtures of (primitive|object)-(primitive|object)
  * mappings.
  *
- * @param <K>                 the type of the keys.
- * @param <V>                 the type of the values.
- * @param <BI_CONSUMER>       the type of the bi-consumer.
- * @param <BI_FUNCTION>       the type of the bi-function.
- * @param <COMPARATOR>        the type of the comparator.
- * @param <ENTRY>             the type of the entries.
- * @param <ENTRY_SET>         the type of the set of the entries.
- * @param <KEY_SET>           the type of the set of the keys.
- * @param <NAVIGABLE_KEY_SET> the type of the navigable set of the keys.
- * @param <VALUES>            the type of the collection of the values.
- * @param <MAP>               the type of the map.
- * @param <SORTED_MAP>        the type of the sorted map.
- * @param <NAVIGABLE_MAP>     the type of the navigable map.
+ * @param <K> the type of the keys.
+ * @param <V> the type of the values.
+ * @param <R> the type of the bi-consumer.
+ * @param <N> the type of the bi-function.
  * @author LSafer
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
-@SuppressWarnings("ComparatorNotSerializable")
-public interface PrimitiveNavigableMap<
-		K,
-		V,
-		BI_CONSUMER,
-		BI_FUNCTION,
-		COMPARATOR extends Comparator<K>,
-		ENTRY extends Map.Entry<K, V>,
-		ENTRY_SET extends Set<Map.Entry<K, V>>,
-		KEY_SET extends Set<K>,
-		NAVIGABLE_KEY_SET extends NavigableSet<K>,
-		VALUES extends Collection<V>,
-		MAP extends PrimitiveMap<K, V, BI_CONSUMER, BI_FUNCTION, ENTRY_SET, KEY_SET, VALUES, MAP>,
-		SORTED_MAP extends PrimitiveSortedMap<K, V, BI_CONSUMER, BI_FUNCTION, COMPARATOR, ENTRY_SET, KEY_SET, VALUES, MAP, SORTED_MAP>,
-		NAVIGABLE_MAP extends PrimitiveNavigableMap<K, V, BI_CONSUMER, BI_FUNCTION, COMPARATOR, ENTRY, ENTRY_SET, KEY_SET, NAVIGABLE_KEY_SET, VALUES, MAP, SORTED_MAP, NAVIGABLE_MAP>
-		> extends PrimitiveSortedMap<K, V, BI_CONSUMER, BI_FUNCTION, COMPARATOR, ENTRY_SET, KEY_SET, VALUES, MAP, SORTED_MAP>, NavigableMap<K, V> {
+public interface PrimitiveNavigableMap
+		<K, V, R, N>
+		extends
+		PrimitiveSortedMap<K, V, R, N>,
+		NavigableMap<K, V> {
 	@Override
-	ENTRY ceilingEntry(K key);
+	PrimitiveEntry<K, V> ceilingEntry(K key);
 
 	@Override
-	NAVIGABLE_KEY_SET descendingKeySet();
+	PrimitiveNavigableMap<K, V, R, N> descendingMap();
 
 	@Override
-	NAVIGABLE_MAP descendingMap();
+	PrimitiveEntry<K, V> firstEntry();
 
 	@Override
-	ENTRY firstEntry();
+	PrimitiveEntry<K, V> floorEntry(K key);
 
 	@Override
-	ENTRY floorEntry(K key);
+	PrimitiveNavigableMap<K, V, R, N> headMap(K endKey, boolean inclusive);
 
 	@Override
-	NAVIGABLE_MAP headMap(K endKey, boolean inclusive);
+	PrimitiveEntry<K, V> higherEntry(K key);
 
 	@Override
-	ENTRY higherEntry(K key);
+	PrimitiveEntry<K, V> lastEntry();
 
 	@Override
-	ENTRY lastEntry();
+	PrimitiveEntry<K, V> lowerEntry(K key);
 
 	@Override
-	ENTRY lowerEntry(K key);
+	PrimitiveEntry<K, V> pollFirstEntry();
 
 	@Override
-	NAVIGABLE_KEY_SET navigableKeySet();
+	PrimitiveEntry<K, V> pollLastEntry();
 
 	@Override
-	ENTRY pollFirstEntry();
+	PrimitiveNavigableMap<K, V, R, N> subMap(K beginKey, boolean beginInclusive, K endKey, boolean endInclusive);
 
 	@Override
-	ENTRY pollLastEntry();
+	PrimitiveNavigableMap<K, V, R, N> tailMap(K beginKey, boolean inclusive);
 
-	@Override
-	NAVIGABLE_MAP subMap(K beginKey, boolean beginInclusive, K endKey, boolean endInclusive);
-
-	@Override
-	NAVIGABLE_MAP tailMap(K beginKey, boolean inclusive);
+	//primitive ceilingPrimitiveKey(primitive key)
+	//PrimitiveEntry ceilingEntry(primitive key)
+	//primitive floorPrimitiveKey(primitive key)
+	//PrimitiveEntry floorEntry(primitive key)
+	//boolean hasCeilingKey(primitive key)
+	//boolean hasFloorKey(primitive key)
+	//boolean hasHigherKey(primitive key)
+	//boolean hasLowerKey(primitive key)
+	//PrimitiveNavigableMap headMap(primitive endKey, boolean inclusive)
+	//primitive higherPrimitiveKey(primitive key)
+	//PrimitiveEntry higherEntry(primitive key)
+	//primitive lowerPrimitiveKey(primitive key)
+	//PrimitiveEntry lowerEntry(primitive key)
+	//PrimitiveNavigableMap subMap(primitive beginKey, boolean beginInclusive, primitive endKey, boolean endInclusive)
+	//PrimitiveNavigableMap tailMap(primitive beginKey, boolean inclusive)
 }

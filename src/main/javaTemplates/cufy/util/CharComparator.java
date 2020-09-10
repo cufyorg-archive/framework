@@ -1,19 +1,19 @@
 /*
 with char|boolean|byte|double|float|int|long|short primitive
 *//*
-define ToDouble ////
+define ToDoubleFunction ////
 if boolean|byte|char|float|int|long|short primitive //CharToDoubleFunction//
 elif double primitive //DoubleUnaryOperator//
 endif ////
 enddefine
 *//*
-define ToInt ////
+define ToIntFunction ////
 if boolean|byte|char|double|float|long|short primitive //CharToIntFunction//
 elif int primitive //IntUnaryOperator//
 endif ////
 enddefine
 *//*
-define ToLong ////
+define ToLongFunction ////
 if boolean|byte|char|double|float|int|short primitive //CharToLongFunction//
 elif long primitive //LongUnaryOperator//
 endif ////
@@ -71,15 +71,10 @@ import java.util.function.ToLongFunction;
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
-@SuppressWarnings({"InterfaceMayBeAnnotatedFunctional", "ComparatorNotSerializable"})
-public interface CharComparator extends PrimitiveComparator<
-		Character,
-		CharUnaryOperator,
-		/*ToDouble*/,
-		/*ToInt*/,
-		/*ToLong*/,
-		CharComparator
-		> {
+@FunctionalInterface
+public interface CharComparator
+		extends
+		PrimitiveComparator<Character, /*ToDoubleFunction*/, /*ToIntFunction*/, /*ToLongFunction*/, CharUnaryOperator, CharComparator> {
 	/**
 	 * A global instance of {@link NaturalOrder}.
 	 *
@@ -104,7 +99,6 @@ public interface CharComparator extends PrimitiveComparator<
 	 * @throws NullPointerException if the given {@code operator} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	@SuppressWarnings("LambdaUnfriendlyMethodOverload")
 	static CharComparator comparing(CharUnaryOperator operator) {
 		Objects.requireNonNull(operator, "operator");
 		return (CharComparator & Serializable) (v, o) -> Character.compare(
@@ -127,7 +121,6 @@ public interface CharComparator extends PrimitiveComparator<
 	 * @throws NullPointerException if the given {@code operator} or {@code comparator} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	@SuppressWarnings("LambdaUnfriendlyMethodOverload")
 	static CharComparator comparing(CharUnaryOperator operator, CharComparator comparator) {
 		Objects.requireNonNull(operator, "operator");
 		Objects.requireNonNull(comparator, "comparator");
@@ -148,8 +141,7 @@ public interface CharComparator extends PrimitiveComparator<
 	 * @throws NullPointerException if the given {@code function} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	@SuppressWarnings("LambdaUnfriendlyMethodOverload")
-	static CharComparator comparingDouble(/*ToDouble*/ function) {
+	static CharComparator comparingDouble(/*ToDoubleFunction*/ function) {
 		Objects.requireNonNull(function, "function");
 		return (CharComparator & Serializable) (v, o) -> Double.compare(
 				function.applyAsDouble(v),
@@ -168,8 +160,7 @@ public interface CharComparator extends PrimitiveComparator<
 	 * @throws NullPointerException if the given {@code function} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	@SuppressWarnings("LambdaUnfriendlyMethodOverload")
-	static CharComparator comparingInt(/*ToInt*/ function) {
+	static CharComparator comparingInt(/*ToIntFunction*/ function) {
 		Objects.requireNonNull(function, "function");
 		return (CharComparator & Serializable) (v, o) -> Long.compare(
 				function.applyAsInt(v),
@@ -188,8 +179,7 @@ public interface CharComparator extends PrimitiveComparator<
 	 * @throws NullPointerException if the given {@code function} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	@SuppressWarnings("LambdaUnfriendlyMethodOverload")
-	static CharComparator comparingLong(/*ToLong*/ function) {
+	static CharComparator comparingLong(/*ToLongFunction*/ function) {
 		Objects.requireNonNull(function, "function");
 		return (CharComparator & Serializable) (v, o) -> Long.compare(
 				function.applyAsLong(v),
@@ -286,14 +276,14 @@ public interface CharComparator extends PrimitiveComparator<
 	default CharComparator thenComparingDouble(ToDoubleFunction<? super Character> function) {
 		Objects.requireNonNull(function, "function");
 		return this.thenComparingDouble(
-				function instanceof /*ToDouble*/ ?
-		(/*ToDouble*/) function:
-		function::applyAsDouble
+				function instanceof /*ToDoubleFunction*/ ?
+				(/*ToDoubleFunction*/) function:
+				function::applyAsDouble
 		);
 	}
 
 	@Override
-	default CharComparator thenComparingDouble(/*ToDouble*/ function) {
+	default CharComparator thenComparingDouble(/*ToDoubleFunction*/ function) {
 		return this.thenComparing(CharComparator.comparingDouble(
 				function
 		));
@@ -303,14 +293,14 @@ public interface CharComparator extends PrimitiveComparator<
 	default CharComparator thenComparingInt(ToIntFunction<? super Character> function) {
 		Objects.requireNonNull(function, "function");
 		return this.thenComparingInt(
-				function instanceof /*ToInt*/ ?
-		(/*ToInt*/) function:
-		function::applyAsInt
+				function instanceof /*ToIntFunction*/ ?
+				(/*ToIntFunction*/) function:
+				function::applyAsInt
 		);
 	}
 
 	@Override
-	default CharComparator thenComparingInt(/*ToInt*/ function) {
+	default CharComparator thenComparingInt(/*ToIntFunction*/ function) {
 		Objects.requireNonNull(function, "function");
 		return this.thenComparing(CharComparator.comparingInt(
 				function
@@ -321,14 +311,14 @@ public interface CharComparator extends PrimitiveComparator<
 	default CharComparator thenComparingLong(ToLongFunction<? super Character> function) {
 		Objects.requireNonNull(function, "function");
 		return this.thenComparingLong(
-				function instanceof /*ToLong*/ ?
-		(/*ToLong*/) function:
-		function::applyAsLong
+				function instanceof /*ToLongFunction*/ ?
+				(/*ToLongFunction*/) function:
+				function::applyAsLong
 		);
 	}
 
 	@Override
-	default CharComparator thenComparingLong(/*ToLong*/ function) {
+	default CharComparator thenComparingLong(/* ToLongFunction */ function) {
 		return this.thenComparing(CharComparator.comparingLong(
 				function
 		));
@@ -375,7 +365,6 @@ public interface CharComparator extends PrimitiveComparator<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	@SuppressWarnings("ClassHasNoToStringMethod")
 	class Reverse implements CharComparator, Serializable {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -5427742021938589022L;

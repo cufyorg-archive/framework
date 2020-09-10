@@ -50,21 +50,10 @@ import java.util.Set;
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.03
  */
-public interface CharNavigableMap extends PrimitiveNavigableMap<
-		Character,
-		Character,
-		CharBiConsumer,
-		CharBinaryOperator,
-		CharComparator,
-		CharMap.CharEntry,
-		Set<Map.Entry<Character, Character>>,
-		CharSet,
-		CharNavigableSet,
-		CharCollection,
-		CharMap,
+public interface CharNavigableMap
+		extends
 		CharSortedMap,
-		CharNavigableMap
-		>, CharSortedMap {
+		PrimitiveNavigableMap<Character, Character, CharBiConsumer, CharBinaryOperator> {
 	@Override
 	default CharEntry ceilingEntry(Character key) {
 		return this.ceilingEntry((char) key);
@@ -142,6 +131,27 @@ public interface CharNavigableMap extends PrimitiveNavigableMap<
 	default CharNavigableMap tailMap(Character beginKey, boolean inclusive) {
 		return this.tailMap((char) beginKey, inclusive);
 	}
+
+	@Override
+	CharNavigableSet descendingKeySet();
+
+	@Override
+	CharNavigableMap descendingMap();
+
+	@Override
+	CharEntry firstEntry();
+
+	@Override
+	CharEntry lastEntry();
+
+	@Override
+	CharNavigableSet navigableKeySet();
+
+	@Override
+	CharEntry pollFirstEntry();
+
+	@Override
+	CharEntry pollLastEntry();
 
 	/**
 	 * Returns the least key greater than or equal to the given key, or {@code //DefaultValue//}

@@ -21,25 +21,21 @@ import java.util.Spliterator;
 /**
  * An iterator specialized for primitive values.
  *
- * @param <E>           the type of the elements.
- * @param <CONSUMER>    the type of the consumer.
- * @param <ITERATOR>    the type of the iterator.
- * @param <SPLITERATOR> the type of the spliterator.
+ * @param <E> the type of the elements.
+ * @param <C> the type of the consumer.
  * @author LSafer
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
-public interface PrimitiveIterable<
-		E,
-		CONSUMER,
-		ITERATOR extends PrimitiveIterator<E, CONSUMER>,
-		SPLITERATOR extends Spliterator.OfPrimitive<E, CONSUMER, SPLITERATOR>
-		> extends Iterable<E> {
+public interface PrimitiveIterable
+		<E, C>
+		extends
+		Iterable<E> {
 	@Override
-	ITERATOR iterator();
+	PrimitiveIterator<E, C> iterator();
 
 	@Override
-	SPLITERATOR spliterator();
+	Spliterator.OfPrimitive<E, C, ?> spliterator();
 
 	/**
 	 * Performs the given {@code consumer} for each element of the {@code Iterable} until all
@@ -52,5 +48,5 @@ public interface PrimitiveIterable<
 	 * @throws NullPointerException if the given {@code consumer} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	void forEach(CONSUMER consumer);
+	void forEach(C consumer);
 }

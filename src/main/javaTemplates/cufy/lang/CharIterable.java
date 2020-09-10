@@ -33,14 +33,16 @@ package cufy.lang;
 import cufy.util.CharIterator;
 import cufy.util.CharSpliterator;
 import cufy.util.function.CharConsumer;
+
 /* elif double|int|long primitive */
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
-import java.util.function.CharConsumer;
 import java.util.Spliterators;
+import java.util.function.CharConsumer;
 /* endif */
 
 import java.util.function.Consumer;
+import java.util.Objects;
 
 /**
  * An iterator specialize for {@code char} values.
@@ -49,15 +51,17 @@ import java.util.function.Consumer;
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
-public interface CharIterable extends PrimitiveIterable<
-		Character,
-		CharConsumer,
-		/* Iterator */,
-		/* Spliterator */
-		> {
+public interface CharIterable
+		extends
+		PrimitiveIterable<Character, CharConsumer> {
 	@Override
 	default void forEach(Consumer<? super Character> consumer) {
-		this.iterator().forEachRemaining(consumer);
+		Objects.requireNonNull(consumer, "consumer");
+		this.forEach(
+				consumer instanceof CharConsumer ?
+				(CharConsumer) consumer :
+				consumer::accept
+		);
 	}
 
 	@Override
@@ -72,6 +76,18 @@ public interface CharIterable extends PrimitiveIterable<
 	default /* Spliterator */ spliterator() {
 		return Spliterators.spliteratorUnknownSize(this.iterator(), 0);
 	}
+	/*
+	endif
+	*/
+
+	@Override
+	/* Iterator */ iterator();
+	/*
+	if boolean|byte|char|float|short primitive
+	*/
+
+	@Override
+	/* Spliterator */ spliterator();
 	/*
 	endif
 	*/

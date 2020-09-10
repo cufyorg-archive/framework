@@ -422,12 +422,11 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	@Override
 	public abstract int hashCode();
 
-	@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 	@Override
-	public abstract Iterator<E> iterator();
+	public abstract ArrayIterator iterator();
 
 	@Override
-	public abstract Spliterator<E> spliterator();
+	public abstract ArraySpliterator spliterator();
 
 	@Override
 	public abstract String toString();
@@ -525,14 +524,14 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	 * @see java.util.Arrays#asList(Object[])
 	 * @since 0.1.5 ~2020.08.06
 	 */
-	public abstract List<E> list();
+	public abstract ArrayList list();
 
 	/**
 	 * Get a list iterator iterating over the elements of this array.
 	 *
 	 * @return a new list iterator for this array.
 	 */
-	public abstract ListIterator<E> listIterator();
+	public abstract ArrayListIterator listIterator();
 
 	/**
 	 * Construct a new map backed by this array.
@@ -543,7 +542,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 	 * @throws IllegalArgumentException if {@code length % 2 != 0}.
 	 * @since 0.1.5 ~2020.08.06
 	 */
-	public abstract <K extends E, V extends E> Map<K, V> map();
+	public abstract <K extends E, V extends E> ArrayMap<K, V> map();
 
 	/**
 	 * Cumulates, in parallel, each element of this array in place, using the supplied function. For
@@ -832,6 +831,18 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract int hashCode();
+
+		@Override
+		public abstract ArrayIterator iterator();
+
+		@Override
+		public abstract ArrayListIterator listIterator();
+
+		@Override
+		public abstract ArrayListIterator listIterator(int index);
+
+		@Override
+		public abstract ArraySpliterator spliterator();
 	}
 
 	/**
@@ -958,6 +969,9 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		@Override
 		public abstract ArrayMap clone();
 
+		@Override
+		public abstract ArrayEntrySet entrySet();
+
 		@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 		@Override
 		public abstract boolean equals(Object object);
@@ -967,7 +981,13 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 		public abstract int hashCode();
 
 		@Override
+		public abstract ArrayKeySet keySet();
+
+		@Override
 		public abstract String toString();
+
+		@Override
+		public abstract ArrayValues values();
 
 		/**
 		 * An entry backed by a range from {@code index} to {@code index + 1} in the enclosing
@@ -1067,6 +1087,10 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 			public void remove() {
 				throw new UnsupportedOperationException("remove");
 			}
+
+			@SuppressWarnings("IteratorNextCanNotThrowNoSuchElementException")
+			@Override
+			public abstract ArrayEntry next();
 		}
 
 		/**
@@ -1157,12 +1181,18 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 			@Override
 			public abstract int hashCode();
 
-			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 			@Override
-			public abstract Object[] toArray();
+			public abstract ArrayEntryIterator iterator();
+
+			@Override
+			public abstract ArrayEntrySpliterator spliterator();
 
 			@Override
 			public abstract <T> T[] toArray(T[] array);
+
+			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
+			@Override
+			public abstract Object[] toArray();
 
 			@Override
 			public abstract String toString();
@@ -1242,6 +1272,9 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 				return (ArrayEntrySpliterator.CHARACTERISTICS & characteristics) ==
 					   characteristics;
 			}
+
+			@Override
+			public abstract ArrayEntrySpliterator trySplit();
 		}
 
 		/**
@@ -1326,7 +1359,7 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 			}
 
 			@Override
-			public boolean containsAll(Collection<?> collection) {
+			public boolean containsAll(Collection collection) {
 				Objects.requireNonNull(collection, "collection");
 
 				for (Object object : collection) {
@@ -1379,6 +1412,12 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 			@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
 			@Override
 			public abstract int hashCode();
+
+			@Override
+			public abstract ArrayKeyIterator iterator();
+
+			@Override
+			public abstract Spliterator<K> spliterator();
 
 			@Override
 			public abstract <T> T[] toArray(T[] array);
@@ -1686,6 +1725,12 @@ public abstract class Array<A, E> implements Serializable, Cloneable, Iterable<E
 
 			@Override
 			public abstract String toString();
+
+			@Override
+			public abstract ArrayValueIterator iterator();
+
+			@Override
+			public abstract ArrayValueSpliterator spliterator();
 		}
 	}
 

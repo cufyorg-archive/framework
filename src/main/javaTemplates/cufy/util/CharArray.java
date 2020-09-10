@@ -10,25 +10,25 @@ elif long primitive //0L//
 endif ////
 enddefine
 *//*
-define ToDouble ////
-if boolean|byte|char|float|int|long|short primitive //CharToDoubleFunction//
-elif double primitive //DoubleUnaryOperator//
-endif ////
-enddefine
-*//*
-define IntTo ////
+define IntToFunction ////
 if boolean|byte|char|double|float|long|short primitive //IntToCharFunction//
 elif int primitive //IntUnaryOperator//
 endif ////
 enddefine
 *//*
-define ToInt ////
+define ToDoubleFunction ////
+if boolean|byte|char|float|int|long|short primitive //CharToDoubleFunction//
+elif double primitive //DoubleUnaryOperator//
+endif ////
+enddefine
+*//*
+define ToIntFunction ////
 if boolean|byte|char|double|float|long|short primitive //CharToIntFunction//
 elif int primitive //IntUnaryOperator//
 endif ////
 enddefine
 *//*
-define ToLong ////
+define ToLongFunction ////
 if boolean|byte|char|double|float|int|short primitive //CharToLongFunction//
 elif long primitive //LongUnaryOperator//
 endif ////
@@ -43,12 +43,6 @@ enddefine
 define Spliterator ////
 if boolean|byte|char|float|short primitive //CharSpliterator//
 elif double|int|long primitive //Spliterator.OfChar//
-endif ////
-enddefine
-*//*
-define Stream ////
-if boolean|byte|char|float|short primitive //Stream<Character>//
-elif double|int|long primitive //CharStream//
 endif ////
 enddefine
 *//*
@@ -68,57 +62,31 @@ enddefine
  */
 package cufy.util;
 
-/* if double primitive */
-import java.util.function.IntToDoubleFunction;
-import java.util.function.DoubleToIntFunction;
-import java.util.function.DoubleToLongFunction;
-/* elif int primitive */
-import java.util.function.IntToDoubleFunction;
-import java.util.function.IntToLongFunction;
-/* elif long primitive */
-import java.util.function.IntToLongFunction;
-import java.util.function.LongToDoubleFunction;
-import java.util.function.LongToIntFunction;
-/* endif */
-/* if double|int|long primitive */
-import java.util.PrimitiveIterator;
-import java.util.Spliterator;
-import java.util.function.CharConsumer;
-import java.util.function.CharFunction;
-import java.util.function.CharPredicate;
-import java.util.Spliterators;
-import java.util.stream.StreamSupport;
-import java.util.stream.CharStream;
-import java.util.function.CharUnaryOperator;
-import java.util.function.CharBinaryOperator;
-/* elif boolean|byte|char|float|short primitive */
-import cufy.util.function.IntToCharFunction;
-import cufy.util.function.CharToDoubleFunction;
-import cufy.util.function.CharToIntFunction;
-import cufy.util.function.CharToLongFunction;
-import cufy.util.CharIterator;
-import cufy.util.CharSpliterator;
-import cufy.util.function.CharConsumer;
-import cufy.util.function.CharFunction;
-import cufy.util.function.CharPredicate;
-import cufy.util.function.CharUnaryOperator;
-import cufy.util.function.CharBinaryOperator;
-/* endif */
-
+import cufy.lang.CharIterable;
+/* if boolean|byte|char|float|short primitive */
+import cufy.util.function.*;
+/* elif double|int|long primitive */
 import cufy.util.function.CharBiConsumer;
 import cufy.util.function.CharBiFunction;
 import cufy.util.function.CharObjBiFunction;
+/* endif */
 
-import java.util.Comparator;
-import java.util.NoSuchElementException;
-import java.util.Map;
-import java.util.Set;
-import java.util.List;
 import java.util.Objects;
+import java.util.*;
+/* if boolean|byte|char|float|short primitive */
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
+/* elif double|int|long primitive */
+import java.util.function.*;
+/* endif */
 import java.util.stream.IntStream;
+/* if double|int|long primitive*/
+/* if !(int primitive)*/
+import java.util.stream.CharStream;
+/* endif */
+import java.util.stream.StreamSupport;
+/* endif */
 
 /**
  * An array specialized for {@code char} values.
@@ -127,28 +95,24 @@ import java.util.stream.IntStream;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.03
  */
-public class CharArray extends PrimitiveArray<
-		char[],
-		Character,
-		CharBiConsumer,
-		CharConsumer,
-		CharPredicate,
-		CharUnaryOperator,
-		CharBinaryOperator,
-		/*IntTo*/,
-		/*ToDouble*/,
-		/*ToInt*/,
-		/*ToLong*/,
-		CharComparator,
-		/*Iterator*/,
-		CharListIterator,
-		/*Spliterator*/,
-		CharCollection,
-		CharSet,
-		CharList,
-		CharMap,
-		CharArray
-		> {
+public class CharArray
+		extends
+		PrimitiveArray<
+				char[],
+				Character,
+				CharConsumer,
+				CharBiConsumer,
+				/*IntToFunction*/,
+				/*ToDoubleFunction*/,
+				/*ToIntFunction*/,
+				/*ToLongFunction*/,
+				CharUnaryOperator,
+				CharBinaryOperator,
+				CharPredicate,
+				CharComparator
+				>
+		implements
+		CharIterable {
 	@SuppressWarnings("JavaDoc")
 	private static final long serialVersionUID = 3201994039505608491L;
 
@@ -387,14 +351,14 @@ public class CharArray extends PrimitiveArray<
 	public void parallelSetAll(IntFunction<? extends Character> function) {
 		Objects.requireNonNull(function, "function");
 		this.parallelSetAll(
-				function instanceof /*IntTo*/ ?
-				(/*IntTo*/) function :
+				function instanceof /*IntToFunction*/ ?
+				(/*IntToFunction*/) function :
 				function::apply
 		);
 	}
 
 	@Override
-	public void parallelSetAll(/*IntTo*/ function) {
+	public void parallelSetAll(/*IntToFunction*/ function) {
 		Objects.requireNonNull(function, "function");
 		IntStream.range(this.beginIndex, this.endIndex)
 				.parallel()
@@ -463,14 +427,14 @@ public class CharArray extends PrimitiveArray<
 	public void setAll(IntFunction<? extends Character> function) {
 		Objects.requireNonNull(function, "function");
 		this.setAll(
-				function instanceof /*IntTo*/ ?
-				(/*IntTo*/) function :
+				function instanceof /*IntToFunction*/ ?
+				(/*IntToFunction*/) function :
 				function::apply
 		);
 	}
 
 	@Override
-	public void setAll(/*IntTo*/ function) {
+	public void setAll(/*IntToFunction*/ function) {
 		Objects.requireNonNull(function, "function");
 		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
 			this.array[i] = function.applyAsChar(j);
@@ -605,7 +569,6 @@ public class CharArray extends PrimitiveArray<
 	 * 		(-(<i>insertion point</i>) - 1).
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	@SuppressWarnings("LambdaUnfriendlyMethodOverload")
 	public int binarySearch(char element, CharComparator comparator) {
 		if (comparator == null)
 			this.binarySearch(element);
@@ -663,7 +626,7 @@ public class CharArray extends PrimitiveArray<
 	 * @see java.util.Arrays#stream(char[])
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public /*Stream*/ charStream() {
+	public CharStream charStream() {
 		return StreamSupport.charStream(this.spliterator(), false);
 	}
 
@@ -674,7 +637,7 @@ public class CharArray extends PrimitiveArray<
 	 * @see java.util.Arrays#stream(char[])
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	public /*Stream*/ parallelCharStream() {
+	public CharStream parallelCharStream() {
 		return StreamSupport.charStream(this.spliterator(), true);
 	}
 	/*
@@ -776,7 +739,11 @@ public class CharArray extends PrimitiveArray<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public class CharArrayIterator extends PrimitiveArrayIterator implements /*Iterator*/ {
+	public class CharArrayIterator
+			extends
+			PrimitiveArrayIterator
+			implements
+			/*Iterator*/ {
 		/**
 		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
@@ -825,7 +792,11 @@ public class CharArray extends PrimitiveArray<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public class CharArrayList extends PrimitiveArrayList implements CharList {
+	public class CharArrayList
+			extends
+			PrimitiveArrayList
+			implements
+			CharList {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 848985287158674978L;
 
@@ -856,20 +827,27 @@ public class CharArray extends PrimitiveArray<
 		}
 
 		@Override
-		public boolean containsAll(CharCollection collection) {
+		public boolean containsAll(Collection collection) {
 			Objects.requireNonNull(collection, "collection");
 
-			/*Iterator*/ iterator = collection.iterator();
-			while0:
-			while (iterator.hasNext()) {
-				char element = iterator.nextChar();
+			Iterator iterator = collection.iterator();
 
-				for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i++)
-					if (CharArray.this.eq(element, CharArray.this.array[i]))
-						continue while0;
+			if (iterator instanceof /*Iterator*/) {
+				/*Iterator*/ charIterator = (/*Iterator*/) iterator;
 
-				return false;
-			}
+				while (charIterator.hasNext()) {
+					if (this.contains(charIterator.nextChar()))
+						continue;
+
+					return false;
+				}
+			} else
+				while (iterator.hasNext()) {
+					if (this.contains(iterator.next()))
+						continue;
+
+					return false;
+				}
 
 			return true;
 		}
@@ -935,7 +913,7 @@ public class CharArray extends PrimitiveArray<
 		}
 
 		@Override
-		public CharListIterator listIterator() {
+		public CharArrayListIterator listIterator() {
 			return new CharArrayListIterator();
 		}
 
@@ -1013,7 +991,11 @@ public class CharArray extends PrimitiveArray<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public class CharArrayListIterator extends PrimitiveArrayListIterator implements CharListIterator {
+	public class CharArrayListIterator
+			extends
+			PrimitiveArrayListIterator
+			implements
+			CharListIterator {
 		/**
 		 * Construct a new list iterator iterating the elements in the enclosing array.
 		 *
@@ -1092,7 +1074,11 @@ public class CharArray extends PrimitiveArray<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public class CharArrayMap extends PrimitiveArrayMap implements CharMap {
+	public class CharArrayMap
+			extends
+			PrimitiveArrayMap
+			implements
+			CharMap {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -2840280796050057228L;
 
@@ -1274,25 +1260,7 @@ public class CharArray extends PrimitiveArray<
 		public void putAll(Map<? extends Character, ? extends Character> map) {
 			Objects.requireNonNull(map, "map");
 			for0:
-			for (Map.Entry<? extends Character, ? extends Character> entry : map.entrySet()) {
-				char key = entry.getKey();
-
-				for (int i = CharArray.this.beginIndex; i < CharArray.this.endIndex; i += 2)
-					if (CharArray.this.eq(key, CharArray.this.array[i])) {
-						char value = entry.getValue();
-						CharArray.this.array[i + 1] = value;
-						continue for0;
-					}
-
-				throw new IllegalArgumentException("Key not found");
-			}
-		}
-
-		@Override
-		public void putAll(CharMap map) {
-			Objects.requireNonNull(map, "map");
-			for0:
-			for (Map.Entry<Character, Character> entry : map.entrySet())
+			for (Map.Entry<? extends Character, ? extends Character> entry : map.entrySet())
 				if (entry instanceof CharEntry) {
 					CharEntry charEntry = (CharEntry) entry;
 					char key = charEntry.getCharKey();
@@ -1423,7 +1391,11 @@ public class CharArray extends PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class CharArrayEntry extends PrimitiveArrayEntry implements CharEntry {
+		public class CharArrayEntry
+				extends
+				PrimitiveArrayEntry
+				implements
+				CharEntry {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 5973497615323125824L;
 
@@ -1522,7 +1494,9 @@ public class CharArray extends PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class CharArrayEntryIterator extends PrimitiveArrayEntryIterator {
+		public class CharArrayEntryIterator
+				extends
+				PrimitiveArrayEntryIterator {
 			/**
 			 * Construct a new iterator iterating the entries in the enclosing array.
 			 *
@@ -1575,7 +1549,9 @@ public class CharArray extends PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class CharArrayEntrySet extends PrimitiveArrayEntrySet {
+		public class CharArrayEntrySet
+				extends
+				PrimitiveArrayEntrySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -4823635378224028987L;
 
@@ -1787,7 +1763,9 @@ public class CharArray extends PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.02
 		 */
-		public class CharArrayEntrySpliterator extends PrimitiveArrayEntrySpliterator {
+		public class CharArrayEntrySpliterator
+				extends
+				PrimitiveArrayEntrySpliterator {
 			/**
 			 * Construct a new spliterator iterating the entries in the enclosing array.
 			 *
@@ -1860,7 +1838,11 @@ public class CharArray extends PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class CharArrayKeyIterator extends PrimitiveArrayKeyIterator implements /*Iterator*/ {
+		public class CharArrayKeyIterator
+				extends
+				PrimitiveArrayKeyIterator
+				implements
+				/*Iterator*/ {
 			/**
 			 * Construct a new iterator iterating the keys in the enclosing array.
 			 *
@@ -1912,7 +1894,11 @@ public class CharArray extends PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class CharArrayKeySet extends PrimitiveArrayKeySet implements CharSet {
+		public class CharArrayKeySet
+				extends
+				PrimitiveArrayKeySet
+				implements
+				CharSet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 7793360078444812816L;
 
@@ -1935,25 +1921,26 @@ public class CharArray extends PrimitiveArray<
 			}
 
 			@Override
-			public boolean containsAll(CharCollection collection) {
+			public boolean containsAll(Collection collection) {
 				Objects.requireNonNull(collection, "collection");
 
-				/*Iterator*/ iterator = collection.iterator();
-				while0:
-				while (iterator.hasNext()) {
-					char element = iterator.nextChar();
+				Iterator iterator = collection.iterator();
+				if (iterator instanceof /*Iterator*/) {
+					/*Iterator*/ charIterator = (/*Iterator*/) iterator;
 
-					for (int i = CharArray.this.beginIndex;
-						 i < CharArray.this.endIndex;
-						 i += 2)
-						if (CharArray.this.eq(
-								element,
-								CharArray.this.array[i]
-						))
-							continue while0;
+					while (charIterator.hasNext()) {
+						if (CharArrayMap.this.containsKey(charIterator.nextChar()))
+							continue;
 
-					return false;
-				}
+						return false;
+					}
+				} else
+					while (iterator.hasNext()) {
+						if (CharArrayMap.this.containsValue(iterator.next()))
+							continue;
+
+						return false;
+					}
 
 				return true;
 			}
@@ -2116,7 +2103,11 @@ public class CharArray extends PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.02
 		 */
-		public class CharArrayKeySpliterator extends PrimitiveArrayKeySpliterator implements /*Spliterator*/ {
+		public class CharArrayKeySpliterator
+				extends
+				PrimitiveArrayKeySpliterator</*Spliterator*/>
+				implements
+				/*Spliterator*/ {
 			/**
 			 * Construct a new spliterator iterating the keys in the enclosing array.
 			 *
@@ -2188,7 +2179,11 @@ public class CharArray extends PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class CharArrayValueIterator extends PrimitiveArrayValueIterator implements /*Iterator*/ {
+		public class CharArrayValueIterator
+				extends
+				PrimitiveArrayValueIterator
+				implements
+				/*Iterator*/ {
 			/**
 			 * Construct a new iterator iterating the values in the enclosing array.
 			 *
@@ -2240,7 +2235,11 @@ public class CharArray extends PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.02
 		 */
-		public class CharArrayValueSpliterator extends PrimitiveArrayValueSpliterator implements /*Spliterator*/ {
+		public class CharArrayValueSpliterator
+				extends
+				PrimitiveArrayValueSpliterator</*Spliterator*/>
+				implements
+				/*Spliterator*/ {
 			/**
 			 * Construct a new spliterator iterating the values in the enclosing array.
 			 *
@@ -2313,7 +2312,11 @@ public class CharArray extends PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class CharArrayValues extends PrimitiveArrayValues implements CharCollection {
+		public class CharArrayValues
+				extends
+				PrimitiveArrayValues
+				implements
+				CharCollection {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -7937502933699082438L;
 
@@ -2336,25 +2339,26 @@ public class CharArray extends PrimitiveArray<
 			}
 
 			@Override
-			public boolean containsAll(CharCollection collection) {
+			public boolean containsAll(Collection collection) {
 				Objects.requireNonNull(collection, "collection");
 
-				/*Iterator*/ iterator = collection.iterator();
-				while0:
-				while (iterator.hasNext()) {
-					char element = iterator.nextChar();
+				Iterator iterator = collection.iterator();
+				if (iterator instanceof /*Iterator*/) {
+					/*Iterator*/ charIterator = (/*Iterator*/) iterator;
 
-					for (int y = CharArray.this.beginIndex + 1;
-						 y < CharArray.this.endIndex;
-						 y += 2)
-						if (CharArray.this.eq(
-								element,
-								CharArray.this.array[y]
-						))
-							continue while0;
+					while (charIterator.hasNext()) {
+						if (CharArrayMap.this.containsValue(charIterator.nextChar()))
+							continue;
 
-					return false;
-				}
+						return false;
+					}
+				} else
+					while (iterator.hasNext()) {
+						if (CharArrayMap.this.containsValue(iterator.next()))
+							continue;
+
+						return false;
+					}
 
 				return true;
 			}
@@ -2497,7 +2501,11 @@ public class CharArray extends PrimitiveArray<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.02
 	 */
-	public class CharArraySpliterator extends PrimitiveArraySpliterator implements /*Spliterator*/ {
+	public class CharArraySpliterator
+			extends
+			PrimitiveArraySpliterator</*Spliterator*/>
+			implements
+			/*Spliterator*/ {
 		/**
 		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
 		 * the given {@code index}.

@@ -24,45 +24,41 @@ import java.util.function.ToLongFunction;
 /**
  * A comparator specialize for primitive values.
  *
- * @param <E>          the type of the elements.
- * @param <UNARY>      the type of the unary operator.
- * @param <TO_INT>     the type of the toIntFunction.
- * @param <TO_DOUBLE>  the type of the toDoubleFunction.
- * @param <TO_LONG>    the type of the toLongFunction.
- * @param <COMPARATOR> the ype of the comparator.
+ * @param <E> the type of the elements.
+ * @param <D> the type of the toDoubleFunction.
+ * @param <I> the type of the toIntFunction.
+ * @param <L> the type of the toLongFunction.
+ * @param <U> the type of the unary operator.
+ * @param <T> the ype of the comparator.
  * @author LSafer
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
 @SuppressWarnings("ComparatorNotSerializable")
-public interface PrimitiveComparator<
-		E,
-		UNARY,
-		TO_DOUBLE,
-		TO_INT,
-		TO_LONG,
-		COMPARATOR extends PrimitiveComparator<E, UNARY, TO_DOUBLE, TO_INT, TO_LONG, COMPARATOR>
-		> extends Comparator<E> {
+public interface PrimitiveComparator
+		<E, D, I, L, U, T extends PrimitiveComparator<E, D, I, L, U, T>>
+		extends
+		Comparator<E> {
 	@Override
-	COMPARATOR reversed();
+	T reversed();
 
 	@Override
-	COMPARATOR thenComparing(Comparator<? super E> other);
+	<R extends Comparable<? super R>> T thenComparing(Function<? super E, ? extends R> function);
 
 	@Override
-	<R extends Comparable<? super R>> COMPARATOR thenComparing(Function<? super E, ? extends R> function);
+	<R> T thenComparing(Function<? super E, ? extends R> function, Comparator<? super R> comparator);
 
 	@Override
-	<R> COMPARATOR thenComparing(Function<? super E, ? extends R> function, Comparator<? super R> comparator);
+	T thenComparing(Comparator<? super E> other);
 
 	@Override
-	COMPARATOR thenComparingDouble(ToDoubleFunction<? super E> function);
+	T thenComparingDouble(ToDoubleFunction<? super E> function);
 
 	@Override
-	COMPARATOR thenComparingInt(ToIntFunction<? super E> function);
+	T thenComparingInt(ToIntFunction<? super E> function);
 
 	@Override
-	COMPARATOR thenComparingLong(ToLongFunction<? super E> function);
+	T thenComparingLong(ToLongFunction<? super E> function);
 
 	/**
 	 * Returns a lexicographic-order comparator with another comparator. If this {@code Comparator}
@@ -77,7 +73,7 @@ public interface PrimitiveComparator<
 	 * @throws NullPointerException if the given {@code other} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	COMPARATOR thenComparing(COMPARATOR other);
+	T thenComparing(T other);
 
 	/**
 	 * Returns a lexicographic-order comparator with a function that extracts a key.
@@ -87,7 +83,7 @@ public interface PrimitiveComparator<
 	 * @throws NullPointerException if the given {@code operator} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	COMPARATOR thenComparing(UNARY operator);
+	T thenComparing(U operator);
 
 	/**
 	 * Returns a lexicographic-order comparator with a function that extracts a key to be compared
@@ -100,7 +96,7 @@ public interface PrimitiveComparator<
 	 * @throws NullPointerException if the given {@code operator} or {@code comparator} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	COMPARATOR thenComparing(UNARY operator, COMPARATOR comparator);
+	T thenComparing(U operator, T comparator);
 
 	/**
 	 * Returns a lexicographic-order comparator with a function that extracts a {@code double} key.
@@ -110,7 +106,7 @@ public interface PrimitiveComparator<
 	 * @throws NullPointerException if the given {@code function} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	COMPARATOR thenComparingDouble(TO_DOUBLE function);
+	T thenComparingDouble(D function);
 
 	/**
 	 * Returns a lexicographic-order comparator with a function that extracts a {@code int} key.
@@ -120,7 +116,7 @@ public interface PrimitiveComparator<
 	 * @throws NullPointerException if the given {@code function} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	COMPARATOR thenComparingInt(TO_INT function);
+	T thenComparingInt(I function);
 
 	/**
 	 * Returns a lexicographic-order comparator with a function that extracts a {@code long} key.
@@ -130,5 +126,7 @@ public interface PrimitiveComparator<
 	 * @throws NullPointerException if the given {@code function} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	COMPARATOR thenComparingLong(TO_LONG function);
+	T thenComparingLong(L function);
+
+	//int compare(primitive value, primitive other)
 }

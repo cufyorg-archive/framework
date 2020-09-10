@@ -31,10 +31,9 @@ import java.util.function.Consumer;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.30
  */
-public interface CharIterator extends PrimitiveIterator<
-		Character,
-		CharConsumer
-		> {
+public interface CharIterator
+		extends
+		PrimitiveIterator<Character, CharConsumer> {
 	@Override
 	default void forEachRemaining(Consumer<? super Character> consumer) {
 		Objects.requireNonNull(consumer, "consumer");
@@ -52,7 +51,6 @@ public interface CharIterator extends PrimitiveIterator<
 			consumer.accept(this.nextChar());
 	}
 
-	@SuppressWarnings("IteratorNextCanNotThrowNoSuchElementException")
 	@Override
 	default Character next() {
 		return this.nextChar();

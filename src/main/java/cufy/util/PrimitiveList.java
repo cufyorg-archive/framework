@@ -17,79 +17,40 @@ package cufy.util;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 
 /**
  * A list specialized for primitive values.
  *
- * @param <E>             the type of the elements.
- * @param <CONSUMER>      the type of the consumer.
- * @param <PREDICATE>     the type of the predicate.
- * @param <UNARY>         the type of the unary operator.
- * @param <TO_INT>        the type of the toIntFunction.
- * @param <TO_DOUBLE>     the type of the toDoubleFunction.
- * @param <TO_LONG>       the type of the toLongFunction.
- * @param <COMPARATOR>    the type of the comparator.
- * @param <ITERATOR>      the type of the iterator.
- * @param <SPLITERATOR>   the type of the spliterator.
- * @param <LIST_ITERATOR> the type of the list iterator.
- * @param <COLLECTION>    the type of the collection.
- * @param <LIST>          the type of the list.
+ * @param <E> the type of the elements.
+ * @param <C> the type of the consumer.
+ * @param <D> the type of the toDoubleFunction.
+ * @param <I> the type of the toIntFunction.
+ * @param <L> the type of the toLongFunction.
+ * @param <U> the type of the unary operator.
+ * @param <P> the type of the predicate.
+ * @param <T> the ype of the comparator.
  * @author LSafer
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
 @SuppressWarnings("ComparatorNotSerializable")
-public interface PrimitiveList<
-		E,
-		CONSUMER,
-		PREDICATE,
-		UNARY,
-		TO_DOUBLE,
-		TO_INT,
-		TO_LONG,
-		COMPARATOR extends PrimitiveComparator<E, UNARY, TO_DOUBLE, TO_INT, TO_LONG, COMPARATOR>,
-		ITERATOR extends PrimitiveIterator<E, CONSUMER>,
-		LIST_ITERATOR extends PrimitiveListIterator<E, CONSUMER>,
-		SPLITERATOR extends Spliterator.OfPrimitive<E, CONSUMER, SPLITERATOR>,
-		COLLECTION extends PrimitiveCollection<E, CONSUMER, PREDICATE, ITERATOR, SPLITERATOR, COLLECTION>,
-		LIST extends PrimitiveList<E, CONSUMER, PREDICATE, UNARY, TO_DOUBLE, TO_INT, TO_LONG, COMPARATOR, ITERATOR, LIST_ITERATOR, SPLITERATOR, COLLECTION, LIST>
-		> extends PrimitiveCollection<E, CONSUMER, PREDICATE, ITERATOR, SPLITERATOR, COLLECTION>, List<E> {
+public interface PrimitiveList
+		<E, C, D, I, L, U, P, T extends PrimitiveComparator<E, D, I, L, U, T>>
+		extends
+		PrimitiveCollection<E, C, P>,
+		List<E> {
 	@Override
-	LIST_ITERATOR listIterator();
+	PrimitiveListIterator<E, C> listIterator();
 
 	@Override
-	LIST_ITERATOR listIterator(int index);
+	PrimitiveListIterator<E, C> listIterator(int index);
 
 	@Override
-	SPLITERATOR spliterator();
+	Spliterator.OfPrimitive<E, C, ?> spliterator();
 
 	@Override
-	LIST subList(int beginIndex, int endIndex);
-
-	/**
-	 * Inserts all of the elements in the specified collection into this list at the specified
-	 * position (optional operation). Shifts the element currently at that position (if any) and any
-	 * subsequent elements to the right (increases their indices). The new elements will appear in
-	 * this list in the order that they are returned by the specified collection's iterator. The
-	 * behavior of this operation is undefined if the specified collection is modified while the
-	 * operation is in progress. (Note that this will occur if the specified collection is this
-	 * list, and it's nonempty.)
-	 *
-	 * @param index      index at which to insert the first element from the specified collection.
-	 * @param collection collection containing elements to be added to this list.
-	 * @return {@code true} if this list changed as a result of the call.
-	 * @throws UnsupportedOperationException if the {@code addAll} operation is not supported by
-	 *                                       this list.
-	 * @throws NullPointerException          if the given {@code collection} is null.
-	 * @throws IllegalArgumentException      if some property of an element of the specified
-	 *                                       collection prevents it from being added to this list.
-	 * @throws IndexOutOfBoundsException     if the index is out of range ({@code index < 0 || index
-	 *                                       > size()}).
-	 * @since 0.1.5 ~2020.09.01
-	 */
-	boolean addAll(int index, COLLECTION collection);
+	PrimitiveList<E, C, D, I, L, U, P, T> subList(int beginIndex, int endIndex);
 
 	/**
 	 * Replaces each element of this list with the result of applying the operator to that element.
@@ -102,7 +63,7 @@ public interface PrimitiveList<
 	 * @throws NullPointerException          if the given {@code operator} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	void replaceAll(UNARY operator);
+	void replaceAll(U operator);
 
 	/**
 	 * Sorts this list according to the order induced by the specified {@link Comparator}.
@@ -114,5 +75,35 @@ public interface PrimitiveList<
 	 *                                       {@link Comparator} contract.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	void sort(COMPARATOR comparator);
+	void sort(T comparator);
+
+	//void addPrimitive(int index, primitive element)
+	//primitive getPrimitive(int index)
+	//int indexOf(primitive element)
+	//int lastIndexOf(primitive element)
+	//primitive removePrimitiveAt(int index)
+	//primitive setPrimitive(int index, primitive element)
 }
+//
+//	/**
+//	 * Inserts all of the elements in the specified collection into this list at the specified
+//	 * position (optional operation). Shifts the element currently at that position (if any) and any
+//	 * subsequent elements to the right (increases their indices). The new elements will appear in
+//	 * this list in the order that they are returned by the specified collection's iterator. The
+//	 * behavior of this operation is undefined if the specified collection is modified while the
+//	 * operation is in progress. (Note that this will occur if the specified collection is this
+//	 * list, and it's nonempty.)
+//	 *
+//	 * @param index      index at which to insert the first element from the specified collection.
+//	 * @param collection collection containing elements to be added to this list.
+//	 * @return {@code true} if this list changed as a result of the call.
+//	 * @throws UnsupportedOperationException if the {@code addAll} operation is not supported by
+//	 *                                       this list.
+//	 * @throws NullPointerException          if the given {@code collection} is null.
+//	 * @throws IllegalArgumentException      if some property of an element of the specified
+//	 *                                       collection prevents it from being added to this list.
+//	 * @throws IndexOutOfBoundsException     if the index is out of range ({@code index < 0 || index
+//	 *                                       > size()}).
+//	 * @since 0.1.5 ~2020.09.01
+//	 */
+//	boolean addAll(int index, COLLECTION collection);

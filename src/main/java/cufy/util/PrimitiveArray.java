@@ -17,61 +17,35 @@ package cufy.util;
 
 import cufy.lang.PrimitiveIterable;
 
-import java.util.Map;
 import java.util.PrimitiveIterator;
-import java.util.Set;
 import java.util.Spliterator;
 
 /**
  * An array specialized for primitive values.
  *
- * @param <A>             the type of the array.
- * @param <E>             the type of the elements.
- * @param <BI_CONSUMER>   the type of the bi-consumer.
- * @param <CONSUMER>      the type of the consumer.
- * @param <PREDICATE>     the type of the predicate.
- * @param <UNARY>         the type of the unary operator.
- * @param <BINARY>        the type of the binary operator.
- * @param <INT_TO>        the type of the intTo function.
- * @param <TO_DOUBLE>     the type of the toDouble function.
- * @param <TO_INT>        the type of the toInt function.
- * @param <TO_LONG>       the type of the toLong function.
- * @param <COMPARATOR>    the type of the comparator.
- * @param <ITERATOR>      the type of the iterator.
- * @param <LIST_ITERATOR> the type of the list iterator.
- * @param <SPLITERATOR>   the type of the spliterator.
- * @param <COLLECTION>    the type of the collection.
- * @param <SET>           the type of the set.
- * @param <LIST>          the type of the list.
- * @param <MAP>           the type of the map.
- * @param <ARRAY>         the type of the wrapper array.
+ * @param <A> the type of the array.
+ * @param <E> the type of the elements.
+ * @param <R> the type of the bi-consumer.
+ * @param <C> the type of the consumer.
+ * @param <P> the type of the predicate.
+ * @param <U> the type of the unary operator.
+ * @param <B> the type of the binary operator.
+ * @param <O> the type of the intTo function.
+ * @param <D> the type of the toDouble function.
+ * @param <I> the type of the toInt function.
+ * @param <L> the type of the toLong function.
+ * @param <T> the type of the comparator.
  * @author LSafer
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
 @SuppressWarnings("ComparatorNotSerializable")
-public abstract class PrimitiveArray<
-		A,
-		E,
-		BI_CONSUMER,
-		CONSUMER,
-		PREDICATE,
-		UNARY,
-		BINARY,
-		INT_TO,
-		TO_DOUBLE,
-		TO_INT,
-		TO_LONG,
-		COMPARATOR extends PrimitiveComparator<E, UNARY, TO_DOUBLE, TO_INT, TO_LONG, COMPARATOR>,
-		ITERATOR extends PrimitiveIterator<E, CONSUMER>,
-		LIST_ITERATOR extends PrimitiveListIterator<E, CONSUMER>,
-		SPLITERATOR extends Spliterator.OfPrimitive<E, CONSUMER, SPLITERATOR>,
-		COLLECTION extends PrimitiveCollection<E, CONSUMER, PREDICATE, ITERATOR, SPLITERATOR, COLLECTION>,
-		SET extends PrimitiveSet<E, CONSUMER, PREDICATE, ITERATOR, SPLITERATOR, COLLECTION, SET>,
-		LIST extends PrimitiveList<E, CONSUMER, PREDICATE, UNARY, TO_DOUBLE, TO_INT, TO_LONG, COMPARATOR, ITERATOR, LIST_ITERATOR, SPLITERATOR, COLLECTION, LIST>,
-		MAP extends PrimitiveMap<E, E, BI_CONSUMER, BINARY, Set<Map.Entry<E, E>>, SET, COLLECTION, MAP>,
-		ARRAY extends PrimitiveArray<A, E, BI_CONSUMER, CONSUMER, PREDICATE, UNARY, BINARY, INT_TO, TO_DOUBLE, TO_INT, TO_LONG, COMPARATOR, ITERATOR, LIST_ITERATOR, SPLITERATOR, COLLECTION, SET, LIST, MAP, ARRAY>
-		> extends Array<A, E> implements PrimitiveIterable<E, CONSUMER, ITERATOR, SPLITERATOR> {
+public abstract class PrimitiveArray
+		<A, E, C, R, O, D, I, L, U, B, P, T extends PrimitiveComparator<E, D, I, L, U, T>>
+		extends
+		Array<A, E>
+		implements
+		PrimitiveIterable<E, C> {
 	@SuppressWarnings("JavaDoc")
 	private static final long serialVersionUID = -5497455737667076730L;
 
@@ -105,27 +79,26 @@ public abstract class PrimitiveArray<
 		super(array, beginIndex, endIndex);
 	}
 
-	@SuppressWarnings("CloneReturnsClassType")
 	@Override
-	public abstract ARRAY clone();
+	public abstract PrimitiveArray<A, E, C, R, O, D, I, L, U, B, P, T> clone();
 
 	@Override
-	public abstract ITERATOR iterator();
+	public abstract PrimitiveArrayIterator iterator();
 
 	@Override
-	public abstract LIST list();
+	public abstract PrimitiveArrayList list();
 
 	@Override
-	public abstract LIST_ITERATOR listIterator();
+	public abstract PrimitiveArrayListIterator listIterator();
 
 	@Override
-	public abstract MAP map();
+	public abstract PrimitiveArrayMap map();
 
 	@Override
-	public abstract SPLITERATOR spliterator();
+	public abstract PrimitiveArraySpliterator spliterator();
 
 	@Override
-	public abstract ARRAY sub(int beginThumb, int endThumb);
+	public abstract PrimitiveArray<A, E, C, R, O, D, I, L, U, B, P, T> sub(int beginThumb, int endThumb);
 
 	/**
 	 * Cumulates, in parallel, each element of this array in place, using the supplied function. For
@@ -137,7 +110,7 @@ public abstract class PrimitiveArray<
 	 * @throws NullPointerException if the given {@code operator} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	public abstract void parallelPrefix(BINARY operator);
+	public abstract void parallelPrefix(B operator);
 
 	/**
 	 * In parallel, assign each element of this array to the value returned from invoking the given
@@ -147,7 +120,7 @@ public abstract class PrimitiveArray<
 	 * @throws NullPointerException if the given {@code function} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	public abstract void parallelSetAll(INT_TO function);
+	public abstract void parallelSetAll(O function);
 
 	/**
 	 * Sorts this array according to the order induced by the specified {@code comparator}. This
@@ -158,7 +131,7 @@ public abstract class PrimitiveArray<
 	 *                   that the elements' natural ordering should be used.
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract void parallelSort(COMPARATOR comparator);
+	public abstract void parallelSort(T comparator);
 
 	/**
 	 * Assign each element of this array to the value returned from invoking the given {@code
@@ -168,7 +141,7 @@ public abstract class PrimitiveArray<
 	 * @throws NullPointerException if the {@code function} is null.
 	 * @since 0.1.5 ~2020.08.30
 	 */
-	public abstract void setAll(INT_TO function);
+	public abstract void setAll(O function);
 
 	/**
 	 * Sort this array using the given {@code comparator}.
@@ -176,7 +149,7 @@ public abstract class PrimitiveArray<
 	 * @param comparator the comparator to be used.
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract void sort(COMPARATOR comparator);
+	public abstract void sort(T comparator);
 
 	/**
 	 * An array iterator specialized for primitive values.
@@ -185,10 +158,11 @@ public abstract class PrimitiveArray<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract class PrimitiveArrayIterator extends ArrayIterator implements PrimitiveIterator<
-			E,
-			CONSUMER
-			> {
+	public abstract class PrimitiveArrayIterator
+			extends
+			ArrayIterator
+			implements
+			PrimitiveIterator<E, C> {
 		/**
 		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
@@ -217,58 +191,43 @@ public abstract class PrimitiveArray<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract class PrimitiveArrayList extends ArrayList implements PrimitiveList<
-			E,
-			CONSUMER,
-			PREDICATE,
-			UNARY,
-			TO_DOUBLE,
-			TO_INT,
-			TO_LONG,
-			COMPARATOR,
-			ITERATOR,
-			LIST_ITERATOR,
-			SPLITERATOR,
-			COLLECTION,
-			LIST
-			> {
+	public abstract class PrimitiveArrayList
+			extends
+			ArrayList
+			implements
+			PrimitiveList<E, C, D, I, L, U, P, T> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 418303433386295161L;
 
 		@Override
-		public boolean addAll(COLLECTION collection) {
-			throw new UnsupportedOperationException("addAll");
-		}
-
-		@Override
-		public boolean addAll(int index, COLLECTION collection) {
-			throw new UnsupportedOperationException("addAll");
-		}
-
-		@Override
-		public void forEach(CONSUMER consumer) {
+		public void forEach(C consumer) {
 			PrimitiveArray.this.forEach(consumer);
 		}
 
 		@Override
-		public boolean removeAll(COLLECTION collection) {
-			throw new UnsupportedOperationException("removeAll");
-		}
-
-		@Override
-		public boolean removeIf(PREDICATE predicate) {
+		public boolean removeIf(P predicate) {
 			throw new UnsupportedOperationException("removeIf");
 		}
 
 		@Override
-		public boolean retainAll(COLLECTION collection) {
-			throw new UnsupportedOperationException("retainAll");
+		public void sort(T comparator) {
+			PrimitiveArray.this.sort(comparator);
 		}
 
 		@Override
-		public void sort(COMPARATOR comparator) {
-			PrimitiveArray.this.sort(comparator);
-		}
+		public abstract PrimitiveArrayList clone();
+
+		@Override
+		public abstract PrimitiveArrayIterator iterator();
+
+		@Override
+		public abstract PrimitiveArrayListIterator listIterator(int index);
+
+		@Override
+		public abstract PrimitiveArrayListIterator listIterator();
+
+		@Override
+		public abstract PrimitiveArraySpliterator spliterator();
 	}
 
 	/**
@@ -278,10 +237,11 @@ public abstract class PrimitiveArray<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract class PrimitiveArrayListIterator extends ArrayListIterator implements PrimitiveListIterator<
-			E,
-			CONSUMER
-			> {
+	public abstract class PrimitiveArrayListIterator
+			extends
+			ArrayListIterator
+			implements
+			PrimitiveListIterator<E, C> {
 		/**
 		 * Construct a new list iterator iterating the elements in the enclosing array.
 		 *
@@ -311,18 +271,24 @@ public abstract class PrimitiveArray<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract class PrimitiveArrayMap extends ArrayMap<E, E> implements PrimitiveMap<
-			E,
-			E,
-			BI_CONSUMER,
-			BINARY,
-			Set<Map.Entry<E, E>>,
-			SET,
-			COLLECTION,
-			MAP
-			> {
+	public abstract class PrimitiveArrayMap
+			extends
+			ArrayMap<E, E>
+			implements PrimitiveMap<E, E, R, B> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 1133073948012271653L;
+
+		@Override
+		public abstract PrimitiveArrayMap clone();
+
+		@Override
+		public abstract PrimitiveArrayEntrySet entrySet();
+
+		@Override
+		public abstract PrimitiveArrayKeySet keySet();
+
+		@Override
+		public abstract PrimitiveArrayValues values();
 
 		/**
 		 * An array entry specialized for primitive values.
@@ -331,10 +297,11 @@ public abstract class PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayEntry extends ArrayEntry implements PrimitiveEntry<
-				E,
-				E
-				> {
+		public abstract class PrimitiveArrayEntry
+				extends
+				ArrayEntry
+				implements
+				PrimitiveEntry<E, E> {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 8628913046510894541L;
 
@@ -351,6 +318,9 @@ public abstract class PrimitiveArray<
 			protected PrimitiveArrayEntry(int thumb) {
 				super(thumb);
 			}
+
+			@Override
+			public abstract PrimitiveArrayEntry clone();
 		}
 
 		/**
@@ -360,7 +330,9 @@ public abstract class PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayEntryIterator extends ArrayEntryIterator {
+		public abstract class PrimitiveArrayEntryIterator
+				extends
+				ArrayEntryIterator {
 			/**
 			 * Construct a new iterator iterating the entries in the enclosing array.
 			 *
@@ -381,6 +353,10 @@ public abstract class PrimitiveArray<
 			protected PrimitiveArrayEntryIterator(int beginThumb) {
 				super(beginThumb);
 			}
+
+			@SuppressWarnings("IteratorNextCanNotThrowNoSuchElementException")
+			@Override
+			public abstract PrimitiveArrayEntry next();
 		}
 
 		/**
@@ -390,9 +366,20 @@ public abstract class PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayEntrySet extends ArrayEntrySet {
+		public abstract class PrimitiveArrayEntrySet
+				extends
+				ArrayEntrySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 8532857328866783185L;
+
+			@Override
+			public abstract PrimitiveArrayEntrySet clone();
+
+			@Override
+			public abstract PrimitiveArrayEntryIterator iterator();
+
+			@Override
+			public abstract PrimitiveArrayEntrySpliterator spliterator();
 		}
 
 		/**
@@ -402,7 +389,9 @@ public abstract class PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayEntrySpliterator extends ArrayEntrySpliterator {
+		public abstract class PrimitiveArrayEntrySpliterator
+				extends
+				ArrayEntrySpliterator {
 			/**
 			 * Construct a new spliterator iterating the entries in the enclosing array.
 			 *
@@ -423,6 +412,9 @@ public abstract class PrimitiveArray<
 			protected PrimitiveArrayEntrySpliterator(int beginThumb) {
 				super(beginThumb);
 			}
+
+			@Override
+			public abstract PrimitiveArrayEntrySpliterator trySplit();
 		}
 
 		/**
@@ -432,10 +424,11 @@ public abstract class PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayKeyIterator extends ArrayKeyIterator implements PrimitiveIterator<
-				E,
-				CONSUMER
-				> {
+		public abstract class PrimitiveArrayKeyIterator
+				extends
+				ArrayKeyIterator
+				implements
+				PrimitiveIterator<E, C> {
 			/**
 			 * Construct a new iterator iterating the keys in the enclosing array.
 			 *
@@ -465,37 +458,27 @@ public abstract class PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayKeySet extends ArrayKeySet implements PrimitiveSet<
-				E,
-				CONSUMER,
-				PREDICATE,
-				ITERATOR,
-				SPLITERATOR,
-				COLLECTION,
-				SET
-				> {
+		public abstract class PrimitiveArrayKeySet
+				extends
+				ArrayKeySet
+				implements
+				PrimitiveSet<E, C, P> {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -4407052114591931652L;
 
 			@Override
-			public boolean addAll(COLLECTION collection) {
-				throw new UnsupportedOperationException("addAll");
-			}
-
-			@Override
-			public boolean removeAll(COLLECTION collection) {
-				throw new UnsupportedOperationException("removeAll");
-			}
-
-			@Override
-			public boolean removeIf(PREDICATE predicate) {
+			public boolean removeIf(P predicate) {
 				throw new UnsupportedOperationException("removeIf");
 			}
 
 			@Override
-			public boolean retainAll(COLLECTION collection) {
-				throw new UnsupportedOperationException("retainAll");
-			}
+			public abstract PrimitiveArrayKeySet clone();
+
+			@Override
+			public abstract PrimitiveArrayKeyIterator iterator();
+
+			@Override
+			public abstract PrimitiveArrayKeySpliterator spliterator();
 		}
 
 		/**
@@ -505,11 +488,12 @@ public abstract class PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayKeySpliterator extends ArrayKeySpliterator implements Spliterator.OfPrimitive<
-				E,
-				CONSUMER,
-				SPLITERATOR
-				> {
+		public abstract class PrimitiveArrayKeySpliterator
+				<S extends Spliterator.OfPrimitive<E, C, S>>
+				extends
+				ArrayKeySpliterator
+				implements
+				Spliterator.OfPrimitive<E, C, S> {
 			/**
 			 * Construct a new spliterator iterating the keys in the enclosing array.
 			 *
@@ -539,10 +523,11 @@ public abstract class PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayValueIterator extends ArrayValueIterator implements PrimitiveIterator<
-				E,
-				CONSUMER
-				> {
+		public abstract class PrimitiveArrayValueIterator
+				extends
+				ArrayValueIterator
+				implements
+				PrimitiveIterator<E, C> {
 			/**
 			 * Construct a new iterator iterating the values in the enclosing array.
 			 *
@@ -572,11 +557,12 @@ public abstract class PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayValueSpliterator extends ArrayValueSpliterator implements Spliterator.OfPrimitive<
-				E,
-				CONSUMER,
-				SPLITERATOR
-				> {
+		public abstract class PrimitiveArrayValueSpliterator
+				<S extends Spliterator.OfPrimitive<E, C, S>>
+				extends
+				ArrayValueSpliterator
+				implements
+				Spliterator.OfPrimitive<E, C, S> {
 			/**
 			 * Construct a new spliterator iterating the values in the enclosing array.
 			 *
@@ -606,36 +592,27 @@ public abstract class PrimitiveArray<
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayValues extends ArrayValues implements PrimitiveCollection<
-				E,
-				CONSUMER,
-				PREDICATE,
-				ITERATOR,
-				SPLITERATOR,
-				COLLECTION
-				> {
+		public abstract class PrimitiveArrayValues
+				extends
+				ArrayValues
+				implements
+				PrimitiveCollection<E, C, P> {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -4299379063812585731L;
 
 			@Override
-			public boolean addAll(COLLECTION collection) {
-				throw new UnsupportedOperationException("addAll");
-			}
-
-			@Override
-			public boolean removeAll(COLLECTION collection) {
-				throw new UnsupportedOperationException("removeAll");
-			}
-
-			@Override
-			public boolean removeIf(PREDICATE predicate) {
+			public boolean removeIf(P predicate) {
 				throw new UnsupportedOperationException("removeIf");
 			}
 
 			@Override
-			public boolean retainAll(COLLECTION collection) {
-				throw new UnsupportedOperationException("retainAll");
-			}
+			public abstract PrimitiveArrayValues clone();
+
+			@Override
+			public abstract PrimitiveArrayValueIterator iterator();
+
+			@Override
+			public abstract PrimitiveArrayValueSpliterator spliterator();
 		}
 	}
 
@@ -646,11 +623,12 @@ public abstract class PrimitiveArray<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract class PrimitiveArraySpliterator extends ArraySpliterator implements Spliterator.OfPrimitive<
-			E,
-			CONSUMER,
-			SPLITERATOR
-			> {
+	public abstract class PrimitiveArraySpliterator
+			<S extends Spliterator.OfPrimitive<E, C, S>>
+			extends
+			ArraySpliterator
+			implements
+			Spliterator.OfPrimitive<E, C, S> {
 		/**
 		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
 		 * the given {@code index}.

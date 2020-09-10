@@ -15,49 +15,41 @@
  */
 package cufy.util;
 
-import java.util.*;
+import java.util.SortedMap;
 
 /**
  * A map specialized for primitive values. Map view collections is kept for the sub class to provide
  * its own implementation to allow various mixtures of (primitive|object)-(primitive|object)
  * mappings.
  *
- * @param <K>           the type of the keys.
- * @param <V>           the type of the values.
- * @param <BI_CONSUMER> the type of the bi-consumer.
- * @param <BI_FUNCTION> the type of the bi-function.
- * @param <COMPARATOR>  the type of the comparator.
- * @param <ENTRY_SET>   the type of the set of the entries.
- * @param <KEY_SET>     the type of the set of the keys.
- * @param <VALUES>      the type of the collection of the values.
- * @param <MAP>         the type of the map.
- * @param <SORTED_MAP>  the type of the sorted map.
+ * @param <K> the type of the keys.
+ * @param <V> the type of the values.
+ * @param <R> the type of the bi-consumer.
+ * @param <N> the type of the bi-function.
  * @author LSafer
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
-@SuppressWarnings("ComparatorNotSerializable")
-public interface PrimitiveSortedMap<
-		K,
-		V,
-		BI_CONSUMER,
-		BI_FUNCTION,
-		COMPARATOR extends Comparator<K>,
-		ENTRY_SET extends Set<Map.Entry<K, V>>,
-		KEY_SET extends Set<K>,
-		VALUES extends Collection<V>,
-		MAP extends PrimitiveMap<K, V, BI_CONSUMER, BI_FUNCTION, ENTRY_SET, KEY_SET, VALUES, MAP>,
-		SORTED_MAP extends PrimitiveSortedMap<K, V, BI_CONSUMER, BI_FUNCTION, COMPARATOR, ENTRY_SET, KEY_SET, VALUES, MAP, SORTED_MAP>
-		> extends PrimitiveMap<K, V, BI_CONSUMER, BI_FUNCTION, ENTRY_SET, KEY_SET, VALUES, MAP>, SortedMap<K, V> {
+public interface PrimitiveSortedMap
+		<K, V, R, N>
+		extends
+		PrimitiveMap<K, V, R, N>,
+		SortedMap<K, V> {
 	@Override
-	COMPARATOR comparator();
+	PrimitiveComparator<K, ?, ?, ?, ?, ?> comparator();
 
 	@Override
-	SORTED_MAP headMap(K endKey);
+	PrimitiveSortedMap<K, V, R, N> headMap(K endKey);
 
 	@Override
-	SORTED_MAP subMap(K beginKey, K endKey);
+	PrimitiveSortedMap<K, V, R, N> subMap(K beginKey, K endKey);
 
 	@Override
-	SORTED_MAP tailMap(K beginKey);
+	PrimitiveSortedMap<K, V, R, N> tailMap(K beginKey);
+
+	//primitive firstPrimitiveKey()
+	//PrimitiveSortedMap headMap(primitive endKey)
+	//primitive lastPrimitiveKey()
+	//PrimitiveSortedMap subMap(primitive beginKey, primitive endKey)
+	//PrimitiveSortedMap tailMap(primitive beginKey)
 }

@@ -30,11 +30,9 @@ import java.util.function.Consumer;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.30
  */
-public interface CharSpliterator extends Spliterator.OfPrimitive<
-		Character,
-		CharConsumer,
-		CharSpliterator
-		> {
+public interface CharSpliterator
+		extends
+		Spliterator.OfPrimitive<Character, CharConsumer, CharSpliterator> {
 	@Override
 	default void forEachRemaining(Consumer<? super Character> consumer) {
 		Objects.requireNonNull(consumer, "consumer");
@@ -60,12 +58,4 @@ public interface CharSpliterator extends Spliterator.OfPrimitive<
 				consumer::accept
 		);
 	}
-
-	@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-	@Override
-	boolean tryAdvance(CharConsumer consumer);
-
-	@SuppressWarnings("AbstractMethodOverridesAbstractMethod")
-	@Override
-	CharSpliterator trySplit();
 }

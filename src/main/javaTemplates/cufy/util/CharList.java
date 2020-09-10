@@ -1,27 +1,21 @@
 /*
 with char|boolean|byte|double|float|int|long|short primitive
 *//*
-define ToDouble ////
+define ToDoubleFunction ////
 if boolean|byte|char|float|int|long|short primitive //CharToDoubleFunction//
 elif double primitive //DoubleUnaryOperator//
 endif ////
 enddefine
 *//*
-define ToInt ////
+define ToIntFunction ////
 if boolean|byte|char|double|float|long|short primitive //CharToIntFunction//
 elif int primitive //IntUnaryOperator//
 endif ////
 enddefine
 *//*
-define ToLong ////
+define ToLongFunction ////
 if boolean|byte|char|double|float|int|short primitive //CharToLongFunction//
 elif long primitive //LongUnaryOperator//
-endif ////
-enddefine
-*//*
-define Iterator ////
-if boolean|byte|char|float|short primitive //CharIterator//
-elif double|int|long primitive //PrimitiveIterator.OfChar//
 endif ////
 enddefine
 *//*
@@ -92,21 +86,10 @@ import java.util.function.UnaryOperator;
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
-public interface CharList extends CharCollection, PrimitiveList<
-		Character,
-		CharConsumer,
-		CharPredicate,
-		CharUnaryOperator,
-		/* ToDouble*/,
-		/* ToInt */,
-		/* ToLong */,
-		CharComparator,
-		/* Iterator */,
-		CharListIterator,
-		/* Spliterator */,
+public interface CharList
+		extends
 		CharCollection,
-		CharList
-		> {
+		PrimitiveList<Character, CharConsumer, /*ToDoubleFunction*/, /*ToIntFunction*/, /*ToLongFunction*/, CharUnaryOperator, CharPredicate, CharComparator> {
 	@Override
 	default boolean add(Character element) {
 		return this.addChar(element);
@@ -190,6 +173,15 @@ public interface CharList extends CharCollection, PrimitiveList<
 	/*
 	endif
 	*/
+
+	@Override
+	CharListIterator listIterator();
+
+	@Override
+	CharListIterator listIterator(int index);
+
+	@Override
+	CharList subList(int beginIndex, int endIndex);
 
 	/**
 	 * Inserts the specified element at the specified position in this list (optional operation).

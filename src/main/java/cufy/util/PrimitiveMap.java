@@ -15,47 +15,26 @@
  */
 package cufy.util;
 
-import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A map specialized for primitive values. Map view collections is kept for the sub class to provide
  * its own implementation to allow various mixtures of (primitive|object)-(primitive|object)
  * mappings.
  *
- * @param <K>           the type of the keys.
- * @param <V>           the type of the values.
- * @param <BI_CONSUMER> the type of the bi-consumer.
- * @param <BI_FUNCTION> the type of the bi-function.
- * @param <ENTRY_SET>   the type of the set of the entries.
- * @param <KEY_SET>     the type of the set of the keys.
- * @param <VALUES>      the type of the collection of the values.
- * @param <MAP>         the type of the map.
+ * @param <K> the type of the keys.
+ * @param <V> the type of the values.
+ * @param <R> the type of the bi-consumer.
+ * @param <N> the type of the bi-function.
  * @author LSafer
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
-public interface PrimitiveMap<
-		K,
-		V,
-		BI_CONSUMER,
-		BI_FUNCTION,
-		ENTRY_SET extends Set<Map.Entry<K, V>>,
-		KEY_SET extends Set<K>,
-		VALUES extends Collection<V>,
-		MAP extends PrimitiveMap<K, V, BI_CONSUMER, BI_FUNCTION, ENTRY_SET, KEY_SET, VALUES, MAP>
-		> extends Map<K, V> {
-	@Override
-	ENTRY_SET entrySet();
-
-	@Override
-	KEY_SET keySet();
-
-	@Override
-	VALUES values();
-
+public interface PrimitiveMap
+		<K, V, R, N>
+		extends
+		Map<K, V> {
 	/**
 	 * Performs the given action for each entry in this map until all entries have been processed or
 	 * the action throws an exception. Unless otherwise specified by the implementing class, actions
@@ -67,24 +46,7 @@ public interface PrimitiveMap<
 	 * @throws ConcurrentModificationException if an entry is found to be removed during iteration.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	void forEach(BI_CONSUMER consumer);
-
-	/**
-	 * Copies all of the mappings from the specified map to this map (optional operation). The
-	 * effect of this call is equivalent to that of calling {@link #put(Object, Object) put(k, v)}
-	 * on this map once for each mapping from key <tt>k</tt> to value <tt>v</tt> in the specified
-	 * map. The behavior of this operation is undefined if the specified map is modified while the
-	 * operation is in progress.
-	 *
-	 * @param map mappings to be stored in this map.
-	 * @throws UnsupportedOperationException if the {@code putAll} operation is not supported by
-	 *                                       this map.
-	 * @throws NullPointerException          if the given {@code map} is null.
-	 * @throws IllegalArgumentException      if some property of a key or value in the specified map
-	 *                                       prevents it from being stored in this map.
-	 * @since 0.1.5 ~2020.09.01
-	 */
-	void putAll(MAP map);
+	void forEach(R consumer);
 
 	/**
 	 * Replaces each entry's value with the result of invoking the given function on that entry
@@ -100,7 +62,22 @@ public interface PrimitiveMap<
 	 * @throws ConcurrentModificationException if an entry is found to be removed during iteration.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	void replaceAll(BI_FUNCTION function);
+	void replaceAll(N function);
+
+	//default primitive compute(primitive key, PrimitiveObjBiFunction<Primitive, Primitive> function)
+	//default primitive computeIfAbsent(primitive key, PrimitiveFunction<Primitive> function)
+	//default primitive computeIfPresent(primitive key, PrimitiveBiFunction<Primitive> function)
+	//default primitive getPrimitiveOrDefault(primitive key, primitive defaultValue)
+	//default primitive merge(primitive key, primitive value, PrimitiveBiFunction<Primitive> function)
+	//default primitive putPrimitiveIfAbsent(primitive key, primitive value)
+	//default boolean removePrimitive(primitive key, primitive value)
+	//default boolean replacePrimitive(primitive key, primitive value)
+	//default boolean replacePrimitive(primitive key, primitive oldValue, primitive newValue)
+	//boolean containsKey(primitive key)
+	//boolean containsValue(primitive value)
+	//primitive getPrimitive(primitive key)
+	//primitive putPrimitive(primitive key, primitive value)
+	//primitive removePrimitive(primitive key)
 
 	/**
 	 * An entry specialized for primitive values.
@@ -111,9 +88,29 @@ public interface PrimitiveMap<
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.02
 	 */
-	interface PrimitiveEntry<
-			K,
-			V
-			> extends Map.Entry<K, V> {
+	interface PrimitiveEntry
+			<K, V>
+			extends
+			Map.Entry<K, V> {
+		//primitive getPrimitiveKey();
+		//primitive getPrimitiveValue();
+		//primitive setPrimitiveValue(primitive value);
 	}
 }
+//
+//	/**
+//	 * Copies all of the mappings from the specified map to this map (optional operation). The
+//	 * effect of this call is equivalent to that of calling {@link #put(Object, Object) put(k, v)}
+//	 * on this map once for each mapping from key <tt>k</tt> to value <tt>v</tt> in the specified
+//	 * map. The behavior of this operation is undefined if the specified map is modified while the
+//	 * operation is in progress.
+//	 *
+//	 * @param map mappings to be stored in this map.
+//	 * @throws UnsupportedOperationException if the {@code putAll} operation is not supported by
+//	 *                                       this map.
+//	 * @throws NullPointerException          if the given {@code map} is null.
+//	 * @throws IllegalArgumentException      if some property of a key or value in the specified map
+//	 *                                       prevents it from being stored in this map.
+//	 * @since 0.1.5 ~2020.09.01
+//	 */
+//	void putAll(MAP map);

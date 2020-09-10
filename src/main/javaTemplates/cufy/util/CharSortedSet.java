@@ -1,30 +1,6 @@
 /*
 with char|boolean|byte|double|float|int|long|short primitive
 *//*
-define ToDouble ////
-if boolean|byte|char|float|int|long|short primitive //CharToDoubleFunction//
-elif double primitive //DoubleUnaryOperator//
-endif ////
-enddefine
-*//*
-define ToInt ////
-if boolean|byte|char|double|float|long|short primitive //CharToIntFunction//
-elif int primitive //IntUnaryOperator//
-endif ////
-enddefine
-*//*
-define ToLong ////
-if boolean|byte|char|double|float|int|short primitive //CharToLongFunction//
-elif long primitive //LongUnaryOperator//
-endif ////
-enddefine
-*//*
-define Iterator ////
-if boolean|byte|char|float|short primitive //CharIterator//
-elif double|int|long primitive //PrimitiveIterator.OfChar//
-endif ////
-enddefine
-*//*
 define Spliterator ////
 if boolean|byte|char|float|short primitive //CharSpliterator//
 elif double|int|long primitive //Spliterator.OfChar//
@@ -47,32 +23,14 @@ enddefine
  */
 package cufy.util;
 
-/* if double primitive */
-import java.util.function.DoubleToIntFunction;
-import java.util.function.DoubleToLongFunction;
-/* elif int primitive */
-import java.util.function.IntToDoubleFunction;
-import java.util.function.IntToLongFunction;
-/* elif long primitive */
-import java.util.function.LongToDoubleFunction;
-import java.util.function.LongToIntFunction;
-/* endif */
 /* if double|int|long primitive */
-import java.util.PrimitiveIterator;
 import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.CharConsumer;
 import java.util.function.CharPredicate;
-import java.util.Spliterators;
-import java.util.function.CharUnaryOperator;
 /* elif boolean|byte|char|float|short primitive */
-import cufy.util.function.CharToDoubleFunction;
-import cufy.util.function.CharToIntFunction;
-import cufy.util.function.CharToLongFunction;
-import cufy.util.CharIterator;
-import cufy.util.CharSpliterator;
 import cufy.util.function.CharConsumer;
 import cufy.util.function.CharPredicate;
-import cufy.util.function.CharUnaryOperator;
 /* endif */
 
 import java.util.NoSuchElementException;
@@ -84,21 +42,20 @@ import java.util.NoSuchElementException;
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
-public interface CharSortedSet extends CharSet, PrimitiveSortedSet<
-		Character,
-		CharConsumer,
-		CharPredicate,
-		CharUnaryOperator,
-		/*ToDouble*/,
-		/*ToInt*/,
-		/*ToLong*/,
-		CharComparator,
-		/*Iterator*/,
-		/*Spliterator*/,
-		CharCollection,
+public interface CharSortedSet
+		extends
 		CharSet,
-		CharSortedSet
-		> {
+		PrimitiveSortedSet<Character, CharConsumer, CharPredicate> {
+	@Override
+	default boolean add(Character element) {
+		return this.addChar(element);
+	}
+
+	@Override
+	default boolean contains(Object object) {
+		return object instanceof Character && this.contains((char) object);
+	}
+
 	@Override
 	default Character first() {
 		return this.firstChar();
@@ -112,6 +69,11 @@ public interface CharSortedSet extends CharSet, PrimitiveSortedSet<
 	@Override
 	default Character last() {
 		return this.lastChar();
+	}
+
+	@Override
+	default boolean remove(Object object) {
+		return object instanceof Character && this.removeChar((char) object);
 	}
 	/*
 	if double|int|long primitive
@@ -134,6 +96,9 @@ public interface CharSortedSet extends CharSet, PrimitiveSortedSet<
 	default CharSortedSet tailSet(Character beginElement) {
 		return this.tailSet((char) beginElement);
 	}
+
+	@Override
+	CharComparator comparator();
 
 	/**
 	 * Returns the first (lowest) element currently in this set.

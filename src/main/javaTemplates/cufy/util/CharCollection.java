@@ -63,14 +63,10 @@ import java.util.function.Predicate;
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
-public interface CharCollection extends PrimitiveCollection<
-		Character,
-		CharConsumer,
-		CharPredicate,
-		/* Iterator */,
-		/* Spliterator */,
-		CharCollection
-		>, CharIterable {
+public interface CharCollection
+		extends
+		CharIterable,
+		PrimitiveCollection<Character, CharConsumer, CharPredicate> {
 	@Override
 	default boolean add(Character element) {
 		return this.addChar(element);
