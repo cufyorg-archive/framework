@@ -84,26 +84,3 @@ public interface PrimitiveList
 	//primitive removePrimitiveAt(int index)
 	//primitive setPrimitive(int index, primitive element)
 }
-//
-//	/**
-//	 * Inserts all of the elements in the specified collection into this list at the specified
-//	 * position (optional operation). Shifts the element currently at that position (if any) and any
-//	 * subsequent elements to the right (increases their indices). The new elements will appear in
-//	 * this list in the order that they are returned by the specified collection's iterator. The
-//	 * behavior of this operation is undefined if the specified collection is modified while the
-//	 * operation is in progress. (Note that this will occur if the specified collection is this
-//	 * list, and it's nonempty.)
-//	 *
-//	 * @param index      index at which to insert the first element from the specified collection.
-//	 * @param collection collection containing elements to be added to this list.
-//	 * @return {@code true} if this list changed as a result of the call.
-//	 * @throws UnsupportedOperationException if the {@code addAll} operation is not supported by
-//	 *                                       this list.
-//	 * @throws NullPointerException          if the given {@code collection} is null.
-//	 * @throws IllegalArgumentException      if some property of an element of the specified
-//	 *                                       collection prevents it from being added to this list.
-//	 * @throws IndexOutOfBoundsException     if the index is out of range ({@code index < 0 || index
-//	 *                                       > size()}).
-//	 * @since 0.1.5 ~2020.09.01
-//	 */
-//	boolean addAll(int index, COLLECTION collection);

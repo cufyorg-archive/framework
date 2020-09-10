@@ -62,27 +62,27 @@ enddefine
  */
 package cufy.util;
 
-import cufy.lang.CharIterable;
 /* if boolean|byte|char|float|short primitive */
+import cufy.lang.CharIterable;
 import cufy.util.function.*;
-/* elif double|int|long primitive */
-import cufy.util.function.CharBiConsumer;
-import cufy.util.function.CharBiFunction;
-import cufy.util.function.CharObjBiFunction;
-/* endif */
 
 import java.util.Objects;
 import java.util.*;
-/* if boolean|byte|char|float|short primitive */
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
-/* elif double|int|long primitive */
-import java.util.function.*;
-/* endif */
 import java.util.stream.IntStream;
-/* if double|int|long primitive*/
-/* if !(int primitive)*/
+/* elif double|int|long primitive */
+import cufy.lang.CharIterable;
+import cufy.util.function.CharBiConsumer;
+import cufy.util.function.CharBiFunction;
+import cufy.util.function.CharObjBiFunction;
+
+import java.util.Objects;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.IntStream;
+/* if double|long primitive */
 import java.util.stream.CharStream;
 /* endif */
 import java.util.stream.StreamSupport;

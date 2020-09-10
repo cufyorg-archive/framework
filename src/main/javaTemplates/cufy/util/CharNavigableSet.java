@@ -10,24 +10,6 @@ elif long primitive //0L//
 endif ////
 enddefine
 *//*
-define ToDoubleFunction ////
-if boolean|byte|char|float|int|long|short primitive //CharToDoubleFunction//
-elif double primitive //DoubleUnaryOperator//
-endif ////
-enddefine
-*//*
-define ToIntFunction ////
-if boolean|byte|char|double|float|long|short primitive //CharToIntFunction//
-elif int primitive //IntUnaryOperator//
-endif ////
-enddefine
-*//*
-define ToLongFunction ////
-if boolean|byte|char|double|float|int|short primitive //CharToLongFunction//
-elif long primitive //LongUnaryOperator//
-endif ////
-enddefine
-*//*
 define Iterator ////
 if boolean|byte|char|float|short primitive //CharIterator//
 elif double|int|long primitive //PrimitiveIterator.OfChar//
@@ -56,32 +38,15 @@ enddefine
  */
 package cufy.util;
 
-/* if double primitive */
-import java.util.function.DoubleToIntFunction;
-import java.util.function.DoubleToLongFunction;
-/* elif int primitive */
-import java.util.function.IntToDoubleFunction;
-import java.util.function.IntToLongFunction;
-/* elif long primitive */
-import java.util.function.LongToDoubleFunction;
-import java.util.function.LongToIntFunction;
-/* endif */
-/* if double|int|long primitive */
-import java.util.PrimitiveIterator;
-import java.util.Spliterator;
-import java.util.function.CharConsumer;
-import java.util.function.CharPredicate;
-import java.util.Spliterators;
-import java.util.function.CharUnaryOperator;
-/* elif boolean|byte|char|float|short primitive */
-import cufy.util.function.CharToDoubleFunction;
-import cufy.util.function.CharToIntFunction;
-import cufy.util.function.CharToLongFunction;
-import cufy.util.CharIterator;
-import cufy.util.CharSpliterator;
+/* if boolean|byte|char|float|short primitive */
 import cufy.util.function.CharConsumer;
 import cufy.util.function.CharPredicate;
-import cufy.util.function.CharUnaryOperator;
+/* elif double|int|long primitive */
+import java.util.PrimitiveIterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.CharConsumer;
+import java.util.function.CharPredicate;
 /* endif */
 
 /**

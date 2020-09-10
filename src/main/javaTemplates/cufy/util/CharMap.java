@@ -26,23 +26,19 @@ enddefine
  */
 package cufy.util;
 
-/* if boolean|byte|char|float|short primitive*/
-import cufy.util.function.CharBinaryOperator;
-import cufy.util.function.CharFunction;
-/* elif double|int|long primitive */
-import java.util.function.CharBinaryOperator;
-import java.util.function.CharFunction;
-/* endif */
+/* if boolean|byte|char|float|short primitive */
+import cufy.util.function.*;
 
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+/* elif double|int|long primitive */
 import cufy.util.function.CharBiConsumer;
 import cufy.util.function.CharBiFunction;
 import cufy.util.function.CharObjBiFunction;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.function.*;
+/* endif */
 
 /**
  * A map specialized for {@code char} values. The map should implement (use)

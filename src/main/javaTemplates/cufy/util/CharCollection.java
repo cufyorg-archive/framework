@@ -13,12 +13,6 @@ elif double|int|long primitive //Spliterator.OfChar//
 endif ////
 enddefine
 *//*
-define Stream////
-if boolean|byte|char|float|short primitive //Stream<Character>//
-elif double|int|long primitive //CharStream//
-endif ////
-enddefine
-*//*
  *	Copyright 2020 Cufy
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,25 +30,25 @@ enddefine
 package cufy.util;
 
 /* if boolean|byte|char|float|short primitive */
-import cufy.util.CharIterator;
-import cufy.util.CharSpliterator;
+import cufy.lang.CharIterable;
 import cufy.util.function.CharConsumer;
 import cufy.util.function.CharPredicate;
-/* elif double|int|long primitive */
-import java.util.PrimitiveIterator;
-import java.util.Spliterator;
-import java.util.function.CharConsumer;
-import java.util.function.CharPredicate;
-import java.util.Spliterators;
-import java.util.stream.StreamSupport;
-import java.util.stream.CharStream;
-/* endif */
-
-import cufy.util.PrimitiveCollection;
-import cufy.lang.CharIterable;
 
 import java.util.Objects;
 import java.util.function.Predicate;
+/* elif double|int|long primitive */
+import cufy.lang.CharIterable;
+
+import java.util.Objects;
+import java.util.PrimitiveIterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.CharConsumer;
+import java.util.function.CharPredicate;
+import java.util.function.Predicate;
+import java.util.stream.CharStream;
+import java.util.stream.StreamSupport;
+/* endif */
 
 /**
  * A collection specialized for {@code char} values.
@@ -121,7 +115,7 @@ public interface CharCollection
 	 * @return a stream streaming the elements in this collection.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	default /*Stream*/ charStream() {
+	default CharStream charStream() {
 		return StreamSupport.charStream(this.spliterator(), false);
 	}
 
@@ -131,7 +125,7 @@ public interface CharCollection
 	 * @return a stream streaming the elements in this collection.
 	 * @since 0.1.5 ~2020.08.11
 	 */
-	default /*Stream*/ parallelCharStream() {
+	default CharStream parallelCharStream() {
 		return StreamSupport.charStream(this.spliterator(), true);
 	}
 	/*

@@ -18,12 +18,7 @@ package cufy.util;
 import cufy.util.function.*;
 
 import java.util.Objects;
-import java.util.Map;
-import java.util.Collection;
-import java.util.List;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -45,6 +40,8 @@ import java.util.stream.Stream;
  * @since 0.0.a ~2019.06.11
  */
 public interface Arrays {
+	//Misc
+
 	/**
 	 * Copy the elements from the given {@code src} to the given {@code dest}. Start reading from
 	 * the given {@code src} at the given {@code srcPos}. Start writing to the given {@code dest} at
@@ -149,6 +146,8 @@ public interface Arrays {
 			   Arrays.newArray(componentType, dimensions[0]) :
 			   new ObjectArray(componentType, dimensions);
 	}
+
+	//Object
 
 	/**
 	 * Construct a new array wrapper for the given {@code array}.
@@ -1005,6 +1004,8 @@ public interface Arrays {
 		}
 	}
 
+	//Redirect
+
 	/**
 	 * Construct a new array wrapper for the given {@code array}.
 	 *
@@ -1657,6 +1658,8 @@ public interface Arrays {
 	endif ////
 	enddefine
 	*/
+
+	//Char
 
 	/**
 	 * Construct a new array wrapper for the given {@code array}.

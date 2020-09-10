@@ -35,26 +35,11 @@ enddefine
  */
 package cufy.util;
 
-/* if double primitive */
-import java.util.function.DoubleUnaryOperator;
-import java.util.function.DoubleToIntFunction;
-import java.util.function.DoubleToLongFunction;
-/* elif int primitive */
-import java.util.function.IntToDoubleFunction;
-import java.util.function.IntUnaryOperator;
-import java.util.function.IntToLongFunction;
-/* elif long primitive */
-import java.util.function.LongToDoubleFunction;
-import java.util.function.LongToIntFunction;
-import java.util.function.LongUnaryOperator;
-/* elif boolean|byte|char|float|short primitive */
+/* if boolean|byte|char|float|short primitive */
 import cufy.util.function.CharToDoubleFunction;
 import cufy.util.function.CharToIntFunction;
 import cufy.util.function.CharToLongFunction;
 import cufy.util.function.CharUnaryOperator;
-/* endif */
-
-import cufy.util.PrimitiveComparator;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -63,6 +48,12 @@ import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
+/* elif double|int|long primitive */
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.function.*;
+/* endif */
 
 /**
  * A comparator specialized for {@code char} values.

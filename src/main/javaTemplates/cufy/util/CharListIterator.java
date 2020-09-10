@@ -25,12 +25,13 @@ package cufy.util;
 
 /* if boolean|byte|char|float|short primitive*/
 import cufy.util.function.CharConsumer;
-/* elif double|int|long primitive */
-import java.util.function.CharConsumer;
-import java.util.PrimitiveIterator;
-/* endif */
 
 import java.util.NoSuchElementException;
+/* elif double|int|long primitive */
+import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
+import java.util.function.CharConsumer;
+/* endif */
 
 /**
  * A ListIterator specialized for {@code char} values.

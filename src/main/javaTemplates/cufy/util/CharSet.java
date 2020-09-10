@@ -24,16 +24,13 @@ enddefine
 package cufy.util;
 
 /* if boolean|byte|char|float|short primitive */
-import cufy.util.CharIterator;
-import cufy.util.CharSpliterator;
 import cufy.util.function.CharConsumer;
 import cufy.util.function.CharPredicate;
 /* elif double|int|long primitive */
-import java.util.PrimitiveIterator;
 import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.CharConsumer;
 import java.util.function.CharPredicate;
-import java.util.Spliterators;
 /* endif */
 
 /**

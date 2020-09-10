@@ -23,17 +23,18 @@ enddefine
  */
 package cufy.util;
 
-/* if double|int|long primitive */
+/* if boolean|byte|char|float|short primitive */
+import cufy.util.function.CharConsumer;
+import cufy.util.function.CharPredicate;
+
+import java.util.NoSuchElementException;
+/* elif double|int|long primitive */
+import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.CharConsumer;
 import java.util.function.CharPredicate;
-/* elif boolean|byte|char|float|short primitive */
-import cufy.util.function.CharConsumer;
-import cufy.util.function.CharPredicate;
 /* endif */
-
-import java.util.NoSuchElementException;
 
 /**
  * a sorted set for {@code char} values.

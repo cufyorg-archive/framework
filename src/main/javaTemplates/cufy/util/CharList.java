@@ -41,43 +41,19 @@ enddefine
  */
 package cufy.util;
 
-/* if double primitive */
-import java.util.function.DoubleUnaryOperator;
-import java.util.function.DoubleToIntFunction;
-import java.util.function.DoubleToLongFunction;
-/* elif int primitive */
-import java.util.function.IntToDoubleFunction;
-import java.util.function.IntUnaryOperator;
-import java.util.function.IntToLongFunction;
-/* elif long primitive */
-import java.util.function.LongToDoubleFunction;
-import java.util.function.LongToIntFunction;
-import java.util.function.LongUnaryOperator;
-/* elif boolean|byte|char|float|short primitive */
-import cufy.util.function.CharToDoubleFunction;
-import cufy.util.function.CharToIntFunction;
-import cufy.util.function.CharToLongFunction;
-import cufy.util.function.CharUnaryOperator;
-/* endif */
-
 /* if boolean|byte|char|float|short primitive */
-import cufy.util.CharIterator;
-import cufy.util.CharSpliterator;
-import cufy.util.function.CharConsumer;
-import cufy.util.function.CharPredicate;
-/* elif double|int|long primitive */
-import java.util.PrimitiveIterator;
-import java.util.Spliterator;
-import java.util.function.CharConsumer;
-import java.util.function.CharPredicate;
-import java.util.Spliterators;
-/* endif */
-
-import cufy.util.PrimitiveList;
+import cufy.util.function.*;
 
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
+/* elif double|int|long primitive */
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.*;
+/* endif */
 
 /**
  * A list specialized for {@code char} values.

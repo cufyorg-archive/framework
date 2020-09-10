@@ -97,20 +97,3 @@ public interface PrimitiveMap
 		//primitive setPrimitiveValue(primitive value);
 	}
 }
-//
-//	/**
-//	 * Copies all of the mappings from the specified map to this map (optional operation). The
-//	 * effect of this call is equivalent to that of calling {@link #put(Object, Object) put(k, v)}
-//	 * on this map once for each mapping from key <tt>k</tt> to value <tt>v</tt> in the specified
-//	 * map. The behavior of this operation is undefined if the specified map is modified while the
-//	 * operation is in progress.
-//	 *
-//	 * @param map mappings to be stored in this map.
-//	 * @throws UnsupportedOperationException if the {@code putAll} operation is not supported by
-//	 *                                       this map.
-//	 * @throws NullPointerException          if the given {@code map} is null.
-//	 * @throws IllegalArgumentException      if some property of a key or value in the specified map
-//	 *                                       prevents it from being stored in this map.
-//	 * @since 0.1.5 ~2020.09.01
-//	 */
-//	void putAll(MAP map);

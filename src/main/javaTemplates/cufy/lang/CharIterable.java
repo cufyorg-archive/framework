@@ -34,15 +34,16 @@ import cufy.util.CharIterator;
 import cufy.util.CharSpliterator;
 import cufy.util.function.CharConsumer;
 
+import java.util.Objects;
+import java.util.function.Consumer;
 /* elif double|int|long primitive */
+import java.util.Objects;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.Consumer;
 import java.util.function.CharConsumer;
 /* endif */
-
-import java.util.function.Consumer;
-import java.util.Objects;
 
 /**
  * An iterator specialize for {@code char} values.

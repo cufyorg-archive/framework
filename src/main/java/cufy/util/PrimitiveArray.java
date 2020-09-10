@@ -151,6 +151,17 @@ public abstract class PrimitiveArray
 	 */
 	public abstract void sort(T comparator);
 
+	//public int binarySearch(primitive element)
+	//public int binarySearch(primitive element, PrimitiveComparator comparator)
+	//public void fill(primitive element)
+	//public primitive getPrimitive(int thumb)
+	//public PrimitiveStream primitiveStream()
+	//public PrimitiveStream parallelPrimitiveStream()
+	//public void setPrimitive(int thumb, primitive element)
+	//protected boolean eq(Object element, primitive e)
+	//protected boolean eq(primitive element, primitive e)
+	//protected int hash(primitive e)
+
 	/**
 	 * An array iterator specialized for primitive values.
 	 *
@@ -274,7 +285,8 @@ public abstract class PrimitiveArray
 	public abstract class PrimitiveArrayMap
 			extends
 			ArrayMap<E, E>
-			implements PrimitiveMap<E, E, R, B> {
+			implements
+			PrimitiveMap<E, E, R, B> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 1133073948012271653L;
 
