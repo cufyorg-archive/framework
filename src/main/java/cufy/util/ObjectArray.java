@@ -113,6 +113,19 @@ public class ObjectArray<E> extends AbstractArray<E[], E> {
 		super(array, beginIndex, endIndex);
 	}
 
+	/**
+	 * Construct a new array backed by the given {@code array}.
+	 *
+	 * @param array the array to be backing the constructed array.
+	 * @param <E>   the type of the elements.
+	 * @return a new array backed by the given {@code array}.
+	 * @throws java.lang.NullPointerException if the given {@code array}.
+	 * @since 0.1.5 ~2020.09.13
+	 */
+	public static <E> ObjectArray<E> of(E... array) {
+		return new ObjectArray(array);
+	}
+
 	@Override
 	public int binarySearch(Object object) {
 		int l = this.beginIndex;

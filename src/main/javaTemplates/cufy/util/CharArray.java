@@ -159,6 +159,18 @@ public class CharArray
 		super(array, beginIndex, endIndex);
 	}
 
+	/**
+	 * Construct a new array backed by the given {@code array}.
+	 *
+	 * @param array the array to be backing the constructed array.
+	 * @return a new array backed by the given {@code array}.
+	 * @throws java.lang.NullPointerException if the given {@code array}.
+	 * @since 0.1.5 ~2020.09.13
+	 */
+	public static CharArray of(char... array) {
+		return new CharArray(array);
+	}
+
 	@Override
 	public int binarySearch(Object object) {
 		return object instanceof Character ?
