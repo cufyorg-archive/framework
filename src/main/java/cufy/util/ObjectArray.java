@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
  * @version 0.1.5
  * @since 0.1.5 ~2020.08.03
  */
-public class ObjectArray<E> extends Array<E[], E> {
+public class ObjectArray<E> extends AbstractArray<E[], E> {
 	@SuppressWarnings("JavaDoc")
 	private static final long serialVersionUID = -407181299777988791L;
 
@@ -498,7 +498,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public class ObjectArrayIterator extends ArrayIterator {
+	public class ObjectArrayIterator extends AbstractArrayIterator {
 		/**
 		 * Construct a new iterator iterating the elements in the enclosing array.
 		 *
@@ -547,7 +547,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public class ObjectArrayList extends ArrayList {
+	public class ObjectArrayList extends AbstractArrayList {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = -6821775231116953767L;
 
@@ -688,7 +688,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.07.24
 	 */
-	public class ObjectArrayListIterator extends ArrayListIterator {
+	public class ObjectArrayListIterator extends AbstractArrayListIterator {
 		/**
 		 * Construct a new list iterator iterating the elements in the enclosing array.
 		 *
@@ -768,7 +768,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.03
 	 */
-	public class ObjectArrayMap<K extends E, V extends E> extends ArrayMap<K, V> {
+	public class ObjectArrayMap<K extends E, V extends E> extends AbstractArrayMap<K, V> {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 1924164470541987638L;
 
@@ -1153,7 +1153,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class ObjectArrayEntry extends ArrayEntry {
+		public class ObjectArrayEntry extends AbstractArrayEntry {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -7098093446276533400L;
 
@@ -1248,7 +1248,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class ObjectArrayEntryIterator extends ArrayEntryIterator {
+		public class ObjectArrayEntryIterator extends AbstractArrayEntryIterator {
 			/**
 			 * Construct a new iterator iterating the entries in the enclosing array.
 			 *
@@ -1301,7 +1301,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class ObjectArrayEntrySet extends ArrayEntrySet {
+		public class ObjectArrayEntrySet extends AbstractArrayEntrySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -1358655666106432532L;
 
@@ -1475,7 +1475,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.02
 		 */
-		public class ObjectArrayEntrySpliterator extends ArrayEntrySpliterator {
+		public class ObjectArrayEntrySpliterator extends AbstractArrayEntrySpliterator {
 			/**
 			 * Construct a new spliterator iterating the entries in the enclosing array.
 			 *
@@ -1548,7 +1548,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class ObjectArrayKeyIterator extends ArrayKeyIterator {
+		public class ObjectArrayKeyIterator extends AbstractArrayKeyIterator {
 			/**
 			 * Construct a new iterator iterating the keys in the enclosing array.
 			 *
@@ -1600,7 +1600,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class ObjectArrayKeySet extends ArrayKeySet {
+		public class ObjectArrayKeySet extends AbstractArrayKeySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 6047336320717832956L;
 
@@ -1732,7 +1732,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.02
 		 */
-		public class ObjectArrayKeySpliterator extends ArrayKeySpliterator {
+		public class ObjectArrayKeySpliterator extends AbstractArrayKeySpliterator {
 			/**
 			 * Construct a new spliterator iterating the keys in the enclosing array.
 			 *
@@ -1804,7 +1804,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class ObjectArrayValueIterator extends ArrayValueIterator {
+		public class ObjectArrayValueIterator extends AbstractArrayValueIterator {
 			/**
 			 * Construct a new iterator iterating the values in the enclosing array.
 			 *
@@ -1856,7 +1856,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.02
 		 */
-		public class ObjectArrayValueSpliterator extends ArrayValueSpliterator {
+		public class ObjectArrayValueSpliterator extends AbstractArrayValueSpliterator {
 			/**
 			 * Construct a new spliterator iterating the values in the enclosing array.
 			 *
@@ -1928,7 +1928,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.08.03
 		 */
-		public class ObjectArrayValues extends ArrayValues {
+		public class ObjectArrayValues extends AbstractArrayValues {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -6890162958501631510L;
 
@@ -2040,7 +2040,7 @@ public class ObjectArray<E> extends Array<E[], E> {
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.08.02
 	 */
-	public class ObjectArraySpliterator extends ArraySpliterator {
+	public class ObjectArraySpliterator extends AbstractArraySpliterator {
 		/**
 		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
 		 * the given {@code index}.

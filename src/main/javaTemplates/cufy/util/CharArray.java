@@ -71,6 +71,7 @@ import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 /* elif double|int|long primitive */
 import cufy.lang.CharIterable;
@@ -97,7 +98,7 @@ import java.util.stream.StreamSupport;
  */
 public class CharArray
 		extends
-		PrimitiveArray<
+		AbstractPrimitiveArray<
 				char[],
 				Character,
 				CharConsumer,
@@ -741,7 +742,7 @@ public class CharArray
 	 */
 	public class CharArrayIterator
 			extends
-			PrimitiveArrayIterator
+			AbstractPrimitiveArrayIterator
 			implements
 			/*Iterator*/ {
 		/**
@@ -794,11 +795,23 @@ public class CharArray
 	 */
 	public class CharArrayList
 			extends
-			PrimitiveArrayList
+			AbstractPrimitiveArrayList
 			implements
 			CharList {
 		@SuppressWarnings("JavaDoc")
 		private static final long serialVersionUID = 848985287158674978L;
+
+		@Override
+		public void add(int thumb, Character element) {
+			//redundand
+			throw new UnsupportedOperationException("add");
+		}
+
+		@Override
+		public boolean add(Character element) {
+			//redundand
+			throw new UnsupportedOperationException("add");
+		}
 
 		@Override
 		public void addChar(int index, char element) {
@@ -812,7 +825,6 @@ public class CharArray
 
 		@Override
 		public CharArrayList clone() {
-			//noinspection CloneCallsConstructors,OverridableMethodCallDuringObjectConstruction
 			return new CharArray(CharArray.this.copy())
 					.new CharArrayList();
 		}
@@ -924,6 +936,30 @@ public class CharArray
 		}
 
 		@Override
+		public Character remove(int thumb) {
+			//redundand
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			//redundand
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean removeIf(CharPredicate predicate) {
+			//redundand
+			throw new UnsupportedOperationException("removeIf");
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super Character> predicate) {
+			//redundand
+			throw new UnsupportedOperationException("removeIf");
+		}
+
+		@Override
 		public boolean removeChar(char element) {
 			throw new UnsupportedOperationException("removeChar");
 		}
@@ -993,7 +1029,7 @@ public class CharArray
 	 */
 	public class CharArrayListIterator
 			extends
-			PrimitiveArrayListIterator
+			AbstractPrimitiveArrayListIterator
 			implements
 			CharListIterator {
 		/**
@@ -1014,6 +1050,12 @@ public class CharArray
 		 */
 		public CharArrayListIterator(int beginThumb) {
 			super(beginThumb);
+		}
+
+		@Override
+		public void add(Character element) {
+			//redundant
+			throw new UnsupportedOperationException("add");
 		}
 
 		@Override
@@ -1076,7 +1118,7 @@ public class CharArray
 	 */
 	public class CharArrayMap
 			extends
-			PrimitiveArrayMap
+			AbstractPrimitiveArrayMap
 			implements
 			CharMap {
 		@SuppressWarnings("JavaDoc")
@@ -1309,6 +1351,18 @@ public class CharArray
 		}
 
 		@Override
+		public Character remove(Object key) {
+			//redundant
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean remove(Object key, Object value) {
+			//redundant
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
 		public char removeChar(char key) {
 			throw new UnsupportedOperationException("removeChar");
 		}
@@ -1393,7 +1447,7 @@ public class CharArray
 		 */
 		public class CharArrayEntry
 				extends
-				PrimitiveArrayEntry
+				AbstractPrimitiveArrayEntry
 				implements
 				CharEntry {
 			@SuppressWarnings("JavaDoc")
@@ -1496,7 +1550,7 @@ public class CharArray
 		 */
 		public class CharArrayEntryIterator
 				extends
-				PrimitiveArrayEntryIterator {
+				AbstractPrimitiveArrayEntryIterator {
 			/**
 			 * Construct a new iterator iterating the entries in the enclosing array.
 			 *
@@ -1551,7 +1605,7 @@ public class CharArray
 		 */
 		public class CharArrayEntrySet
 				extends
-				PrimitiveArrayEntrySet {
+				AbstractPrimitiveArrayEntrySet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -4823635378224028987L;
 
@@ -1765,7 +1819,7 @@ public class CharArray
 		 */
 		public class CharArrayEntrySpliterator
 				extends
-				PrimitiveArrayEntrySpliterator {
+				AbstractPrimitiveArrayEntrySpliterator {
 			/**
 			 * Construct a new spliterator iterating the entries in the enclosing array.
 			 *
@@ -1840,7 +1894,7 @@ public class CharArray
 		 */
 		public class CharArrayKeyIterator
 				extends
-				PrimitiveArrayKeyIterator
+				AbstractPrimitiveArrayKeyIterator
 				implements
 				/*Iterator*/ {
 			/**
@@ -1896,11 +1950,17 @@ public class CharArray
 		 */
 		public class CharArrayKeySet
 				extends
-				PrimitiveArrayKeySet
+				AbstractPrimitiveArrayKeySet
 				implements
 				CharSet {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = 7793360078444812816L;
+
+			@Override
+			public boolean add(Character key) {
+				//redundant
+				throw new UnsupportedOperationException("add");
+			}
 
 			@Override
 			public boolean addChar(char element) {
@@ -1998,8 +2058,26 @@ public class CharArray
 			}
 
 			@Override
+			public boolean remove(Object object) {
+				//redundant
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
 			public boolean removeChar(char element) {
 				throw new UnsupportedOperationException("removeChar");
+			}
+
+			@Override
+			public boolean removeIf(Predicate<? super Character> predicate) {
+				//redundant
+				throw new UnsupportedOperationException("removeIf");
+			}
+
+			@Override
+			public boolean removeIf(CharPredicate predicate) {
+				//redundant
+				throw new UnsupportedOperationException("removeIf");
 			}
 
 			@Override
@@ -2105,7 +2183,7 @@ public class CharArray
 		 */
 		public class CharArrayKeySpliterator
 				extends
-				PrimitiveArrayKeySpliterator</*Spliterator*/>
+				AbstractPrimitiveArrayKeySpliterator</*Spliterator*/>
 				implements
 				/*Spliterator*/ {
 			/**
@@ -2181,7 +2259,7 @@ public class CharArray
 		 */
 		public class CharArrayValueIterator
 				extends
-				PrimitiveArrayValueIterator
+				AbstractPrimitiveArrayValueIterator
 				implements
 				/*Iterator*/ {
 			/**
@@ -2237,7 +2315,7 @@ public class CharArray
 		 */
 		public class CharArrayValueSpliterator
 				extends
-				PrimitiveArrayValueSpliterator</*Spliterator*/>
+				AbstractPrimitiveArrayValueSpliterator</*Spliterator*/>
 				implements
 				/*Spliterator*/ {
 			/**
@@ -2314,11 +2392,17 @@ public class CharArray
 		 */
 		public class CharArrayValues
 				extends
-				PrimitiveArrayValues
+				AbstractPrimitiveArrayValues
 				implements
 				CharCollection {
 			@SuppressWarnings("JavaDoc")
 			private static final long serialVersionUID = -7937502933699082438L;
+
+			@Override
+			public boolean add(Character value) {
+				//redundant
+				throw new UnsupportedOperationException("add");
+			}
 
 			@Override
 			public boolean addChar(char element) {
@@ -2395,8 +2479,26 @@ public class CharArray
 			}
 
 			@Override
+			public boolean remove(Object object) {
+				//redundant
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
 			public boolean removeChar(char element) {
 				throw new UnsupportedOperationException("removeChar");
+			}
+
+			@Override
+			public boolean removeIf(CharPredicate predicate) {
+				//redundant
+				throw new UnsupportedOperationException("removeIf");
+			}
+
+			@Override
+			public boolean removeIf(Predicate<? super Character> predicate) {
+				//redundant
+				throw new UnsupportedOperationException("removeIf");
 			}
 
 			@Override
@@ -2503,7 +2605,7 @@ public class CharArray
 	 */
 	public class CharArraySpliterator
 			extends
-			PrimitiveArraySpliterator</*Spliterator*/>
+			AbstractPrimitiveArraySpliterator</*Spliterator*/>
 			implements
 			/*Spliterator*/ {
 		/**

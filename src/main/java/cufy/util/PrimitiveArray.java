@@ -25,80 +25,37 @@ import java.util.Spliterator;
  *
  * @param <A> the type of the array.
  * @param <E> the type of the elements.
- * @param <R> the type of the bi-consumer.
  * @param <C> the type of the consumer.
- * @param <P> the type of the predicate.
- * @param <U> the type of the unary operator.
- * @param <B> the type of the binary operator.
+ * @param <R> the type of the bi-consumer.
  * @param <O> the type of the intTo function.
  * @param <D> the type of the toDouble function.
  * @param <I> the type of the toInt function.
  * @param <L> the type of the toLong function.
+ * @param <U> the type of the unary operator.
+ * @param <B> the type of the binary operator.
+ * @param <P> the type of the predicate.
  * @param <T> the type of the comparator.
  * @author LSafer
  * @version 0.1.5
  * @since 0.1.5 ~2020.09.01
  */
 @SuppressWarnings("ComparatorNotSerializable")
-public abstract class PrimitiveArray
+public interface PrimitiveArray
 		<A, E, C, R, O, D, I, L, U, B, P, T extends PrimitiveComparator<E, D, I, L, U, T>>
 		extends
-		Array<A, E>
-		implements
-		PrimitiveIterable<E, C> {
-	@SuppressWarnings("JavaDoc")
-	private static final long serialVersionUID = -5497455737667076730L;
-
-	/**
-	 * Construct a new array backed by the given {@code array}.
-	 *
-	 * @param array the array to be backing the constructed array.
-	 * @throws NullPointerException if the given {@code array} is null.
-	 * @since 0.1.5 ~2020.09.01
-	 */
-	protected PrimitiveArray(A array) {
-		super(array);
-	}
-
-	/**
-	 * Construct a new array backed by the specified range of the given {@code array}. The range
-	 * starts at the given {@code beginIndex} and ends before the given {@code endIndex}.
-	 *
-	 * @param array      the array to be backing the constructed array.
-	 * @param beginIndex the first index of the area at the given {@code array} to be backing the
-	 *                   constructed array.
-	 * @param endIndex   one past the last index of the area at the given {@code array} to be
-	 *                   backing the constructed array.
-	 * @throws NullPointerException      if the given {@code array} is null.
-	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
-	 *                                   array.length}.
-	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
-	 * @since 0.1.5 ~2020.09.01
-	 */
-	protected PrimitiveArray(A array, int beginIndex, int endIndex) {
-		super(array, beginIndex, endIndex);
-	}
+		PrimitiveIterable<E, C>,
+		Array<A, E> {
+	@Override
+	PrimitiveList<E, C, D, I, L, U, P, T> list();
 
 	@Override
-	public abstract PrimitiveArray<A, E, C, R, O, D, I, L, U, B, P, T> clone();
+	PrimitiveListIterator<E, C> listIterator();
 
 	@Override
-	public abstract PrimitiveArrayIterator iterator();
+	PrimitiveMap<E, E, R, B> map();
 
 	@Override
-	public abstract PrimitiveArrayList list();
-
-	@Override
-	public abstract PrimitiveArrayListIterator listIterator();
-
-	@Override
-	public abstract PrimitiveArrayMap map();
-
-	@Override
-	public abstract PrimitiveArraySpliterator spliterator();
-
-	@Override
-	public abstract PrimitiveArray<A, E, C, R, O, D, I, L, U, B, P, T> sub(int beginThumb, int endThumb);
+	PrimitiveArray<A, E, C, R, O, D, I, L, U, B, P, T> sub(int beginThumb, int endThumb);
 
 	/**
 	 * Cumulates, in parallel, each element of this array in place, using the supplied function. For
@@ -110,7 +67,7 @@ public abstract class PrimitiveArray
 	 * @throws NullPointerException if the given {@code operator} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	public abstract void parallelPrefix(B operator);
+	void parallelPrefix(B operator);
 
 	/**
 	 * In parallel, assign each element of this array to the value returned from invoking the given
@@ -120,7 +77,7 @@ public abstract class PrimitiveArray
 	 * @throws NullPointerException if the given {@code function} is null.
 	 * @since 0.1.5 ~2020.09.01
 	 */
-	public abstract void parallelSetAll(O function);
+	void parallelSetAll(O function);
 
 	/**
 	 * Sorts this array according to the order induced by the specified {@code comparator}. This
@@ -131,7 +88,7 @@ public abstract class PrimitiveArray
 	 *                   that the elements' natural ordering should be used.
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract void parallelSort(T comparator);
+	void parallelSort(T comparator);
 
 	/**
 	 * Assign each element of this array to the value returned from invoking the given {@code
@@ -141,7 +98,7 @@ public abstract class PrimitiveArray
 	 * @throws NullPointerException if the {@code function} is null.
 	 * @since 0.1.5 ~2020.08.30
 	 */
-	public abstract void setAll(O function);
+	void setAll(O function);
 
 	/**
 	 * Sort this array using the given {@code comparator}.
@@ -149,7 +106,7 @@ public abstract class PrimitiveArray
 	 * @param comparator the comparator to be used.
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract void sort(T comparator);
+	void sort(T comparator);
 
 	//public int binarySearch(primitive element)
 	//public int binarySearch(primitive element, PrimitiveComparator comparator)
@@ -165,502 +122,267 @@ public abstract class PrimitiveArray
 	/**
 	 * An array iterator specialized for primitive values.
 	 *
+	 * @param <E> the type of the elements.
+	 * @param <C> the type of the consumer.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract class PrimitiveArrayIterator
+	interface PrimitiveArrayIterator
+			<E, C>
 			extends
-			ArrayIterator
-			implements
-			PrimitiveIterator<E, C> {
-		/**
-		 * Construct a new iterator iterating the elements in the enclosing array.
-		 *
-		 * @since 0.1.5 ~2020.09.03
-		 */
-		protected PrimitiveArrayIterator() {
-		}
-
-		/**
-		 * Construct a new iterator iterating the elements in the enclosing array.
-		 *
-		 * @param beginThumb the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb >
-		 *                                   length}.
-		 * @since 0.1.5 ~2020.09.03
-		 */
-		protected PrimitiveArrayIterator(int beginThumb) {
-			super(beginThumb);
-		}
+			PrimitiveIterator<E, C>,
+			ArrayIterator<E> {
 	}
 
 	/**
 	 * An array list specialized for primitive values.
 	 *
+	 * @param <E> the type of the elements.
+	 * @param <C> the type of the consumer.
+	 * @param <D> the type of the toDouble function.
+	 * @param <I> the type of the toInt function.
+	 * @param <L> the type of the toLong function.
+	 * @param <U> the type of the unary operator.
+	 * @param <P> the type of the predicate.
+	 * @param <T> the type of the comparator.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract class PrimitiveArrayList
+	interface PrimitiveArrayList
+			<E, C, D, I, L, U, P, T extends PrimitiveComparator<E, D, I, L, U, T>>
 			extends
-			ArrayList
-			implements
-			PrimitiveList<E, C, D, I, L, U, P, T> {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = 418303433386295161L;
-
+			PrimitiveList<E, C, D, I, L, U, P, T>,
+			ArrayList<E> {
 		@Override
-		public void forEach(C consumer) {
-			PrimitiveArray.this.forEach(consumer);
-		}
-
-		@Override
-		public boolean removeIf(P predicate) {
+		default boolean removeIf(P predicate) {
 			throw new UnsupportedOperationException("removeIf");
 		}
-
-		@Override
-		public void sort(T comparator) {
-			PrimitiveArray.this.sort(comparator);
-		}
-
-		@Override
-		public abstract PrimitiveArrayList clone();
-
-		@Override
-		public abstract PrimitiveArrayIterator iterator();
-
-		@Override
-		public abstract PrimitiveArrayListIterator listIterator(int index);
-
-		@Override
-		public abstract PrimitiveArrayListIterator listIterator();
-
-		@Override
-		public abstract PrimitiveArraySpliterator spliterator();
 	}
 
 	/**
 	 * An array list iterator specialized for primitive values.
 	 *
+	 * @param <E> the type of the elements.
+	 * @param <C> the type of the consumer.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract class PrimitiveArrayListIterator
+	interface PrimitiveArrayListIterator
+			<E, C>
 			extends
-			ArrayListIterator
-			implements
-			PrimitiveListIterator<E, C> {
-		/**
-		 * Construct a new list iterator iterating the elements in the enclosing array.
-		 *
-		 * @since 0.1.5 ~2020.09.03
-		 */
-		protected PrimitiveArrayListIterator() {
-		}
-
-		/**
-		 * Construct a new list iterator iterating the elements in the enclosing array, starting
-		 * from the given {@code beginThumb}.
-		 *
-		 * @param beginThumb the initial position of the constructed iterator.
-		 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb >
-		 *                                   length}.
-		 * @since 0.1.5 ~2020.09.03
-		 */
-		protected PrimitiveArrayListIterator(int beginThumb) {
-			super(beginThumb);
-		}
+			PrimitiveListIterator<E, C>,
+			ArrayListIterator<E> {
 	}
 
 	/**
 	 * An array map specialized for primitive values.
 	 *
+	 * @param <E> the type of the elements.
+	 * @param <C> the type of the consumer.
+	 * @param <R> the type of the bi-consumer.
+	 * @param <B> the type of the binary operator.
+	 * @param <P> the type of the predicate.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract class PrimitiveArrayMap
+	interface PrimitiveArrayMap
+			<E, C, R, B, P>
 			extends
-			ArrayMap<E, E>
-			implements
-			PrimitiveMap<E, E, R, B> {
-		@SuppressWarnings("JavaDoc")
-		private static final long serialVersionUID = 1133073948012271653L;
+			PrimitiveMap<E, E, R, B>,
+			ArrayMap<E, E, E> {
+		@Override
+		PrimitiveSet<E, C, P> keySet();
 
 		@Override
-		public abstract PrimitiveArrayMap clone();
-
-		@Override
-		public abstract PrimitiveArrayEntrySet entrySet();
-
-		@Override
-		public abstract PrimitiveArrayKeySet keySet();
-
-		@Override
-		public abstract PrimitiveArrayValues values();
+		PrimitiveCollection<E, C, P> values();
 
 		/**
 		 * An array entry specialized for primitive values.
 		 *
+		 * @param <E> the type of the elements.
 		 * @author LSafer
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayEntry
+		interface PrimitiveArrayEntry
+				<E>
 				extends
-				ArrayEntry
-				implements
-				PrimitiveEntry<E, E> {
-			@SuppressWarnings("JavaDoc")
-			private static final long serialVersionUID = 8628913046510894541L;
-
-			/**
-			 * Construct a new entry backed by a range from {@code thumb} to {@code thumb + 1} in
-			 * the enclosing array.
-			 *
-			 * @param thumb the thumb to where the key (followed by the value) will be in the
-			 *              constructed entry.
-			 * @throws IndexOutOfBoundsException if {@code thumb < 0} or {@code thumb + 1 >=
-			 *                                   length}.
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayEntry(int thumb) {
-				super(thumb);
-			}
-
-			@Override
-			public abstract PrimitiveArrayEntry clone();
+				PrimitiveEntry<E, E>,
+				ArrayEntry<E, E, E> {
 		}
 
 		/**
 		 * An array entry iterator specialized for primitive values.
 		 *
+		 * @param <E> the type of the elements.
 		 * @author LSafer
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayEntryIterator
+		interface PrimitiveArrayEntryIterator
+				<E>
 				extends
-				ArrayEntryIterator {
-			/**
-			 * Construct a new iterator iterating the entries in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayEntryIterator() {
-			}
-
-			/**
-			 * Construct a new iterator iterating the entries in the enclosing array, starting from
-			 * the given {@code beginThumb}.
-			 *
-			 * @param beginThumb the initial position of the constructed iterator.
-			 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb >
-			 *                                   length}.
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayEntryIterator(int beginThumb) {
-				super(beginThumb);
-			}
-
+				ArrayEntryIterator<E, E, E> {
 			@SuppressWarnings("IteratorNextCanNotThrowNoSuchElementException")
 			@Override
-			public abstract PrimitiveArrayEntry next();
+			PrimitiveEntry<E, E> next();
 		}
 
 		/**
 		 * An array entry set specialized for primitive values.
 		 *
+		 * @param <E> the type of the elements.
 		 * @author LSafer
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayEntrySet
+		interface PrimitiveArrayEntrySet
+				<E>
 				extends
-				ArrayEntrySet {
-			@SuppressWarnings("JavaDoc")
-			private static final long serialVersionUID = 8532857328866783185L;
-
-			@Override
-			public abstract PrimitiveArrayEntrySet clone();
-
-			@Override
-			public abstract PrimitiveArrayEntryIterator iterator();
-
-			@Override
-			public abstract PrimitiveArrayEntrySpliterator spliterator();
+				ArrayEntrySet<E, E, E> {
 		}
 
 		/**
 		 * An array entry spliterator specialized for primitive values.
 		 *
+		 * @param <E> the type of the elements.
 		 * @author LSafer
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayEntrySpliterator
+		interface PrimitiveArrayEntrySpliterator
+				<E>
 				extends
-				ArrayEntrySpliterator {
-			/**
-			 * Construct a new spliterator iterating the entries in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayEntrySpliterator() {
-			}
-
-			/**
-			 * Construct a new spliterator iterating the entries in the enclosing array, starting
-			 * from the given {@code beginThumb}.
-			 *
-			 * @param beginThumb the initial position of the constructed spliterator.
-			 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb >
-			 *                                   length}.
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayEntrySpliterator(int beginThumb) {
-				super(beginThumb);
-			}
-
-			@Override
-			public abstract PrimitiveArrayEntrySpliterator trySplit();
+				ArrayEntrySpliterator<E, E, E> {
 		}
 
 		/**
 		 * A primitive array key iterator specialized for primitive values.
 		 *
+		 * @param <E> the type of the elements.
+		 * @param <C> the type of the consumer.
 		 * @author LSafer
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayKeyIterator
+		interface PrimitiveArrayKeyIterator
+				<E, C>
 				extends
-				ArrayKeyIterator
-				implements
-				PrimitiveIterator<E, C> {
-			/**
-			 * Construct a new iterator iterating the keys in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayKeyIterator() {
-			}
-
-			/**
-			 * Construct a new iterator iterating the keys in the enclosing array, starting from the
-			 * given {@code beginThumb}.
-			 *
-			 * @param beginThumb the initial position of the constructed iterator.
-			 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb >
-			 *                                   length}.
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayKeyIterator(int beginThumb) {
-				super(beginThumb);
-			}
+				PrimitiveIterator<E, C>,
+				ArrayKeyIterator<E, E> {
 		}
 
 		/**
 		 * An array key set specialized for primitive values.
 		 *
+		 * @param <E> the type of the elements.
+		 * @param <C> the type of the consumer.
+		 * @param <P> the type of the predicate.
 		 * @author LSafer
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayKeySet
+		interface PrimitiveArrayKeySet
+				<E, C, P>
 				extends
-				ArrayKeySet
-				implements
-				PrimitiveSet<E, C, P> {
-			@SuppressWarnings("JavaDoc")
-			private static final long serialVersionUID = -4407052114591931652L;
-
+				PrimitiveSet<E, C, P>,
+				ArrayKeySet<E, E> {
 			@Override
-			public boolean removeIf(P predicate) {
+			default boolean removeIf(P predicate) {
 				throw new UnsupportedOperationException("removeIf");
 			}
-
-			@Override
-			public abstract PrimitiveArrayKeySet clone();
-
-			@Override
-			public abstract PrimitiveArrayKeyIterator iterator();
-
-			@Override
-			public abstract PrimitiveArrayKeySpliterator spliterator();
 		}
 
 		/**
 		 * An array key spliterator specialized for primitive values.
 		 *
+		 * @param <E> the type of the elements.
+		 * @param <C> the type of the consumer.
+		 * @param <S> the type of the spliterator.
 		 * @author LSafer
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayKeySpliterator
-				<S extends Spliterator.OfPrimitive<E, C, S>>
+		interface PrimitiveArrayKeySpliterator
+				<E, C, S extends Spliterator.OfPrimitive<E, C, S>>
 				extends
-				ArrayKeySpliterator
-				implements
-				Spliterator.OfPrimitive<E, C, S> {
-			/**
-			 * Construct a new spliterator iterating the keys in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayKeySpliterator() {
-			}
-
-			/**
-			 * Construct a new spliterator iterating the keys in the enclosing array, starting from
-			 * the given {@code beginThumb}.
-			 *
-			 * @param beginThumb the initial position of the constructed spliterator.
-			 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb >
-			 *                                   length}.
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayKeySpliterator(int beginThumb) {
-				super(beginThumb);
-			}
+				Spliterator.OfPrimitive<E, C, S>,
+				ArrayKeySpliterator<E, E> {
 		}
 
 		/**
 		 * An array value iterator specialized for primitive values.
 		 *
+		 * @param <E> the type of the elements.
+		 * @param <C> the type of the consumer.
 		 * @author LSafer
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayValueIterator
+		interface PrimitiveArrayValueIterator
+				<E, C>
 				extends
-				ArrayValueIterator
-				implements
-				PrimitiveIterator<E, C> {
-			/**
-			 * Construct a new iterator iterating the values in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayValueIterator() {
-			}
-
-			/**
-			 * Construct a new iterator iterating the values in the enclosing array, starting from
-			 * the given {@code beginThumb}.
-			 *
-			 * @param beginThumb the initial position of the constructed iterator.
-			 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb >
-			 *                                   length}.
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayValueIterator(int beginThumb) {
-				super(beginThumb);
-			}
+				PrimitiveIterator<E, C>,
+				ArrayValueIterator<E, E> {
 		}
 
 		/**
 		 * An array value spliterator specialized for primitive values.
 		 *
+		 * @param <E> the type of the elements.
+		 * @param <C> the type of the consumer.
+		 * @param <S> the type of the spliterator.
 		 * @author LSafer
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayValueSpliterator
-				<S extends Spliterator.OfPrimitive<E, C, S>>
+		interface PrimitiveArrayValueSpliterator
+				<E, C, S extends Spliterator.OfPrimitive<E, C, S>>
 				extends
-				ArrayValueSpliterator
-				implements
-				Spliterator.OfPrimitive<E, C, S> {
-			/**
-			 * Construct a new spliterator iterating the values in the enclosing array.
-			 *
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayValueSpliterator() {
-			}
-
-			/**
-			 * Construct a new spliterator iterating the values in the enclosing array, starting
-			 * from the given {@code beginThumb}.
-			 *
-			 * @param beginThumb the initial position of the constructed spliterator.
-			 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb >
-			 *                                   length}.
-			 * @since 0.1.5 ~2020.09.03
-			 */
-			protected PrimitiveArrayValueSpliterator(int beginThumb) {
-				super(beginThumb);
-			}
+				Spliterator.OfPrimitive<E, C, S>,
+				ArrayValueSpliterator<E, E> {
 		}
 
 		/**
 		 * An array values specialized for primitive values.
 		 *
+		 * @param <E> the type of the elements.
+		 * @param <C> the type of the consumer.
+		 * @param <P> the type of the predicate.
 		 * @author LSafer
 		 * @version 0.1.5
 		 * @since 0.1.5 ~2020.09.03
 		 */
-		public abstract class PrimitiveArrayValues
+		interface PrimitiveArrayValues
+				<E, C, P>
 				extends
-				ArrayValues
-				implements
-				PrimitiveCollection<E, C, P> {
-			@SuppressWarnings("JavaDoc")
-			private static final long serialVersionUID = -4299379063812585731L;
-
+				PrimitiveCollection<E, C, P>,
+				ArrayValues<E, E> {
 			@Override
-			public boolean removeIf(P predicate) {
+			default boolean removeIf(P predicate) {
 				throw new UnsupportedOperationException("removeIf");
 			}
-
-			@Override
-			public abstract PrimitiveArrayValues clone();
-
-			@Override
-			public abstract PrimitiveArrayValueIterator iterator();
-
-			@Override
-			public abstract PrimitiveArrayValueSpliterator spliterator();
 		}
 	}
 
 	/**
 	 * An array spliterator specialized for primitive values.
 	 *
+	 * @param <E> the type of the elements.
+	 * @param <C> the type of the consumer.
+	 * @param <S> the type of the spliterator.
 	 * @author LSafer
 	 * @version 0.1.5
 	 * @since 0.1.5 ~2020.09.03
 	 */
-	public abstract class PrimitiveArraySpliterator
-			<S extends Spliterator.OfPrimitive<E, C, S>>
+	interface PrimitiveArraySpliterator
+			<E, C, S extends Spliterator.OfPrimitive<E, C, S>>
 			extends
-			ArraySpliterator
-			implements
-			Spliterator.OfPrimitive<E, C, S> {
-		/**
-		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
-		 * the given {@code index}.
-		 *
-		 * @since 0.1.5 ~2020.09.03
-		 */
-		protected PrimitiveArraySpliterator() {
-		}
-
-		/**
-		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
-		 * the given {@code beginThumb}.
-		 *
-		 * @param beginThumb the initial position of the constructed spliterator.
-		 * @throws IndexOutOfBoundsException if {@code beginThumb < 0} or {@code beginThumb >
-		 *                                   length}.
-		 * @since 0.1.5 ~2020.09.03
-		 */
-		protected PrimitiveArraySpliterator(int beginThumb) {
-			super(beginThumb);
-		}
+			Spliterator.OfPrimitive<E, C, S>,
+			ArraySpliterator<E> {
 	}
 }
