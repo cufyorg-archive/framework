@@ -58,6 +58,11 @@ public interface Array<A, E> extends Iterable<E> {
 	 * must be sorted prior to making this call. If it is not sorted, the results are undefined. If
 	 * the array contains multiple elements with the specified value, there is no guarantee which
 	 * one will be found.
+	 * <p>
+	 * If the index found to be greater than {@link Integer#MAX_VALUE}, Then {@link
+	 * Integer#MAX_VALUE} will be returned. Or if the element was not found but it could be inserted
+	 * in a negative integer less {@link Integer#MIN_VALUE}, then {@link Integer#MIN_VALUE} will be
+	 * returned.
 	 *
 	 * @param object the value to be searched for.
 	 * @return index of the search object, if it is contained in the array; otherwise,
@@ -72,6 +77,11 @@ public interface Array<A, E> extends Iterable<E> {
 	 * must be sorted prior to making this call. If it is not sorted, the results are undefined. If
 	 * the array contains multiple elements with the specified value, there is no guarantee which
 	 * one will be found.
+	 * <p>
+	 * If the index found to be greater than {@link Integer#MAX_VALUE}, Then {@link
+	 * Integer#MAX_VALUE} will be returned. Or if the element was not found but it could be inserted
+	 * in a negative integer less {@link Integer#MIN_VALUE}, then {@link Integer#MIN_VALUE} will be
+	 * returned.
 	 *
 	 * @param element    the value to be searched for.
 	 * @param comparator the comparator by which the array is ordered. A null value indicates that
@@ -188,7 +198,8 @@ public interface Array<A, E> extends Iterable<E> {
 	void hardcopy(Object[] array, int pos, int length);
 
 	/**
-	 * Get the length of this array.
+	 * Get the length of this array. If the length is greater than {@link Integer#MAX_VALUE} then
+	 * {@link Integer#MAX_VALUE} will be returned.
 	 *
 	 * @return the length of this array.
 	 * @see java.lang.reflect.Array#getLength(Object)
