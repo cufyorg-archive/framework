@@ -1,0 +1,441 @@
+#make primitive:"boolean", prime:"boolean", Primitive:"Boolean", Prime:"Boolean", legacy: false|\
+		primitive:"byte", prime:"byte", Primitive:"Byte", Prime:"Byte", legacy: false|\
+		primitive:"character", prime:"char", Primitive:"Character", Prime:"Char", legacy: false|\
+		primitive:"double", prime:"double", Primitive:"Double", Prime:"Double", legacy: true|\
+		primitive:"float", prime:"float", Primitive:"Float", Prime:"Float", legacy: false|\
+		primitive:"integer", prime:"int", Primitive:"Integer", Prime:"Int", legacy: true|\
+		primitive:"long", prime:"long", Primitive:"Long", Prime:"Long", legacy: true|\
+		primitive:"short", prime:"short", Primitive:"Short", Prime:"Short", legacy: false
+
+#var ToDouble
+#var ToInt
+#var ToLong
+
+#if primitive == "double"
+#var ToDouble "DoubleUnaryOperator"
+#else
+#var ToDouble Prime + "ToDoubleFunction"
+#endif
+
+#if primitive == "integer"
+#var ToInt "IntUnaryOperator"
+#else
+#var ToInt Prime + "ToIntFunction"
+#endif
+
+#if primitive == "long"
+#var ToLong "LongUnaryOperator"
+#else
+#var ToLong Prime + "ToLongFunction"
+#endif
+
+/*
+ *	Copyright 2020 Cufy
+ *
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *
+ *	    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
+ */
+package cufy.util;
+
+#ln 1
+#if legacy
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.function.*;
+#else
+import cufy.util.function.#paste Prime#ToDoubleFunction;
+import cufy.util.function.#paste Prime#ToIntFunction;
+import cufy.util.function.#paste Prime#ToLongFunction;
+import cufy.util.function.#paste Prime#UnaryOperator;
+
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
+#endif
+#ln 1
+
+/**
+ * A comparator specialized for {@code #paste prime#} values.
+ *
+ * @author LSafer
+ * @version 0.1.5
+ * @since 0.1.5 ~2020.09.01
+ */
+@FunctionalInterface
+public interface #paste Prime#Comparator
+		extends
+		PrimitiveComparator<#paste Primitive#, #paste ToDouble#, #paste ToInt#, #paste ToLong#, #paste Prime#UnaryOperator, #paste Prime#Comparator> {
+	/**
+	 * A global instance of {@link NaturalOrder}.
+	 *
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	#ln
+	#lt##paste Prime#Comparator NATURAL = new NaturalOrder();
+	/**
+	 * A global instance of {@link ReverseOrder}.
+	 *
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	#ln
+	#lt##paste Prime#Comparator REVERSE = new ReverseOrder();
+
+	/**
+	 * Accepts a function that extracts a key, and returns a {@code Comparator<T>} that compares by
+	 * that key.
+	 * <p>
+	 * The returned comparator is serializable if the specified function is serializable.
+	 *
+	 * @param operator the function used to extract the key.
+	 * @return a comparator that compares by an extracted key.
+	 * @throws NullPointerException if the given {@code operator} is null.
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	static #paste Prime#Comparator comparing(#paste Prime#UnaryOperator operator) {
+		Objects.requireNonNull(operator, "operator");
+		return (#paste Prime#Comparator & Serializable) (v, o) -> #paste Primitive#.compare(
+				operator.applyAs#paste Prime#(v),
+				operator.applyAs#paste Prime#(o)
+		);
+	}
+
+	/**
+	 * Accepts a function that extracts a key and returns a {@code Comparator<T>} that compares by
+	 * that key using the specified {@link Comparator}.
+	 * <p>
+	 * The returned comparator is serializable if the specified function and comparator are both
+	 * serializable.
+	 *
+	 * @param operator   the function used to extract the key.
+	 * @param comparator the {@code Comparator} used to compare the key.
+	 * @return a comparator that compares by an extracted key using the specified {@code
+	 * 		Comparator}.
+	 * @throws NullPointerException if the given {@code operator} or {@code comparator} is null.
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	static #paste Prime#Comparator comparing(#paste Prime#UnaryOperator operator, #paste Prime#Comparator comparator) {
+		Objects.requireNonNull(operator, "operator");
+		Objects.requireNonNull(comparator, "comparator");
+		return (#paste Prime#Comparator & Serializable) (v, o) -> comparator.compare(
+				operator.applyAs#paste Prime#(v),
+				operator.applyAs#paste Prime#(o)
+		);
+	}
+
+	/**
+	 * Accepts a function that extracts a {@code double} key, and returns a {@code Comparator<T>}
+	 * that compares by that key.
+	 * <p>
+	 * The returned comparator is serializable if the specified function is serializable.
+	 *
+	 * @param function the function used to extract the double key.
+	 * @return a comparator that compares by an extracted key.
+	 * @throws NullPointerException if the given {@code function} is null.
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	static #paste Prime#Comparator comparingDouble(#paste ToDouble# function) {
+		Objects.requireNonNull(function, "function");
+		return (#paste Prime#Comparator & Serializable) (v, o) -> Double.compare(
+				function.applyAsDouble(v),
+				function.applyAsDouble(o)
+		);
+	}
+
+	/**
+	 * Accepts a function that extracts a {@code int} key, and returns a {@code Comparator<T>} that
+	 * compares by that key.
+	 * <p>
+	 * The returned comparator is serializable if the specified function is serializable.
+	 *
+	 * @param function the function used to extract the int key.
+	 * @return a comparator that compares by an extracted key.
+	 * @throws NullPointerException if the given {@code function} is null.
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	static #paste Prime#Comparator comparingInt(#paste ToInt# function) {
+		Objects.requireNonNull(function, "function");
+		return (#paste Prime#Comparator & Serializable) (v, o) -> Long.compare(
+				function.applyAsInt(v),
+				function.applyAsInt(o)
+		);
+	}
+
+	/**
+	 * Accepts a function that extracts a {@code long} key, and returns a {@code Comparator<T>} that
+	 * compares by that key.
+	 * <p>
+	 * The returned comparator is serializable if the specified function is serializable.
+	 *
+	 * @param function the function used to extract the long key.
+	 * @return a comparator that compares by an extracted key.
+	 * @throws NullPointerException if the given {@code function} is null.
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	static #paste Prime#Comparator comparingLong(#paste ToLong# function) {
+		Objects.requireNonNull(function, "function");
+		return (#paste Prime#Comparator & Serializable) (v, o) -> Long.compare(
+				function.applyAsLong(v),
+				function.applyAsLong(o)
+		);
+	}
+
+	/**
+	 * Returns a comparator that compares {@code #paste prime#}s in natural order.
+	 * <p>
+	 * The returned comparator is serializable.
+	 *
+	 * @return a comparator that imposes the <i>natural ordering</i> on {@code #paste prime#}s.
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	static #paste Prime#Comparator naturalOrder() {
+		return #paste Prime#Comparator.NATURAL;
+	}
+
+	/**
+	 * Returns a comparator that imposes the reverse of the <em>natural ordering</em>.
+	 * <p>
+	 * The returned comparator is serializable..
+	 *
+	 * @return a comparator that imposes the reverse of the <i>natural ordering</i> on {@code #paste prime#}s.
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	static #paste Prime#Comparator reverseOrder() {
+		return #paste Prime#Comparator.REVERSE;
+	}
+
+	@Override
+	default int compare(#paste Primitive# value, #paste Primitive# other) {
+		return this.compare((#paste prime#) value, (#paste prime#) other);
+	}
+
+	@Override
+	default #paste Prime#Comparator reversed() {
+		return new Reverse(this);
+	}
+
+	@Override
+	default #paste Prime#Comparator thenComparing(#paste Prime#Comparator other) {
+		Objects.requireNonNull(other, "other");
+		return (#paste Prime#Comparator & Serializable) (v, o) -> {
+			int r = this.compare(v, o);
+			return r == 0 ? other.compare(v, o) : r;
+		};
+	}
+
+	@Override
+	default #paste Prime#Comparator thenComparing(Comparator<? super #paste Primitive#> other) {
+		Objects.requireNonNull(other, "other");
+		return this.thenComparing(
+				other instanceof #paste Prime#Comparator ?
+				(#paste Prime#Comparator) other :
+				other::compare
+		);
+	}
+
+	@Override
+	default <R extends Comparable<? super R>> #paste Prime#Comparator thenComparing(Function<? super #paste Primitive#, ? extends R> function) {
+		//noinspection RedundantComparatorComparing
+		return function instanceof #paste Prime#UnaryOperator ?
+			   this.thenComparing((#paste Prime#UnaryOperator) function) :
+			   this.thenComparing(Comparator.comparing(function));
+	}
+
+	@Override
+	default #paste Prime#Comparator thenComparing(#paste Prime#UnaryOperator operator) {
+		return this.thenComparing(#paste Prime#Comparator.comparing(
+				operator
+		));
+	}
+
+	@Override
+	default <R> #paste Prime#Comparator thenComparing(Function<? super #paste Primitive#, ? extends R> function, Comparator<? super R> comparator) {
+		//noinspection RedundantComparatorComparing
+		return function instanceof #paste Prime#UnaryOperator && comparator instanceof #paste Prime#Comparator ?
+			   this.thenComparing((#paste Prime#UnaryOperator) function, (#paste Prime#Comparator) comparator) :
+			   this.thenComparing(Comparator.comparing(function, comparator));
+	}
+
+	@Override
+	default #paste Prime#Comparator thenComparing(#paste Prime#UnaryOperator operator, #paste Prime#Comparator comparator) {
+		return this.thenComparing(#paste Prime#Comparator.comparing(
+				operator,
+				comparator
+		));
+	}
+
+	@Override
+	default #paste Prime#Comparator thenComparingDouble(ToDoubleFunction<? super #paste Primitive#> function) {
+		Objects.requireNonNull(function, "function");
+		return this.thenComparingDouble(
+				function instanceof #paste ToDouble# ?
+				(#paste ToDouble#) function:
+				function::applyAsDouble
+		);
+	}
+
+	@Override
+	default #paste Prime#Comparator thenComparingDouble(#paste ToDouble# function) {
+		return this.thenComparing(#paste Prime#Comparator.comparingDouble(
+				function
+		));
+	}
+
+	@Override
+	default #paste Prime#Comparator thenComparingInt(ToIntFunction<? super #paste Primitive#> function) {
+		Objects.requireNonNull(function, "function");
+		return this.thenComparingInt(
+				function instanceof #paste ToInt# ?
+				(#paste ToInt#) function:
+				function::applyAsInt
+		);
+	}
+
+	@Override
+	default #paste Prime#Comparator thenComparingInt(#paste ToInt# function) {
+		Objects.requireNonNull(function, "function");
+		return this.thenComparing(#paste Prime#Comparator.comparingInt(
+				function
+		));
+	}
+
+	@Override
+	default #paste Prime#Comparator thenComparingLong(ToLongFunction<? super #paste Primitive#> function) {
+		Objects.requireNonNull(function, "function");
+		return this.thenComparingLong(
+				function instanceof #paste ToLong# ?
+				(#paste ToLong#) function:
+				function::applyAsLong
+		);
+	}
+
+	@Override
+	default #paste Prime#Comparator thenComparingLong(#paste ToLong# function) {
+		return this.thenComparing(#paste Prime#Comparator.comparingLong(
+				function
+		));
+	}
+
+	/**
+	 * Compares its two arguments for order.  Returns a negative integer, zero, or a positive
+	 * integer as the first argument is less than, equal to, or greater than the second.
+	 *
+	 * @param value the first argument to be compared.
+	 * @param other the second argument to be compared.
+	 * @return a negative integer, zero, or a positive integer as the first argument is less than,
+	 * 		equal to, or greater than the second.
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	int compare(#paste prime# value, #paste prime# other);
+
+	/**
+	 * An {@link #paste Prime#Comparator} that follows the natural ordering.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	class NaturalOrder implements #paste Prime#Comparator, Serializable {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -8066895119922404900L;
+
+		@Override
+		public int compare(#paste prime# value, #paste prime# other) {
+			return #paste Primitive#.compare(value, other);
+		}
+
+		@Override
+		public #paste Prime#Comparator reversed() {
+			return #paste Prime#Comparator.REVERSE;
+		}
+	}
+
+	/**
+	 * A reversed {@link #paste Prime#Comparator} based on another {@link #paste Prime#Comparator}.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	class Reverse implements #paste Prime#Comparator, Serializable {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -5427742021938589022L;
+
+		/**
+		 * The comparator backing this comparator. The comparator will be reversed when used.
+		 *
+		 * @since 0.1.5 ~2020.09.01
+		 */
+		protected final #paste Prime#Comparator comparator;
+
+		/**
+		 * Construct a new reversed comparator reversing the given {@code comparator}.
+		 *
+		 * @param comparator the comparator the constructed comparator is backed by the reverse of
+		 *                   it.
+		 * @throws NullPointerException if the given {@code comparator} is null.
+		 * @since 0.1.5 ~2020.09.01
+		 */
+		public Reverse(#paste Prime#Comparator comparator) {
+			Objects.requireNonNull(comparator, "comparator");
+			this.comparator = comparator;
+		}
+
+		@Override
+		public int compare(#paste prime# value, #paste prime# other) {
+			return this.comparator.compare(other, value);
+		}
+
+		@Override
+		public #paste Prime#Comparator reversed() {
+			return this.comparator;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			return object == this ||
+				   object instanceof Reverse &&
+				   ((Reverse) object).comparator.equals(this.comparator);
+		}
+
+		@Override
+		public int hashCode() {
+			return this.comparator.hashCode() ^ Integer.MIN_VALUE;
+		}
+	}
+
+	/**
+	 * Reversed <i>natural ordering</i> comparator.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	class ReverseOrder implements #paste Prime#Comparator, Serializable {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = 2243904103573461375L;
+
+		@Override
+		public int compare(#paste prime# value, #paste prime# other) {
+			return #paste Primitive#.compare(other, value);
+		}
+
+		@Override
+		public #paste Prime#Comparator reversed() {
+			return #paste Prime#Comparator.NATURAL;
+		}
+	}
+}

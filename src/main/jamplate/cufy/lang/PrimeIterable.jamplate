@@ -1,0 +1,101 @@
+#make primitive:"boolean", prime:"boolean", Primitive:"Boolean", Prime:"Boolean", legacy: false|\
+		primitive:"byte", prime:"byte", Primitive:"Byte", Prime:"Byte", legacy: false|\
+		primitive:"character", prime:"char", Primitive:"Character", Prime:"Char", legacy: false|\
+		primitive:"double", prime:"double", Primitive:"Double", Prime:"Double", legacy: true|\
+		primitive:"float", prime:"float", Primitive:"Float", Prime:"Float", legacy: false|\
+		primitive:"integer", prime:"int", Primitive:"Integer", Prime:"Int", legacy: true|\
+		primitive:"long", prime:"long", Primitive:"Long", Prime:"Long", legacy: true|\
+		primitive:"short", prime:"short", Primitive:"Short", Prime:"Short", legacy: false
+
+#var Iterator
+#var Spliterator
+
+#if legacy
+#var Iterator "PrimitiveIterator.Of" + Prime
+#var Spliterator "Spliterator.Of" + Prime
+#else
+#var Iterator Prime + "Iterator"
+#var Spliterator Prime + "Spliterator"
+#endif
+
+/*
+ *	Copyright 2020 Cufy
+ *
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *
+ *	    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
+ */
+package cufy.lang;
+
+#ln 1
+#if legacy
+import java.util.Objects;
+import java.util.PrimitiveIterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Consumer;
+import java.util.function.#paste Prime#Consumer;
+#else
+import cufy.util.#paste Iterator#;
+import cufy.util.#paste Spliterator#;
+import cufy.util.function.#paste Prime#Consumer;
+
+import java.util.Objects;
+import java.util.function.Consumer;
+#endif
+#ln 1
+
+/**
+ * An iterator specialize for {@code #paste prime#} values.
+ *
+ * @author LSafer
+ * @version 0.1.5
+ * @since 0.1.5 ~2020.09.01
+ */
+public interface #paste Prime#Iterable
+		extends PrimitiveIterable<#paste Primitive#, #paste Prime#Consumer> {
+	@Override
+	default void forEach(Consumer<? super #paste Primitive#> consumer) {
+		Objects.requireNonNull(consumer, "consumer");
+		this.forEach(
+				consumer instanceof #paste Prime#Consumer ?
+				(#paste Prime#Consumer) consumer :
+				consumer::accept
+		);
+	}
+
+	@Override
+	default void forEach(#paste Prime#Consumer consumer) {
+		this.iterator().forEachRemaining(consumer);
+	}
+
+	#if legacy
+	#ln 1
+	@Override
+	default #paste Spliterator# spliterator() {
+		return Spliterators.spliteratorUnknownSize(this.iterator(), 0);
+	}
+	#endif
+	#ln 1
+
+	@Override
+	#ln
+	#lt##paste Iterator# iterator();
+	#ln
+
+	#if !legacy
+	#ln
+	@Override
+	#ln
+	#lt##paste Spliterator# spliterator();
+	#ln
+	#endif
+}

@@ -1,17 +1,18 @@
 apply plugin: 'java-library'
-apply plugin: 'jpsg'
+apply plugin: 'jamplate'
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
-//sourceSets.test.java.srcDirs += ['src/main/javaTemplates']
-
 buildscript() {
 	repositories {
 		mavenCentral()
+		maven {
+			url 'https://jitpack.io'
+		}
 	}
 	dependencies {
-		classpath 'io.timeandspace:jpsg-gradle-plugin:1.4'
+		classpath 'org.cufy:jamplate-gradle-plugin:0.0.a'
 	}
 }
 

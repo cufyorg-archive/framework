@@ -1,0 +1,2624 @@
+#make primitive:"boolean", prime:"boolean", Primitive:"Boolean", Prime:"Boolean", legacy: false, defaultValue:"false"|\
+		primitive:"byte", prime:"byte", Primitive:"Byte", Prime:"Byte", legacy: false, defaultValue:"0"|\
+		primitive:"character", prime:"char", Primitive:"Character", Prime:"Char", legacy: false, defaultValue:"0"|\
+		primitive:"double", prime:"double", Primitive:"Double", Prime:"Double", legacy: true, defaultValue:"0.0D"|\
+		primitive:"float", prime:"float", Primitive:"Float", Prime:"Float", legacy: false, defaultValue:"0.0F"|\
+		primitive:"integer", prime:"int", Primitive:"Integer", Prime:"Int", legacy: true, defaultValue:"0"|\
+		primitive:"long", prime:"long", Primitive:"Long", Prime:"Long", legacy: true, defaultValue:"0L"|\
+		primitive:"short", prime:"short", Primitive:"Short", Prime:"Short", legacy: false, defaultValue:"0"
+
+#var IntTo
+#var ToDouble
+#var ToInt
+#var ToLong
+#var Iterator
+#var Spliterator
+
+#if primitive == "double"
+#var ToDouble "DoubleUnaryOperator"
+#else
+#var ToDouble Prime + "ToDoubleFunction"
+#endif
+
+#if primitive == "integer"
+#var IntTo "IntUnaryOperator"
+#var ToInt "IntUnaryOperator"
+#else
+#var IntTo "IntTo" + Prime + "Function"
+#var ToInt Prime + "ToIntFunction"
+#endif
+
+#if primitive == "long"
+#var ToLong "LongUnaryOperator"
+#else
+#var ToLong Prime + "ToLongFunction"
+#endif
+
+#if legacy
+#var Iterator "PrimitiveIterator.Of" + Prime
+#var Spliterator "Spliterator.Of" + Prime
+#else
+#var Iterator Prime + "Iterator"
+#var Spliterator Prime + "Spliterator"
+#endif
+
+/*
+ *	Copyright 2020 Cufy
+ *
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *
+ *	    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
+ */
+package cufy.util;
+
+#ln 1
+#if legacy
+import cufy.lang.#paste Prime#Iterable;
+import cufy.util.function.#paste Prime#BiConsumer;
+import cufy.util.function.#paste Prime#BiFunction;
+import cufy.util.function.#paste Prime#ObjBiFunction;
+
+import java.util.Objects;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.IntStream;
+#ln
+#if primitive != "integer"
+import java.util.stream.#paste Prime#Stream;
+#ln
+#endif
+import java.util.stream.StreamSupport;
+#else
+import cufy.lang.#paste Prime#Iterable;
+import cufy.util.function.*;
+
+import java.util.Objects;
+import java.util.*;
+import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.stream.IntStream;
+#endif
+#ln 1
+
+/**
+ * An array specialized for {@code #paste prime#} values.
+ *
+ * @author LSafer
+ * @version 0.1.5
+ * @since 0.1.5 ~2020.08.03
+ */
+@SuppressWarnings("DuplicatedCode")
+public class #paste Prime#Array
+		extends
+		AbstractPrimitiveArray<
+				#ln
+				#lt 3##paste prime#[],
+				#ln
+				#lt 3##paste Primitive#,
+				#ln
+				#lt 3##paste Prime#Consumer,
+				#ln
+				#lt 3##paste Prime#BiConsumer,
+				#ln
+				#lt 3##paste IntTo#,
+				#ln
+				#lt 3##paste ToDouble#,
+				#ln
+				#lt 3##paste ToInt#,
+				#ln
+				#lt 3##paste ToLong#,
+				#ln
+				#lt 3##paste Prime#UnaryOperator,
+				#ln
+				#lt 3##paste Prime#BinaryOperator,
+				#ln
+				#lt 3##paste Prime#Predicate,
+				#ln
+				#lt 3##paste Prime#Comparator
+				>
+		implements
+		#ln
+		#lt 1##paste Prime#Iterable {
+	@SuppressWarnings("JavaDoc")
+	private static final long serialVersionUID = 3201994039505608491L;
+
+	/**
+	 * Construct a new array backed by a new actual array that have the given {@code length}.
+	 *
+	 * @param length the length of the new actual array backing the construct array.
+	 * @throws NegativeArraySizeException if the given {@code length} is negative.
+	 * @see java.lang.reflect.Array\#newInstance(Class, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public #paste Prime#Array(int length) {
+		super(new #paste prime#[length]);
+	}
+
+	/**
+	 * Construct a new array backed by the given {@code array}.
+	 *
+	 * @param array the array to be backing the constructed array.
+	 * @throws NullPointerException if the given {@code array} is null.
+	 * @since 0.1.5 ~2020.08.05
+	 */
+	public #paste Prime#Array(#paste prime#[] array) {
+		super(array);
+	}
+
+	/**
+	 * Construct a new array backed by the specified range of the given {@code array}. The range
+	 * starts at the given {@code beginIndex} and ends before the given {@code endIndex}.
+	 *
+	 * @param array      the array to be backing the constructed array.
+	 * @param beginIndex the first index of the area at the given {@code array} to be backing the
+	 *                   constructed array.
+	 * @param endIndex   one past the last index of the area at the given {@code array} to be
+	 *                   backing the constructed array.
+	 * @throws NullPointerException      if the given {@code array} is null.
+	 * @throws IndexOutOfBoundsException if {@code beginIndex < 0} or {@code endIndex >
+	 *                                   array.length}.
+	 * @throws IllegalArgumentException  if {@code beginIndex > endIndex}.
+	 * @since 0.1.5 ~2020.08.05
+	 */
+	public #paste Prime#Array(#paste prime#[] array, int beginIndex, int endIndex) {
+		super(array, beginIndex, endIndex);
+	}
+
+	/**
+	 * Construct a new array backed by the given {@code array}.
+	 *
+	 * @param array the array to be backing the constructed array.
+	 * @return a new array backed by the given {@code array}.
+	 * @throws java.lang.NullPointerException if the given {@code array}.
+	 * @since 0.1.5 ~2020.09.13
+	 */
+	public static #paste Prime#Array of(#paste prime#... array) {
+		return new #paste Prime#Array(array);
+	}
+
+	@Override
+	public int binarySearch(Object object) {
+		return object instanceof #paste Primitive# ?
+			   this.binarySearch((#paste prime#) object) :
+			   -1;
+	}
+
+	@Override
+	public int binarySearch(#paste Primitive# element, Comparator<? super #paste Primitive#> comparator) {
+		return element == null ?
+			   -1 :
+			   this.binarySearch(
+					   (#paste prime#) element,
+					   comparator == null ||
+					   comparator instanceof #paste Prime#Comparator ?
+					   (#paste Prime#Comparator) comparator :
+					   comparator::compare
+			   );
+	}
+
+	@Override
+	public #paste Prime#Array clone() {
+		return new #paste Prime#Array(this.copy());
+	}
+
+	@Override
+	public void copy(Object array, int pos, int length) {
+		Objects.requireNonNull(array, "array");
+		if (array instanceof #paste prime#[])
+			this.arraycopy((#paste prime#[]) array, pos, length);
+		else if (array instanceof Object[])
+			this.hardcopy((Object[]) array, pos, length);
+		else if (array.getClass().isArray())
+			throw new ArrayStoreException(
+					"copy: type mismatch: can not copy #paste prime#[] into " +
+					array.getClass().getSimpleName()
+			);
+		else
+			throw new ArrayStoreException(
+					"copy: destination type " + array.getClass().getName() + " is not an array"
+			);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object == this)
+			return true;
+		if (object instanceof Array) {
+			Array array = (Array) object;
+
+			if (array.length() != this.length())
+				return false;
+
+			Iterator iterator = array.iterator();
+
+			if (iterator instanceof #paste Iterator#) {
+				#ln
+				#lt 3##paste Iterator# iterator1 = (#paste Iterator#) iterator;
+
+				int i = this.beginIndex;
+				while (iterator1.hasNext()) {
+					if (i < this.endIndex && this.eq(iterator1.next#paste Prime#(), this.array[i++]))
+						continue;
+
+					return false;
+				}
+
+				return i == this.endIndex;
+			} else {
+				int i = this.beginIndex;
+				while (iterator.hasNext()) {
+					if (i < this.endIndex && this.eq(iterator.next(), this.array[i++]))
+						continue;
+
+					return false;
+				}
+
+				return i == this.endIndex;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public void fill(#paste Primitive# element) {
+		this.fill((#paste prime#) element);
+	}
+
+	@Override
+	public void forEach(Consumer<? super #paste Primitive#> consumer) {
+		Objects.requireNonNull(consumer, "consumer");
+		this.forEach(
+				consumer instanceof #paste Prime#Consumer ?
+				(#paste Prime#Consumer) consumer :
+				consumer::accept
+		);
+	}
+
+	@Override
+	public void forEach(#paste Prime#Consumer consumer) {
+		Objects.requireNonNull(consumer, "consumer");
+		for (int i = this.beginIndex; i < this.endIndex; i++)
+			consumer.accept(this.array[i]);
+	}
+
+	@Override
+	public #paste Primitive# get(int thumb) {
+		return this.get#paste Prime#(thumb);
+	}
+
+	@Override
+	public void hardcopy(Object[] array, int pos, int length) {
+		Objects.requireNonNull(array, "array");
+		if (length < 0)
+			throw new IndexOutOfBoundsException("length(" + length + ") < 0");
+		if (pos < 0)
+			throw new IndexOutOfBoundsException("pos(" + pos + ") < 0");
+
+		int thisLength = this.endIndex - this.beginIndex;
+		if (length > thisLength)
+			throw new ArrayIndexOutOfBoundsException(
+					"length(" + length + ") > this.length(" + thisLength + ")"
+			);
+		if (pos + length > array.length)
+			throw new IndexOutOfBoundsException(
+					"pos(" + pos + ") + length(" + length + ") > array.length(" + array.length + ")"
+			);
+
+		try {
+			//set boundaries
+			int beginIndex = this.beginIndex;
+			int endIndex = this.beginIndex + length;
+
+			for (int i = beginIndex, j = pos; i < endIndex; i++, j++)
+				array[j] = this.array[i];
+		} catch (IllegalArgumentException e) {
+			throw new ArrayStoreException(e.getMessage());
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = 1;
+
+		for (int i = this.beginIndex; i < this.endIndex; i++)
+			hashCode = 31 * hashCode + this.hash(this.array[i]);
+
+		return hashCode;
+	}
+
+	@Override
+	public #paste Prime#ArrayIterator iterator() {
+		return new #paste Prime#ArrayIterator();
+	}
+
+	@Override
+	public #paste Prime#ArrayList list() {
+		return new #paste Prime#ArrayList();
+	}
+
+	@Override
+	public #paste Prime#ArrayListIterator listIterator() {
+		return new #paste Prime#ArrayListIterator();
+	}
+
+	@Override
+	public #paste Prime#ArrayMap map() {
+		return new #paste Prime#ArrayMap();
+	}
+
+	@Override
+	public void parallelPrefix(BinaryOperator<#paste Primitive#> operator) {
+		Objects.requireNonNull(operator, "operator");
+		this.parallelPrefix(
+				operator instanceof #paste Prime#BinaryOperator ?
+				(#paste Prime#BinaryOperator) operator :
+				operator::apply
+		);
+	}
+
+	@Override
+	public void parallelPrefix(#paste Prime#BinaryOperator operator) {
+		Objects.requireNonNull(operator, "operator");
+		#ln
+		#if legacy
+		//fixme: -redirect
+		java.util.Arrays.parallelPrefix(
+				this.array,
+				this.beginIndex,
+				this.endIndex,
+				operator
+		);
+		#else
+		//fixme: -redirect -temp
+		#ln
+		#lt 1##paste Primitive#[] temp = new #paste Primitive#[this.endIndex - this.beginIndex];
+		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+			temp[j] = this.array[i];
+		java.util.Arrays.parallelPrefix(temp, operator::applyAs#paste Prime#);
+		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+			this.array[i] = temp[j];
+		#endif
+		#ln
+	}
+
+	@Override
+	public void parallelSetAll(IntFunction<? extends #paste Primitive#> function) {
+		Objects.requireNonNull(function, "function");
+		this.parallelSetAll(
+				function instanceof #paste IntTo# ?
+				(#paste IntTo#) function :
+				function::apply
+		);
+	}
+
+	@Override
+	public void parallelSetAll(#paste IntTo# function) {
+		Objects.requireNonNull(function, "function");
+		IntStream.range(this.beginIndex, this.endIndex)
+				.parallel()
+				.forEach(
+						i -> this.array[i] = function.applyAs#paste Prime#(this.thumb(i))
+				);
+	}
+
+	@Override
+	public void parallelSort() {
+		#ln
+		#if primitive != "boolean"
+		//fixme: -redirect
+		java.util.Arrays.parallelSort(
+				this.array,
+				this.beginIndex,
+				this.endIndex
+		);
+		#else
+		//fixme: -redirect -temp
+		#ln
+		#lt 1##paste Primitive#[] temp = new #paste Primitive#[this.endIndex - this.beginIndex];
+		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+			temp[j] = this.array[i];
+		java.util.Arrays.parallelSort(temp);
+		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+			this.array[i] = temp[j];
+		#endif
+		#ln
+	}
+
+	@Override
+	public void parallelSort(Comparator<? super #paste Primitive#> comparator) {
+		this.parallelSort(
+				comparator == null ||
+				comparator instanceof #paste Prime#Comparator ?
+				(#paste Prime#Comparator) comparator :
+				comparator::compare
+		);
+	}
+
+	@Override
+	public void parallelSort(#paste Prime#Comparator comparator) {
+		if (comparator == null)
+			this.parallelSort();
+		else {
+			//fixme: -redirect -temp
+			#ln
+			#lt 2##paste Primitive#[] temp = new #paste Primitive#[this.endIndex - this.beginIndex];
+			for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+				temp[j] = this.array[i];
+			java.util.Arrays.sort(temp, comparator);
+			for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+				this.array[i] = temp[j];
+		}
+	}
+
+	@Override
+	public void set(int thumb, #paste Primitive# element) {
+		this.set#paste Prime#(thumb, element);
+	}
+
+	@Override
+	public void setAll(IntFunction<? extends #paste Primitive#> function) {
+		Objects.requireNonNull(function, "function");
+		this.setAll(
+				function instanceof #paste IntTo# ?
+				(#paste IntTo#) function :
+				function::apply
+		);
+	}
+
+	@Override
+	public void setAll(#paste IntTo# function) {
+		Objects.requireNonNull(function, "function");
+		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+			this.array[i] = function.applyAs#paste Prime#(j);
+	}
+
+	@Override
+	public void sort() {
+		#ln
+		#if primitive != "boolean"
+		//fixme: -redirect
+		java.util.Arrays.sort(
+				this.array,
+				this.beginIndex,
+				this.endIndex
+		);
+		#else
+		//fixme: -redirect -temp
+		#ln
+		#lt 1##paste Primitive#[] temp = new #paste Primitive#[this.endIndex - this.beginIndex];
+		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+			temp[j] = this.array[i];
+		java.util.Arrays.sort(temp);
+		for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+			this.array[i] = temp[j];
+		#endif
+		#ln
+	}
+
+	@Override
+	public void sort(Comparator<? super #paste Primitive#> comparator) {
+		this.sort(
+				comparator == null ||
+				comparator instanceof #paste Prime#Comparator ?
+				(#paste Prime#Comparator) comparator :
+				comparator::compare
+		);
+	}
+
+	@Override
+	public void sort(#paste Prime#Comparator comparator) {
+		if (comparator == null)
+			this.sort();
+		else {
+			//fixme: -redirect -temp
+			#ln
+			#lt 2##paste Primitive#[] temp = new #paste Primitive#[this.endIndex - this.beginIndex];
+			for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+				temp[j] = this.array[i];
+			java.util.Arrays.sort(temp, comparator);
+			for (int i = this.beginIndex, j = 0; i < this.endIndex; i++, j++)
+				this.array[i] = temp[j];
+		}
+	}
+
+	@Override
+	public #paste Prime#ArraySpliterator spliterator() {
+		return new #paste Prime#ArraySpliterator();
+	}
+
+	@Override
+	public #paste Prime#Array sub(int beginThumb, int endThumb) {
+		this.range(beginThumb, endThumb);
+		return new #paste Prime#Array(
+				this.array,
+				this.beginIndex + beginThumb,
+				this.beginIndex + endThumb
+		);
+	}
+
+	@Override
+	public String toString() {
+		if (this.endIndex <= this.beginIndex)
+			return "[]";
+
+		StringBuilder builder = new StringBuilder("[");
+
+		int i = this.beginIndex;
+		while (true) {
+			builder.append(this.array[i]);
+
+			if (++i >= this.endIndex)
+				return builder.append("]")
+						.toString();
+
+			builder.append(", ");
+		}
+	}
+
+	/**
+	 * Searches the this array for the specified value using the binary search algorithm. This array
+	 * must be sorted prior to making this call. If it is not sorted, the results are undefined. If
+	 * the array contains multiple elements with the specified value, there is no guarantee which
+	 * one will be found.
+	 *
+	 * @param element the value to be searched for.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	#ln
+	#if primitive != "boolean"
+	 * @see java.util.Arrays\#binarySearch(#paste prime#[], #paste prime#)
+	#endif
+	 * @since 0.1.5 ~2020.08.30
+	 */
+	public int binarySearch(#paste prime# element) {
+		int l = this.beginIndex;
+		int h = this.endIndex - 1;
+		while (l <= h) {
+			int m = l + h >>> 1;
+			#ln
+			#lt 2##paste prime# mv = this.array[m];
+			int r = #paste Primitive#.compare(mv, element);
+
+			if (r < 0)
+				l = m + 1;
+			else if (r > 0)
+				h = m - 1;
+			else
+				return this.thumb(m);
+		}
+
+		return this.thumb(-(l + 1));
+	}
+
+	/**
+	 * Searches the this array for the specified value using the binary search algorithm. This array
+	 * must be sorted prior to making this call. If it is not sorted, the results are undefined. If
+	 * the array contains multiple elements with the specified value, there is no guarantee which
+	 * one will be found.
+	 *
+	 * @param element    the value to be searched for.
+	 * @param comparator the comparator by which the array is ordered. A null value indicates that
+	 *                   the elements' natural ordering should be used.
+	 * @return index of the search element, if it is contained in the array; otherwise,
+	 * 		(-(<i>insertion point</i>) - 1).
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public int binarySearch(#paste prime# element, #paste Prime#Comparator comparator) {
+		if (comparator == null)
+			return this.binarySearch(element);
+
+		int l = this.beginIndex;
+		int h = this.endIndex - 1;
+		while (l <= h) {
+			int m = l + h >>> 1;
+			#ln
+			#lt 2##paste prime# mv = this.array[m];
+			int r = comparator.compare(mv, element);
+
+			if (r < 0)
+				l = m + 1;
+			else if (r > 0)
+				h = m - 1;
+			else
+				return this.thumb(m);
+		}
+
+		return this.thumb(-(l + 1));
+	}
+
+	/**
+	 * Assign the given {@code element} to each element of this array.
+	 *
+	 * @param element the element to fill this array with.
+	 * @see java.util.Arrays\#fill(#paste prime#[], #paste prime#)
+	 * @since 0.1.5 ~2020.08.30
+	 */
+	public void fill(#paste prime# element) {
+		for (int i = this.beginIndex; i < this.endIndex; i++)
+			this.array[i] = element;
+	}
+
+	/**
+	 * Get the element at the given {@code thumb} in this array.
+	 *
+	 * @param thumb the thumb to get the element from.
+	 * @return the element at the given {@code thumb} in this array.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @see java.lang.reflect.Array\#get#paste Prime#(Object, int)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public #paste prime# get#paste Prime#(int thumb) {
+		return this.array[this.index(thumb)];
+	}
+
+	#if legacy
+	#ln 1
+	/**
+	 * Get a {@link #paste Prime#Stream} streaming the elements in this array.
+	 *
+	 * @return a stream streaming the elements in this array.
+	 * @see java.util.Arrays\#stream(#paste prime#[])
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public #paste Prime#Stream #paste prime#Stream() {
+		return StreamSupport.#paste prime#Stream(this.spliterator(), false);
+	}
+
+	/**
+	 * Get a parallel {@link #paste Prime#Stream} streaming the elements in this array.
+	 *
+	 * @return a stream streaming the elements in this array.
+	 * @see java.util.Arrays\#stream(#paste prime#[])
+	 * @since 0.1.5 ~2020.08.11
+	 */
+	public #paste Prime#Stream parallel#paste Prime#Stream() {
+		return StreamSupport.#paste prime#Stream(this.spliterator(), true);
+	}
+	#endif
+	#ln 1
+
+	/**
+	 * Set the element at the given {@code thumb} in this array to the given {@code element}.
+	 *
+	 * @param thumb   the thumb to set the given {@code element} to.
+	 * @param element the element to be set.
+	 * @throws ArrayIndexOutOfBoundsException if {@code thumb < 0} or {@code thumb >= length}.
+	 * @see java.lang.reflect.Array\#set#Prime#(Object, int, #paste prime#)
+	 * @since 0.1.5 ~2020.08.13
+	 */
+	public void set#paste Prime#(int thumb, #paste prime# element) {
+		this.array[this.index(thumb)] = element;
+	}
+
+	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check (for
+	 * object-primitive) in this class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(Object element, #paste prime# e) {
+		#ln
+		#if primitive == "double"
+		return element instanceof #paste Primitive# &&
+				#ln
+				#lt 3##paste Primitive#.#paste prime#ToLongBits((#paste prime#) element) ==
+				#ln
+				#lt 3##paste Primitive#.#paste prime#ToLongBits(e);
+		#elif primitive == "float"
+		return element instanceof #paste Primitive# &&
+				#ln
+				#lt 3##paste Primitive#.#paste prime#ToIntBits((#paste prime#) element) ==
+				#ln
+				#lt 3##paste Primitive#.#paste prime#ToIntBits(e);
+		#else
+		return element instanceof #paste Primitive# &&
+			   (#paste prime#) element == e;
+		#endif
+		#ln
+	}
+
+	/**
+	 * Determine if the given two elements are equal or not. This is the base equality check (for
+	 * primitive-primitive) in this class and it should be for its subclasses.
+	 *
+	 * @param element the first element.
+	 * @param e       the second element.
+	 * @return true, if the given {@code element} equals the given {@code e} in this class's
+	 * 		standard.
+	 * @since 0.1.5 ~2020.08.18
+	 */
+	protected boolean eq(#paste prime# element, #paste prime# e) {
+		#ln
+		#if primitive == "double"
+		return #paste Primitive#.#paste prime#ToLongBits(element) ==
+				#ln
+				#lt 3##paste Primitive#.#paste prime#ToLongBits(e);
+		#elif primitive == "float"
+		return #paste Primitive#.#paste prime#ToIntBits(element) ==
+				#ln
+				#lt 3##paste Primitive#.#paste prime#ToIntBits(e);
+		#else
+		return element == e;
+		#endif
+		#ln
+	}
+
+	/**
+	 * Calculate the hash code of the given element. This is the base hash code algorithm in this
+	 * class and it should be for its subclasses.
+	 *
+	 * @param e the element to calculate its hashCode.
+	 * @return the calculated hash code of the given element.
+	 * @since 0.1.5 ~2020.08.31
+	 */
+	protected int hash(#paste prime# e) {
+		return #paste Primitive#.hashCode(e);
+	}
+
+	/**
+	 * An iterator iterating the elements in the enclosing array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public class #paste Prime#ArrayIterator
+			extends
+			AbstractPrimitiveArrayIterator
+			implements
+			#ln
+			#lt 2##paste Iterator# {
+		/**
+		 * Construct a new iterator iterating the elements in the enclosing array.
+		 *
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		public #paste Prime#ArrayIterator() {
+		}
+
+		/**
+		 * Construct a new iterator iterating the elements in the enclosing array.
+		 *
+		 * @param beginThumb the initial position of the constructed iterator.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		public #paste Prime#ArrayIterator(int beginThumb) {
+			super(beginThumb);
+		}
+
+		@Override
+		public void forEachRemaining(#paste Prime#Consumer consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			int index = this.index;
+			this.index = endIndex;
+			for (int i = index; i < endIndex; i++)
+				consumer.accept(array[i]);
+		}
+
+		@Override
+		public #paste prime# next#paste Prime#() {
+			int index = this.index;
+
+			if (index < endIndex) {
+				this.index++;
+				return array[index];
+			}
+
+			throw new NoSuchElementException();
+		}
+	}
+
+	/**
+	 * A list backed by the enclosing array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public class #paste Prime#ArrayList
+			extends
+			AbstractPrimitiveArrayList
+			implements
+			#ln
+			#lt 2##paste Prime#List {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = 848985287158674978L;
+
+		@Override
+		public void add(int thumb, #paste Primitive# element) {
+			//redundant
+			throw new UnsupportedOperationException("add");
+		}
+
+		@Override
+		public boolean add(#paste Primitive# element) {
+			//redundant
+			throw new UnsupportedOperationException("add");
+		}
+
+		@Override
+		public void add#paste Prime#(int index, #paste prime# element) {
+			throw new UnsupportedOperationException("add#paste Prime#");
+		}
+
+		@Override
+		public boolean add#paste Prime#(#paste prime# element) {
+			throw new UnsupportedOperationException("add#paste Prime#");
+		}
+
+		@Override
+		public #paste Prime#ArrayList clone() {
+			return new #paste Prime#Array(copy())
+					.new #paste Prime#ArrayList();
+		}
+
+		@Override
+		public boolean contains(#paste prime# element) {
+			for (int i = beginIndex; i < endIndex; i++)
+				if (eq(element, array[i]))
+					return true;
+
+			return false;
+		}
+
+		@Override
+		public boolean containsAll(Collection collection) {
+			Objects.requireNonNull(collection, "collection");
+
+			Iterator iterator = collection.iterator();
+
+			if (iterator instanceof #paste Iterator#) {
+				#ln
+				#lt 3##paste Iterator# iterator1 = (#paste Iterator#) iterator;
+
+				while (iterator1.hasNext()) {
+					if (this.contains(iterator1.next#paste Prime#()))
+						continue;
+
+					return false;
+				}
+			} else {
+				while (iterator.hasNext()) {
+					if (this.contains(iterator.next()))
+						continue;
+
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (object == this)
+				return true;
+			if (object instanceof List) {
+				List list = (List) object;
+
+				if (list.size() != this.size())
+					return false;
+
+				Iterator iterator = list.iterator();
+
+				if (iterator instanceof #paste Iterator#) {
+					#ln
+					#lt 4##paste Iterator# iterator1 = (#paste Iterator#) iterator;
+
+					int i = beginIndex;
+					while (iterator1.hasNext()) {
+						if (i < endIndex && eq(
+							iterator1.next#paste Prime#(),
+							array[i++]
+						))
+							continue;
+
+						return false;
+					}
+
+					return i == endIndex;
+				} else {
+					int i = beginIndex;
+					while (iterator.hasNext()) {
+						if (i < endIndex && eq(
+							iterator.next(),
+							array[i++]
+						))
+							continue;
+
+						return false;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
+		@Override
+		public #paste prime# get#paste Prime#(int thumb) {
+			return array[index(thumb)];
+		}
+
+		@Override
+		public int hashCode() {
+			int hashCode = 1;
+
+			for (int i = beginIndex; i < endIndex; i++)
+				hashCode = 31 * hashCode + hash(array[i]);
+
+			return hashCode;
+		}
+
+		@Override
+		public int indexOf(#paste prime# element) {
+			for (int i = beginIndex; i < endIndex; i++)
+				if (eq(element, array[i]))
+					return thumb(i);
+
+			return -1;
+		}
+
+		@Override
+		public #paste Prime#ArrayIterator iterator() {
+			return new #paste Prime#ArrayIterator();
+		}
+
+		@Override
+		public int lastIndexOf(#paste prime# element) {
+			for (int i = endIndex - 1; i >= beginIndex; i--)
+				if (eq(element, array[i]))
+					return thumb(i);
+
+			return -1;
+		}
+
+		@Override
+		public #paste Prime#ArrayListIterator listIterator() {
+			return new #paste Prime#ArrayListIterator();
+		}
+
+		@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
+		@Override
+		public #paste Prime#ArrayListIterator listIterator(int beginThumb) {
+			return new #paste Prime#ArrayListIterator(beginThumb);
+		}
+
+		@Override
+		public #paste Primitive# remove(int thumb) {
+			//redundant
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean remove(Object object) {
+			//redundant
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean removeIf(#paste Prime#Predicate predicate) {
+			//redundant
+			throw new UnsupportedOperationException("removeIf");
+		}
+
+		@Override
+		public boolean removeIf(Predicate<? super #paste Primitive#> predicate) {
+			//redundant
+			throw new UnsupportedOperationException("removeIf");
+		}
+
+		@Override
+		public boolean remove#paste Prime#(#paste prime# element) {
+			throw new UnsupportedOperationException("remove#paste Prime#");
+		}
+
+		@Override
+		public #paste prime# remove#paste Prime#At(int index) {
+			throw new UnsupportedOperationException("remove#paste Prime#At");
+		}
+
+		@Override
+		public void replaceAll(#paste Prime#UnaryOperator operator) {
+			Objects.requireNonNull(operator, "operator");
+			for (int i = beginIndex; i < endIndex; i++)
+				array[i] = operator.applyAs#paste Prime#(array[i]);
+		}
+
+		@Override
+		public #paste prime# set#paste Prime#(int thumb, #paste prime# element) {
+			int i = index(thumb);
+			#ln
+			#lt 2##paste prime# old = array[i];
+
+			array[i] = element;
+			return old;
+		}
+
+		@Override
+		public #paste Prime#ArraySpliterator spliterator() {
+			return new #paste Prime#ArraySpliterator();
+		}
+
+		@Override
+		public #paste Prime#List subList(int beginThumb, int endThumb) {
+			range(beginThumb, endThumb);
+			return new #paste Prime#Array(
+					array,
+					beginIndex + beginThumb,
+					beginIndex + endThumb
+			).new #paste Prime#ArrayList();
+		}
+
+		@Override
+		public #paste prime#[] to#paste Prime#Array() {
+			return copy();
+		}
+
+		@Override
+		public #paste prime#[] to#paste Prime#Array(#paste prime#[] array) {
+			Objects.requireNonNull(array, "array");
+			int length = length();
+
+			if (array.length < length)
+				return copy();
+			if (array.length > length)
+				array[length] = #paste defaultValue#;
+
+			arraycopy(array, 0, length);
+			return array;
+		}
+	}
+
+	/**
+	 * A list iterator iterating the elements in the enclosing array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.07.24
+	 */
+	public class #paste Prime#ArrayListIterator
+			extends
+			AbstractPrimitiveArrayListIterator
+			implements
+			#ln
+			#lt 2##paste Prime#ListIterator {
+		/**
+		 * Construct a new list iterator iterating the elements in the enclosing array.
+		 *
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		public #paste Prime#ArrayListIterator() {
+		}
+
+		/**
+		 * Construct a new list iterator iterating the elements in the enclosing array, starting
+		 * from the given {@code index}.
+		 *
+		 * @param beginThumb the initial position of the constructed iterator.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		public #paste Prime#ArrayListIterator(int beginThumb) {
+			super(beginThumb);
+		}
+
+		@Override
+		public void add(#paste Primitive# element) {
+			//redundant
+			throw new UnsupportedOperationException("add");
+		}
+
+		@Override
+		public void add#paste Prime#(#paste prime# value) {
+			throw new UnsupportedOperationException("add#paste Prime#");
+		}
+
+		@Override
+		public void forEachRemaining(#paste Prime#Consumer consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			int index = this.index;
+			this.index = endIndex;
+			this.last = endIndex - 1;
+
+			for (int i = index; i < endIndex; i++)
+				consumer.accept(array[i]);
+		}
+
+		@Override
+		public #paste prime# next#paste Prime#() {
+			int index = this.index;
+
+			if (index < endIndex) {
+				this.index++;
+				return array[this.last = index];
+			}
+
+			throw new NoSuchElementException();
+		}
+
+		@Override
+		public #paste prime# previous#paste Prime#() {
+			int index = this.index - 1;
+
+			if (index >= beginIndex) {
+				this.index--;
+				return array[this.last = index];
+			}
+
+			throw new NoSuchElementException();
+		}
+
+		@Override
+		public void set#paste Prime#(#paste prime# value) {
+			int index = this.last;
+
+			if (index == -1)
+				throw new IllegalStateException();
+
+			array[index] = value;
+		}
+	}
+
+	/**
+	 * A map backed by the enclosing array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.08.03
+	 */
+	public class #paste Prime#ArrayMap
+			extends
+			AbstractPrimitiveArrayMap
+			implements
+			#ln
+			#lt 2##paste Prime#Map {
+		@SuppressWarnings("JavaDoc")
+		private static final long serialVersionUID = -2840280796050057228L;
+
+		@Override
+		public #paste Prime#ArrayMap clone() {
+			//noinspection OverridableMethodCallDuringObjectConstruction,CloneCallsConstructors
+			return new #paste Prime#Array(copy())
+					.new #paste Prime#ArrayMap();
+		}
+
+		@Override
+		public #paste prime# compute(#paste prime# key, #paste Prime#ObjBiFunction<#paste Primitive#, #paste Primitive#> function) {
+			Objects.requireNonNull(function, "function");
+			for (int i = beginIndex; i < endIndex; i += 2) {
+				#ln
+				#lt 3##paste prime# k = array[i];
+
+				if (eq(key, k)) {
+					#ln
+					#lt 4##paste prime# v = array[i + 1];
+					#lt 4##paste Primitive# value = function.apply(k, v);
+
+					if (value == null)
+						throw new UnsupportedOperationException("remove");
+
+					array[i + 1] = value;
+					return value;
+				}
+			}
+
+			throw new IllegalArgumentException("Key not found");
+		}
+
+		@Override
+		public #paste prime# computeIfAbsent(#paste prime# key, #paste Prime#Function<#paste Primitive#> function) {
+			Objects.requireNonNull(function, "function");
+			for (int i = beginIndex; i < endIndex; i += 2)
+				if (eq(key, array[i]))
+					return array[i + 1];
+
+			throw new IllegalArgumentException("Key not found");
+		}
+
+		@Override
+		public #paste prime# computeIfPresent(#paste prime# key, #paste Prime#BiFunction<#paste Primitive#> function) {
+			Objects.requireNonNull(function, "function");
+			for (int i = beginIndex; i < endIndex; i += 2) {
+				#ln
+				#lt 3##paste prime# k = array[i];
+
+				if (eq(key, k)) {
+					#ln
+					#lt 4##paste prime# v = array[i + 1];
+					#ln
+					#lt 4##paste Primitive# value = function.apply(k, v);
+
+					if (value == null)
+						throw new UnsupportedOperationException("remove");
+
+					array[i + 1] = value;
+					return value;
+				}
+			}
+
+			return #paste defaultValue#;
+		}
+
+		@Override
+		public boolean containsKey(#paste prime# key) {
+			for (int i = beginIndex; i < endIndex; i += 2)
+				if (eq(key, array[i]))
+					return true;
+
+			return false;
+		}
+
+		@Override
+		public boolean containsValue(#paste prime# value) {
+			for (int i = beginIndex + 1; i < endIndex; i += 2)
+				if (eq(value, array[i]))
+					return true;
+
+			return false;
+		}
+
+		@Override
+		public #paste Prime#ArrayEntrySet entrySet() {
+			return new #paste Prime#ArrayEntrySet();
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (object == this)
+				return true;
+			if (object instanceof Map) {
+				Map<?, ?> map = (Map) object;
+
+				if (map.size() == this.size()) {
+					for0:
+					for (Entry entry : map.entrySet()) {
+						Object key = entry.getKey();
+
+						for (int i = beginIndex; i < endIndex; i += 2)
+							if (eq(key, array[i])) {
+								if (eq(entry.getValue(), array[i + 1]))
+									continue for0;
+
+								break;
+							}
+
+						return false;
+					}
+
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		@Override
+		public void forEach(#paste Prime#BiConsumer consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			for (int i = beginIndex; i < endIndex; i += 2)
+				consumer.accept(array[i], array[i + 1]);
+		}
+
+		@Override
+		public #paste prime# get#paste Prime#(#paste prime# key) {
+			for (int i = beginIndex; i < endIndex; i += 2)
+				if (eq(key, array[i]))
+					return array[i + 1];
+
+			return #paste defaultValue#;
+		}
+
+		@Override
+		public #paste prime# get#paste Prime#OrDefault(#paste prime# key, #paste prime# defaultValue) {
+			for (int i = beginIndex; i < endIndex; i += 2)
+				if (eq(key, array[i]))
+					return array[i + 1];
+
+			return #paste defaultValue#;
+		}
+
+		@Override
+		public int hashCode() {
+			int hashCode = 0;
+
+			for (int i = beginIndex; i < endIndex; i += 2)
+				hashCode += hash(array[i]) ^
+							hash(array[i + 1]);
+
+			return hashCode;
+		}
+
+		@Override
+		public #paste Prime#ArrayKeySet keySet() {
+			return new #paste Prime#ArrayKeySet();
+		}
+
+		@Override
+		public #paste prime# merge(#paste prime# key, #paste prime# value, #paste Prime#BiFunction<#paste Primitive#> function) {
+			Objects.requireNonNull(function, "function");
+			for (int i = beginIndex; i < endIndex; i += 2)
+				if (eq(key, array[i])) {
+					#ln
+					#lt 4##paste prime# v = array[i + 1];
+					#ln
+					#lt 4##paste Primitive# newValue = function.apply(v, value);
+
+					if (newValue == null)
+						throw new UnsupportedOperationException("remove");
+
+					array[i + 1] = newValue;
+					return newValue;
+				}
+
+			throw new IllegalArgumentException("Key not found");
+		}
+
+		@Override
+		public void putAll(Map<? extends #paste Primitive#, ? extends #paste Primitive#> map) {
+			Objects.requireNonNull(map, "map");
+			for0:
+			for (Map.Entry<? extends #paste Primitive#, ? extends #paste Primitive#> entry : map.entrySet())
+				if (entry instanceof #paste Prime#Entry) {
+					#ln
+					#lt 4##paste Prime#Entry entry1 = (#paste Prime#Entry) entry;
+					#ln
+					#lt 4##paste prime# key = entry1.get#paste Prime#Key();
+
+					for (int i = beginIndex; i < endIndex; i += 2)
+						if (eq(key, array[i])) {
+							array[i + 1] = entry1.get#paste Prime#Value();
+							continue for0;
+						}
+
+					throw new IllegalArgumentException("Key not found");
+				} else {
+					#ln
+					#lt 4##paste prime# key = entry.getKey();
+
+					for (int i = beginIndex; i < endIndex; i += 2)
+						if (eq(key, array[i])) {
+							array[i + 1] = entry.getValue();
+							continue for0;
+						}
+
+					throw new IllegalArgumentException("Key not found");
+				}
+		}
+
+		@Override
+		public #paste prime# put#paste Prime#(#paste prime# key, #paste prime# value) {
+			for (int i = beginIndex; i < endIndex; i += 2)
+				if (eq(key, array[i])) {
+					#ln
+					#lt 4##paste prime# v = array[i + 1];
+					array[i + 1] = value;
+					return v;
+				}
+
+			throw new IllegalArgumentException("Key not found");
+		}
+
+		@Override
+		public #paste prime# put#paste Prime#IfAbsent(#paste prime# key, #paste prime# value) {
+			for (int i = beginIndex; i < endIndex; i += 2)
+				if (eq(key, array[i]))
+					return array[i + 1];
+
+			throw new IllegalArgumentException("Key not found");
+		}
+
+		@Override
+		public #paste Primitive# remove(Object key) {
+			//redundant
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public boolean remove(Object key, Object value) {
+			//redundant
+			throw new UnsupportedOperationException("remove");
+		}
+
+		@Override
+		public #paste prime# remove#paste Prime#(#paste prime# key) {
+			throw new UnsupportedOperationException("remove#paste Prime#");
+		}
+
+		@Override
+		public boolean remove#paste Prime#(#paste prime# key, #paste prime# value) {
+			throw new UnsupportedOperationException("remove#paste Prime#");
+		}
+
+		@Override
+		public void replaceAll(#paste Prime#BinaryOperator function) {
+			Objects.requireNonNull(function, "function");
+			for (int i = beginIndex; i < endIndex; i += 2) {
+				array[i + 1] = function.applyAs#paste Prime#(
+					array[i],
+					array[i + 1]
+				);
+			}
+		}
+
+		@Override
+		public boolean replace#paste Prime#(#paste prime# key, #paste prime# oldValue, #paste prime# newValue) {
+			for (int i = beginIndex; i < endIndex; i += 2)
+				if (eq(key, array[i])) {
+					if (eq(oldValue, array[i + 1])) {
+						array[i + 1] = newValue;
+						return true;
+					}
+
+					break;
+				}
+
+			return false;
+		}
+
+		@Override
+		public #paste prime# replace#paste Prime#(#paste prime# key, #paste prime# value) {
+			for (int i = beginIndex; i < endIndex; i += 2)
+				if (eq(key, array[i])) {
+					#ln
+					#lt 4##paste prime# v = array[i + 1];
+					array[i + 1] = value;
+					return v;
+				}
+
+			return #paste defaultValue#;
+		}
+
+		@Override
+		public String toString() {
+			if (this.isEmpty())
+				return "{}";
+
+			StringBuilder builder = new StringBuilder("{");
+
+			int i = beginIndex;
+			while (true) {
+				builder.append(array[i])
+						.append("=")
+						.append(array[i + 1]);
+
+				if ((i += 2) >= endIndex)
+					return builder.append("}")
+							.toString();
+
+				builder.append(", ");
+			}
+		}
+
+		@Override
+		public #paste Prime#ArrayValues values() {
+			return new #paste Prime#ArrayValues();
+		}
+
+		/**
+		 * An entry backed by a range from {@code index} to {@code index + 1} in the enclosing
+		 * array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class #paste Prime#ArrayEntry
+				extends
+				AbstractPrimitiveArrayEntry
+				implements
+				#ln
+				#lt 3##paste Prime#Entry {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = 5973497615323125824L;
+
+			/**
+			 * Construct a new entry backed by a range from {@code index} to {@code index + 1} in
+			 * the enclosing array.
+			 *
+			 * @param thumb the index to where the key (followed by the value) will be in the
+			 *              constructed entry.
+			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index + 1 >=
+			 *                                   length}.
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayEntry(int thumb) {
+				super(thumb);
+			}
+
+			@Override
+			public #paste Prime#ArrayEntry clone() {
+				//noinspection CloneCallsConstructors
+				return new #paste Prime#Array(
+						new #paste Prime#Array(
+								array,
+								beginIndex + this.index,
+								beginIndex + this.index + 2
+						).copy()
+				).new #paste Prime#ArrayMap()
+						.new #paste Prime#ArrayEntry(0);
+			}
+
+			@Override
+			public boolean equals(Object object) {
+				if (object == this)
+					return true;
+				if (object instanceof #paste Prime#Entry) {
+					#ln
+					#lt 4##paste Prime#Entry entry = (#paste Prime#Entry) object;
+
+					if (eq(entry.get#paste Prime#Key(), array[this.index]))
+						return eq(entry.get#paste Prime#Value(), array[this.index + 1]);
+				} else if (object instanceof Entry) {
+					Entry entry = (Map.Entry) object;
+
+					if (eq(entry.getKey(), array[this.index]))
+						return eq(entry.getValue(), array[this.index + 1]);
+				}
+
+				return false;
+			}
+
+			@Override
+			public #paste prime# get#paste Prime#Key() {
+				return array[this.index];
+			}
+
+			@Override
+			public #paste prime# get#paste Prime#Value() {
+				return array[this.index + 1];
+			}
+
+			@Override
+			public int hashCode() {
+				return hash(array[this.index]) ^
+					   hash(array[this.index + 1]);
+			}
+
+			@Override
+			public #paste prime# set#paste Prime#Value(#paste prime# value) {
+				#ln
+				#lt 3##paste prime# v = array[this.index + 1];
+				array[this.index + 1] = value;
+				return v;
+			}
+
+			@Override
+			public String toString() {
+				return array[this.index] + "=" +
+					   array[this.index + 1];
+			}
+		}
+
+		/**
+		 * An iterator iterating the entries in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class #paste Prime#ArrayEntryIterator
+				extends
+				AbstractPrimitiveArrayEntryIterator {
+			/**
+			 * Construct a new iterator iterating the entries in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayEntryIterator() {
+			}
+
+			/**
+			 * Construct a new iterator iterating the entries in the enclosing array, starting from
+			 * the given {@code index}.
+			 *
+			 * @param beginThumb the initial position of the constructed iterator.
+			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayEntryIterator(int beginThumb) {
+				super(beginThumb);
+			}
+
+			@Override
+			public void forEachRemaining(Consumer<? super Entry<#paste Primitive#, #paste Primitive#>> consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				int index = this.index;
+				this.index = endIndex;
+				for (int t = thumb(index), l = length(); t < l; t += 2)
+					consumer.accept(new #paste Prime#ArrayEntry(t));
+			}
+
+			@Override
+			public #paste Prime#ArrayEntry next() {
+				int index = this.index;
+
+				if (index < endIndex) {
+					this.index += 2;
+					return new #paste Prime#ArrayEntry(thumb(index));
+				}
+
+				throw new NoSuchElementException();
+			}
+		}
+
+		/**
+		 * A set backed by the entries in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class #paste Prime#ArrayEntrySet
+				extends
+				AbstractPrimitiveArrayEntrySet {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = -4823635378224028987L;
+
+			@Override
+			public #paste Prime#ArrayEntrySet clone() {
+				return new #paste Prime#Array(copy())
+						.new #paste Prime#ArrayMap()
+						.new #paste Prime#ArrayEntrySet();
+			}
+
+			@Override
+			public boolean contains(Object object) {
+				if (object instanceof #paste Prime#Entry) {
+					#ln
+					#lt 4##paste Prime#Entry entry = (#paste Prime#Entry) object;
+					#ln
+					#lt 4##paste prime# key = entry.getKey();
+
+					for (int i = beginIndex; i < endIndex; i += 2)
+						if (eq(key, array[i])) {
+							if (eq(entry.getValue(), array[i + 1]))
+								return true;
+
+							break;
+						}
+				} else if (object instanceof Entry) {
+					Entry entry = (Entry) object;
+					Object key = entry.getKey();
+
+					for (int i = beginIndex; i < endIndex; i += 2)
+						if (eq(key, array[i])) {
+							if (eq(entry.getValue(), array[i + 1]))
+								return true;
+
+							break;
+						}
+				}
+
+				return false;
+			}
+
+			@Override
+			public boolean equals(Object object) {
+				if (object == this)
+					return true;
+				if (object instanceof Set) {
+					Set set = (Set) object;
+
+					return set.size() == this.size() &&
+						   this.containsAll(set);
+				}
+
+				return false;
+			}
+
+			@Override
+			public void forEach(Consumer<? super Entry<#paste Primitive#, #paste Primitive#>> consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				for (int t = 0, l = length(); t < l; t += 2)
+					consumer.accept(new #paste Prime#ArrayEntry(t));
+			}
+
+			@Override
+			public int hashCode() {
+				int hashCode = 0;
+
+				for (int i = beginIndex; i < endIndex;i += 2)
+					hashCode += hash(array[i]) ^
+								hash(array[i + 1]);
+
+				return hashCode;
+			}
+
+			@Override
+			public #paste Prime#ArrayEntryIterator iterator() {
+				return new #paste Prime#ArrayEntryIterator();
+			}
+
+			@Override
+			public #paste Prime#ArrayEntrySpliterator spliterator() {
+				return new #paste Prime#ArrayEntrySpliterator();
+			}
+
+			@Override
+			public Object[] toArray() {
+				Object[] product = new Object[this.size()];
+
+				for (int t = 0, l = length(), j = 0; t < l; t += 2, j++)
+					product[j] = new #paste Prime#ArrayEntry(t);
+
+				return product;
+			}
+
+			@Override
+			public <T> T[] toArray(T[] array) {
+				Objects.requireNonNull(array, "array");
+				int length = this.size();
+				T[] product = array;
+
+				if (array.length < length)
+					product = (T[]) java.lang.reflect.Array.newInstance(
+							array.getClass().getComponentType(),
+							length
+					);
+				else if (array.length > length)
+					product[length] = null;
+
+				for (int t = 0, l = length(), j = 0; t < l; t += 2, j++)
+					product[j] = (T) new #paste Prime#ArrayEntry(t);
+
+				return product;
+			}
+
+			@Override
+			public String toString() {
+				if (this.isEmpty())
+					return "[]";
+
+				StringBuilder builder = new StringBuilder("[");
+
+				int i = beginIndex;
+				while (true) {
+					builder.append(array[i])
+							.append("=")
+							.append(array[i + 1]);
+
+					if ((i += 2) >= endIndex)
+						return builder.append("]")
+								.toString();
+
+					builder.append(", ");
+				}
+			}
+		}
+
+		/**
+		 * A spliterator iterating the entries in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.02
+		 */
+		public class #paste Prime#ArrayEntrySpliterator
+				extends
+				AbstractPrimitiveArrayEntrySpliterator {
+			/**
+			 * Construct a new spliterator iterating the entries in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayEntrySpliterator() {
+			}
+
+			/**
+			 * Construct a new spliterator iterating the entries in the enclosing array, starting
+			 * from the given {@code index}.
+			 *
+			 * @param beginThumb the initial position of the constructed spliterator.
+			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayEntrySpliterator(int beginThumb) {
+				super(beginThumb);
+			}
+
+			@Override
+			public void forEachRemaining(Consumer<? super Entry<#paste Primitive#, #paste Primitive#>> consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				int index = this.index;
+				this.index = endIndex;
+				for (int t = thumb(index), l = length(); t < l;t += 2)
+					consumer.accept(new #paste Prime#ArrayEntry(t));
+			}
+
+			@Override
+			public boolean tryAdvance(Consumer<? super Entry<#paste Primitive#, #paste Primitive#>> consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				int index = this.index;
+
+				if (index < endIndex) {
+					this.index += 2;
+					consumer.accept(new #paste Prime#ArrayEntry(thumb(index)));
+					return true;
+				}
+
+				return false;
+			}
+
+			@Override
+			public #paste Prime#ArrayEntrySpliterator trySplit() {
+				int index = this.index;
+				int midIndex = index + endIndex >>> 1;
+
+				if (index < midIndex) {
+					this.index = midIndex;
+					return new #paste Prime#Array(
+							array,
+							beginIndex + index,
+							beginIndex + midIndex
+					).new #paste Prime#ArrayMap()
+							.new #paste Prime#ArrayEntrySpliterator();
+				}
+
+				return null;
+			}
+		}
+
+		/**
+		 * An iterator iterating the keys in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class #paste Prime#ArrayKeyIterator
+				extends
+				AbstractPrimitiveArrayKeyIterator
+				implements
+				#ln
+				#lt 3##paste Iterator# {
+			/**
+			 * Construct a new iterator iterating the keys in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayKeyIterator() {
+			}
+
+			/**
+			 * Construct a new iterator iterating the keys in the enclosing array, starting from the
+			 * given {@code index}.
+			 *
+			 * @param beginThumb the initial position of the constructed iterator.
+			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayKeyIterator(int beginThumb) {
+				super(beginThumb);
+			}
+
+			@Override
+			public void forEachRemaining(#paste Prime#Consumer consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				int index = this.index;
+				this.index = endIndex;
+				for (int i = index;
+					 i < endIndex;
+					 i += 2)
+					consumer.accept(array[i]);
+			}
+
+			@Override
+			public #paste prime# next#paste Prime#() {
+				int index = this.index;
+
+				if (index < endIndex) {
+					this.index += 2;
+					return array[index];
+				}
+
+				throw new NoSuchElementException();
+			}
+		}
+
+		/**
+		 * A set backed by the keys in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class #paste Prime#ArrayKeySet
+				extends
+				AbstractPrimitiveArrayKeySet
+				implements
+				#ln
+				#lt 3##paste Prime#Set {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = 7793360078444812816L;
+
+			@Override
+			public boolean add(#paste Primitive# key) {
+				//redundant
+				throw new UnsupportedOperationException("add");
+			}
+
+			@Override
+			public boolean add#paste Prime#(#paste prime# element) {
+				throw new UnsupportedOperationException("add#paste Prime#");
+			}
+
+			@Override
+			public #paste Prime#ArrayKeySet clone() {
+				return new #paste Prime#Array(copy())
+						.new #paste Prime#ArrayMap()
+						.new #paste Prime#ArrayKeySet();
+			}
+
+			@Override
+			public boolean contains(#paste prime# element) {
+				return containsKey(element);
+			}
+
+			@Override
+			public boolean containsAll(Collection collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				Iterator iterator = collection.iterator();
+				if (iterator instanceof #paste Iterator#) {
+					#paste Iterator# iterator1 = (#paste Iterator#) iterator;
+
+					while (iterator1.hasNext()) {
+						if (containsKey(iterator1.next#paste Prime#()))
+							continue;
+
+						return false;
+					}
+				} else {
+					while (iterator.hasNext()) {
+						if (containsKey(iterator.next()))
+							continue;
+
+						return false;
+					}
+				}
+
+				return true;
+			}
+
+			@Override
+			public boolean equals(Object object) {
+				if (object == this)
+					return true;
+				if (object instanceof Set) {
+					Set set = (Set) object;
+
+					return set.size() == this.size() &&
+						   this.containsAll(set);
+				}
+
+				return false;
+			}
+
+			@Override
+			public void forEach(#paste Prime#Consumer consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				for (int i = beginIndex; i < endIndex; i += 2)
+					consumer.accept(array[i]);
+			}
+
+			@Override
+			public int hashCode() {
+				int hashCode = 0;
+
+				for (int i = beginIndex; i < endIndex; i += 2)
+					hashCode += hash(array[i]);
+
+				return hashCode;
+			}
+
+			@Override
+			public #paste Prime#ArrayKeyIterator iterator() {
+				return new #paste Prime#ArrayKeyIterator();
+			}
+
+			@Override
+			public boolean remove(Object object) {
+				//redundant
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public boolean remove#paste Prime#(#paste prime# element) {
+				throw new UnsupportedOperationException("remove#paste Prime#");
+			}
+
+			@Override
+			public boolean removeIf(Predicate<? super #paste Primitive#> predicate) {
+				//redundant
+				throw new UnsupportedOperationException("removeIf");
+			}
+
+			@Override
+			public boolean removeIf(#paste Prime#Predicate predicate) {
+				//redundant
+				throw new UnsupportedOperationException("removeIf");
+			}
+
+			@Override
+			public #paste Prime#ArrayKeySpliterator spliterator() {
+				return new #paste Prime#ArrayKeySpliterator();
+			}
+
+			@Override
+			public Object[] toArray() {
+				Object[] product = new Object[this.size()];
+
+				for (int i = beginIndex, j = 0; i < endIndex; i += 2, j++)
+					product[j] = array[i];
+
+				return product;
+			}
+
+			@Override
+			public <T> T[] toArray(T[] array) {
+				Objects.requireNonNull(array, "array");
+				int length = this.size();
+				T[] product = array;
+
+				if (array.length < length)
+					product = (T[]) java.lang.reflect.Array.newInstance(
+							array.getClass().getComponentType(),
+							length
+					);
+				else if (array.length > length)
+					product[length] = null;
+
+				for (int i = beginIndex, j = 0; i < endIndex; i += 2, j++)
+					product[j] = (T) (#paste Primitive#) #paste Prime#Array.this.array[i];
+
+				return product;
+			}
+
+			@Override
+			public #paste prime#[] to#paste Prime#Array() {
+				#ln
+				#lt 3##paste prime#[] product = new #paste prime#[this.size()];
+
+				for (int i = beginIndex, j = 0; i < endIndex; i += 2, j++)
+					product[j] = array[i];
+
+				return product;
+			}
+
+			@Override
+			public #paste prime#[] to#paste Prime#Array(#paste prime#[] array) {
+				Objects.requireNonNull(array, "array");
+				int length = this.size();
+				#ln
+				#lt 3##paste prime#[] product = array;
+
+				if (array.length < length)
+					product = new #paste prime#[length];
+				else if (array.length > length)
+					product[length] = #paste defaultValue#;
+
+				for (int i = beginIndex, j = 0; i < endIndex; i += 2, j++)
+					product[j] = #paste Prime#Array.this.array[i];
+
+				return product;
+			}
+
+			@Override
+			public String toString() {
+				if (this.isEmpty())
+					return "[]";
+
+				StringBuilder builder = new StringBuilder("[");
+
+				int i = beginIndex;
+				while (true) {
+					builder.append(array[i]);
+
+					if ((i += 2) >= endIndex)
+						return builder.append("]")
+								.toString();
+
+					builder.append(", ");
+				}
+			}
+		}
+
+		/**
+		 * A spliterator iterating the keys in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.02
+		 */
+		public class #paste Prime#ArrayKeySpliterator
+				extends
+				AbstractPrimitiveArrayKeySpliterator<#paste Spliterator#>
+				implements
+				#ln
+				#lt 3##paste Spliterator# {
+			/**
+			 * Construct a new spliterator iterating the keys in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayKeySpliterator() {
+			}
+
+			/**
+			 * Construct a new spliterator iterating the keys in the enclosing array, starting from
+			 * the given {@code index}.
+			 *
+			 * @param beginThumb the initial position of the constructed spliterator.
+			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayKeySpliterator(int beginThumb) {
+				super(beginThumb);
+			}
+
+			@Override
+			public void forEachRemaining(#paste Prime#Consumer consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				int index = this.index;
+				this.index = endIndex;
+				for (int i = index; i < endIndex; i += 2)
+					consumer.accept(array[i]);
+			}
+
+			@Override
+			public boolean tryAdvance(#paste Prime#Consumer consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				int index = this.index;
+
+				if (index < endIndex) {
+					this.index += 2;
+					consumer.accept(array[index]);
+					return true;
+				}
+
+				return false;
+			}
+
+			@Override
+			public #paste Prime#ArrayKeySpliterator trySplit() {
+				int index = this.index;
+				int midIndex = index + endIndex >>> 1;
+
+				if (index < midIndex) {
+					this.index = midIndex;
+					return new #paste Prime#Array(
+							array,
+							beginIndex + index,
+							beginIndex + midIndex
+					).new #paste Prime#ArrayMap()
+							.new #paste Prime#ArrayKeySpliterator();
+				}
+
+				return null;
+			}
+		}
+
+		/**
+		 * An iterator iterating the values in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class #paste Prime#ArrayValueIterator
+				extends
+				AbstractPrimitiveArrayValueIterator
+				implements
+				#ln
+				#lt 3##paste Iterator# {
+			/**
+			 * Construct a new iterator iterating the values in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayValueIterator() {
+			}
+
+			/**
+			 * Construct a new iterator iterating the values in the enclosing array, starting from
+			 * the given {@code index}.
+			 *
+			 * @param beginThumb the initial position of the constructed iterator.
+			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayValueIterator(int beginThumb) {
+				super(beginThumb);
+			}
+
+			@Override
+			public void forEachRemaining(#paste Prime#Consumer consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				int index = this.index;
+				this.index = endIndex;
+				for (int y = index + 1; y < endIndex; y += 2)
+					consumer.accept(array[y]);
+			}
+
+			@Override
+			public #paste prime# next#paste Prime#() {
+				int index = this.index;
+
+				if (index < endIndex) {
+					this.index += 2;
+					return array[index + 1];
+				}
+
+				throw new NoSuchElementException();
+			}
+		}
+
+		/**
+		 * A spliterator iterating the values in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.02
+		 */
+		public class #paste Prime#ArrayValueSpliterator
+				extends
+				AbstractPrimitiveArrayValueSpliterator<#paste Spliterator#>
+				implements
+				#ln
+				#lt 3##paste Spliterator# {
+			/**
+			 * Construct a new spliterator iterating the values in the enclosing array.
+			 *
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayValueSpliterator() {
+			}
+
+			/**
+			 * Construct a new spliterator iterating the values in the enclosing array, starting
+			 * from the given {@code index}.
+			 *
+			 * @param beginThumb the initial position of the constructed spliterator.
+			 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+			 * @since 0.1.5 ~2020.08.06
+			 */
+			public #paste Prime#ArrayValueSpliterator(int beginThumb) {
+				super(beginThumb);
+			}
+
+			@Override
+			public void forEachRemaining(#paste Prime#Consumer consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				int index = this.index;
+				this.index = endIndex;
+
+				for (int y = index + 1; y < endIndex; y += 2)
+					consumer.accept(array[y]);
+			}
+
+			@Override
+			public boolean tryAdvance(#paste Prime#Consumer consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				int index = this.index;
+
+				if (index < endIndex) {
+					this.index += 2;
+					consumer.accept(array[index + 1]);
+					return true;
+				}
+
+				return false;
+			}
+
+			@Override
+			public #paste Prime#ArrayValueSpliterator trySplit() {
+				int index = this.index;
+				int midIndex = index + endIndex >>> 1;
+
+				if (index < midIndex) {
+					this.index = midIndex;
+					return new #paste Prime#Array(
+							array,
+							beginIndex + index,
+							beginIndex + midIndex
+					).new #paste Prime#ArrayMap()
+							.new #paste Prime#ArrayValueSpliterator();
+				}
+
+				return null;
+			}
+		}
+
+		/**
+		 * A collection backed by the values in the enclosing array.
+		 *
+		 * @author LSafer
+		 * @version 0.1.5
+		 * @since 0.1.5 ~2020.08.03
+		 */
+		public class #paste Prime#ArrayValues
+				extends
+				AbstractPrimitiveArrayValues
+				implements
+				#ln
+				#lt 3##paste Prime#Collection {
+			@SuppressWarnings("JavaDoc")
+			private static final long serialVersionUID = -7937502933699082438L;
+
+			@Override
+			public boolean add(#paste Primitive# value) {
+				//redundant
+				throw new UnsupportedOperationException("add");
+			}
+
+			@Override
+			public boolean add#paste Prime#(#paste prime# element) {
+				throw new UnsupportedOperationException("add#paste Prime#");
+			}
+
+			@Override
+			public #paste Prime#ArrayValues clone() {
+				return new #paste Prime#Array(copy())
+						.new #paste Prime#ArrayMap()
+						.new #paste Prime#ArrayValues();
+			}
+
+			@Override
+			public boolean contains(#paste prime# element) {
+				return containsValue(element);
+			}
+
+			@Override
+			public boolean containsAll(Collection collection) {
+				Objects.requireNonNull(collection, "collection");
+
+				Iterator iterator = collection.iterator();
+				if (iterator instanceof #paste Iterator#) {
+					#ln
+					#lt 4##paste Iterator# iterator1 = (#paste Iterator#) iterator;
+
+					while (iterator1.hasNext()) {
+						if (containsValue(iterator1.next#paste Prime#()))
+							continue;
+
+						return false;
+					}
+				} else
+					while (iterator.hasNext()) {
+						if (containsValue(iterator.next()))
+							continue;
+
+						return false;
+					}
+
+				return true;
+			}
+
+			@Override
+			public boolean equals(Object object) {
+				return object == this;
+			}
+
+			@Override
+			public void forEach(#paste Prime#Consumer consumer) {
+				Objects.requireNonNull(consumer, "consumer");
+				for (int i = beginIndex + 1; i < endIndex; i += 2)
+					consumer.accept(array[i]);
+			}
+
+			@Override
+			public int hashCode() {
+				int hashCode = 0;
+
+				for (int i = beginIndex + 1; i < endIndex; i += 2)
+					hashCode += hash(array[i]);
+
+				return hashCode;
+			}
+
+			@Override
+			public #paste Prime#ArrayValueIterator iterator() {
+				return new #paste Prime#ArrayValueIterator();
+			}
+
+			@Override
+			public boolean remove(Object object) {
+				//redundant
+				throw new UnsupportedOperationException("remove");
+			}
+
+			@Override
+			public boolean remove#paste Prime#(#paste prime# element) {
+				throw new UnsupportedOperationException("remove#paste Prime#");
+			}
+
+			@Override
+			public boolean removeIf(#paste Prime#Predicate predicate) {
+				//redundant
+				throw new UnsupportedOperationException("removeIf");
+			}
+
+			@Override
+			public boolean removeIf(Predicate<? super #paste Primitive#> predicate) {
+				//redundant
+				throw new UnsupportedOperationException("removeIf");
+			}
+
+			@Override
+			public #paste Prime#ArrayValueSpliterator spliterator() {
+				return new #paste Prime#ArrayValueSpliterator();
+			}
+
+			@Override
+			public Object[] toArray() {
+				Object[] product = new Object[this.size()];
+
+				for (int i = beginIndex + 1, j = 0; i < endIndex; i += 2, j++)
+					product[j] = array[i];
+
+				return product;
+			}
+
+			@Override
+			public <T> T[] toArray(T[] array) {
+				Objects.requireNonNull(array, "array");
+				int length = this.size();
+				T[] product = array;
+
+				if (array.length < length)
+					product = (T[]) java.lang.reflect.Array.newInstance(
+							array.getClass().getComponentType(),
+							length
+					);
+				else if (array.length > length)
+					product[length] = null;
+
+				for (int i = beginIndex + 1, j = 0; i < endIndex; i += 2, j++)
+					product[j] = (T) (#paste Primitive#) #paste Prime#Array.this.array[i];
+
+				return product;
+			}
+
+			@Override
+			public #paste prime#[] to#paste Prime#Array() {
+				#ln
+				#lt 3##paste prime#[] product = new #paste prime#[this.size()];
+
+				for (int y = beginIndex + 1, j = 0; y < endIndex; y += 2, j++)
+					product[j] = array[y];
+
+				return product;
+			}
+
+			@Override
+			public #paste prime#[] to#paste Prime#Array(#paste prime#[] array) {
+				Objects.requireNonNull(array, "array");
+				int length = this.size();
+				#ln
+				#lt 3##paste prime#[] product = array;
+
+				if (array.length < length)
+					product = new #paste prime#[length];
+				else if (array.length > length)
+					array[length] = #paste defaultValue#;
+
+				for (int y = beginIndex + 1, j = 0; y < endIndex; y += 2, j++)
+					product[j] = #paste Prime#Array.this.array[y];
+
+				return product;
+			}
+
+			@Override
+			public String toString() {
+				if (this.isEmpty())
+					return "[]";
+
+				StringBuilder builder = new StringBuilder("[");
+
+				int i = beginIndex + 1;
+				while (true) {
+					builder.append(array[i]);
+
+					if ((i += 2) >= endIndex)
+						return builder.append("]")
+								.toString();
+
+					builder.append(", ");
+				}
+			}
+		}
+	}
+
+	/**
+	 * A spliterator iterating the elements in the enclosing array.
+	 *
+	 * @author LSafer
+	 * @version 0.1.5
+	 * @since 0.1.5 ~2020.08.02
+	 */
+	public class #paste Prime#ArraySpliterator
+			extends
+			AbstractPrimitiveArraySpliterator<#paste Spliterator#>
+			implements
+			#ln
+			#lt 2##paste Spliterator# {
+		/**
+		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
+		 * the given {@code index}.
+		 *
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		public #paste Prime#ArraySpliterator() {
+		}
+
+		/**
+		 * Construct a new spliterator iterating the elements in the enclosing array, starting from
+		 * the given {@code index}.
+		 *
+		 * @param beginThumb the initial position of the constructed spliterator.
+		 * @throws IndexOutOfBoundsException if {@code index < 0} or {@code index > length}.
+		 * @since 0.1.5 ~2020.08.06
+		 */
+		public #paste Prime#ArraySpliterator(int beginThumb) {
+			super(beginThumb);
+		}
+
+		@Override
+		public void forEachRemaining(#paste Prime#Consumer consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			int index = this.index;
+			this.index = endIndex;
+
+			for (int i = index; i < endIndex; i++)
+				consumer.accept(array[i]);
+		}
+
+		@Override
+		public boolean tryAdvance(#paste Prime#Consumer consumer) {
+			Objects.requireNonNull(consumer, "consumer");
+			int index = this.index;
+
+			if (index < endIndex) {
+				this.index++;
+				consumer.accept(array[index]);
+				return true;
+			}
+
+			return false;
+		}
+
+		@Override
+		public #paste Prime#ArraySpliterator trySplit() {
+			int index = this.index;
+			int midIndex = index + endIndex >>> 1;
+
+			if (index < midIndex) {
+				this.index = midIndex;
+				return new #paste Prime#Array(
+					array,
+					beginIndex + index,
+					beginIndex + midIndex
+				).new #paste Prime#ArraySpliterator();
+			}
+
+			return null;
+		}
+	}
+}

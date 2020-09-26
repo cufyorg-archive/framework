@@ -1,0 +1,128 @@
+#make primitive:"boolean", prime:"boolean", Primitive:"Boolean", Prime:"Boolean", legacy: false|\
+		primitive:"byte", prime:"byte", Primitive:"Byte", Prime:"Byte", legacy: false|\
+		primitive:"character", prime:"char", Primitive:"Character", Prime:"Char", legacy: false|\
+		primitive:"double", prime:"double", Primitive:"Double", Prime:"Double", legacy: true|\
+		primitive:"float", prime:"float", Primitive:"Float", Prime:"Float", legacy: false|\
+		primitive:"integer", prime:"int", Primitive:"Integer", Prime:"Int", legacy: true|\
+		primitive:"long", prime:"long", Primitive:"Long", Prime:"Long", legacy: true|\
+		primitive:"short", prime:"short", Primitive:"Short", Prime:"Short", legacy: false
+
+#var Iterator
+
+#if legacy
+#var Iterator "PrimitiveIterator.Of" + Prime
+#else
+#var Iterator Prime + "Iterator"
+#endif
+
+/*
+ *	Copyright 2020 Cufy
+ *
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *
+ *	    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
+ */
+package cufy.util;
+
+#ln 1
+#if legacy
+import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
+import java.util.function.#paste Prime#Consumer;
+#else
+import cufy.util.function.#paste Prime#Consumer;
+
+import java.util.NoSuchElementException;
+#endif
+#ln 1
+
+/**
+ * A ListIterator specialized for {@code #paste prime#} values.
+ *
+ * @author LSafer
+ * @version 0.1.5
+ * @since 0.1.5 ~2020.08.31
+ */
+public interface #paste Prime#ListIterator
+		extends
+		#ln
+		#lt 1##paste Iterator#,
+		PrimitiveListIterator<#paste Primitive#, #paste Prime#Consumer> {
+	@Override
+	default void add(#paste Primitive# value) {
+		this.add#paste Prime#(value);
+	}
+
+	@Override
+	default #paste Primitive# next() {
+		return this.next#paste Prime#();
+	}
+
+	@Override
+	default #paste Primitive# previous() {
+		return this.previous#paste Prime#();
+	}
+
+	@Override
+	default void set(#paste Primitive# value) {
+		this.set#paste Prime#(value);
+	}
+
+	/**
+	 * Inserts the specified element into the list (optional operation). The element is inserted
+	 * immediately before the element that would be returned by {@link #next}, if any, and after the
+	 * element that would be returned by {@link #previous}, if any.  (If the list contains no
+	 * elements, the new element becomes the sole element on the list.)  The new element is inserted
+	 * before the implicit cursor: a subsequent call to {@code next} would be unaffected, and a
+	 * subsequent call to {@code previous} would return the new element. (This call increases by one
+	 * the value that would be returned by a call to {@code nextIndex} or {@code previousIndex}.)
+	 *
+	 * @param value the element to insert.
+	 * @throws UnsupportedOperationException if the {@code add} method is not supported by this list
+	 *                                       iterator.
+	 * @throws IllegalArgumentException      if some aspect of the specified element prevents it
+	 *                                       from being added to this list.
+	 * @since 0.1.5 ~2020.08.31
+	 */
+	void add#paste Prime#(#paste prime# value);
+
+	/**
+	 * Returns the previous element in the list and moves the cursor position backwards.  This
+	 * method may be called repeatedly to iterate through the list backwards, or intermixed with
+	 * calls to {@link #next} to go back and forth.  (Note that alternating calls to {@code next}
+	 * and {@code previous} will return the same element repeatedly.)
+	 *
+	 * @return the previous element in the list.
+	 * @throws NoSuchElementException if the iteration has no previous element.
+	 * @since 0.1.5 ~2020.08.31
+	 */
+	#ln
+	#lt##paste prime# previous#paste Prime#();
+
+	/**
+	 * Replaces the last element returned by {@link \#next} or {@link \#previous} with the specified
+	 * element (optional operation). This call can be made only if neither {@link \#remove} nor
+	 * {@link \#add} have been called after the last call to {@code next} or {@code previous}.
+	 *
+	 * @param value the element with which to replace the last element returned by {@code next} or
+	 *              {@code previous}.
+	 * @throws UnsupportedOperationException if the {@code set} operation is not supported by this
+	 *                                       list iterator.
+	 * @throws IllegalArgumentException      if some aspect of the specified element prevents it
+	 *                                       from being added to this list.
+	 * @throws IllegalStateException         if neither {@code next} nor {@code previous} have been
+	 *                                       called, or {@code remove} or {@code add} have been
+	 *                                       called after the last call to {@code next} or {@code
+	 *                                       previous}.
+	 * @since 0.1.5 ~2020.08.31
+	 */
+	void set#paste Prime#(#paste prime# value);
+}

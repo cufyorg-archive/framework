@@ -1,0 +1,60 @@
+#make primitive:"boolean", prime:"boolean", Primitive:"Boolean", Prime:"Boolean", legacy: false|\
+ 		primitive:"byte", prime:"byte", Primitive:"Byte", Prime:"Byte", legacy: false|\
+ 		primitive:"character", prime:"char", Primitive:"Character", Prime:"Char", legacy: false|\
+ 		primitive:"double", prime:"double", Primitive:"Double", Prime:"Double", legacy: true|\
+ 		primitive:"float", prime:"float", Primitive:"Float", Prime:"Float", legacy: false|\
+ 		primitive:"integer", prime:"int", Primitive:"Integer", Prime:"Int", legacy: true|\
+ 		primitive:"long", prime:"long", Primitive:"Long", Prime:"Long", legacy: true|\
+ 		primitive:"short", prime:"short", Primitive:"Short", Prime:"Short", legacy: false
+
+/*
+ *	Copyright 2020 Cufy
+ *
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *
+ *	    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
+ */
+package cufy.util.function;
+
+#ln 1
+#if legacy
+import java.util.function.Obj#paste Prime#Consumer;
+#ln 1
+#endif
+
+/**
+ * Functional Interface that can be specified to throw an exception.
+ *
+ * @param <E> the exception.
+ * @param <T> the type of the object argument to the operation.
+ * @author LSafer
+ * @version 0.1.5
+ * @since 0.1.0 ~2020.09.13
+ */
+@FunctionalInterface
+public interface UncheckedObj#paste Prime#Consumer<T, E extends Throwable> extends Obj#paste Prime#Consumer<T> {
+	@Override
+	default void accept(T t, #paste prime# value) {
+		//noinspection RedundantCast
+		((UncheckedObj#paste Prime#Consumer<T, Error>) this)
+				.accept0(t, value);
+	}
+
+	/**
+	 * Performs this operation on the given arguments.
+	 *
+	 * @param t     the first input argument.
+	 * @param value the second input argument.
+	 * @throws E the exception.
+	 * @since 0.1.5 ~2020.08.30
+	 */
+	void accept0(T t, #paste prime# value) throws E;
+}

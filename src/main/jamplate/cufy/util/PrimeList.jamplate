@@ -1,0 +1,267 @@
+#make primitive:"boolean", prime:"boolean", Primitive:"Boolean", Prime:"Boolean", legacy: false|\
+		primitive:"byte", prime:"byte", Primitive:"Byte", Prime:"Byte", legacy: false|\
+		primitive:"character", prime:"char", Primitive:"Character", Prime:"Char", legacy: false|\
+		primitive:"double", prime:"double", Primitive:"Double", Prime:"Double", legacy: true|\
+		primitive:"float", prime:"float", Primitive:"Float", Prime:"Float", legacy: false|\
+		primitive:"integer", prime:"int", Primitive:"Integer", Prime:"Int", legacy: true|\
+		primitive:"long", prime:"long", Primitive:"Long", Prime:"Long", legacy: true|\
+		primitive:"short", prime:"short", Primitive:"Short", Prime:"Short", legacy: false
+
+#var ToDouble
+#var ToInt
+#var ToLong
+#var Spliterator
+
+#if primitive == "double"
+#var ToDouble "DoubleUnaryOperator"
+#else
+#var ToDouble Prime + "ToDoubleFunction"
+#endif
+
+#if primitive == "integer"
+#var ToInt "IntUnaryOperator"
+#else
+#var ToInt Prime + "ToIntFunction"
+#endif
+
+#if primitive == "long"
+#var ToLong "LongUnaryOperator"
+#else
+#var ToLong Prime + "ToLongFunction"
+#endif
+
+#if legacy
+#var Spliterator "Spliterator.Of" + Prime
+#else
+#var Spliterator Prime + "Spliterator"
+#endif
+
+/*
+ *	Copyright 2020 Cufy
+ *
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *
+ *	    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
+ */
+package cufy.util;
+
+#ln 1
+#if legacy
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.*;
+#else
+import cufy.util.function.*;
+
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.function.UnaryOperator;
+#endif
+#ln 1
+
+/**
+ * A list specialized for {@code #paste prime#} values.
+ *
+ * @author LSafer
+ * @version 0.1.5
+ * @since 0.1.5 ~2020.09.01
+ */
+public interface #paste Prime#List
+		extends
+		#ln
+		#lt 1##paste Prime#Collection,
+		PrimitiveList<#paste Primitive#, #paste Prime#Consumer, #paste ToDouble#, #paste ToInt#, #paste ToLong#, #paste Prime#UnaryOperator, #paste Prime#Predicate, #paste Prime#Comparator> {
+	@Override
+	default boolean add(#paste Primitive# element) {
+		return this.add#paste Prime#(element);
+	}
+
+	@Override
+	default void add(int index, #paste Primitive# element) {
+		this.add#paste Prime#(index, element);
+	}
+
+	@Override
+	default boolean contains(Object object) {
+		return object instanceof #paste Primitive# && this.contains((#paste prime#) object);
+	}
+
+	@Override
+	default #paste Primitive# get(int index) {
+		return this.get#paste Prime#(index);
+	}
+
+	@Override
+	default int indexOf(Object object) {
+		return object instanceof #paste Primitive# ?
+				this.indexOf((#paste prime#) object) :
+				-1;
+	}
+
+	@Override
+	default int lastIndexOf(Object object) {
+		return object instanceof #paste Primitive# ?
+				this.lastIndexOf((#paste prime#) object) :
+				-1;
+	}
+
+	@Override
+	default boolean remove(Object object) {
+		return object instanceof #paste Primitive# && this.remove#paste Prime#((#paste prime#) object);
+	}
+
+	@Override
+	default #paste Primitive# remove(int index) {
+		return this.remove#paste Prime#At(index);
+	}
+
+	@Override
+	default void replaceAll(UnaryOperator<#paste Primitive#> operator) {
+		Objects.requireNonNull(operator, "operator");
+		this.replaceAll(
+				operator instanceof #paste Prime#UnaryOperator ?
+				(#paste Prime#UnaryOperator) operator :
+				operator::apply
+		);
+	}
+
+	@Override
+	default void replaceAll(#paste Prime#UnaryOperator operator) {
+		Objects.requireNonNull(operator, "operator");
+		#ln
+		#lt 1##paste Prime#ListIterator iterator = this.listIterator();
+		while (iterator.hasNext())
+			iterator.set(operator.applyAs#paste Prime#(iterator.next#paste Prime#()));
+	}
+
+	@Override
+	default #paste Primitive# set(int index, #paste Primitive# element) {
+		return this.set#paste Prime#(index, element);
+	}
+
+	@Override
+	default void sort(Comparator<? super #paste Primitive#> comparator) {
+		this.sort(
+				comparator == null ||
+				comparator instanceof #paste Prime#Comparator ?
+				(#paste Prime#Comparator) comparator :
+				comparator::compare
+		);
+	}
+
+	#if legacy
+	#ln 1
+	@Override
+	default #paste Spliterator# spliterator() {
+		return Spliterators.spliteratorUnknownSize(this.iterator(), 0);
+	}
+	#endif
+	#ln 1
+
+	@Override
+	#ln
+	#lt##paste Prime#ListIterator listIterator();
+
+	@Override
+	#ln
+	#lt##paste Prime#ListIterator listIterator(int index);
+
+	@Override
+	#ln
+	#lt##paste Prime#List subList(int beginIndex, int endIndex);
+
+	/**
+	 * Inserts the specified element at the specified position in this list (optional operation).
+	 * Shifts the element currently at that position (if any) and any subsequent elements to the
+	 * right (adds one to their indices).
+	 *
+	 * @param index   index at which the specified element is to be inserted.
+	 * @param element element to be inserted.
+	 * @throws UnsupportedOperationException if the {@code add} operation is not supported by this
+	 *                                       list.
+	 * @throws IllegalArgumentException      if some property of the specified element prevents it
+	 *                                       from being added to this list.
+	 * @throws IndexOutOfBoundsException     if the index is out of range ({@code index < 0 || index
+	 *                                       > size()}).
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	void add#paste Prime#(int index, #paste prime# element);
+
+	/**
+	 * Returns the element at the specified position in this list.
+	 *
+	 * @param index index of the element to return.
+	 * @return the element at the specified position in this list.
+	 * @throws IndexOutOfBoundsException if the index is out of range ({@code index < 0 || index >=
+	 *                                   size()}).
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	#ln
+	#lt##paste prime# get#paste Prime#(int index);
+
+	/**
+	 * Returns the index of the first occurrence of the specified element in this list, or -1 if
+	 * this list does not contain the element.
+	 *
+	 * @param element element to search for.
+	 * @return the index of the first occurrence of the specified element in this list, or -1 if
+	 * 		this list does not contain the element.
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	int indexOf(#paste prime# element);
+
+	/**
+	 * Returns the index of the last occurrence of the specified element in this list, or -1 if this
+	 * list does not contain the element.
+	 *
+	 * @param element element to search for.
+	 * @return the index of the last occurrence of the specified element in this list, or -1 if this
+	 * 		list does not contain the element.
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	int lastIndexOf(#paste prime# element);
+
+	/**
+	 * Removes the element at the specified position in this list (optional operation). Shifts any
+	 * subsequent elements to the left (subtracts one from their indices).  Returns the element that
+	 * was removed from the list.
+	 *
+	 * @param index the index of the element to be removed.
+	 * @return the element previously at the specified position.
+	 * @throws UnsupportedOperationException if the {@code remove} operation is not supported by
+	 *                                       this list.
+	 * @throws IndexOutOfBoundsException     if the index is out of range ({@code index < 0 || index
+	 *                                       >= size()}).
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	#ln
+	#lt##paste prime# remove#paste Prime#At(int index);
+
+	/**
+	 * Replaces the element at the specified position in this list with the specified element
+	 * (optional operation).
+	 *
+	 * @param index   index of the element to replace.
+	 * @param element element to be stored at the specified position.
+	 * @return the element previously at the specified position.
+	 * @throws UnsupportedOperationException if the {@code set} operation is not supported by this
+	 *                                       list.
+	 * @throws IllegalArgumentException      if some property of the specified element prevents it
+	 *                                       from being added to this list.
+	 * @throws IndexOutOfBoundsException     if the index is out of range ({@code index < 0 || index
+	 *                                       >= size()}).
+	 * @since 0.1.5 ~2020.09.01
+	 */
+	#ln
+	#lt##paste prime# set#paste Prime#(int index, #paste prime# element);
+}
