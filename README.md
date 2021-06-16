@@ -1,4 +1,9 @@
-PLEASE use 0.1.4 version, since 0.1.5 is still under-development!
+# This project is no longer maintained
+## The project is replaced by [cjlib](https://github.com/cufyorg/cjlib)
+
+<br><br>
+<hr>
+<br><br>
 
 <p align="center">
   <a href="https://framework.cufy.org/">
