@@ -1,5 +1,5 @@
-# This project got discontinued
-## The project got replaced by [cjlib](https://github.com/cufyorg/cjlib)
+# This project is no longer maintained (discontinued)
+## The project is replaced by [cjlib](https://github.com/cufyorg/cjlib)
 
 <br><br>
 <hr>
