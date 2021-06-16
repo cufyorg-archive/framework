@@ -1,4 +1,4 @@
-# This project is no longer maintained
+# This project is no longer maintained (discontinued)
 ## The project is replaced by [cjlib](https://github.com/cufyorg/cjlib)
 
 <br><br>
